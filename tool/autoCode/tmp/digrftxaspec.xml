@@ -1,0 +1,1218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>digrftxaspec</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xFFAA0000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>DIGRF_TX_SW_RESET</spirit:name>
+<spirit:description>General Software Reset Register</spirit:description>
+<spirit:addressOffset>0X0000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_RESET14</spirit:name>
+<spirit:description>sw assert to the digrf tx control fifos  0x0 = assert sw reset  0x1 = do not assert sw reset</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_DATA_SW_RESET</spirit:name>
+<spirit:description>Data FIFO Software Reset Register</spirit:description>
+<spirit:addressOffset>0X0004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_RESET22</spirit:name>
+<spirit:description>sw assert in the data fifo in the digrf tx  0x0 = assert sw reset  0x1 = do not assert sw reset</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_CLOCK_RATE</spirit:name>
+<spirit:description>Clock Rate Selection Register</spirit:description>
+<spirit:addressOffset>0X0008</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_RATE30</spirit:name>
+<spirit:description>sets digrf_tx clock rate  0x0 = slow clock rate  0x1 = fast clock rate</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_GSM_LCT</spirit:name>
+<spirit:description>Data FIFO GSM LCT Value Configuration Register</spirit:description>
+<spirit:addressOffset>0X000C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LCT38</spirit:name>
+<spirit:description>lct  this field configures the gsm logic channel type (lct).</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_LATCH_STATUS</spirit:name>
+<spirit:description>Status Latch Command Register</spirit:description>
+<spirit:addressOffset>0X0010</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_CMD46</spirit:name>
+<spirit:description>command  this value determines what status to latch. see table below.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_RD_STATUS</spirit:name>
+<spirit:description>Read Latched Status Register</spirit:description>
+<spirit:addressOffset>0X0014</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_STATUS58</spirit:name>
+<spirit:description>read the latched status value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_PADS_CONFIG</spirit:name>
+<spirit:description>Line-Driver Configuration Register</spirit:description>
+<spirit:addressOffset>0X0018</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SWNG</spirit:name>
+<spirit:description>swing  this field configures the edifferential-swing of the line-driver.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>VCM</spirit:name>
+<spirit:description>vcm  this field configures the vcm for the line-driver.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_SHUTDOWN</spirit:name>
+<spirit:description>Line-Driver Shutdown Command Register</spirit:description>
+<spirit:addressOffset>0X001C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_SHTDN75</spirit:name>
+<spirit:description>shutdown  this field configures the edifferential-swing of the line-driver.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_CLR_STICKY</spirit:name>
+<spirit:description>Clear Sticky Bits Register</spirit:description>
+<spirit:addressOffset>0X0020</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_D_IFC_FIFO_OVF83</spirit:name>
+<spirit:description>diversity_ifc_fifo_ovf  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_IFC_FIFO_FUL</spirit:name>
+<spirit:description>diversity_ifc_fifo_full  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_RFIFCC2_FIFO_FUL</spirit:name>
+<spirit:description>diversity_rfifcc2_fifo_ovf  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_RFIFCC2_FIFO_OVF</spirit:name>
+<spirit:description>diversity_rfifcc2_fifo_full  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_RFIFCC1_FIFO_FUL</spirit:name>
+<spirit:description>diversity_rfifcc1_fifo_ovf  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_RFIFCC1_FIFO_OVF</spirit:name>
+<spirit:description>diversity_rfifcc1_fifo_full  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DIGRF_P_IFC_FIFO_OVF89</spirit:name>
+<spirit:description>primary_ifc_fifo_ovf  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_IFC_FIFO_FUL</spirit:name>
+<spirit:description>primary_ifc_fifo_full  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_RFIFCC2_FIFO_FUL</spirit:name>
+<spirit:description>primary_rfifcc2_fifo_ovf  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_RFIFCC2_FIFO_OVF</spirit:name>
+<spirit:description>primary_rfifcc2_fifo_full  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_RFIFCC1_FIFO_FUL</spirit:name>
+<spirit:description>primary_rfifcc1_fifo_ovf  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_RFIFCC1_FIFO_OVF</spirit:name>
+<spirit:description>primary_rfifcc1_fifo_full  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DATA_FIFO_OVF</spirit:name>
+<spirit:description>data_fifo_ovf  0x1 followed by 0x0 = clear the sticky bit</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIGRF_TX_PLL_SEL</spirit:name>
+<spirit:description>Enable Output of the PLL Test Clock in the Serial Interface Register</spirit:description>
+<spirit:addressOffset>0X0024</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF_SELECT103</spirit:name>
+<spirit:description>select  0x00 = serial output works normally  0x01 = serial output outputs pll test signal #1  0x02 = serial output outputs pll test signal #2</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DATA_FIFO_DMA_IF</spirit:name>
+<spirit:description>Configure DATA FIFO DMA Parameters Register</spirit:description>
+<spirit:addressOffset>0X0040</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMA_RQEN</spirit:name>
+<spirit:description>dma_req_en  this field enables the dma threshold state machine.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>THRSH112</spirit:name>
+<spirit:description>threshold  this field configures the threshold of the dma request.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DATA_FIFO_SW_CFG</spirit:name>
+<spirit:description>Configure DATA FIFO Mode Register</spirit:description>
+<spirit:addressOffset>0X0044</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ACK_SEL</spirit:name>
+<spirit:description>ack_sel  0x1 = acknowledge indication is from dsp  0x0 = acknowledge indication is from dma</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WB_SWAP</spirit:name>
+<spirit:description>wb_swap  0x00 = lltx data enters as is to the fifo  0x01 = swap lltx data lsbs to msbs  0x02 = swap lltx data i &amp; q  0x03 = swap lltx data i lsbs to msbs &amp; q lsbs to msbs</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CTS_SEL</spirit:name>
+<spirit:description>cts_sel  0x1 = cts value is determined by dsp</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GSM_WB</spirit:name>
+<spirit:description>gsm/wb  0x1 = wb mode</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_CTS</spirit:name>
+<spirit:description>sw_cts  this field configures the vcm for the line-driver.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DATA_FIFO_SW_ACK</spirit:name>
+<spirit:description>DATA FIFO Acknowledge Signal (Debug Mode) Register</spirit:description>
+<spirit:addressOffset>0X0048</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ACK</spirit:name>
+<spirit:description>ack  0x1 followed by a 0x0 = assert acknowledge to the data fifo</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICC1_PRI_FIFO_PxW0_10</spirit:name>
+<spirit:description>Primary RFICC1 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x0080</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICC1_PRI_FIFO_PxW0_11</spirit:name>
+<spirit:description>Primary RFICC1 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x009D</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA139</spirit:name>
+<spirit:description>data input to the primary rficc1 fifo</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICC1_DIV_FIFO_PxW0_10</spirit:name>
+<spirit:description>Diversity RFICC1 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x00C0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICC1_DIV_FIFO_PxW0_11</spirit:name>
+<spirit:description>Diversity RFICC1 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x00DD</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA146</spirit:name>
+<spirit:description>data input to the diversity rficc1 fifo</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>PRI_RFICC2_PRI_FIFO_PxW0_10</spirit:name>
+<spirit:description>Primary RFICC2 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x0100</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>PRI_RFICC2_PRI_FIFO_PxW0_11</spirit:name>
+<spirit:description>Primary RFICC2 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x011D</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA153</spirit:name>
+<spirit:description>data input to the primary rficc2 fifo</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIV_RFICC2_PRI_FIFO_PxW0_10</spirit:name>
+<spirit:description>Diversity RFICC2 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x0140</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>DIV_RFICC2_PRI_FIFO_PxW0_11</spirit:name>
+<spirit:description>Diversity RFICC2 FIFO Payload (not last Word) Register</spirit:description>
+<spirit:addressOffset>0x015D</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA160</spirit:name>
+<spirit:description>data input to the diversit rficc2 fifo</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_PRI_LCT0</spirit:name>
+<spirit:description>Primary RFICCx LCT Register</spirit:description>
+<spirit:addressOffset>0x009C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_PRI_LCT1</spirit:name>
+<spirit:description>Primary RFICCx LCT Register</spirit:description>
+<spirit:addressOffset>0x011C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LCT168</spirit:name>
+<spirit:description>primary rficcx logic channel type value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_DIV_LCT0</spirit:name>
+<spirit:description>Diversity RFICCx LCT Register</spirit:description>
+<spirit:addressOffset>0x00DC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_DIV_LCT1</spirit:name>
+<spirit:description>Diversity RFICCx LCT Register</spirit:description>
+<spirit:addressOffset>0x015C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LCT176</spirit:name>
+<spirit:description>diversity rficcx logic channel type value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_PRI_THD0</spirit:name>
+<spirit:description>Primary RFICCx FIFO Threshold for SR Generation Register</spirit:description>
+<spirit:addressOffset>0x00BC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_PRI_THD1</spirit:name>
+<spirit:description>Primary RFICCx FIFO Threshold for SR Generation Register</spirit:description>
+<spirit:addressOffset>0x013C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>THRSH184</spirit:name>
+<spirit:description>threshold  this field configures the threshold of the primary rficcx sr.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_DIV_THD0</spirit:name>
+<spirit:description>Diversity RFICCx FIFO Threshold for SR Generation Register</spirit:description>
+<spirit:addressOffset>0x00FC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>RFICCx_DIV_THD1</spirit:name>
+<spirit:description>Diversity RFICCx FIFO Threshold for SR Generation Register</spirit:description>
+<spirit:addressOffset>0x017C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>THRSH192</spirit:name>
+<spirit:description>threshold  this field configures the threshold of the diversity rficcx sr.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>IFC_PRI_LCT</spirit:name>
+<spirit:description>Primary IFC FIFO LCT Register</spirit:description>
+<spirit:addressOffset>0X0184</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LCT200</spirit:name>
+<spirit:description>primary ifc logic channel type value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>IFC_PRI_THD</spirit:name>
+<spirit:description>Primary IFC FIFO Threshold for SR Generation Register</spirit:description>
+<spirit:addressOffset>0X0188</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>THRSH208</spirit:name>
+<spirit:description>threshold  this field configures the threshold of the primary ifc sr.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>IFC_DIV_FIFO</spirit:name>
+<spirit:description>Diversity IFC FIFO Payload Register</spirit:description>
+<spirit:addressOffset>0X01C0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA216</spirit:name>
+<spirit:description>data input to the diversity ifc fifo</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>IFC_DIV_LCT</spirit:name>
+<spirit:description>Diversity IFC LCT Register</spirit:description>
+<spirit:addressOffset>0X01C4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LCT224</spirit:name>
+<spirit:description>diversity ifc logic channel type value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>IFC_DIV_THD</spirit:name>
+<spirit:description>Diversity IFC FIFO Threshold for SR Generation Register</spirit:description>
+<spirit:addressOffset>0X01C8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>THRSH232</spirit:name>
+<spirit:description>threshold  this field configures the threshold of the diversity ifc sr.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SPH_CFG_TAS_SR</spirit:name>
+<spirit:description>Assert SR From a TAS FIFO Register</spirit:description>
+<spirit:addressOffset>0X0200</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TAS_PX_DX239</spirit:name>
+<spirit:description>tas_px/dx  0x1 followed by 0x0 = asserts sr for the tas px/dx</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SPH_CFG_TAS_WAIT</spirit:name>
+<spirit:description>Assert WAIT From a TAS FIFO Register</spirit:description>
+<spirit:addressOffset>0X0204</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TAS_PX_DX246</spirit:name>
+<spirit:description>tas_px/dx  0x1 followed by 0x0 = asserts wait for the tas px/dx</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SPH_CFG_FIFOS</spirit:name>
+<spirit:description>SPH Debug, SR Assert from RFICC and IFC FIFOs, Sleep Mode, SPH SW Reset Register</spirit:description>
+<spirit:addressOffset>0X0208</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TAS_WAIT_DBG</spirit:name>
+<spirit:description>tas_wait_dbg  0x1 = enable wait assertion by dsp</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SR_DBG</spirit:name>
+<spirit:description>sr_debug  0x1 = enable sr assertion for all fifos by dsp</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SLP</spirit:name>
+<spirit:description>sleep_mode  0x1 = enable entering sleep mode</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SM_RESET</spirit:name>
+<spirit:description>sm_reset  0x1 followed by 0x0 = reset the sph state machine</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DATA_FIFO_SR</spirit:name>
+<spirit:description>data_fifo_sr  0x1 followed by 0x0 = assert data fifo sr</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_IFC_SR</spirit:name>
+<spirit:description>diversity_ifc_sr  0x1 followed by 0x0 = assert diversity ifc sr</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_IFC_SR</spirit:name>
+<spirit:description>primary_ifc_sr  0x1 followed by 0x0 = assert primary ifc sr</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_RFICC2_SR</spirit:name>
+<spirit:description>diversity_rficc2_sr  0x1 followed by 0x0 = assert diversity rficc2 sr</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D_RFICC1_SR</spirit:name>
+<spirit:description>diversity_rficc1_sr  0x1 followed by 0x0 = assert diversity rficc0x1 sr</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_RFICC2_SR263</spirit:name>
+<spirit:description>primary_rficc2_sr  0x1 followed by 0x0 = assert primary rficc2 sr</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>P_RFICC2_SR264</spirit:name>
+<spirit:description>primary_rficc1_sr  0x1 followed by 0x0 = assert primary rficc0x1 sr</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FC_CONFIG_REQ</spirit:name>
+<spirit:description>Configure FC in Debug Mode Register</spirit:description>
+<spirit:addressOffset>0X0240</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MSKWK</spirit:name>
+<spirit:description>mask_wakeness  0x1 = mask the wakeness signal to ld</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FRC_FIFO-SEL</spirit:name>
+<spirit:description>force_fifo-sel  0x1 = configure which fifo is served by the dsp</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FRC_SOF</spirit:name>
+<spirit:description>force_sof  0x1 = generate sof signal to fc</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FRC_S-R</spirit:name>
+<spirit:description>force_shift-reg  0x1 = enable loading value into the fc shift register</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FRC_ST</spirit:name>
+<spirit:description>force_state  0x1 = enable configuration of fc state by dsp</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RQ</spirit:name>
+<spirit:description>request  0x1 followed by 0x0 = allow debug modes configuration</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FC_FORCE_STATE</spirit:name>
+<spirit:description>Configure FC State Machine Register</spirit:description>
+<spirit:addressOffset>0X0244</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FRC_IFG</spirit:name>
+<spirit:description>force_ifg  0x1 = configure the fc state machine to ifg state</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FRC_IDLE</spirit:name>
+<spirit:description>force_idle  0x1 = configure the fc state machine to idle state</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FC_FORCE_SHFT_REG</spirit:name>
+<spirit:description>Configure FC Shift Register Value Register</spirit:description>
+<spirit:addressOffset>0X0248</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>VALUE</spirit:name>
+<spirit:description>configure the fc shift register value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FC_FORCE_STATUS</spirit:name>
+<spirit:description>Configure FC Input Signals from SPH Register</spirit:description>
+<spirit:addressOffset>0X024C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FIFO_ID</spirit:name>
+<spirit:description>fifo_id  configure which fifo to serve (debug mode)</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ENTER_SLP</spirit:name>
+<spirit:description>enter_sleep  0x1 = configure the fc state machine to enter sleep</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SOF</spirit:name>
+<spirit:description>sof  0x1 = configure the fc to start transmitting the frame</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FC_PRI_DIV_PAD</spirit:name>
+<spirit:description>Enable Switching of FC Primary / Diversity Outputs Register</spirit:description>
+<spirit:addressOffset>0X0250</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>1-2_PADS</spirit:name>
+<spirit:description>one/two_pads  0x1 = fc supports 2 rfics (2 ld's)</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DIGRF_SWTCH312</spirit:name>
+<spirit:description>switch  0x1 = switch between the serial bits to the ld's</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LCT_DATA_D</spirit:name>
+<spirit:description>lct_data_d_pad  0x1 = use diversity serial output for lct data d frames</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LCT_DATA_C</spirit:name>
+<spirit:description>lct_data_c_pad  0x1 = use diversity serial output for lct data c frames</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LCT_DATA_B</spirit:name>
+<spirit:description>lct_data_b_pad  0x1 = use diversity serial output for lct data b frames</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LCT_DATA_A</spirit:name>
+<spirit:description>lct_data_a_pad  0x1 = use diversity serial output for lct data a frames</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_Px_PAYLOAD_SW_TCU_RTU_TIMER_TRIG</spirit:name>
+<spirit:description>Primary TASx FIFO Payload for SW/TCU/RTU/TIMER_TRIG PS32 Register</spirit:description>
+<spirit:addressOffset>0X0400</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA327</spirit:name>
+<spirit:description>data input to the primary tasx fifo (ps = 32)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_Px_PAYLOAD8_SW_TCU_RTU_TIMER_TRIG</spirit:name>
+<spirit:description>Primary TASx FIFO Payload for SW/TCU/RTU/TIMER_TRIG PS8 Register</spirit:description>
+<spirit:addressOffset>0X0500</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA339</spirit:name>
+<spirit:description>data input to the primary tasx fifo (ps = 8)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_PRI_LCT</spirit:name>
+<spirit:description>Primary TAS FIFO LCT Register</spirit:description>
+<spirit:addressOffset>0X0600</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LCT347</spirit:name>
+<spirit:description>primary tas logic channel type value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_PRI_ENTRY_CFG</spirit:name>
+<spirit:description>Primary TAS FIFOs Mode Configuration Register</spirit:description>
+<spirit:addressOffset>0X0604</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ZERO355</spirit:name>
+<spirit:description>must be configured to '0'</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WAIT356</spirit:name>
+<spirit:description>primary tas wait width in number of cycles</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>10</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_Dx_PAYLOAD_SW_TCU_RTU_TIMER_TRIG</spirit:name>
+<spirit:description>Diversity TASx FIFO Payload for SW/TCU/RTU/TIMER_TRIG PS32 Register</spirit:description>
+<spirit:addressOffset>0X0800</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA367</spirit:name>
+<spirit:description>data input to the diversity tasx fifo (ps=32)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_Dx_PAYLOAD8_SW_TCU_RTU_TIMER_TRIG</spirit:name>
+<spirit:description>Diversity TASx FIFO Payload for SW/TCU/RTU/TIMER_TRIG PS8 Register</spirit:description>
+<spirit:addressOffset>0X0900</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DATA379</spirit:name>
+<spirit:description>data input to the diversity tasx fifo (ps = 8)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_DIV_LCT</spirit:name>
+<spirit:description>Diversity TAS FIFO LCT Register</spirit:description>
+<spirit:addressOffset>0X0A00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LCT387</spirit:name>
+<spirit:description>diversity tas logic channel type value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TAS_DIV_ENTRY_CFG</spirit:name>
+<spirit:description>Diversity TAS FIFOs Mode Configuration Register</spirit:description>
+<spirit:addressOffset>0X0A04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ZERO395</spirit:name>
+<spirit:description>must be configured to 0x0</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WAIT396</spirit:name>
+<spirit:description>diversity tas wait width in number of cycles</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>10</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

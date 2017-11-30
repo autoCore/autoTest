@@ -1,0 +1,224 @@
+;/*=====================================================================================
+; *
+; * usage:
+; *   do lowlevel_jtag_ap_pmu.cmm
+; *
+; * return value:
+; *  1. raw power state:
+; *
+; *   global &cluster0_state &cluster1_state &cluster2_state
+; *   global &core0_state &core1_state &core2_state &core3_state
+; *   global &core4_state &core5_state &core6_state &core7_state
+; *   global &core8_state &core9_state &core10_state &core11_state
+; *
+; *   the core/cluster power state explain below:
+; *     core state:    0xa  --> core C2,    0x2 --> core C1,    0x0 --> core power on
+; *     cluster state: 0x13 --> cluster M2, 0x9 --> cluster M1, 0x1 --> cluster power on
+; *
+; *  2. mapped power on state:
+; *
+; *   global &clusters_power_on_map &clusters_numbers
+; *   global &cores_power_on_map &cores_numbers
+; *
+; *   the power on map explain below:
+; *     example, power on map  0b'00101011, means core0/core1/core3/core5 are power on
+; *
+; * NOTE: this script must be called at Run-Test/Idle state and before 0x98 0xa
+; *
+; */=====================================================================================
+
+global &cluster0_state &cluster1_state &cluster2_state
+global &core0_state &core1_state &core2_state &core3_state
+global &core4_state &core5_state &core6_state &core7_state
+global &core8_state &core9_state &core10_state &core11_state
+
+global &clusters_power_on_map &clusters_numbers
+global &cores_power_on_map &cores_numbers
+
+local &cluster0 &cluster1 &cluster2
+local &core0 &core1 &core2 &core3
+local &core4 &core5 &core6 &core7
+local &core8 &core9 &core10 &core11
+
+;
+; bit assignment of 0x77:
+;
+; JTAG ADDR,      DATA length,     DATA BIT,         signal name
+;
+; 0x77 on aquila
+; 0x77  9 bits,   375 bits
+;                                  DR [374:372]      apcore_mpsub_m1
+;
+;                                  DR [371:292]      core2_C2_test_bus
+;
+;                                  DR [291:212]      core2_C1_test_bus
+;
+;                                  DR [211:164]      dfc_test_bus
+;
+;                                  DR [163:84]       core2_C0_test_bus
+;
+;                                  DR [83:31]        idle_test_bus
+;
+;                                  DR [30:0]         fc_test_bus[28:27]
+;                                                    mc_reg_table_req
+;                                                    fc_test_bus[25]
+;                                                    mc_reg_table_type[4:0]
+;                                                    fc_test_bus[21:0]
+
+; new 0x77 on aquilac
+;jtag_read_pmu[405:0] = {
+;                        core_fc_debug[23:0],     //[405:382]
+;                        apcore_mpsub_m1[2:0],    //[381:379]
+;                        debug_csys[15:0],        //[378:363]
+;                        ddrphy_test_bus1[31:0],  //[362:331]
+;                        dclk_test_bus[43:0],     //[330:287]
+;                        dfc_test_bus[50:0],      //[286:236]
+;                        core2_C1_test_bus[79:0], //[235:156]
+;                        core2_C0_test_bus[79:0], //[155:76]
+;                        idle_test_bus[52:0],     //[75:23]
+;                        fc_test_bus[22:0]};      //[22:0]
+;
+
+
+JTAG.SHIFTTMS 0 1 1 0 0                                                         ; goto Shift-IR state
+JTAG.SHIFTREG 1 1 1 0 1 1 1 0 0                                                 ; shift in 0x77
+print.FORMAT.BINary(16.,JTAG.SHIFT())
+;;;---->
+
+JTAG.SHIFTTMS 1 1 0 0                                                           ; goto Shift-DR state
+
+;;; shift out un-wanted [75:0]
+
+print "DR [31:0], 32bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+print.FORMAT.BINary(32.,JTAG.SHIFT())
+;;;---->
+
+print "DR [63:32], 32bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+print.FORMAT.BINary(32.,JTAG.SHIFT())
+;;;---->
+
+print "DR [75:64], 12bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0
+print.FORMAT.BINary(12.,JTAG.SHIFT())
+;;;---->
+
+
+print "DR [155:76], core2_C0_test_bus, 80bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; cluster0
+&cluster0=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&cluster0)
+&cluster0_state=(&cluster0>>3)&0x3f
+print "cluster0 state = 0x" %Hex &cluster0_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core0
+&core0=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core0)
+&core0_state=(&core0>>3)&0x1f
+print "core0 state = 0x" %Hex &core0_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core1
+&core1=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core1)
+&core1_state=(&core1>>3)&0x1f
+print "core1 state = 0x" %Hex &core1_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core2
+&core2=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core2)
+&core2_state=(&core2>>3)&0x1f
+print "core2 state = 0x" %Hex &core2_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core3
+&core3=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core3)
+&core3_state=(&core3>>3)&0x1f
+print "core3 state = 0x" %Hex &core3_state
+;;;---->
+
+print "DR [235:156], core2_C1_test_bus, 80bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; cluster1
+&cluster1=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&cluster1)
+&cluster1_state=(&cluster1>>3)&0x3f
+print "cluster1 state = 0x" %Hex &cluster1_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core4
+&core4=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core4)
+&core4_state=(&core4>>3)&0x1f
+print "core4 state = 0x" %Hex &core4_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core5
+&core5=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core5)
+&core5_state=(&core5>>3)&0x1f
+print "core5 state = 0x" %Hex &core5_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core6
+&core6=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core6)
+&core6_state=(&core6>>3)&0x1f
+print "core6 state = 0x" %Hex &core6_state
+
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ; core7
+&core7=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&core7)
+&core7_state=(&core7>>3)&0x1f
+print "core7 state = 0x" %Hex &core7_state
+
+
+JTAG.SHIFTTMS 1 1 0 0    ; to run time/idle
+
+
+&clusters_power_on_map=0
+&clusters_numbers=2.
+&cores_power_on_map=0
+&cores_numbers=8.
+
+if &cluster0_state==0x13
+  print "cluster0 is in M2 state"
+else if &cluster0_state==0x9
+  print "cluster0 is in M1 state"
+else if &cluster0_state==0x1
+(
+  print "cluster0 is in power on state"
+  &clusters_power_on_map=((1<<0.)|&clusters_power_on_map)
+)
+else
+  print "cluster0 is in unknown state"
+
+if &cluster1_state==0x13
+  print "cluster1 is in M2 state"
+else if &cluster1_state==0x9
+  print "cluster1 is in M1 state"
+else if &cluster1_state==0x1
+(
+  print "cluster1 is in power on state"
+  &clusters_power_on_map=((1<<1.)|&clusters_power_on_map)
+)
+else
+  print "cluster1 is in unknown state"
+
+if &core0_state==0
+  &cores_power_on_map=((1<<0.)|&cores_power_on_map)
+if &core1_state==0
+  &cores_power_on_map=((1<<1.)|&cores_power_on_map)
+if &core2_state==0
+  &cores_power_on_map=((1<<2.)|&cores_power_on_map)
+if &core3_state==0
+  &cores_power_on_map=((1<<3.)|&cores_power_on_map)
+if &core4_state==0
+  &cores_power_on_map=((1<<4.)|&cores_power_on_map)
+if &core5_state==0
+  &cores_power_on_map=((1<<5.)|&cores_power_on_map)
+if &core6_state==0
+  &cores_power_on_map=((1<<6.)|&cores_power_on_map)
+if &core7_state==0
+  &cores_power_on_map=((1<<7.)|&cores_power_on_map)
+
+print "cores_power_on_map = 0x" %Hex &cores_power_on_map
+print "cores_numbers = 0x" %Hex &cores_numbers
+
+enddo

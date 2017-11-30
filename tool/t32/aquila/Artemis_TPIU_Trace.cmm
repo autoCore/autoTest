@@ -1,0 +1,70 @@
+sys.reset
+system.jtagclock 1Mhz
+
+system.cpu artemis
+
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+SYStem.CONFIG CoreNumber 2
+
+system.option enreset off
+system.option trst off
+system.config slave on
+
+system.config DAPIRPRE 1.
+system.config DAPIRPOST 9.
+system.config DAPDRPRE 1.
+system.config DAPDRPOST 1.
+
+system.config MEMORYACCESSPORT 0.
+system.config.debugaccessport 1.
+system.config AXIACCESSPORT   0.
+system.config.apbaccessport 0.
+
+;soc
+SYStem.CONFIG.ETF1.Base 0xd5005000      ;soc ETF
+SYStem.CONFIG.tpiu.Base 0xd5008000      ;soc TPIU
+SYStem.CONFIG.ETR1.Base 0xd500f000	;soc etr
+SYStem.CONFIG.STM1.Base 0xd5020000	;soc stm
+SYStem.CONFIG.funnel4.Base 0xd5007000	;soc funnel
+
+
+SYStem.CONFIG.funnel2.Base 0xd5010000	;funnel c2
+SYStem.CONFIG.funnel3.Base 0xd5011000	;funnel c0 c1 c2
+
+
+
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+
+&OFFSET=0x800000
+
+SYStem.CONFIG.COREDEBUG.Base (0xD5410000+&OFFSET) (0xD5510000+&OFFSET)
+
+SYStem.CONFIG.CTI.Base (0xD5420000+&OFFSET) (0xD5520000+&OFFSET)
+
+SYStem.CONFIG.BMC.Base (0xD5430000+&OFFSET) (0xD5530000+&OFFSET)
+
+SYStem.CONFIG.ETM.Base (0xD5440000+&OFFSET) (0xD5540000+&OFFSET)
+
+SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1
+
+SYStem.CONFIG.FUNNEL3.ATBSource FUNNEL2 1
+SYStem.CONFIG.FUNNEL4.ATBSource FUNNEL3 1
+
+SYStem.CONFIG.ETF1.ATBSource FUNNEL3
+
+
+SYStem.CONFIG.TPIU.ATBSource ETF1
+
+
+CORE.ASSIGN 1 2
+
+CORE.ASSIGN 1
+
+sys.up
+R.S PC 0
+ENDDO
+
+

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>apbec</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD0234000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>AR_CIP_OB</spirit:name>
+<spirit:description>E-Cipher Output Buffer Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_OUTPUT_BUFFER16</spirit:name>
+<spirit:description>output buffer  memory</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_SW_RESET</spirit:name>
+<spirit:description>Software Reset Register</spirit:description>
+<spirit:addressOffset>0X1004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_SW_RESET25</spirit:name>
+<spirit:description>this bit resets the e-cipher unit by software. the software reset affects all e-cipher registers except the config and data registers.  to perform a software reset:</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_ALG_THR</spirit:name>
+<spirit:description>Algorithm Threshold Register</spirit:description>
+<spirit:addressOffset>0X1008</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_THRESHOLD37</spirit:name>
+<spirit:description>memory size threshold  defines the memory threshold upon which the e-cipher issues a request to empty its internal memory.  0x0 = 64x64 bits - full memory size  0x1 = 32x64 bits - half memory size  0x2 = 16x64 bits - quarter memory size  0x3 = 8x64 bits  0x4 = 4x64 bits  0x5 = 2x64 bits  0x6 = 1x64 bits</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBEC_ALGORITHM38</spirit:name>
+<spirit:description>algorithm type  selects the algorithm type implemented by the gsm e-cipher.  0x00 = no algorithm selected, e-cipher is disabled  0x01 = a5/1  0x2 = a5/20  0x04 = gea  0x08 = gea2  0x10 = a5/3  0x20 = ecsd a5/3  0x40 = gea3  any other value is illegal and will place the e-cipher in an unpredictable state.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_ASPEC</spirit:name>
+<spirit:description>E-Cipher ASPEC Enable Register</spirit:description>
+<spirit:addressOffset>0X100C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_INVERT_ON47</spirit:name>
+<spirit:description>invert on  setting this bit inverts the order of the cipher output stream.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBEC_ASPEC_EN48</spirit:name>
+<spirit:description>aspec register configuration enable  setting this bit enables write operations to the following registers:</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_DIRECTION</spirit:name>
+<spirit:description>E-Cipher Length Direction Register</spirit:description>
+<spirit:addressOffset>0X1010</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_DIRECTION61</spirit:name>
+<spirit:description>direction of transmission indicator  required only for algorithms: gea, gea2, gea3</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBEC_LENGTH62</spirit:name>
+<spirit:description>length  this field is the number of required output bits.  for gea and gea2 algorithms, this number must be an integer number of octets.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>20</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_COUNT</spirit:name>
+<spirit:description>E-Cipher Count Register</spirit:description>
+<spirit:addressOffset>0X1014</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_COUNT71</spirit:name>
+<spirit:description>frame-dependent input count  required only for algorithms: a5/1, a5/2, a5/3</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>22</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_INPUT</spirit:name>
+<spirit:description>E-Cipher Input Register</spirit:description>
+<spirit:addressOffset>0X1018</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_INPUT79</spirit:name>
+<spirit:description>frame-dependent input count  required for algorithms: gea, gea2, gea3</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_KC_XX</spirit:name>
+<spirit:description>E-Cipher Key Register</spirit:description>
+<spirit:addressOffset>0X101C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_KC_L87</spirit:name>
+<spirit:description>key cipher, l, bits [31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_RUNUP_CYCLES</spirit:name>
+<spirit:description>E-Cipher Runup Register</spirit:description>
+<spirit:addressOffset>0X102C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_RUNUP104</spirit:name>
+<spirit:description>number of runup cycles  required only for algorithms: a5/1, a5/2  this field should be set to 100 decimal (0x64).</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_STIR_CYCLES</spirit:name>
+<spirit:description>E-Cipher Stirring Register</spirit:description>
+<spirit:addressOffset>0X1030</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_STIRRING113</spirit:name>
+<spirit:description>number of stirring cycles  required only for algorithms: gea, gea2  set to 128 decimal (0x80) for gea.  set to 194 decimal (0xc2) for gea2.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_INIT</spirit:name>
+<spirit:description>E-Cipher Init Register</spirit:description>
+<spirit:addressOffset>0X1034</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_INIT122</spirit:name>
+<spirit:description>init  this field is the number of cycles required for register initialization and is required only for algorithms: gea, gea2  set to 64 decimal (0x40) for gea.  set to 97 decimal (0x61) for gea2.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_START</spirit:name>
+<spirit:description>E-Cipher Start Cipher Register</spirit:description>
+<spirit:addressOffset>0X1038</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APBEC_START_CIPHER131</spirit:name>
+<spirit:description>start cipher  1 = start ciphering process</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_DSP_DONE</spirit:name>
+<spirit:description>E-Cipher ARM Done Register</spirit:description>
+<spirit:addressOffset>0X103C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ARM_DONE</spirit:name>
+<spirit:description>arm done  this field indicates that arm has finished reading the e-cipher internal memory.  when working with interrupts (without dma), this bit must be set when the arm has finished reading from the internal memory (according to the threshold size). this bit is self cleared.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_DMA_ACK_BYP_CTRL</spirit:name>
+<spirit:description>E-Cipher DMA_ACK, Bypass Control Register</spirit:description>
+<spirit:addressOffset>0X1050</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMA_ACK_BYPASS</spirit:name>
+<spirit:description>dma_ack bypass  0 = normal  1 = bypass mode</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DMA_READ_ACCESSES</spirit:name>
+<spirit:description>dma read accesses  this field selects how many dma read accesses are carried out before issuing a dma_ack.  valid values are 0x00 to 0xff</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AR_CIP_OB_FOR_DMA</spirit:name>
+<spirit:description>E-Cipher Output Buffer DMA Register</spirit:description>
+<spirit:addressOffset>0X100</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OUTPUT_BUFFER_DMA</spirit:name>
+<spirit:description>output buffer dma</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

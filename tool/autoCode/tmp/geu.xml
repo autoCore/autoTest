@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>geu</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4292800</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>GEU_STATUS</spirit:name>
+<spirit:description>GEU Status Register</spirit:description>
+<spirit:addressOffset>0X000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_CONFIG</spirit:name>
+<spirit:description>GEU Configuration Register</spirit:description>
+<spirit:addressOffset>0X004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>STICKY_CONTROL_BIT</spirit:name>
+<spirit:description>sticky control bit  software lock bit  when this bit is set to 1, the block 0/5/6 cannot be programmed, and this bit is sticky so that during the reset cycle, software can only set it one time and cannot set it back to 0.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FUSE_POWER_BYPASS</spirit:name>
+<spirit:description>fuse power regulator bypass  0 = don't use the power from fuse power regulator  1 = use the power from fuse power regulator</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FUSE_CLOCK_DIVIDER</spirit:name>
+<spirit:description>clock divider value  the clock divider value is used to select the clock frequency of the fuse serial clockclk_div_val==3'h0 ? 13'h1fff :     //div by 8191 (max divider value)
+         clk_div_val==3'h1 ? 13'h1388 :     //div by 5000) 208m
+         clk_div_val==3'h2 ? 13'h1388 :     //div by 5000) 208m
+         clk_div_val==3'h3 ? 13'h0ea6 :     //div by 3750) 156m
+         clk_div_val==3'h4 ? 13'h09c4 :     //div by 2500104m
+         clk_div_val==3'h5 ? 13'h06fc :     //div by 1778 74m
+         clk_div_val==3'h6 ? 13'h06fc :     //div by 1778 74m
+         div_clk_cntr;  // programmable in aes_rf _28f8</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FUSE_CLOCK_DISABLE</spirit:name>
+<spirit:description>fuse clock disable  0 = enable fuse block clock  1 = disable fuse block clock</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FUSE_SOFTWARE_RESET</spirit:name>
+<spirit:description>fuse software reset  0 = fuse software reset is de-asserted  1 = fuse software reset is asserted</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FUSE_BLOCK_NUMBER</spirit:name>
+<spirit:description>fuse block number  select fuse block during fuse value programming. there are 16 x 256-bit fuse blocks in the &lt;var product number&gt;. during fuse value programming, allow software to program one fuse block at a time. the settings, fuse blocks, and their contents correspond to those described in the generic encryption fuse layout.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HIGH_VOLT_ENABLE</spirit:name>
+<spirit:description>high volt enable  1 = enable the on-chip fuse power regulator to generate 2.5v for fuse programming  it takes about 1 ms for the fuse power regulator to output stable power after this field is set.</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BURN_FUSE_ENABLE</spirit:name>
+<spirit:description>burn fuse enable  1 = enable fuse programming</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FUSE_LOCK</spirit:name>
+<spirit:description>fuse lock  1 = enable fuse locking feature</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ENABLE_SOFT_FUSE_PROG</spirit:name>
+<spirit:description>enable software fuse programming  1 = enable software fuse programming interface</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_FUSE_B</spirit:name>
+<spirit:description>select to burning fuse b block if this bit is set to 0x1.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>BCM_CONFIG_0</spirit:name>
+<spirit:description>BCM Config 0 Register</spirit:description>
+<spirit:addressOffset>0X020</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>BROM_RTC</spirit:name>
+<spirit:description>bcm brom rtc</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>BCM_CONFIG_1</spirit:name>
+<spirit:description>BCM Config 1 Register</spirit:description>
+<spirit:addressOffset>0X024</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ROM_SECURE_EN</spirit:name>
+<spirit:description>rom secure enable  when this bit and the global secure enable are set, rom access is secure.  only the secure axi transaction can access secure rom data. otherwise, it is disabled.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ROM_CLK_GATING_CTRL</spirit:name>
+<spirit:description>rom clock gating control  1 = rom clock is enabled</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ROM_WAIT_STATE</spirit:name>
+<spirit:description>rom wait state  inserted number of waiting cycles during rom access</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_PROG_VAL1</spirit:name>
+<spirit:description>Fuse Programming Value[127:0] in Software Fuse Programming Mode Register</spirit:description>
+<spirit:addressOffset>0X038</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_3_0_31_0</spirit:name>
+<spirit:description>fuse programming value[127:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_PROG_VAL2</spirit:name>
+<spirit:description>Fuse Programming Value[255:128] in Software Fuse Programming Mode Register</spirit:description>
+<spirit:addressOffset>0X048</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_7_4_31_0</spirit:name>
+<spirit:description>fuse programming value[255:128]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_APCFG1</spirit:name>
+<spirit:description>Fuse Value for Application Subsystem Config Register 1</spirit:description>
+<spirit:addressOffset>0X104</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OTP_APP_TOP_CONFIG_15_0</spirit:name>
+<spirit:description>fuse value for application subsystem configuration [15:0]</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OTP_CP_TOP_CONFIG_15_0</spirit:name>
+<spirit:description>fuse value for communication subsystem configuration [15:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_APCFG2</spirit:name>
+<spirit:description>Fuse Value for Application Subsystem Config Register 2</spirit:description>
+<spirit:addressOffset>0X108</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OTP_APP_TOP_CONFIG_47_16</spirit:name>
+<spirit:description>fuse value for application subsystem configuration [47:16]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_APCFG3</spirit:name>
+<spirit:description>Fuse Value for Application Subsystem Config Register 3</spirit:description>
+<spirit:addressOffset>0X10C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OTP_APP_TOP_CONFIG_79_48</spirit:name>
+<spirit:description>fuse value for application subsystem configuration [79:48]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_MANU_PARA_1</spirit:name>
+<spirit:description>Manufacturing Parameters [31:0] Register</spirit:description>
+<spirit:addressOffset>0X110</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MANU_PARA_31_0</spirit:name>
+<spirit:description>fuse value for manufacturing parameters [31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_MANU_PARA_2</spirit:name>
+<spirit:description>Manufacturing Parameters [63:32] Register</spirit:description>
+<spirit:addressOffset>0X114</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MANU_PARA_63_32</spirit:name>
+<spirit:description>fuse value for manufacturing parameters [63:32]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_MANU_PARA_3</spirit:name>
+<spirit:description>Manufacturing Parameters [95:64] Register</spirit:description>
+<spirit:addressOffset>0X118</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MANU_PARA_95_64</spirit:name>
+<spirit:description>fuse value for manufacturing parameters [95:64]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_MANU_PARA_4</spirit:name>
+<spirit:description>Manufacturing Parameters [127:96] Register</spirit:description>
+<spirit:addressOffset>0X11C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MANU_PARA_127_96</spirit:name>
+<spirit:description>fuse value for manufacturing parameters [127:96]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_MANU_PARA_5</spirit:name>
+<spirit:description>Manufacturing Parameters [159:128] Register</spirit:description>
+<spirit:addressOffset>0X120</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MANU_PARA_159_128</spirit:name>
+<spirit:description>fuse value for manufacturing parameters [159:128]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY1</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 1</spirit:description>
+<spirit:addressOffset>0X124</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RKEY_31_0</spirit:name>
+<spirit:description>fuse value for root key[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY2</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 2</spirit:description>
+<spirit:addressOffset>0X128</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RKEY_63_32</spirit:name>
+<spirit:description>fuse value for root key[63:32]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY3</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 3</spirit:description>
+<spirit:addressOffset>0X12C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RKEY_95_64</spirit:name>
+<spirit:description>fuse value for root key[95:64]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY4</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 4</spirit:description>
+<spirit:addressOffset>0X130</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>REKY_127_96</spirit:name>
+<spirit:description>fuse value for root key[127:96]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY5</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 5</spirit:description>
+<spirit:addressOffset>0X134</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RKEY_159_128</spirit:name>
+<spirit:description>fuse value for root key[159:128]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY6</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 6</spirit:description>
+<spirit:addressOffset>0X138</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RKEY_191_160</spirit:name>
+<spirit:description>fuse value for root key[191:160]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY7</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 7</spirit:description>
+<spirit:addressOffset>0X13C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RKEY_223_192</spirit:name>
+<spirit:description>fuse value for root key[223:192]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROOT_KEY8</spirit:name>
+<spirit:description>Fuse Value for Root Key Register 8</spirit:description>
+<spirit:addressOffset>0X140</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RKEY_255_224</spirit:name>
+<spirit:description>fuse value for root key[255:224]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_SSK_1_8</spirit:name>
+<spirit:description>Fuse Value for Secret Symmetric Key SSK 1- 8</spirit:description>
+<spirit:addressOffset>0X144</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OTP_SSK_31_0</spirit:name>
+<spirit:description>fuse value for ssk [31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_OEM_BANK6_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK6 1- 8</spirit:description>
+<spirit:addressOffset>0X164</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK6</spirit:name>
+<spirit:description>fuse value for bank6[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_STATUS</spirit:name>
+<spirit:description>Fuse Operation Status Register</spirit:description>
+<spirit:addressOffset>0X184</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LOCK_BIT</spirit:name>
+<spirit:description>fuse lock bit  this field records the 16 fuse lock bits for 16 fuse blocks. bit [0] is for block 0, bit [1] is for block 1…bit [15] is for block 15.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LIFE_CYCLE</spirit:name>
+<spirit:description>life cycle fuse bits  there are 12-bit fuse bits for life cycle.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>12</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GE_FUSE_READY205</spirit:name>
+<spirit:description>fuse ready  1 = fuse value is stable and ready to be read</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FUSE_BURN_DONE</spirit:name>
+<spirit:description>fuse burn done  1 = fuse write process is done</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DRNG_DATA</spirit:name>
+<spirit:description>Digital Random Data Register</spirit:description>
+<spirit:addressOffset>0X188</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DRNG_DATA</spirit:name>
+<spirit:description>digital random data from drng</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_BANK7_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK7 1- 8</spirit:description>
+<spirit:addressOffset>0X190</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK7</spirit:name>
+<spirit:description>fuse value for bank7[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_BANK8_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK8 1- 8</spirit:description>
+<spirit:addressOffset>0X200</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK8</spirit:name>
+<spirit:description>fuse value for bank8[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_BANK9_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK9 1- 8</spirit:description>
+<spirit:addressOffset>0X220</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK9</spirit:name>
+<spirit:description>fuse value for bank9[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_BANK10_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK10 1- 8</spirit:description>
+<spirit:addressOffset>0X240</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK10</spirit:name>
+<spirit:description>fuse value for bank10[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_BANK11_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK11 1- 8</spirit:description>
+<spirit:addressOffset>0X260</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK11</spirit:name>
+<spirit:description>fuse value for bank11[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_CDPKH_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK3 Chip Debug Public Key Hash CDPKH1- 8</spirit:description>
+<spirit:addressOffset>0X280</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK3_CDPKH</spirit:name>
+<spirit:description>fuse value for bank3 chip debug public key hash cdpkh[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ROTPKH_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK4  Root of Trust Public Key Hash ROTPKH1- 8</spirit:description>
+<spirit:addressOffset>0X2A0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK4_ROTPKH</spirit:name>
+<spirit:description>fuse value for bank4  root of trust public key hash rotpkh[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GEU_FUSE_VAL_ARCN_1_8</spirit:name>
+<spirit:description>Fuse Value for BANK5 ARCN 1- 8</spirit:description>
+<spirit:addressOffset>0X2C0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_BANK5_ARCN</spirit:name>
+<spirit:description>fuse value for bank5 arcn[31:0]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FUSE_SCLK_DIV_CNTR</spirit:name>
+<spirit:description>Fuse Slow Clock Divider Counter Register</spirit:description>
+<spirit:addressOffset>0X3FC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FUSE_SCLK_DIV_CNTR</spirit:name>
+<spirit:description>fuse sclk divider counter  the clock divider value is used to manually define clock frequency of the fuse serial clock.  sclk = wtm clk /this value. it only takes effect when geu_config[27:25] = 0x7</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>13</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

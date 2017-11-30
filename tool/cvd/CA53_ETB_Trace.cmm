@@ -1,0 +1,172 @@
+local &ap_core_msk
+entry &ap_core_msk
+;;;&ap_core_msk=1
+
+;;/*using system etb 32kB*/
+sys.reset
+
+WinPOS 0. 26. 75. 8. 0. 0. W000
+AREA.view 
+
+print "ca53 ap_core_msk=&ap_core_msk"
+
+system.jtagclock 2Mhz
+do ./jtag_chain.cmm
+system.jtagclock 2Mhz
+
+print "end of jtag chain config"
+system.cpu cortexa53 
+
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+SYStem.CONFIG CoreNumber 8
+
+system.option enreset off
+system.option trst off
+system.config slave on
+
+system.config DAPIRPRE 1. 
+system.config DAPIRPOST 9.
+system.config DAPDRPRE 1.
+system.config DAPDRPOST 1.
+
+system.config MEMORYACCESSPORT 0.
+system.config.debugaccessport 1.
+system.config AXIACCESSPORT   0.
+system.config.apbaccessport 1.
+
+;soc
+
+
+SYStem.CONFIG.ETB1.Base 0xd5005000      ;soc ETB
+SYStem.CONFIG.tpiu.Base 0xd5008000      ;soc TPIU
+SYStem.CONFIG.ETR1.Base 0xd500f000	;soc etr
+SYStem.CONFIG.STM1.Base 0xd5020000	;soc stm
+SYStem.CONFIG.funnel4.Base 0xd5007000	;soc funnel
+
+SYStem.CONFIG.funnel1.Base 0xd5009000	;funnel c0 c1
+SYStem.CONFIG.funnel3.Base 0xd5011000	;funnel c0 c1 c2
+
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+
+	
+SYStem.CONFIG.COREDEBUG.Base 0xD5410000 0xD5510000 0xD5610000 0xD5710000 0xD5810000 0xD5910000 0xD5a10000 0xD5b10000
+	
+SYStem.CONFIG.CTI.Base 0xD5420000 0xD5520000 0xD5620000 0xD5720000 0xD5820000 0xD5920000 0xD5a20000 0xD5b20000
+	
+SYStem.CONFIG.BMC.Base 0xD5430000 0xD5530000 0xD5630000 0xD5730000 0xD5830000 0xD5930000 0xD5a30000 0xD5b30000
+	
+SYStem.CONFIG.ETM.Base 0xD5440000 0xD5540000 0xD5640000 0xD5740000 0xD5840000 0xD5940000 0xD5a40000 0xD5b40000
+
+SYStem.CONFIG.FUNNEL1.ATBSource ETM.0 0 ETM.1 1 ETM.2 2 ETM.3 3	ETM.4 4 ETM.5 5 ETM.6 6 ETM.7 7
+SYStem.CONFIG.FUNNEL3.ATBSource FUNNEL1 0 
+SYStem.CONFIG.FUNNEL4.ATBSource FUNNEL3 0
+
+SYStem.CONFIG.ETB1.ATBSource FUNNEL4
+
+CORE.ASSIGN 1 2 3 4 5 6 7 8
+
+core.assign 1
+
+if version.build()==0x100000   ;;for cvd 
+	SYStem.CONFIG CoreNumber 1
+	
+SYStem.Option PWRDWN ON
+SYS.UP
+
+;do ./ddr.cmm
+D.S ZSD:0xD405000c %LE %Long 0x80e502ff
+D.S ZSD:0xD401503C %LE %Long 0X0
+wait 1.
+D.S ZSD:0xD401503C %LE %Long 0X3
+
+D.S ZSD:0xD401503C %LE %Long 0X3
+
+D.S ZSD:0xd401e278 %LE %Long 0X2 ;mfp
+D.S ZSD:0xd401e27c %LE %Long 0X2 ;mfp
+
+data.load.elf aquila_evb_ddr_training_ok-208M_SIMPLE.axf
+;;;data.load.elf aquila_evb_ddr_training_ok-78M_test.axf
+go
+wait 5.s
+break
+
+data.set 0 %long 0x14000000  ;set ddr
+data.set 0 %long 0x14000000  ;set ddr
+data.set 0xd4282db0 %long 0x0 ;set reset address to ddr 0x0
+R.S PC 0
+;data.set 0xd428292c %long 0x100 ;releae artems
+data.set 0xd428292c %long 0x3ff ;releae 10 cores
+
+;data.set 0xD4051084 0x101 ;release cr7
+;data.set 0xD4282C04 0x22800
+;data.set 0xD4051020 0xc00081c2
+
+sys.down
+
+if version.build()==0x100000   ;;for cvd 
+(
+  system.jtagclock 2Mhz
+  system.option enreset off
+  system.option trst off
+  system.config slave on
+  
+  system.config DAPIRPRE 1. 
+  system.config DAPIRPOST 9.
+  system.config DAPDRPRE 1.
+  system.config DAPDRPOST 1.
+  
+  system.config MEMORYACCESSPORT 0
+  system.config AXIACCESSPORT   0
+  system.config DEBUGACCESSPORT 1
+  system.config.apbaccessport 1.
+  
+  sys.cpu cortexa53 
+
+  IF (&ap_core_msk!=0)
+  (
+    print "AP core number is below:"
+
+    IF (&ap_core_msk&(1<<0))!=0
+    (
+      sys.config corenumber 1.
+      sys.config corebase      0xD5410000
+      SYS.CONFIG.CTIBase       0xD5420000
+    )
+    IF (&ap_core_msk&(1<<1))!=0
+    (
+      sys.config corenumber 2.
+      sys.config corebase      0xD5410000 0xD5810000 
+      SYS.CONFIG.CTIBase       0xD5420000 0xD5820000 
+    )
+    IF (&ap_core_msk&(1<<3))!=0
+    (
+      sys.config corenumber 8.
+      sys.config corebase      0xD5410000 0xD5510000 0xD5610000 0xD5710000 0xD5810000 0xD5910000 0xD5a10000 0xD5b10000
+      SYS.CONFIG.CTIBase       0xD5420000 0xD5520000 0xD5620000 0xD5720000 0xD5820000 0xD5920000 0xD5a20000 0xD5b20000
+    )
+  )
+)
+else
+(
+  IF (&ap_core_msk!=0)
+  (
+    print "AP core number is below:"
+
+    IF (&ap_core_msk&(1<<0))!=0
+      core.assign 1
+    IF (&ap_core_msk&(1<<1))!=0
+      core.assign 1 5
+    IF (&ap_core_msk&(1<<3))!=0
+      core.assign 1 2 3 4 5 6 7 8
+  )
+)
+
+sys.up
+R.S PC 0
+ENDDO
+
+
+

@@ -1,0 +1,31 @@
+
+...doing...,....keep waiting...
+
+*** python for ZMODP *** Modular Inverse *** start ***
+### Given M, X and  r = 2^(2n) mod M. compute Z = X^(-1) mod M ###
+
+S1---input param start--
+input data: RSA-1024
+
+M=0x
+ f9d68c23f1725c79bcc257293b542c20176ea890a2143cd01c46a33302e1339dfa86ed3ec436fcdcef16a5ccc7de9d9ac451b009b51e35916801ec72415bf34033072352ca8b18c8eae88f0c3c1b4d12cd39d321eb9f40a243ec23942202ed04739b81e1c94aca9e3a58676e0e90c8c3b994e2fc1b545ac9216a51447e362311
+X=0x
+ 819d3db6953795f7629db093f18550b4bfaa94a2f834ca3a9e87b4cddd9216e3e90bb3db06063a5232a5a84680fcbe512a5e0486903f6c70c5c9e5a8961b02ea55213cca4f817da289605cc6f4da8925eb7128cc47d7a85d65fc276b4667be1b445fb77a4225fce83443c658330e45dcbad2af12a3f021a92ef3d508e058e403
+(Y is pre-compu M result). Y=0x
+ 326fc5a57d6e8354a1c9513ffea0966cc6a7b4aaa13134e1d4326ae0d8a43d8b3c09c4155febbdd622620c254e1d8a4cf23178687115f905b6771f53d52ba719646b46f1ac432d981ad311e46f592c3ec4c4de329868863c2aee596c6502bcbcb60470fa9f5a47e2e8b91df37b8782a66c3677bed453acab897366a54a7c9247
+
+---input param end--
+
+
+S2......running......
+        .............done
+
+
+S3---output result start--
+
+ResultZ=0x
+ bce30a3b768a49735a311c8d077e11a3d50068e5efc2bb78a3a4b59769ec314dca6888babb71fe8f97584c4e15bde705154395f9af17e572184ab89d196562c3f156044fd90f6d779231887d8a6efe37ed706023295683d1abfad48b954313fa69c6efb8645a1ec599b9129877a5b8079b6f1cd80646001f9cafd59c6db6f5b9
+
+---output result end--
+
+*** python for ZMODP *** Modular Inverse *** end ***

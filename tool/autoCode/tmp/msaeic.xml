@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>msaeic</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xFFD05000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>PISMR</spirit:name>
+<spirit:description>Primary Interrupt Service Mask Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SVC_MASK_15</spirit:name>
+<spirit:description>when this bit is set, interrupt 15 is masked from reaching the core.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SVC_MASK_14</spirit:name>
+<spirit:description>when this bit is set, interrupt 14 is masked from reaching the core.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SVC_MASK_13</spirit:name>
+<spirit:description>when this bit is set, interrupt 13 is masked from reaching the core.</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SVC_MASK_10</spirit:name>
+<spirit:description>when this bit is set, interrupt 10 is masked from reaching the core.</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SVC_MASK_9</spirit:name>
+<spirit:description>when this bit is set, interrupt 9 is masked from reaching the core.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SVC_MASK_8</spirit:name>
+<spirit:description>when this bit is set, interrupt 8 is masked from reaching the core.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SVC_MASK_7</spirit:name>
+<spirit:description>when this bit is set, interrupt 7 is masked from reaching the core.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>PICER</spirit:name>
+<spirit:description>Primary Interrupt Capture Enable Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CAPTURE_EN_15</spirit:name>
+<spirit:description>this bit enables the capture of the friogw core general purpose primary interrupt 15. when an interrupt is masked from reaching the core by the primary interrupt service mask register, it can still be captured into the feff when the picer bit for that interrupt is set:  1 = interrupt 15 is captured  0 = interrupt 15 is ignored</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CAPTURE_EN_14</spirit:name>
+<spirit:description>1 = interrupt 14 is captured  0 = interrupt 14 is ignored</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CAPTURE_EN_13</spirit:name>
+<spirit:description>1 = interrupt 13 is captured  0 = interrupt 13 is ignored</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CAPTURE_EN_10</spirit:name>
+<spirit:description>1 = interrupt 10 is captured  0 = interrupt 10 is ignored</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CAPTURE_EN_9</spirit:name>
+<spirit:description>1 = interrupt 9 is captured  0 = interrupt 9 is ignored</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CAPTURE_EN_8</spirit:name>
+<spirit:description>1 = interrupt 8 is captured  0 = interrupt 8 is ignored</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CAPTURE_EN_7</spirit:name>
+<spirit:description>1 = interrupt 7 is captured  0 = interrupt 7 is ignored</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SISMR_H0</spirit:name>
+<spirit:description>Secondary Interrupt Service Mask Registers</spirit:description>
+<spirit:addressOffset>0x08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>SISMR_H1</spirit:name>
+<spirit:description>Secondary Interrupt Service Mask Registers</spirit:description>
+<spirit:addressOffset>0x0C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SISMR</spirit:name>
+<spirit:description>when a bit is set, the corresponding interrupt is masked from generating a primary interrupt or being registered in the sisrr. sismr_h represents the higher priority 32 secondary interrupts, sismr_l, the lowest.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SICER_H0</spirit:name>
+<spirit:description>Secondary Interrupt Capture Enable Registers</spirit:description>
+<spirit:addressOffset>0x10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>SICER_H1</spirit:name>
+<spirit:description>Secondary Interrupt Capture Enable Registers</spirit:description>
+<spirit:addressOffset>0x14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SICER</spirit:name>
+<spirit:description>these bits enable the capture of the corresponding friogw secondary interrupts. even when an interrupt is masked from generating a primary interrupt using secondary interrupt service mask registers, it can still be captured into the feff when the sicer bit for that interrupt is set.  1 = interrupt is captured  0 = interrupt is ignored  sicer_h is connected to the higher priority 32 secondary interrupts and sicer_l to the lower priority ones.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SICR_H0</spirit:name>
+<spirit:description>Secondary Interrupt Clear Register</spirit:description>
+<spirit:addressOffset>0x18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>SICR_H1</spirit:name>
+<spirit:description>Secondary Interrupt Clear Register</spirit:description>
+<spirit:addressOffset>0x1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SICR</spirit:name>
+<spirit:description>these mmrs are used to clear the feffs of the secondary interrupts.  1 = corresponding feff is cleared  0 = corresponding feff is unchanged  sicr_h represents the higher priority 32 secondary interrupts, and sicr_l represents the lower ones.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SIGR_H0</spirit:name>
+<spirit:description>Secondary Interrupt Generate Register</spirit:description>
+<spirit:addressOffset>0x20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>SIGR_H1</spirit:name>
+<spirit:description>Secondary Interrupt Generate Register</spirit:description>
+<spirit:addressOffset>0x24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SIGR</spirit:name>
+<spirit:description>these mmrs allow software to generate the secondary interrupts. they are intended for debugging.  1 = corresponding feff is set (based on rising edge transition)  0 = corresponding feff is unchanged  sigr_h represents the higher priority 32 secondary interrupts, and sigr_l represents the lower priority ones.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SIOR_H0</spirit:name>
+<spirit:description>Secondary Interrupt Overflow Registers</spirit:description>
+<spirit:addressOffset>0x28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>SIOR_H1</spirit:name>
+<spirit:description>Secondary Interrupt Overflow Registers</spirit:description>
+<spirit:addressOffset>0x2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SIOR</spirit:name>
+<spirit:description>these mmrs are used to find out which interrupt caused the overflow interrupt to trigger.  1 = the corresponding interrupt caused the overflow interrupt to be triggered  0 = the corresponding interrupt did not cause the overflow interrupt to be triggered  sior_h represents the higher-priority 32 secondary interrupts, and sior_l represents the lower priority ones.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SIOCR_H0</spirit:name>
+<spirit:description>Secondary Interrupt Overflow Clear Registers</spirit:description>
+<spirit:addressOffset>0x30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>SIOCR_H1</spirit:name>
+<spirit:description>Secondary Interrupt Overflow Clear Registers</spirit:description>
+<spirit:addressOffset>0x34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SIOCR</spirit:name>
+<spirit:description>these mmrs are used to clear the corresponding bits in the sior_h or sior_l.  1 = corresponding bit in the secondary interrupt overflow registers is cleared  0 = corresponding bit in the secondary interrupt overflow registers is unchanged  siocr_h represents the higher priority 32 secondary interrupts, and siocr_l represents the lower ones.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SISRR_H0</spirit:name>
+<spirit:description>Secondary Interrupt Service Request Register</spirit:description>
+<spirit:addressOffset>0x38</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>SISRR_H1</spirit:name>
+<spirit:description>Secondary Interrupt Service Request Register</spirit:description>
+<spirit:addressOffset>0x3C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SISRR</spirit:name>
+<spirit:description>these mmrs are used to indicate which of the secondary interrupts have been requested and have not been masked by the secondary interrupt service mask registers.  1 = corresponding bit represents a secondary interrupt request  0 = corresponding bit does not have a secondary interrupt request  these registers are updated by performing a write to dwr_h or dwr_l. for example, when a dwr_h write is performed, the value in the corresponding front-end flip-flop (feff) is written into sisrr_h, masked (see eic secondary interrupt service routine software flow diagram in the &lt;var product number&gt; datasheet).</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DWR_H0</spirit:name>
+<spirit:description>Dummy Write Registers</spirit:description>
+<spirit:addressOffset>0x40</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>DWR_H1</spirit:name>
+<spirit:description>Dummy Write Registers</spirit:description>
+<spirit:addressOffset>0x44</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DWR</spirit:name>
+<spirit:description>these are not physical mmrs. when a write operation is performed to these addresses, the corresponding feffs are loaded into the corresponding secondary interrupt service request register.  dwr_h is used to move the higher priority 32 secondary interrupts to sisrr_h, and dwr_l is used to move the lower priority 32 secondary interrupts to sisrr_l.  the data written to this field is ignored.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>IBR</spirit:name>
+<spirit:description>Interrupt Block Register</spirit:description>
+<spirit:addressOffset>0X50</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IBR</spirit:name>
+<spirit:description>this register is used to block unmasked interrupts from reaching the grayback core or triggering a wake up during the idle (c1 entry) process.  this register is cleared by hardware at the point that idle (c1) state is reached.  (see section 9.8, power management units for more details about power modes and the use of this register to support transition between these modes.)  1 = unmasked interrupts are not sent to the msa core and walk-up will not be triggered  0 = unmasked interrupts are sent to the msa core and are allowed to trigger walk-up</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

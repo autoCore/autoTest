@@ -1,0 +1,33 @@
+
+...doing...,....keep waiting...
+
+*** python for ZMODP *** Modular Exponentiation *** start ***
+### Given M, X, r = 2^(2n) mod M and EXP. compute Z = X^(EXP) mod M ###
+
+S1---input param start--
+input data: RSA-128
+
+M=0x
+ e827bc31a610ec69a866b34773fceb59
+X=0x
+ 30cd115c5a23ec3967352e46e073efaa
+(Y is pre-compu M result). Y=0x
+ a2620321312e5ddc2db67cb7470cdf08
+EXP=0x
+ 10001
+
+---input param end--
+
+
+S2......running......
+        .............done
+
+
+S3---output result start--
+
+ResultZ=0x
+ 2e3dda1f097e37fbda95846f4a21bfb2
+
+---output result end--
+
+*** python for ZMODP *** Modular Exponentiation *** end ***

@@ -1,0 +1,35 @@
+/* op_mode:
+ *   000: Montgomery Multiplication
+ *   001: Modular Multiplication
+ *   010: Modular Exponentiation
+ *   011: Modular Inverse
+ *   1xx: Pre-Computation of R
+ */
+ 
+ /*
+ * Pre-computation of R (=2^(2n))
+ * Given M, compute Z = 2^(2n) mod M
+ */
+ 
+ /*
+ * Montgomery Multiplication
+ * Z = X * Y * 2^(-n) mod M
+ */
+ 
+ /*
+ * Modular Multiplication
+ * Given M, X, Y and r = 2^(2n) mod M: Z = X * Y mod M
+ */
+ 
+ 
+/*
+ * Modular Exponentiation
+ * Given M, X, r = 2^(2n) mod M and EXP. compute Z = X^(EXP) mod M
+ */
+ 
+ /*
+ * Modular Inverse
+ * Given M, X and  r = 2^(2n) mod M. compute Z = X^(-1) mod M
+ */
+ 
+ 

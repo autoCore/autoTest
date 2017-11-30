@@ -1,0 +1,21 @@
+;please make sure the tl4 power has been powered on.
+ON ERROR CONTinue
+system.o.resetdetection off
+system.config slave on
+system.jtagclock 10KHZ
+system.jtagclock 2MHZ;for evb bringup
+
+do ../lowlevel-jtag/connection_TL421.cmm
+
+system.config IRPRE 1. 
+system.config IRPOST 9.
+system.config DRPRE 1.
+system.config DRPOST 1.
+
+;if it is "connect tl421 on primary jtag".
+system.cpu tl421
+sys.up
+
+break
+
+enddo

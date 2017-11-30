@@ -1,0 +1,9 @@
+1:Lindent:
+	pls install dos2unix(sudo apt-get install dos2unix) and indent(sudo apt-get install indent)
+
+2:autobuild_all.py:
+	This script will build all the module in ctest. pls change to ctest root directory, and then
+	run it by:"./tool/autobuild_all.py", After it is over, pls check the file "~build.result"
+
+3:
+

@@ -1,0 +1,176 @@
+;/*=====================================================================================
+; *
+; * usage:
+; *   do lowlevel_jtag_ap_hang_debug_status.cmm
+; *
+; * return value:
+; *  1. raw power state:
+; *
+; *   global &cluster0_state &cluster1_state &cluster2_state
+; *   global &core0_state &core1_state &core2_state &core3_state
+; *   global &core4_state &core5_state &core6_state &core7_state
+; *   global &core8_state &core9_state &core10_state &core11_state
+; *
+; *   the core/cluster power state explain below:
+; *     core state:    0xa  --> core C2,    0x2 --> core C1,    0x0 --> core power on
+; *     cluster state: 0x13 --> cluster M2, 0x9 --> cluster M1, 0x1 --> cluster power on
+; *
+; *  2. mapped power on state:
+; *
+; *   global &clusters_power_on_map &clusters_numbers
+; *   global &cores_power_on_map &cores_numbers
+; *
+; *   the power on map explain below:
+; *     example, power on map  0b'00101011, means core0/core1/core3/core5 are power on
+; *
+; * NOTE: this script must be called at Run-Test/Idle state and before 0x98 0xa
+; *
+; */=====================================================================================
+
+global &cluster0_state &cluster1_state &cluster2_state
+global &core0_state &core1_state &core2_state &core3_state
+global &core4_state &core5_state &core6_state &core7_state
+global &core8_state &core9_state &core10_state &core11_state
+
+global &clusters_power_on_map &clusters_numbers
+global &cores_power_on_map &cores_numbers
+
+local &cluster0 &cluster1 &cluster2
+local &core0 &core1 &core2 &core3
+local &core4 &core5 &core6 &core7
+local &core8 &core9 &core10 &core11
+
+local &ap_state &core2_C0_state &core2_C1_state
+
+; bit assignment of hang_debugging_state
+; 9'hA6            145 bits
+;                                   DR [144:135]     ddrphy_lp_stuatus[9:0],           //10 bit
+;                                   DR [134:109]     ap_state_4edu[92:67],             //26 bit: not used
+;                                   DR [108:83]      ap_state_4edu[66:41],             //26 bit: core2_C1_state_o[25:0]
+;                                   DR [82:57]       ap_state_4edu[30:5],              //26 bit  core2_C0_state_o[25:0]
+;                                   DR [56:52]       ap_state_4edu[40:36],             //5 bit:  not used
+;                                   DR [51:47]       ap_state_4edu[4:0],               //5 bit:  ap_state_o[4:0]
+;                                   DR [46:42]       sg_state[4:0],                    //5 bit
+;                                   DR [41:38]       por13_state[3:0],                 //4 bit
+;                                   DR [37:34]       Wfstate[3:0],                     //4 bit
+;                                   DR [33:24]       fc_done_status_4edu[9:0],         //10 bit
+;                                   DR [23:13]       dfc_state_4edu[10:0],             //11 bit
+;                                   DR [12:9]        dvc_status[27:24],                //4 bit
+;                                   DR [8:5]         dvc_status[19:16],                //4 bit
+;                                   DR [4:1]         dvc_status[11:8],                 //4 bit
+;                                   DR [0]           dvc_status[0]                     //1 bit
+
+
+
+JTAG.SHIFTTMS 0 1 1 0 0                                                         ; goto Shift-IR state
+JTAG.SHIFTREG 0 1 1 0 0 1 0 1 0                                                 ; shift in 0xA6
+print.FORMAT.BINary(16.,JTAG.SHIFT())
+;;;---->
+
+JTAG.SHIFTTMS 1 1 0 0                                                           ; goto Shift-DR state
+
+print "DR [46:0], 47bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+print.FORMAT.BINary(47.,JTAG.SHIFT())
+
+print "DR [51:47], 5bits"
+JTAG.SHIFTTDI 0 0 0 0 0
+&ap_state=JTAG.SHIFT()
+print "ap_state = 0x" %Hex &ap_state
+
+print "DR [56:52], 5bits"
+JTAG.SHIFTTDI 0 0 0 0 0
+print.FORMAT.BINary(5.,JTAG.SHIFT())
+
+print "DR [82:57], 26bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+&core2_C0_state=JTAG.SHIFT()
+;;;print "core2_C0_state = 0x" %Hex &core2_C0_state
+
+&cluster0_state=&core2_C0_state&0x3f
+print "cluster0 state = 0x" %Hex &cluster0_state
+
+&core0_state=(&core2_C0_state>>6.)&0x1f
+print "core0 state = 0x" %Hex &core0_state
+
+&core1_state=(&core2_C0_state>>11.)&0x1f
+print "core1 state = 0x" %Hex &core1_state
+
+&core2_state=(&core2_C0_state>>16.)&0x1f
+print "core2 state = 0x" %Hex &core2_state
+
+&core3_state=(&core2_C0_state>>21.)&0x1f
+print "core3 state = 0x" %Hex &core3_state
+
+print "DR [108:83], 26bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+&core2_C1_state=JTAG.SHIFT()
+;;;print "core2_C1_state = 0x" %Hex &core2_C1_state
+
+&cluster1_state=&core2_C1_state&0x3f
+print "cluster1 state = 0x" %Hex &cluster1_state
+
+&core4_state=(&core2_C1_state>>6.)&0x1f
+print "core4 state = 0x" %Hex &core4_state
+
+&core5_state=(&core2_C1_state>>11.)&0x1f
+print "core5 state = 0x" %Hex &core5_state
+
+&core6_state=(&core2_C1_state>>16.)&0x1f
+print "core6 state = 0x" %Hex &core6_state
+
+&core7_state=(&core2_C1_state>>21.)&0x1f
+print "core7 state = 0x" %Hex &core7_state
+
+
+&clusters_power_on_map=0
+&clusters_numbers=2.
+&cores_power_on_map=0
+&cores_numbers=8.
+
+if &cluster0_state==0x13
+  print "cluster0 is in M2 state"
+else if &cluster0_state==0x9
+  print "cluster0 is in M1 state"
+else if &cluster0_state==0x1
+(
+  print "cluster0 is in power on state"
+  &clusters_power_on_map=((1<<0.)|&clusters_power_on_map)
+)
+else
+  print "cluster0 is in unknown state"
+
+if &cluster1_state==0x13
+  print "cluster1 is in M2 state"
+else if &cluster1_state==0x9
+  print "cluster1 is in M1 state"
+else if &cluster1_state==0x1
+(
+  print "cluster1 is in power on state"
+  &clusters_power_on_map=((1<<1.)|&clusters_power_on_map)
+)
+else
+  print "cluster1 is in unknown state"
+
+
+if &core0_state==0
+  &cores_power_on_map=((1<<0.)|&cores_power_on_map)
+if &core1_state==0
+  &cores_power_on_map=((1<<1.)|&cores_power_on_map)
+if &core2_state==0
+  &cores_power_on_map=((1<<2.)|&cores_power_on_map)
+if &core3_state==0
+  &cores_power_on_map=((1<<3.)|&cores_power_on_map)
+if &core4_state==0
+  &cores_power_on_map=((1<<4.)|&cores_power_on_map)
+if &core5_state==0
+  &cores_power_on_map=((1<<5.)|&cores_power_on_map)
+if &core6_state==0
+  &cores_power_on_map=((1<<6.)|&cores_power_on_map)
+if &core7_state==0
+  &cores_power_on_map=((1<<7.)|&cores_power_on_map)
+
+print "cores_power_on_map = 0x" %Hex &cores_power_on_map
+print "cores_numbers = 0x" %Hex &cores_numbers
+
+enddo

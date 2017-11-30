@@ -1,0 +1,33 @@
+
+...doing...,....keep waiting...
+
+*** python for ZMODP *** Modular Exponentiation *** start ***
+### Given M, X, r = 2^(2n) mod M and EXP. compute Z = X^(EXP) mod M ###
+
+S1---input param start--
+input data: RSA-2048
+
+M=0x
+ a1ce6bc1fb3fca85f4360f6dec6d743d3da0c568026f74f922f78f20e0d270befcb12f24e533e8395d144cd7e621aa9885b3382083bcd1ae19b017bc01bf84ae5f66da8ba4d88005ccd8ac444a1fe6a5988d4ef8b39635a105211a6b31cc9db1a523f1f62c6051e9280c36a45ba513990ed8225448d6cc830185b93f7f6340a639b83d65e72c5225101edd52ebfa9223077764d6a034dc4b68e5ce4d42bd874a6f2e4ba5dc9ab7aae3c5294d08d60d7269fcc11d269a96eba73148db68fc89051f755d9c9fcb2360d0d119c638e504323ce6672aebe95288fa13e42c5bd6ffe94dd5ecfbe08adece36fc17cbfb24d8d4af83680870acb40cba0eed84e66edc99
+X=0x
+ ffffffffffffffffffffffffffffffffeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeddddddddddddddddddddddddddddddddccccccccccccccccccccccccccccccccbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa9999999999999999999999999999999988888888888888888888888888888888
+(Y is pre-compu M result). Y=0x
+ 27c5494024cbd901fdc5432599c2addce724eb4e081281b27fea99a0e4a16a9a392916ad2947b9440bcd2ae484710f91bb38c7133f1c721cbb52161a94b158acadde3391a709ce87794430113125690ba566fc674af4199669a71db1300a85a462ca1d6a618d3af91f4db91c953e2cf6d51d42b3f39f1feea770273f926d27ab44e6d6dbbdb7cda5a4349a69892eb345513f667da509fc0a07fe537f8f40e6b4c19a67b964f3e33fcdd141d38b4cad2602b0e3efe7f92fcd08663ceaee61310fa0ead5caa4485f87698a67e3bfdb869b4619a96d449be52f9cad5eaf36ef4c0dd87f32734808764e6469b3ecd701ff99c1bbef9d8d58aff02903b8c0442875e7
+EXP=0x
+ 10001
+
+---input param end--
+
+
+S2......running......
+        .............done
+
+
+S3---output result start--
+
+ResultZ=0x
+ e99b405100ebd84c975e5f0511de2026a1a350d650bf10173051eb8c868e2a5f2e07d791a2e87b3435fb0366ec2f43633c44596bd08accd990d4ef3f2e79c287c3a0d846f8898527ef865de4dfb48aea51cc33db4dda01896e39dfcba47ce21de5d906229eddbeec2be91514a49380adb683a523a16a1b101f95bb72458b8eb7929739f3ec57924ed0054ed6e39ba8f995516f3467cb2243b9558cb462cb1c40322a53ece3ea7e89cad1f9284e5460b3b7b554f9e01b73336805318871997d98e3061b2b3139e48c8b2c95a8c8664cb2d4ad8a3806ea79b7d17d626fba95095478356a9b6fee4e1ac58209ca14aca7a74d1064dd4e8a05c2471fa4e69a33315
+
+---output result end--
+
+*** python for ZMODP *** Modular Exponentiation *** end ***

@@ -1,0 +1,79 @@
+
+;====================================================================================
+; The debugger is in DOWN mode, the JTAG driver is tristated.
+
+ LOCAL &localpath
+ LOCAL &remotepath 
+ LOCAL &axffile
+ &localpath="Q:\ctest"
+ &remotepath="/home/yikeqi/Work/baremetal-test/ctest"
+ &axffile="Q:\ctest\modules\cp_cr7\Debug\ctest_cr7.axf"
+ ;&localpath="Q:\startup_Cortex-R7"
+ ;&remotepath="/home/yikeqi/Work/startup_Cortex-R7"
+ ;&axffile="Q:\startup_Cortex-R7\startup_Cortex-R7.axf"
+
+ SCREEN.ON
+
+; Debugger Reset
+
+;;; WinPAGE.RESet
+ AREA.RESet
+ WinPOS 0. 26. 75. 8. 0. 0. W000
+ AREA.view 
+
+system.jtagclock 2Mhz
+
+system.option enreset off
+system.option trst off
+system.config slave on
+
+
+system.config DAPIRPRE 1. 
+system.config DAPIRPOST 9.
+system.config DAPDRPRE 1.
+system.config DAPDRPOST 1.
+
+
+;;
+&CORE_N=1 ;1,2
+
+system.cpu cortexr7 				;for cp cortex r7
+system.config slave on
+system.config MEMORYACCESSPORT 0
+system.config AXIACCESSPORT   0
+system.config DEBUGACCESSPORT 1
+
+SYStem.MemAccess DAP
+SYStem.CpuAccess Enable
+
+
+IF (&CORE_N==1)
+(
+	sys.config corebase 0xD5050000		;r7
+	SYS.CONFIG.CTIBase       0xD5058000		;r7
+)
+ELSE IF (&CORE_N==2)
+(
+	SYStem.CONFIG.COREDEBUG.Base (0xD5410000) (0xD5c10000)
+	;SYStem.CONFIG.BMC.Base (0x81430000+&BIG_LIT) (0x81530000+&BIG_LIT) (0x81630000+&BIG_LIT) (0x81730000+&BIG_LIT)
+	SYStem.CONFIG.CTI.Base (0xD5420000) (0xD5c20000)
+	;SYStem.CONFIG.ETM.Base (0x81440000+&BIG_LIT) (0x81540000+&BIG_LIT) (0x81640000+&BIG_LIT) (0x81740000+&BIG_LIT)
+)
+system.up
+
+break
+
+PRINT "loading ctest image..."
+Data.LOAD.Elf &axffile /StripPART "&remotepath" /PATH "&localpath"
+ 
+;R.S PC 0x00000000
+
+data.list
+
+break
+
+break.set main
+
+ENDDO
+
+

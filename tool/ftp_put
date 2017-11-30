@@ -1,0 +1,32 @@
+#!/bin/sh
+# "ftp.sh"
+
+REMOTEHOST=10.1.24.51
+#USERNAME example: asrmicro\junlongdi
+USERNAME="asrmicro\/"$1
+PASSWORD=$2
+
+if [ $# -lt 2 ]; then
+	echo "usage: "$0" username passwd filename"
+	exit -1
+fi
+
+if [ $# -eq 2 ]; then
+	echo "use default aquila_fpga_lowpower_test.bin"
+	FILENAME=/home/junlongdi/workspace/aquila/baremetal-test/ctest/build/aquilac_fpga/img/lowpower/aquilac_fpga_lowpower_test.bin
+else
+	FILENAME=$3
+fi
+
+FILEPATH=${FILENAME%/*}
+FILENAME=${FILENAME##*/}
+
+cd $FILEPATH
+ftp -v -n $REMOTEHOST << EOF
+user $USERNAME $PASSWORD
+bin
+put $FILENAME
+bye
+
+EOF
+cd -

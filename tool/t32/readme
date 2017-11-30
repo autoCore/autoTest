@@ -1,0 +1,16 @@
+.
+├── Artemis_ETB_Trace.cmm
+├── Artemis_ETR_Trace.cmm
+├── Artemis_TPIU_Trace.cmm
+├── CA53_ETB_Trace.cmm
+├── CA53_ETR_Trace.cmm
+├── CA53_TPIU_Trace.cmm
+├── ddr.CMM                                   fpga ddr init script
+├── etr_utility.cmm
+├── jtag_chain.cmm
+├── main_ap.cmm	                              AP(entry for 3 clusters in aquila project, default enable etb(call etb script))
+├── main_CP.cmm	                              CP(entry for cp r7 in aquila project, default enable etb(call etb script))
+├── readme
+└── reset.cmm
+
+0 directories, 13 files

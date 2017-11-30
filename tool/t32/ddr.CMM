@@ -1,0 +1,395 @@
+;set option /memory             = long
+LOCAL &DDRC_BASE
+LOCAL &DPHY0_BASE
+LOCAL &DPHY1_BASE
+
+LOCAL &RegVal
+LOCAL &RegVal_16
+
+&DDRC_BASE=0xd4200000
+&DPHY0_BASE=0xc0000000
+&DPHY1_BASE=0xc0100000
+
+&RegVal=0
+&RegVal_16=0
+
+print "**** Begin SoC DDR controller / PHY initialization bkup @20160804. \n\n"
+print "**** DDR controller Configuration for LPDDR4 4GB/2CH/2CS POP Device \n"
+print "**** In fact 2GB/2CH/1CS is used"
+print "**** Timings based on tCK speed: xxMHz. Check SoC PLL setup to verify DCLK frequency. \n"
+
+;;Release Reset
+&RegVal=Data.Long(c:(0xd42828e8))
+&RegVal=&RegVal|0x3
+data.set (0xd42828e8) %long &RegVal
+&RegVal=&RegVal|0x100
+data.set (0xd42828e8) %long &RegVal
+&RegVal=&RegVal&(~(0x100))
+data.set (0xd42828e8) %long &RegVal
+&RegVal=&RegVal|0x10000
+data.set (0xd42828e8) %long &RegVal
+
+&RegVal=Data.Long(c:(0xd42828e8))
+;;print "RegVal(0xd42828e8)=&RegVal"
+
+;;phase selection in fpga phy
+data.set (0xD42828B0) %long 0x40000000
+&RegVal=Data.Long(c:(0xD42828B0))
+print "RegVal(0xD42828B0)=&RegVal"
+
+data.set (&DDRC_BASE+0x00000304) %long 0x00000001
+data.set (&DDRC_BASE+0x00000030) %long 0x00000000
+data.set (&DDRC_BASE+0x00000000) %long 0x03080020
+data.set (&DDRC_BASE+0x00000010) %long 0x00005030
+data.set (&DDRC_BASE+0x00000014) %long 0x0000b15d
+data.set (&DDRC_BASE+0x00000020) %long 0x00000100
+data.set (&DDRC_BASE+0x00000024) %long 0xe1025a42
+data.set (&DDRC_BASE+0x00000028) %long 0x00000001
+data.set (&DDRC_BASE+0x00000030) %long 0x00000000
+data.set (&DDRC_BASE+0x00000034) %long 0x00408a04
+data.set (&DDRC_BASE+0x00000038) %long 0x00810002
+data.set (&DDRC_BASE+0x0000003c) %long 0x00000030
+data.set (&DDRC_BASE+0x00000050) %long 0x00210000
+data.set (&DDRC_BASE+0x00000054) %long 0x00280020
+
+data.set (&DDRC_BASE+0x00000060) %long 0x00000000
+data.set (&DDRC_BASE+0x00000064) %long 0x00308034
+data.set (&DDRC_BASE+0x000000c0) %long 0x00000000
+data.set (&DDRC_BASE+0x000000d0) %long 0x00020002
+
+data.set (&DDRC_BASE+0x000000d4) %long 0x00020002
+data.set (&DDRC_BASE+0x000000d8) %long 0x0000fb05
+data.set (&DDRC_BASE+0x000000dc) %long 0x00240012
+data.set (&DDRC_BASE+0x000000e0) %long 0x00010000
+data.set (&DDRC_BASE+0x000000e4) %long 0x00030005
+data.set (&DDRC_BASE+0x000000e8) %long 0x0000004d
+data.set (&DDRC_BASE+0x000000ec) %long 0x0000004d
+data.set (&DDRC_BASE+0x000000f0) %long 0x00000000
+
+data.set (&DDRC_BASE+0x000000f4) %long 0x0000065f
+data.set (&DDRC_BASE+0x00000100) %long 0x10100c11
+
+data.set (&DDRC_BASE+0x00000104) %long 0x00030418
+data.set (&DDRC_BASE+0x00000108) %long 0x04070a0d
+data.set (&DDRC_BASE+0x0000010c) %long 0x00605000
+data.set (&DDRC_BASE+0x00000110) %long 0x06040308
+data.set (&DDRC_BASE+0x00000114) %long 0x01030606
+data.set (&DDRC_BASE+0x00000118) %long 0x01010004
+data.set (&DDRC_BASE+0x0000011c) %long 0x00000301
+data.set (&DDRC_BASE+0x00000120) %long 0x00000101
+data.set (&DDRC_BASE+0x00000130) %long 0x00010000
+data.set (&DDRC_BASE+0x00000134) %long 0x26100002
+data.set (&DDRC_BASE+0x00000138) %long 0x00000037
+data.set (&DDRC_BASE+0x00000144) %long 0x00500028
+data.set (&DDRC_BASE+0x00000180) %long 0x4190000c
+data.set (&DDRC_BASE+0x00000184) %long 0x0142e2a6
+data.set (&DDRC_BASE+0x00000188) %long 0x00000000
+
+data.set (&DDRC_BASE+0x00000190) %long 0x03898106
+
+data.set (&DDRC_BASE+0x00000194) %long 0x00020103
+data.set (&DDRC_BASE+0x00000198) %long 0x07204010
+data.set (&DDRC_BASE+0x000001a0) %long 0xa0280018
+data.set (&DDRC_BASE+0x000001a4) %long 0x0074004c
+data.set (&DDRC_BASE+0x000001a8) %long 0x00000000
+data.set (&DDRC_BASE+0x000001b0) %long 0x00000001
+data.set (&DDRC_BASE+0x000001b4) %long 0x00000904
+data.set (&DDRC_BASE+0x000001c0) %long 0x00000001
+data.set (&DDRC_BASE+0x000001c4) %long 0x00000000
+;;data.set (&DDRC_BASE+0x00000200) %long 0x00020018
+data.set (&DDRC_BASE+0x00000200) %long 0x00021717
+data.set (&DDRC_BASE+0x00000204) %long 0x00090909
+data.set (&DDRC_BASE+0x00000208) %long 0x01010000
+data.set (&DDRC_BASE+0x0000020c) %long 0x01010101
+data.set (&DDRC_BASE+0x00000210) %long 0x00001f1f
+data.set (&DDRC_BASE+0x00000214) %long 0x080f0808
+;;data.set (&DDRC_BASE+0x00000218) %long 0x08080808
+data.set (&DDRC_BASE+0x00000218) %long 0x0f080808
+data.set (&DDRC_BASE+0x00000224) %long 0x08080808
+data.set (&DDRC_BASE+0x00000228) %long 0x08080808
+data.set (&DDRC_BASE+0x0000022c) %long 0x00000008
+
+data.set (&DDRC_BASE+0x00000240) %long 0x0605082c
+data.set (&DDRC_BASE+0x00000244) %long 0x00000000
+data.set (&DDRC_BASE+0x00000250) %long 0x03190205
+data.set (&DDRC_BASE+0x00000254) %long 0x00000001
+data.set (&DDRC_BASE+0x0000025c) %long 0x0f000001
+data.set (&DDRC_BASE+0x00000264) %long 0x0f00007f
+data.set (&DDRC_BASE+0x0000026c) %long 0x0f00007f
+data.set (&DDRC_BASE+0x00000300) %long 0x00000011
+data.set (&DDRC_BASE+0x00000304) %long 0x00000000
+data.set (&DDRC_BASE+0x0000030c) %long 0x00000000
+data.set (&DDRC_BASE+0x00000320) %long 0x00000001
+data.set (&DDRC_BASE+0x0000036c) %long 0x00010000
+data.set (&DDRC_BASE+0x00001b10) %long 0x00005030
+data.set (&DDRC_BASE+0x00001b14) %long 0x0000b15d
+data.set (&DDRC_BASE+0x00001b30) %long 0x00000000
+data.set (&DDRC_BASE+0x00001b34) %long 0x00408a04
+data.set (&DDRC_BASE+0x00001b38) %long 0x00810002
+data.set (&DDRC_BASE+0x00001bc0) %long 0x00000000
+data.set (&DDRC_BASE+0x00001c88) %long 0x00000000
+data.set (&DDRC_BASE+0x00001d44) %long 0x00000000
+data.set (&DDRC_BASE+0x00001e04) %long 0x00000000
+data.set (&DDRC_BASE+0x00001e0c) %long 0x00000000
+data.set (&DDRC_BASE+0x00002020) %long 0x00000100
+data.set (&DDRC_BASE+0x00002024) %long 0xe1025a42
+data.set (&DDRC_BASE+0x00002050) %long 0x00210000
+data.set (&DDRC_BASE+0x00002064) %long 0x00300034
+data.set (&DDRC_BASE+0x000020dc) %long 0x00240012
+data.set (&DDRC_BASE+0x000020e0) %long 0x00010000
+data.set (&DDRC_BASE+0x000020e8) %long 0x0000004d
+data.set (&DDRC_BASE+0x000020ec) %long 0x0000004d
+data.set (&DDRC_BASE+0x00002100) %long 0x10100c11
+data.set (&DDRC_BASE+0x00002104) %long 0x00030418
+data.set (&DDRC_BASE+0x00002108) %long 0x04070a0d
+data.set (&DDRC_BASE+0x0000210c) %long 0x00605000
+data.set (&DDRC_BASE+0x00002110) %long 0x06040308
+data.set (&DDRC_BASE+0x00002114) %long 0x01030606
+data.set (&DDRC_BASE+0x00002118) %long 0x01010004
+data.set (&DDRC_BASE+0x0000211c) %long 0x00000301
+data.set (&DDRC_BASE+0x00002120) %long 0x00000101
+data.set (&DDRC_BASE+0x00002130) %long 0x00010000
+data.set (&DDRC_BASE+0x00002134) %long 0x26100002
+data.set (&DDRC_BASE+0x00002138) %long 0x00000037
+data.set (&DDRC_BASE+0x00002144) %long 0x00500028
+data.set (&DDRC_BASE+0x00002180) %long 0x4190000c
+data.set (&DDRC_BASE+0x00002190) %long 0x03898204
+data.set (&DDRC_BASE+0x00002194) %long 0x00020103
+data.set (&DDRC_BASE+0x000021b4) %long 0x00000904
+data.set (&DDRC_BASE+0x00002240) %long 0x0605082c
+data.set (&DDRC_BASE+0x00003020) %long 0x00000100
+data.set (&DDRC_BASE+0x00003024) %long 0xe1025a42
+data.set (&DDRC_BASE+0x00003050) %long 0x00210000
+data.set (&DDRC_BASE+0x00003064) %long 0x00300034
+data.set (&DDRC_BASE+0x000030dc) %long 0x00240012
+data.set (&DDRC_BASE+0x000030e0) %long 0x00010000
+data.set (&DDRC_BASE+0x000030e8) %long 0x0000004d
+data.set (&DDRC_BASE+0x000030ec) %long 0x0000004d
+data.set (&DDRC_BASE+0x00003100) %long 0x10100c11
+data.set (&DDRC_BASE+0x00003104) %long 0x00030418
+data.set (&DDRC_BASE+0x00003108) %long 0x04070a0d
+data.set (&DDRC_BASE+0x0000310c) %long 0x00605000
+data.set (&DDRC_BASE+0x00003110) %long 0x06040308
+data.set (&DDRC_BASE+0x00003114) %long 0x01030606
+data.set (&DDRC_BASE+0x00003118) %long 0x01010004
+data.set (&DDRC_BASE+0x0000311c) %long 0x00000301
+data.set (&DDRC_BASE+0x00003120) %long 0x00000101
+data.set (&DDRC_BASE+0x00003130) %long 0x00010000
+data.set (&DDRC_BASE+0x00003134) %long 0x26100002
+data.set (&DDRC_BASE+0x00003138) %long 0x00000037
+data.set (&DDRC_BASE+0x00003144) %long 0x00500028
+data.set (&DDRC_BASE+0x00003180) %long 0x4190000c
+data.set (&DDRC_BASE+0x00003190) %long 0x03898204
+data.set (&DDRC_BASE+0x00003194) %long 0x00020103
+data.set (&DDRC_BASE+0x000031b4) %long 0x00000904
+data.set (&DDRC_BASE+0x00003240) %long 0x0605082c
+data.set (&DDRC_BASE+0x00004020) %long 0x00000100
+data.set (&DDRC_BASE+0x00004024) %long 0xe1025a42
+data.set (&DDRC_BASE+0x00004050) %long 0x00210000
+data.set (&DDRC_BASE+0x00004064) %long 0x00308034
+data.set (&DDRC_BASE+0x000040dc) %long 0x00240012
+data.set (&DDRC_BASE+0x000040e0) %long 0x00010000
+data.set (&DDRC_BASE+0x000040e8) %long 0x0000004d
+data.set (&DDRC_BASE+0x000040ec) %long 0x0000004d
+data.set (&DDRC_BASE+0x00004100) %long 0x10100c11
+data.set (&DDRC_BASE+0x00004104) %long 0x00030418
+data.set (&DDRC_BASE+0x00004108) %long 0x04070a0d
+data.set (&DDRC_BASE+0x0000410c) %long 0x00605000
+data.set (&DDRC_BASE+0x00004110) %long 0x06040308
+data.set (&DDRC_BASE+0x00004114) %long 0x01030606
+data.set (&DDRC_BASE+0x00004118) %long 0x01010004
+data.set (&DDRC_BASE+0x0000411c) %long 0x00000301
+data.set (&DDRC_BASE+0x00004120) %long 0x00000101
+data.set (&DDRC_BASE+0x00004130) %long 0x00010000
+data.set (&DDRC_BASE+0x00004134) %long 0x26100002
+data.set (&DDRC_BASE+0x00004138) %long 0x00000037
+data.set (&DDRC_BASE+0x00004144) %long 0x00500028
+data.set (&DDRC_BASE+0x00004180) %long 0x4190000c
+data.set (&DDRC_BASE+0x00004190) %long 0x03898204
+data.set (&DDRC_BASE+0x00004194) %long 0x00020103
+data.set (&DDRC_BASE+0x000041b4) %long 0x00000904
+data.set (&DDRC_BASE+0x00004240) %long 0x0605082c
+data.set (&DDRC_BASE+0x00000400) %long 0x00000000
+data.set (&DDRC_BASE+0x00000404) %long 0x0000400f
+data.set (&DDRC_BASE+0x000004b4) %long 0x0000400f
+data.set (&DDRC_BASE+0x00000564) %long 0x0000400f
+data.set (&DDRC_BASE+0x00000614) %long 0x0000400f
+data.set (&DDRC_BASE+0x00000404) %long 0x0000500f
+data.set (&DDRC_BASE+0x000004b4) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000564) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000614) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000404) %long 0x0000500f
+data.set (&DDRC_BASE+0x000004b4) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000564) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000614) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000404) %long 0x0000100f
+data.set (&DDRC_BASE+0x000004b4) %long 0x0000100f
+data.set (&DDRC_BASE+0x00000564) %long 0x0000100f
+data.set (&DDRC_BASE+0x00000614) %long 0x0000100f
+data.set (&DDRC_BASE+0x00000408) %long 0x0000400f
+data.set (&DDRC_BASE+0x000004b8) %long 0x0000400f
+data.set (&DDRC_BASE+0x00000568) %long 0x0000400f
+data.set (&DDRC_BASE+0x00000618) %long 0x0000400f
+data.set (&DDRC_BASE+0x00000408) %long 0x0000500f
+data.set (&DDRC_BASE+0x000004b8) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000568) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000618) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000408) %long 0x0000500f
+data.set (&DDRC_BASE+0x000004b8) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000568) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000618) %long 0x0000500f
+data.set (&DDRC_BASE+0x00000408) %long 0x0000100f
+data.set (&DDRC_BASE+0x000004b8) %long 0x0000100f
+data.set (&DDRC_BASE+0x00000568) %long 0x0000100f
+data.set (&DDRC_BASE+0x00000618) %long 0x0000100f
+data.set (&DDRC_BASE+0x00000400) %long 0x00000001
+data.set (&DDRC_BASE+0x00000408) %long 0x0000100e
+data.set (&DDRC_BASE+0x000004b8) %long 0x0000100e
+data.set (&DDRC_BASE+0x00000568) %long 0x0000100e
+data.set (&DDRC_BASE+0x00000618) %long 0x0000100e
+data.set (&DDRC_BASE+0x00000490) %long 0x00000001
+data.set (&DDRC_BASE+0x00000540) %long 0x00000001
+data.set (&DDRC_BASE+0x000005f0) %long 0x00000001
+data.set (&DDRC_BASE+0x000006a0) %long 0x00000001
+
+;;&RegVal=Data.Long(c:0xd4282c40)
+;;data.set (0xd4282c40) %long &RegVal|0x40
+;;&RegVal=Data.Long(c:0xd4282c40)
+;;print "0xd4282c40=&RegVal"
+
+&RegVal=Data.Long(c:0xd42828e8)
+&RegVal=&RegVal|0x300
+data.set (0xd42828e8) %long &RegVal
+&RegVal=Data.Long(c:0xd42828e8)
+print "0xd42828e8=&RegVal"
+
+;;set variable *(int *)(0xd42828e8) = *(int *)(0xd42828e8) | 0x300
+
+data.set (&DDRC_BASE+0x00000304) %long 0x00000000
+
+data.set (&DDRC_BASE+0x00000030) %long 0x00000000
+
+data.set (&DDRC_BASE+0x00000030) %long 0x00000000
+data.set (&DDRC_BASE+0x00001e04) %long 0x00000000
+
+data.set (&DDRC_BASE+0x00001b30) %long 0x00000000
+
+data.set (&DDRC_BASE+0x00001b30) %long 0x00000000
+data.set (&DDRC_BASE+0x00000320) %long 0x00000000
+data.set (&DDRC_BASE+0x000001b0) %long 0x00000000
+data.set (&DDRC_BASE+0x000001b0) %long 0x00000000
+
+print "PHY ini start>>> \n"
+;;;set option /memory                   %long  word
+;;Assert register QSG_CLR and then deassert it.
+data.set (&DPHY0_BASE+0x0082*2) %short 0x0001
+&RegVal_16=Data.Short(c:(&DPHY0_BASE+0x0082*2))
+print "RegVal_16(&DPHY0_BASE+0x0082*2)=&RegVal_16"
+
+data.set (&DPHY0_BASE+0x0082*2) %short 0x0000
+;;dphy_difcr0-dphy_difcr4
+;;`AXI_MASTER_BFM.write32(DPHY_CH0_BASE+32'h0060, 16'h0680);
+data.set (&DPHY0_BASE+0x0060*2) %short 0x0480
+;data.set (&DPHY0_BASE+0x0062*2) %short 0x080b
+data.set (&DPHY0_BASE+0x0062*2) %short 0x000b
+data.set (&DPHY0_BASE+0x0064*2) %short 0x2000
+data.set (&DPHY0_BASE+0x0068*2) %short 0x0041
+
+;disable DSQ gate by setting DSG_EN=0
+data.set (&DPHY0_BASE+0x0080*2) %short 0x2000
+;write DQ delay
+data.set (&DPHY0_BASE+0x0140*2) %short 0x0013
+data.set (&DPHY0_BASE+0x0142*2) %short 0x0013
+data.set (&DPHY0_BASE+0x0144*2) %short 0x0013
+data.set (&DPHY0_BASE+0x0146*2) %short 0x0013
+&RegVal_16=Data.Short(c:(&DPHY0_BASE+0x0064*2)) ;open DFI PHY DFI_READ_ROTATION mode. Data always comes back on p0
+data.set (&DPHY0_BASE+0x0064*2) %short &RegVal_16|0x1000 ;open DFI PHY DFI_READ_ROTATION mode. Data always comes back on p0
+
+;;Assert register QSG_CLR and then deassert it.
+data.set (&DPHY1_BASE+0x0082*2) %short 0x0001
+data.set (&DPHY1_BASE+0x0082*2) %short 0x0000
+;;dphy_difcr0-dphy_difcr4
+;;`AXI_MASTER_BFM.write32(DPHY_CH0_BASE+32'h0060, 16'h0680);
+data.set (&DPHY1_BASE+0x0060*2) %short 0x0480
+;set value *(unsigned long*)(&DPHY1_BASE+0x0062*2) %short 0x080b
+data.set (&DPHY1_BASE+0x0062*2) %short 0x000b; ;lpddr4
+data.set (&DPHY1_BASE+0x0064*2) %short 0x2000
+data.set (&DPHY1_BASE+0x0068*2) %short 0x0041
+
+;;disable DSQ gate by setting DSG_EN=0
+data.set (&DPHY1_BASE+0x0080*2) %short 0x2000
+;;write DQ delay
+data.set (&DPHY1_BASE+0x0140*2) %short 0x0013
+&RegVal_16=Data.Short(c:(&DPHY1_BASE+0x0140*2))
+print "RegVal_16(0x0140*2)=&RegVal_16"
+
+data.set (&DPHY1_BASE+0x0142*2) %short 0x0013
+data.set (&DPHY1_BASE+0x0144*2) %short 0x0013
+data.set (&DPHY1_BASE+0x0146*2) %short 0x0013
+&RegVal_16=Data.Short(c:(&DPHY1_BASE+0x0064*2)) ;open DFI PHY DFI_READ_ROTATION mode. Data always comes back on p0
+data.set (&DPHY1_BASE+0x0064*2) %short &RegVal_16|0x1000  ;open DFI PHY DFI_READ_ROTATION mode. Data always comes back on p0
+print "PHY ini end### \n"
+
+;;;set option /memory                   =  long
+data.set (&DDRC_BASE+0x000001b0) %long 0x00000020
+
+&RegVal=0
+while (&RegVal&0x00000001)!=0x00000001
+    &RegVal=Data.Long(c:(&DDRC_BASE+0x01bc))
+
+&RegVal=0
+while (&RegVal&0x00000001)!=0x00000001
+    &RegVal=Data.Long(c:(&DDRC_BASE+0x1cbc))
+
+data.set (&DDRC_BASE+0x000001b0) %long  0x00000000
+data.set (&DDRC_BASE+0x000001b0) %long  0x00000001
+data.set (&DDRC_BASE+0x000001b0) %long  0x00000001
+data.set (&DDRC_BASE+0x00000320) %long  0x00000001
+
+&RegVal=0
+while (&RegVal&0x00000001)!=0x00000001
+    &RegVal=Data.Long(c:(&DDRC_BASE+0x0324))
+
+&RegVal=0
+while (&RegVal&0x00000001)!=0x00000001
+    &RegVal=Data.Long(c:(&DDRC_BASE+0x0004))
+
+&RegVal=0
+while (&RegVal&0x00000001)!=0x00000001
+    &RegVal=Data.Long(c:(&DDRC_BASE+0x1b04))
+
+data.set (&DDRC_BASE+0x00000030) %long 0x00000001
+data.set (&DDRC_BASE+0x00001b30) %long 0x00000001
+data.set (&DDRC_BASE+0x00000030) %long 0x00000003
+data.set (&DDRC_BASE+0x00001b30) %long 0x00000003
+
+;;added by Jason for the CIU remap, begin...
+&RegVal=Data.Long(c:(0xD4282C00+0x6c))|0x1
+data.set (0xD4282C00+0x6c) %long &RegVal
+;;added by Jason for the CIU remap, end###
+
+data.set (0xd420e000+0x004) %long 0x3
+&RegVal=Data.Long(c:(0xd420e000+0x008))|0xf
+data.set (0xd420e000+0x008) %long &RegVal
+data.set (0xd420e000+0x00c) %long 0x3
+&RegVal=Data.Long(c:(0xd420e000+0x110))|0xc0000000
+data.set (0xd420e000+0x110) %long &RegVal
+data.set (0xd420e000+0x114) %long 0x000f000f
+
+
+;//ddr test
+;;;data.set (0x00000000) = 0xabcdabcd
+;;;set val @read_data = *(unsigned long*)(0x00000000)
+;;;
+;;;if (@read_data == 0xabcdabcd) then
+;;;print "**************** lpddr4 Initialization pass OYeah VS read_data[0x00000000]=[0x%x] ***************\n\n", @read_data
+;;;else
+;;;print "********* lpddr4 Initialization fail!!! read_data[0x00000000]=[0x%x] ***************\n\n", @read_data
+;;;end
+;;;
+;;;data.set (0x00000000) = 0x5a5a5a5a
+;;;set val @read_data = *(unsigned long*)(0x00000000)
+;;;print "RegVal(0x00000000)=0x%x.\n", @RegVal;
+
+
+enddo

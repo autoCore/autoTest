@@ -1,0 +1,30 @@
+; --------------------------------------------------------------------------------
+; @Title: Script File to load ETB raw data(from  in the TRACE32 Simulator
+; this is for raw data; if for the ad data(not RAW data), that is from "onchip.save()", 
+; we just should do "trace.load *.ad"
+; --------------------------------------------------------------------------------
+
+
+; System Settings
+	system.cpu cortexa53
+	; set any address here to enable the ETM in TRACE32
+	SYStem.CONFIG ETMBASE 1000
+	SYStem.Up
+
+; Load the target code
+	Data.LOAD.Elf E:\baremetal-test\ctest\build\aquila_evb\img\armv8core\aquila_evb_armv8core_test.axf
+
+; ETM Settings, Please note that these settings must match the used ETM settings
+; when recording the trace. Otherwhise, the displayed trace here could contain
+; erros.
+	ETM.PortSize 32.
+	ETM.ContextID OFF
+	ETM.PortMode  Normal
+	ETM.DataTrace OFF
+
+; Import trace data.
+	LA.Mode FLOWTRACE ON
+	LA.IMPORT.ETB etb.bin
+	LA.List
+
+	ENDDO

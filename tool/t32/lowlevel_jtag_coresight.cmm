@@ -1,0 +1,2002 @@
+;/*
+; *
+; * Usage:
+; *   do lowlevel_jtag_coresight.cmm
+; *
+; * TSM:
+; *  jtag TAP State Machine must is in run-test/idle state
+; * 
+; *
+; */
+
+LOCAL &IRpre           ;/*right offset of IR*/
+LOCAL &IRpost          ;/*left offset of IR*/
+LOCAL &DRpre           ;/*right offset of DR*/
+LOCAL &DRpost          ;/*left offset of DR*/
+&IRpre=0      
+&IRpost=0
+&DRpre=0 
+&DRpost=0
+
+LOCAL &BaseAddressDebug
+LOCAL &BaseAddressCTI
+LOCAL &BaseAddressETM
+LOCAL &BaseAddressETB
+LOCAL &BaseAddressCSTF
+LOCAL &BaseAddressTPIU
+LOCAL &BaseAddressComp
+&BaseAddressDebug=0xD5410000
+&BaseAddressCTI=0xD5420000
+&BaseAddressETM=0xD5440000
+&BaseAddressETB=0xd5005000
+&BaseAddressCSTF=0xd4150000 ;;;???
+&BaseAddressTPIU=0xd5008000
+&BaseAddressComp=0xd4130000 ;;;???
+
+LOCAL &ApVal
+LOCAL &BankVal
+&ApVal=1.
+&BankVal=0.
+
+LOCAL &IRadd
+LOCAL &DRadd
+LOCAL &IRmask
+&IRadd=&IRpre+&IRpost
+&DRadd=&DRpre+&DRpost
+&IRmask=(1.<<(&IRadd+4.))-(1.<<(&IRpre+4.))+(1.<<&IRpre)-1.
+
+;/* Coresight Parameters */
+LOCAL &DP_CTRLSTAT
+LOCAL &DP_APSELECT
+LOCAL &DP_RDBUFFER
+&DP_CTRLSTAT=1    
+&DP_APSELECT=2
+&DP_RDBUFFER=3
+
+;/*Bank 0x0*/
+LOCAL &AP_MEM_CSW
+LOCAL &AP_MEM_TAR
+LOCAL &AP_MEM_DRW
+&AP_MEM_CSW=0
+&AP_MEM_TAR=1 
+&AP_MEM_DRW=3
+
+
+;/*Bank 0xF*/
+LOCAL &AP_MEM_CFG
+LOCAL &AP_MEM_BASE
+LOCAL &AP_MEM_IDR
+&AP_MEM_CFG=0x1
+&AP_MEM_BASE=0x2
+&AP_MEM_IDR=0x3 
+
+LOCAL &IR_ABORT
+LOCAL &IR_DPACC
+LOCAL &IR_APACC
+LOCAL &IR_IDCODE
+&IR_ABORT=0x8; 
+&IR_DPACC=0xa; 
+&IR_APACC=0xb; 
+&IR_IDCODE=0xe;
+
+
+LOCAL &COMP_ROMTABLE
+LOCAL &COMP_DEBUG
+LOCAL &COMP_ETB
+LOCAL &COMP_ETM
+LOCAL &COMP_CTI
+LOCAL &COMP_FPB
+LOCAL &COMP_ECT
+LOCAL &COMP_ITM
+LOCAL &COMP_PMU
+LOCAL &COMP_CSTF
+LOCAL &COMP_SETM
+LOCAL &COMP_TPIU
+LOCAL &COMP_CURRENT
+&COMP_ROMTABLE=0     
+&COMP_DEBUG=1        
+&COMP_ETB=2       
+&COMP_ETM=3       
+&COMP_CTI=4       
+&COMP_FPB=5       
+&COMP_ECT=8       
+&COMP_ITM=9       
+&COMP_PMU=10      
+&COMP_CSTF=11     
+&COMP_SETM=12     
+&COMP_TPIU=13     
+&COMP_CURRENT=0xFF
+
+                      
+                      
+;/* ETM Registers */
+LOCAL &ETMCTL
+LOCAL &ETMCFG
+LOCAL &ETMIDR
+LOCAL &ETMCCER
+LOCAL &ETMID
+LOCAL &ETMOSL
+LOCAL &ETMPDSR
+&ETMCTL=0x0  
+&ETMCFG=0x1
+&ETMIDR=0x79
+&ETMCCER=0x7A
+&ETMID=0x80  
+&ETMOSL=0xc0
+&ETMPDSR=0xc5
+
+
+;/* ETB Registers */
+LOCAL &ETBSize
+LOCAL &ETBSTS
+LOCAL &ETBData
+LOCAL &ETBRPT
+LOCAL &ETBWPT
+LOCAL &ETBCTL
+LOCAL &ETBFFSR
+LOCAL &ETBFFCR
+&ETBSize=0x1  
+&ETBSTS=0x3
+&ETBData=0x4
+&ETBRPT=0x5
+&ETBWPT=0x6
+&ETBCTL=0x8
+&ETBFFSR=0xc0
+&ETBFFCR=0xc1
+
+
+;/* CSTF Registers*/
+LOCAL &CSTFFCR
+LOCAL &CSTFPCR
+&CSTFFCR=0x0
+&CSTFPCR=0x1
+
+;/* System register types*/
+LOCAL &MCRMRC
+LOCAL &MCRRMRRC
+LOCAL &MSRMRS
+&MCRMRC=0x1
+&MCRRMRRC=0x2
+&MSRMRS=0x3
+
+;/* ExtDCCmode */
+LOCAL &EDSCR_ACC_NORM
+LOCAL &EDSCR_ACC_MEM
+LOCAL &currentAccMode
+LOCAL &vDscr
+&EDSCR_ACC_NORM=0x00000000
+&EDSCR_ACC_MEM=0x00100000
+&currentAccMode=0x00000000
+&vDscr=0
+
+
+;/* Cache Operation */
+LOCAL &ICACHE_INVALIDATE_ALL
+LOCAL &ICACHE_INVALIDATE_LINE
+LOCAL &DCACHE_CLEAN_LINE
+&ICACHE_INVALIDATE_ALL=0
+&ICACHE_INVALIDATE_LINE=1
+&DCACHE_CLEAN_LINE=2   
+
+
+;/* Global variable for data passing */
+LOCAL &ReadRegVal
+LOCAL &Read64bitRegVal
+LOCAL &GenericRegVal
+LOCAL &Generic64bitRegVal
+LOCAL &R0Val
+LOCAL &X0Val
+LOCAL &X1Val
+&ReadRegVal=0
+&Read64bitRegVal=0
+&GenericRegVal=0        
+&Generic64bitRegVal=0
+&R0Val=0          
+&X0Val=0             
+&X1Val=0             
+
+
+
+;/* Specail Reg Index for PC, CPSR, SPSR etc. */
+LOCAL &REG_PC
+LOCAL &REG_CPSR
+LOCAL &REG_SPSR
+&REG_PC=0x50 
+&REG_CPSR=0x51
+&REG_SPSR=0x52
+
+
+
+;/* Global status flag */
+LOCAL &ScanAccFail
+&ScanAccFail=0
+
+;/* 1 for v7, 2 for v7.1, 0 for unsupported*/
+LOCAL &DebugArch
+LOCAL &SampleTheSamePC
+LOCAL &PRSRVal
+LOCAL &DSCRVal
+LOCAL &checkSticky
+&DebugArch=0
+&SampleTheSamePC=0
+&PRSRVal=0   
+&DSCRVal=0        
+&checkSticky=0    
+
+
+LOCAL &isDapInit
+&isDapInit=0
+
+;/* Switchs for information display and possible workarounds */
+LOCAL &showDetail
+LOCAL &showIRDR
+LOCAL &showAccWait
+LOCAL &showITRInfo
+&showDetail=1 
+&showIRDR=0   
+&showAccWait=0
+&showITRInfo=0
+
+
+LOCAL &isSwapInst
+LOCAL &skipTXFULL
+LOCAL &skipRXFULL
+LOCAL &skipITRFULL
+LOCAL &skipCacheOp
+LOCAL &skipCheckAbort
+LOCAL &withHLTStopWorkaround
+LOCAL &isMinimizeStopSequence
+LOCAL &skipSystemError
+LOCAL &detectOnly
+&isSwapInst=0           
+&skipTXFULL=0           
+&skipRXFULL=0           
+&skipITRFULL=0          
+&skipCacheOp=0          
+&skipCheckAbort=0       
+&withHLTStopWorkaround=0
+&isMinimizeStopSequence=0
+&skipSystemError=0   
+&detectOnly=0           
+
+
+
+;/* Global status for debug state */
+LOCAL &isInDebugState
+&isInDebugState=0
+
+;/* Register width, 0 for 32bit, 1 for 64bit */
+LOCAL &currentRW
+LOCAL &currentEL
+LOCAL &highestRW
+LOCAL &currentMode
+LOCAL &valRW
+&currentRW=0    
+&currentEL=0    
+&highestRW=0    
+&currentMode=0x1
+&valRW=0        
+
+
+;/* Mode index */
+;/* AArch64 */
+LOCAL &EL0T
+LOCAL &EL1T
+LOCAL &EL1H
+LOCAL &EL2T
+LOCAL &EL2H
+LOCAL &EL3T
+LOCAL &EL3H
+LOCAL &M_T
+LOCAL &M_H 
+&EL0T=0x0
+&EL1T=0x4
+&EL1H=0x5
+&EL2T=0x8
+&EL2H=0x9
+&EL3T=0xC
+&EL3H=0xD
+&M_T=0x10
+&M_H=0x11
+
+
+
+;/* AArch32 */
+LOCAL &M_USER
+LOCAL &M_SVC
+LOCAL &M_HYP
+LOCAL &M_MON
+LOCAL &M_FIQ
+LOCAL &M_IRQ
+LOCAL &M_ABT
+LOCAL &M_UND
+LOCAL &M_SYS
+&M_USER=0x10
+&M_SVC=0x13 
+&M_HYP=0x1A 
+&M_MON=0x16 
+&M_FIQ=0x11 
+&M_IRQ=0x12 
+&M_ABT=0x17 
+&M_UND=0x1B 
+&M_SYS=0x1F 
+
+
+
+;/*Security state*/
+LOCAL &SECURE_STATE
+LOCAL &NONSECURE_STATE
+LOCAL &currentSecureState
+&SECURE_STATE=0      
+&NONSECURE_STATE=1   
+&currentSecureState=0
+              
+              
+;/* BPWP type */
+LOCAL &HARD_BP
+LOCAL &SOFT_BP
+LOCAL &HARD_WP
+&HARD_BP=0
+&SOFT_BP=1
+&HARD_WP=2
+
+
+LOCAL &codeValueAtSwBp
+&codeValueAtSwBp=0
+
+LOCAL &bpAddr
+&bpAddr=0
+
+;/* Switchs for further confirm */
+;/* Confirm if we need to write address of DTR to AP_MEM_TAR every time under memory access mode*/
+LOCAL &CONFIRM_HIGH_SPEED_DBGREG
+&CONFIRM_HIGH_SPEED_DBGREG=0
+
+;/* Confirm if we need to scan ACC twice for read operation under memory access mode */
+LOCAL &CONFIRM_HIGH_SPEED_SCANACC
+&CONFIRM_HIGH_SPEED_SCANACC=0
+
+;/*Allow imprecise entry to debug state*/
+LOCAL &impreciseDebug
+&impreciseDebug=1
+
+
+main:
+
+  LOCAL &cpuId
+  
+  ;Disable the bit field interpretion on some Debug registers  
+  GOSUB setShowIRDR 0
+  GOSUB setShowAccWait 0
+  
+  ;Setup the preIR, postIR, preDR, postDR for ARMv8
+  GOSUB initScanChain 1. 9. 1. 1.
+  
+  ;Scan all MEM-AP in SoC
+  GOSUB apScan 3
+  
+  ;Setup up the AP and Bank index
+  GOSUB initApBank 0x1 0x0
+
+  print "########## AP0 Status ##########"
+  ;Detect the debug registers
+  GOSUB initBaseAddrDebug 0xD5410000
+  GOSUB initBaseAddrCTI 0xD5420000
+  &cpuId=0.
+  GOSUB checkPCSR &cpuId
+  
+  ENDDO
+
+;/* 
+; * unsigned long allowImpreciseDebug(unsigned long flag)
+; */
+allowImpreciseDebug:
+  ENTRY &flag
+
+  &impreciseDebug=&flag
+  return &impreciseDebug
+
+;/* 
+; * unsigned long initScanChain(unsigned long irPreV,  unsigned long irPostV, unsigned long drPreV, unsigned long drPostV)
+; */
+initScanChain:
+  ENTRY &irPreV &irPostV &drPreV &drPostV
+
+  &IRpre=&irPreV
+  &IRpost=&irPostV
+  &DRpre=&drPreV
+  &DRpost=&drPostV
+
+  &IRadd=&IRpre+&IRpost
+  &DRadd=&DRpre+&DRpost
+  &IRmask=(1.<<(&IRadd+4.))-(1.<<(&IRpre+4.))+(1.<<&IRpre)-1.
+
+  return 0
+
+;/* 
+; * unsigned long initBaseAddrDebug(unsigned long addr)
+; */
+initBaseAddrDebug:
+  ENTRY &addr
+
+  &BaseAddressDebug=&addr
+  return 0
+
+
+;/* 
+; * unsigned long initBaseAddrCTI(unsigned long addr)
+; */
+initBaseAddrCTI:
+  ENTRY &addr
+
+  &BaseAddressCTI=&addr
+  return 0
+
+;/* 
+; * unsigned long initBaseAddrETM(unsigned long addr)
+; */
+initBaseAddrETM:
+  ENTRY &addr
+
+  &BaseAddressETM=&addr
+  return 0
+
+;/* 
+; * unsigned long initBaseAddrETB(unsigned long addr)
+; */
+initBaseAddrETB:
+  ENTRY &addr
+
+  &BaseAddressETB=&addr
+  return 0
+
+;/* 
+; * unsigned long initBaseAddrCSTF(unsigned long addr)
+; */
+initBaseAddrCSTF:
+  ENTRY addr
+
+  &BaseAddressCSTF=&addr
+  return 0
+
+;/* 
+; * unsigned long initBaseAddrTPIU(unsigned long addr)
+; */
+initBaseAddrTPIU:
+  ENTRY &addr
+
+  &BaseAddressTPIU=&addr
+  return 0
+
+;/* 
+; * unsigned long initBaseAddrCurrent(unsigned long addr)
+; */
+initBaseAddrCurrent:
+  ENTRY &addr
+
+  &BaseAddressComp=&addr
+  return 0
+
+;/* 
+; * unsigned long initApBank(unsigned long apV, unsigned long bankV)
+; */
+initApBank:
+  ENTRY &apV &bankV
+
+  &ApVal=&apV
+  &BankVal=&bankV
+
+  return 0
+
+;/*
+; * unsigned long setShowDetails(unsigned long flag)
+; */
+setShowDetails:
+  ENTRY &flag
+
+  &showDetail=&flag
+  return &showDetail
+
+;/*
+; * unsigned long setShowIRDR(unsigned long flag)
+; */
+setShowIRDR:
+  ENTRY &flag
+
+  &showIRDR=&flag
+  return &showIRDR
+  
+;/*
+; * unsigned long setShowAccWait(unsigned long flag)
+; */
+setShowAccWait:
+  ENTRY &flag
+
+  &showAccWait=&flag
+  return &showAccWait
+
+;/* 
+; * unsigned long setSkipTXFULL(unsigned long flag)
+; */
+setSkipTXFULL:
+  ENTRY &flag
+
+  &skipTXFULL=&flag
+  return &skipTXFULL
+
+;/* 
+; * unsigned long setSkipRXFULL(unsigned long flag)
+; */
+setSkipRXFULL:
+  ENTRY &flag
+
+  &skipRXFULL=&flag
+  return &skipRXFULL
+
+;/* 
+; * unsigned long setSkipITRFULL(unsigned long flag)
+; */
+setSkipITRFULL:
+  ENTRY &flag
+
+  &skipITRFULL=&flag
+  return &skipITRFULL
+
+;/* 
+; * unsigned long setSkipCacheOp(unsigned long flag)
+; */
+setSkipCacheOp:
+  ENTRY &flag
+
+  &skipCacheOp=&flag
+  return &skipCacheOp
+
+;/* 
+; * unsigned long setSkipCheckAbort(unsigned long flag)
+; */
+setSkipCheckAbort:
+  ENTRY &flag
+
+  &skipCheckAbort=&flag
+  return &skipCheckAbort
+
+;/* 
+; * unsigned long setSwapInst(unsigned long flag)
+; */
+setSwapInst:
+  ENTRY &flag
+
+  &isSwapInst=&flag
+  return &isSwapInst
+
+;/* 
+; * unsigned long setDefualtDebugState(unsigned long flag)
+; */
+setDefualtDebugState:
+  ENTRY &flag
+
+  &isInDebugState=&flag
+  return &isInDebugState
+
+;/* 
+; * unsigned long setCheckSticky(unsigned long flag)
+; */
+setCheckSticky:
+  ENTRY &flag
+
+  &checkSticky=&flag
+  return &checkSticky
+
+;/* 
+; * unsigned long setWithHLTStopWorkaround(unsigned long flag)
+; */
+setWithHLTStopWorkaround:
+  ENTRY &flag
+
+  &withHLTStopWorkaround=flag
+  return &withHLTStopWorkaround
+
+;/* 
+; * unsigned long setIsMinimizeStopSequence(unsigned long flag)
+; */
+setIsMinimizeStopSequence:
+  ENTRY &flag
+
+  &isMinimizeStopSequence=&flag
+  return &isMinimizeStopSequence
+
+;/* 
+; * unsigned long setSkipSystemError(unsigned long flag)
+; */
+setSkipSystemError:
+  ENTRY &flag
+
+  &skipSystemError=&flag
+  return &skipSystemError
+
+;/* 
+; * unsigned long setDetectOnly(unsigned long flag)
+; */
+setDetectOnly:
+  ENTRY &flag
+
+  &detectOnly=&flag
+  return &detectOnly
+
+;/* 
+; * unsigned long IRscan(unsigned long i)
+; */
+IRscan:
+  ENTRY &i
+
+  return &IRmask+((&i)<<&IRpre)
+
+;/* 
+; * unsigned long long DRscan(unsigned long long val)
+; */
+DRscan:
+  ENTRY &val
+
+  return (&val)<<&DRpre
+
+
+;/*
+; * unsigned long setIR(unsigned long IRval)
+; */
+setIR:
+  ENTRY &IRval
+  
+  LOCAL &ir_val
+  GOSUB IRscan &IRval
+  ENTRY &ir_val
+  if (&showIRDR==1.)
+  (
+    if (&IRadd+4.>32.)
+    (
+      ;;;print "TODO: add log here"
+    )
+    else
+    (
+      print "Log: set val @state=@IRi(" %Decimal &IRpre "," 4. "," &IRadd+4. ",0x" %Hex &ir_val ")"
+    )
+  )
+  GOSUB IRi &IRpre 4. &IRadd+4. &ir_val
+  
+  RETURN
+
+;/*
+; * read JTAG-DP IDCODE
+; * unsigned long readDapId()
+; * input: no
+; * output: DAP ID
+; */
+readDapId:
+
+  LOCAL &ir_val &dr_val
+  LOCAL &ret
+  
+  GOSUB IRscan &IR_IDCODE
+  ENTRY &ir_val
+  GOSUB DRscan 0x0
+  ENTRY &dr_val
+  
+  if (&showIRDR==1.)
+  (
+    if (&IRadd+4.>32.)
+    (
+      ;;;print "TODO, add log here"
+    )
+    else
+    (
+      print "Log: set val @state=@IRDRi(" %Decimal &DRpre "," 32. "," &IRadd+4. ",0x" %Hex &ir_val "," %Decimal &DRadd+32. ",0x" %Hex &dr_val ")"
+    )
+  )
+  
+  GOSUB IRDRi &DRpre 32. &IRadd+4. &ir_val &DRadd+32. &dr_val
+  ENTRY &ret
+  return &ret
+  
+
+;/*
+; * unsigned long abortScan()
+; * input: no
+; * output: 0
+; */
+abortScan:
+
+  LOCAL &flag
+  LOCAL &repeat
+  
+  &flag=1.
+  &repeat=5.
+  
+  GOSUB setIR &IR_ABORT
+   
+  ;GOSUB DRscan ((0x1+0x100000000)<<3.)
+  GOSUB DRscan (0x1<<3.)
+  ENTRY &dr_val
+  
+  ;/* avoid recrusive call with scanAcc, so we rewrite the code */
+  if (&showIRDR!=0)
+  (
+
+  )
+  
+  while (((&flag&0x1)==0x1)&&(&repeat!=0))
+  (   
+    GOSUB DRi &DRpre 3. &DRadd+35. &dr_val 
+    ENTRY &flag
+    if (((&flag&0x7)!=1.)&&(&flag&0x7)!=2.)
+    (
+      print "Error: SCAN ACC Fault during ABORT operation -- " %decimal &flag
+      GOTO  acc_fault_out   ;break
+    )
+    &repeat=&repeat-1.
+  )
+  
+acc_fault_out:
+
+  if (&repeat==0)
+  (
+    print "Error: SCAN ACC Timeout during ABORT operation"
+  )
+   
+  GOSUB setIR &IR_APACC
+  
+  RETURN 0
+
+;/*
+; * unsigned long dpScanAcc(unsigned long wdata, unsigned long regAddr, int isRead)
+; * write JTAG-DP register
+; * input:
+; * output: DP register value
+; */
+dpScanAcc:
+  ENTRY &wdata &regAddr &isRead
+  
+  LOCAL &flag &retVal
+  LOCAL &output
+  LOCAL &repeat
+
+  &flag=1.
+  &output=1.
+  &retVal=1.
+  &retVal=0.
+  &repeat=5.
+  
+  &ScanAccFail=0
+
+  ;GOSUB DRscan (((&wdata)+0x100000000)<<3.)+((&regAddr)<<1.)+(&isRead)
+  GOSUB DRscan (((&wdata)<<3.)+((&regAddr)<<1.)+(&isRead))
+  ENTRY &dr_val
+  
+  if (&showIRDR==1)
+  (
+    print "Log: set val @state=@DRi(" %Decimal &DRpre "," 3. "," %Decimal 35.+&DRadd ",0x" %Hex &dr_val ")"
+  )
+  
+  WHILE (((&flag)&0x1)==0x1)&&(&repeat!=0.)
+  (
+    GOSUB DRi &DRpre 3. 35.+&DRadd &dr_val
+    ENTRY &flag
+    if (((&flag)&0x7)!=1.)&&(((&flag)&0x7)!=2.)
+    (
+      print "Error: SCAN ACC Fault -- 0b'" Format.Binary(3.,&flag) " in dpScanAcc",
+      GOSUB abortScan
+      &ScanAccFail=1
+      return &retVal
+    )
+    &repeat=&repeat-1.
+    if (&showAccWait!=0.)&&((&flag&0x1)==0x1)
+    (
+        print "Info: retry as flag is " %Decimal &flag&0x7 " when scaning APReg " %Decimal &regAddr " in dpScanAcc"
+    )
+  )
+  
+  if &repeat==0
+  (
+    print "Error: SCAN ACC Timeout in dpScanAcc"
+    GOSUB abortScan
+    &ScanAccFail=1
+    return &retVal
+  )
+  
+  if (&isRead)!=0
+  (
+    if (&regAddr)==&AP_MEM_DRW
+    (
+      &regAddr=0
+    )
+
+    &repeat=5
+    
+    ;GOSUB DRscan (((&wdata)+0x100000000)<<3.)+((&regAddr)<<1.)+(&isRead)
+    GOSUB DRscan (((&wdata)<<3.)+((&regAddr)<<1.)+(&isRead))
+    ENTRY &dr_val
+  
+    if &showIRDR==1
+    (
+      print "Log: set val @state=@DRi(" %Decimal &DRpre "," 35. "," %Decimal 35.+&DRadd ",0x" %Hex &dr_val ")"
+    )
+    
+    WHILE (((&output)&0x1)==0x1)&&(&repeat!=0.)
+    (
+      GOSUB DRi &DRpre 35. 35.+&DRadd &dr_val
+      ENTRY &output
+      if (((&output)&0x7)!=1.)&&(((&output)&0x7)!=2.)
+      (
+          print "Error: SCAN ACC Fault --" %Decimal &output&0x7 "in dpScanAcc"
+          GOSUB abortScan
+          &ScanAccFail=1
+          return &retVal
+      )
+      if (&showAccWait!=0.)&&(((&output)&0x1)==0x1)
+      (
+          print "Info: retry as flag is" %Decimal &output&0x7 "when scaning APReg" %Decimal &regAddr "in dpScanAcc"
+      )
+      &repeat=&repeat-1
+    )
+        
+    if &repeat==0
+    (
+      print "Error: SCAN ACC Timeout in dpScanAcc"
+      GOSUB abortScan
+      &ScanAccFail=1
+      return &retVal
+    )
+
+    &retVal=(&output)>>3.
+  )
+  
+  RETURN &retVal
+  
+  
+;/*
+; * unsigned long clearStickyError()
+; */
+clearStickyError:
+  LOCAL &ctrlStatVal;
+  &ctrlStatVal=0x50000020;
+  
+  GOSUB setIR &IR_DPACC
+  GOSUB dpScanAcc &ctrlStatVal &DP_CTRLSTAT 0
+  if (&ScanAccFail!=0) {
+    print "Error: fail to write DP_CTRLSTAT in clearStickyError";
+    print "FATAL: Coresight is in abnormal state";
+    GOSUB setIR &IR_APACC
+    return 1
+  }
+
+  GOSUB setIR &IR_APACC
+  return 0
+
+
+;/*
+; * unsigned long setAP()
+; */
+setAP:
+  LOCAL &setVal
+
+  &setVal=(&ApVal<<24.)|(&BankVal&0xf0)
+
+  GOSUB setIR &IR_DPACC
+  GOSUB dpScanAcc &setVal &DP_APSELECT 0.
+  if (&ScanAccFail!=0)
+  (
+    GOSUB setIR &IR_APACC
+    return 1
+  )
+  GOSUB setIR &IR_APACC
+
+  print "Select AP 0x" %hex &ApVal " bank 0x" %hex &BankVal " done"
+
+  return 0
+
+;/*
+; * unsigned long setBank(unsigned long bank)
+; */
+setBank:
+  ENTRY &bank
+
+  LOCAL &setVal;
+
+  &setVal=(&ApVal<<24.)|(&bank&0xf0)
+  GOSUB setIR &IR_DPACC
+  GOSUB dpScanAcc &setVal &DP_APSELECT 0.
+  if (&ScanAccFail==1) 
+  (
+    print "Error: fail to write DP_APSELECT in setBank"
+    GOSUB setIR &IR_APACC
+    return 1
+  )
+
+  GOSUB dpScanAcc 0x0 &DP_APSELECT 1.
+  ENTRY &setVal
+  if (&ScanAccFail==1)
+  (
+    print "Error: fail to read DP_APSELECT in setBank"
+    GOSUB setIR &IR_APACC
+    return 1
+  )
+
+  GOSUB setIR &IR_APACC
+  return 0
+
+
+;/*
+; * unsigned long dumpAPRegs()
+; * Dump AP registers, CSW, CFR, BASE and IDR
+; */
+dumpAPRegs:
+
+  GOSUB setIR &IR_APACC
+  GOSUB dpScanAcc 0. &AP_MEM_CSW 1.
+  ENTRY &ReadRegVal
+  if &ScanAccFail==1
+  (
+    return 1
+  )
+  else if &ScanAccFail==2
+  (
+    ;/*If we can clear the sticky bit, retry the acc again */
+    GOSUB dpScanAcc 0. &AP_MEM_CSW 1.
+    ENTRY &ReadRegVal
+    if (&ScanAccFail!=0)
+    (
+      print "Error: Retry fail on AP Scan ACC Read in dumpAPRegs"
+      return 1
+    )
+  )
+
+  print "Info: AP_MEM_CSW = 0x" format.hex(8.,&ReadRegVal)
+
+  GOSUB setBank 0xf0
+  ENTRY &ret
+  if &ret!=0
+  (
+    return 1
+  )
+
+  GOSUB setIR &IR_APACC
+  GOSUB dpScanAcc 0. &AP_MEM_CFG&0xf 1.
+  ENTRY &ReadRegVal
+  if &ScanAccFail==1
+  (
+    return 1
+  )
+  else if &ScanAccFail==2
+  (
+    ;/*If we can clear the sticky bit, retry the acc again */
+    GOSUB dpScanAcc 0. &AP_MEM_CFG&0xf 1.
+    ENTRY &ReadRegVal
+    if (&ScanAccFail!=0)
+    (
+      print "Error: Retry fail on AP Scan ACC Read in dumpAPRegs\n"
+      return 1
+    )
+  )
+
+  print "Info: AP_MEM_CFG = 0x" format.hex(8.,&ReadRegVal)
+  
+  GOSUB dpScanAcc 0. &AP_MEM_BASE&0xf 1.
+  ENTRY &ReadRegVal
+  if &ScanAccFail==1
+  (
+    return 1
+  )
+  else if &ScanAccFail==2
+  (
+    ;/*If we can clear the sticky bit, retry the acc again */
+    GOSUB dpScanAcc 0. &AP_MEM_BASE&0xf 1.
+    ENTRY &ReadRegVal
+    if (&ScanAccFail!=0)
+    (
+      print "Error: Retry fail on AP Scan ACC Read in dumpAPRegs\n"
+      return 1
+    )
+  )
+
+  print "Info: AP_MEM_BASE = 0x" format.hex(8.,&ReadRegVal)
+  
+  GOSUB setBank 0x0
+  ENTRY &ret
+  if &ret!=0
+  (
+    return 1
+  )
+
+  return 0
+
+
+;/*
+; * unsigned long checkStickyError()
+; * return 0 -- no sticky error
+; * return 1 -- fail to clear the sticky error
+; * return 2 -- succeed to clear the sticky error
+; */
+checkStickyError:
+
+  LOGCAL &ctrlStatVal
+  &ctrlStatVal=0
+
+  GOSUB setIR &IR_DPACC
+  GOSUB dpScanAcc 0x0 &DP_CTRLSTAT 1.
+  ENTRY &ctrlStatVal
+  if (&ScanAccFail!=0)
+  (
+    print "Error: fail to read DP_CTRLSTAT in checkStickyError"
+    print "FATAL: Coresight is in abnormal state"
+    GOSUB setIR &IR_APACC
+    return 1
+  )
+
+  if &ctrlStatVal&(1.<<5.)
+  (
+    GOSUB dumpAPRegs
+    GOSUB setIR &IR_DPACC
+    GOSUB dpScanAcc &ctrlStatVal &DP_CTRLSTAT 0.
+    if (&ScanAccFail!=0)
+    (
+      print "Error: fail to write DP_CTRLSTAT in checkStickyError"
+      print "FATAL: Coresight is in abnormal state"
+      GOSUB setIR &IR_APACC
+      return 1
+    )
+  )
+  else
+  (
+    GOSUB setIR &IR_APACC
+    return 0
+  )
+
+  ;/* Read DP_CTRLSTAT to confirm it's cleared */
+  GOSUB dpScanAcc 0x0 &DP_CTRLSTAT 1.
+  ENTRY &ctrlStatVal
+  if (&ScanAccFail!=0)
+  (
+    print "Error: fail to read DP_CTRLSTAT after clearing the sticky bit in checkStickyError"
+    print "FATAL: Coresight is in abnormal state"
+    GOSUB setIR &IR_APACC
+    return 1
+  )
+  if &ctrlStatVal&(1.<<5.)
+  (
+    print "Error: fail to clear the sticky error bit"
+    print "FATAL: Coresight is in abnormal state"
+    GOSUB setIR &IR_APACC
+    return 1
+  )
+
+  print "Info: succeed to clear the sticky error"
+  GOSUB setIR &IR_APACC
+  return 2
+
+;/*
+; * unsigned long apScanAcc(unsigned long wdata, unsigned long regAddr, int isRead)
+; */
+apScanAcc:
+  ENTRY &wdata &regAddr &isRead
+  
+  LOCAL &retVal
+  LOCAL &output
+  LOCAL &repeat
+
+  &retVal=0
+  &output=1
+  &repeat=5
+  
+  &ScanAccFail=0
+
+  ;;;GOSUB DRscan ((((&wdata)+0x100000000)<<3.)+((&regAddr)<<1.)+(&isRead))
+  GOSUB DRscan (((&wdata)<<3.)+((&regAddr)<<1.)+(&isRead))
+  ENTRY &dr_val
+  
+  if (&showIRDR!=0)
+  (
+      ;;;print "TODO: add log here"
+  )  
+    
+  WHILE ((&output&0x1)==0x1)&&(&repeat!=0.)
+  (
+    GOSUB DRi &DRpre 35. 35.+&DRadd (&dr_val)
+    ENTRY &output
+    if ((&output&0x7)!=1)&&((&output&0x7)!=2)
+    (
+      print "Error: SCAN ACC Fault -- " %Decimal (&output&0x7) "in apScanAcc"
+      print "FATAL: Coresight is in abnormal state"
+      GOSUB abortScan
+      &ScanAccFail=1
+      return &retVal
+    )
+    &repeat=&repeat-1.
+    if (&showAccWait!=0)&&((&output&0x1)==0x1)
+    (
+      print "Info: retry as flag is " %decimal &output&0x7 " when scaning APReg" %decimal &regAddr " in apScanAcc" 
+    )
+  )
+
+  if &repeat==0.
+  (
+    print "Error: SCAN ACC Timeout in apScanAcc"
+    print "FATAL: Coresight is in abnormal state"
+    GOSUB abortScan
+    &ScanAccFail=1
+    return &retVal
+  )
+  &retVal=(&output)>>3
+
+  if (&CONFIRM_HIGH_SPEED_SCANACC!=0)||(&currentAccMode!=&EDSCR_ACC_MEM)
+  (
+    if (&isRead!=0)
+    (
+      if (&regAddr==&AP_MEM_DRW)
+      (
+        &regAddr=0
+      )
+      
+      &output=1.
+      &repeat=5.
+      
+      ;;;GOSUB DRscan ((((&wdata)+0x100000000)<<3.)+((&regAddr)<<1.)+(&isRead))
+      GOSUB DRscan (((&wdata)<<3.)+((&regAddr)<<1.)+(&isRead))
+      ENTRY &dr_val
+  
+      if (&showIRDR!=0) 
+      (
+        ;;;print "TODO: add log here"
+      )
+      
+      while (((&output)&0x1)==0x1)&&(&repeat!=0)
+      (
+        GOSUB DRi &DRpre 35. 35.+&DRadd &dr_val
+        ENTRY &output 
+        if ((&output&0x7)!=1)&&((&output&0x7)!=2)
+        (
+          print "Error: SCAN ACC Fault -- " %decimal (&output&0x7) "in apScanAcc"
+          printf"FATAL: Coresight is in abnormal state"
+          GOSUB abortScan
+          &ScanAccFail=1
+          return &retVal
+        )
+        if (&showAccWait!=0)&&((&output&0x1)==0x1)
+        (
+          print "Info: retry as flag is " %decimal (&output&0x7) " when scaning APReg" %decimal &regAddr "in apScanAcc"
+        )
+        &repeat=&repeat-1.
+      )
+  
+      if (&repeat==0)
+      (
+        print "Error: SCAN ACC Timeout in apScanAcc"
+        print "FATAL: Coresight is in abnormal state"
+        GOSUB abortScan
+        &ScanAccFail=1
+        return &retVal
+      )
+  
+      &retVal=(&output)>>3.
+    )
+  )
+
+  if (&checkSticky!=0)
+  (
+    GOSUB checkStickyError
+    ENTRY &ScanAccFail
+  )
+
+  return &retVal
+  
+;/*
+; * unsigned long ctrlStat()
+; */
+ctrlStat:
+
+  LOCAL &repeat
+  LOCAL &ctrlStatVal
+
+  &repeat=5
+  &ctrlStatVal=0
+  
+  GOSUB setIR &IR_DPACC
+  GOSUB dpScanAcc 0x50000020 &DP_CTRLSTAT 0.
+  if (&ScanAccFail!=0)
+  (
+    return 1
+  )
+
+  GOSUB dpScanAcc 0. &DP_CTRLSTAT 1.
+  ENTRY &ctrlStatVal
+  WHILE ((&ctrlStatVal&0xf0000000)!=0xf0000000)&&(&repeat!=0.)
+  (
+    GOSUB dpScanAcc 0. &DP_CTRLSTAT 1.
+    ENTRY &ctrlStatVal
+    if (&ScanAccFail!=0)
+    (
+      return 1
+    )
+    &repeat=&repeat-1
+  ) 
+
+  if (&ctrlStatVal&0xf0000000)!=0xf0000000
+  (
+    print "Error: set ctrlStat fail -- 0x" format.hex(8.,&ctrlStatVal)
+    return 1
+  )
+  else
+  (
+    print "CTRLSTAT VALUE = 0x" format.hex(8.,&ctrlStatVal)
+  )
+
+  return 0
+
+;/*
+; * unsigned long apScan(int max)
+; */
+apScan:
+  ENTRY &max
+
+  LOCAL &flag
+  LOCAL &counter
+
+  if (&max<3.)||(&max>256.)
+  (
+    print "Error: value " %decimal &max " out of range [3 .. 256] in apscan" 
+    return 1
+  )
+
+  GOSUB ctrlStat
+
+  &counter=0
+  while &counter<&max
+  (
+    ;/* read APSELECT */
+    GOSUB setIR &IR_DPACC
+    GOSUB dpScanAcc ((&counter<<24.)|0xf0) &DP_APSELECT 0
+    if (&ScanAccFail!=0)
+    (
+      print "Error: dpScanAcc fail in apScan"
+      return 1
+    )
+
+    GOSUB setIR &IR_APACC
+    GOSUB dpScanAcc 0 &AP_MEM_IDR&0xf 1
+    ENTRY &ReadRegVal
+    if &ScanAccFail==0
+    (
+      print "Info: AP(" %decimal &counter ") ID: 0x" %hex &ReadRegVal
+    )
+    else
+    (
+      GOSUB setIR &IR_DPACC
+      GOSUB dpScanAcc ((0<<24.)|0xf0) &DP_APSELECT 0
+      if &ScanAccFail==0
+      (
+        print "Info: AP(" %decimal &counter ") not available" 
+      )
+      else
+      (
+        print "Error: Target hangs for AP(" %decimal &counter "), ABORT without effect"
+      )
+    )
+    &counter=&counter+1
+  )
+
+  return 0
+
+;/* 
+; * unsigned long getBaseAddr(unsigned long type)
+; */
+getBaseAddr:
+  ENTRY &type
+
+  LOCAL &base
+
+  if (&type==&COMP_DEBUG)
+  (
+    &base=&BaseAddressDebug
+  )
+  else if (&type==&COMP_CTI)
+  (
+    &base=&BaseAddressCTI
+  )
+  else if (&type==&COMP_ETM)
+  (
+    &base=&BaseAddressETM
+  )
+  else if (&type==&COMP_ETB)
+  (
+    &base=&BaseAddressETB
+  )
+  else if (&type==&COMP_CSTF)
+  (
+    &base=&BaseAddressCSTF
+  )
+  else if (&type==&COMP_TPIU)
+  (
+    &base=&BaseAddressTPIU
+  )
+  else if (&type==&COMP_CURRENT)
+  (
+    &base=&BaseAddressComp
+  )
+  else
+  (
+    &base=&BaseAddressDebug
+  )
+
+  return &base
+
+
+
+;/*
+; * unsigned long readDbgReg(unsigned long regNum, unsigned long type)
+; */
+readDbgReg:
+  ENTRY &regNum &type
+
+  LOCAL &base
+  LOCAL &ReadTARVal
+  
+  GOSUB getBaseAddr &type
+  ENTRY &base
+  
+  GOSUB setIR &IR_APACC
+
+  if ((&CONFIRM_HIGH_SPEED_DBGREG==1.)||(&currentAccMode!=&EDSCR_ACC_MEM))
+  (
+    GOSUB apScanAcc (&base|(&regNum<<2.)) &AP_MEM_TAR 0.
+    if (&ScanAccFail==1.)
+    (
+      return 1
+    )
+    else if (&ScanAccFail==2.)
+    (
+      ;/*If we can clear the sticky bit, retry the acc again */
+      print "Warning: retry the ACC scan in readDbgReg"
+      
+      GOSUB apScanAcc (&base|(&regNum<<2.) &AP_MEM_TAR 0.
+      if (&ScanAccFail!=0)
+      (
+        print "ERROR: Retry fail on AP Scan ACC in readDbgReg"
+        return 1
+      )
+    )
+    ;/*
+    ; * if you want to read back and verify the TAR register,
+    ; * uncomment it
+    ; */
+    
+    ;;;else if (&ScanAccFail==0.)
+    ;;;(
+    ;;;  GOSUB apScanAcc (&base|(&regNum<<2.)) &AP_MEM_TAR 1.
+    ;;;  ENTRY &ReadTARVal
+    ;;;  if &ReadTARVal!=(&base|(&regNum<<2.))
+    ;;;  (
+    ;;;    print "AP_MEM_TAR write/read back not match " "0x" %hex &ReadTARVal "," "0x" %hex (&base|(&regNum<<2.))
+    ;;;  )
+    ;;;)
+  )
+
+  GOSUB apScanAcc 0. &AP_MEM_DRW 1.
+  ENTRY &ReadRegVal
+  if (&ScanAccFail==1.)
+  (
+    return 1
+  )
+  else if (&ScanAccFail==2.)
+  (
+    ;/*If we can clear the sticky bit, retry the acc again */
+    
+    GOSUB apScanAcc 0. &AP_MEM_DRW 1.
+    ENTRY &ReadRegVal
+    if (&ScanAccFail!=0)
+    (
+      print "ERROR: Retry fail on AP Scan ACC Read in readDbgReg"
+      return 1
+    )
+  )
+
+  return 0
+
+;/*
+; * unsigned long writeDbgReg(unsigned long regNum, unsigned long wValue, unsigned long type)
+; */
+writeDbgReg:
+  ENTRY &regNum &wValue &type
+
+  LOCAL &base
+
+  GOSUB getBaseAddr &type
+  ENTRY &base
+
+  GOSUB setIR &IR_APACC
+
+  if ((&CONFIRM_HIGH_SPEED_DBGREG==1.)||(&currentAccMode!=&EDSCR_ACC_MEM))
+  (
+    GOSUB apScanAcc (&base|(&regNum<<2.) &AP_MEM_TAR 0.
+    if (&ScanAccFail==1.)
+    (
+      return 1
+    )
+    else if (&ScanAccFail==2.)
+    (
+      GOSUB apScanAcc (&base|(&regNum<<2.) &AP_MEM_TAR 0.
+      if (&ScanAccFail!=0)
+      (
+        print "ERROR: Retry fail on AP Scan ACC in writeDbgReg"
+        return 1
+      )
+    )
+  )
+
+  GOSUB apScanAcc &wValue &AP_MEM_DRW 0.
+  if (&ScanAccFail==1.)
+  (
+    return 1
+  )
+  else if  (&ScanAccFail==2.)
+  (
+    GOSUB apScanAcc &wValue &AP_MEM_DRW 0.
+    if (&ScanAccFail!=0.)
+    (
+      print "ERROR: Retry fail on AP Scan ACC 2 in writeDbgReg"
+      return 1
+    )
+  )
+
+  return 0
+
+;/*
+; * unsigned long printReg(unsigned long regNum, unsigned long type, unsigned long cpuId, char *regName)
+; */
+printReg:
+  ENTRY &regNum &type &cpuId &regName
+  
+  LOCAL &ret
+	
+  GOSUB readDbgReg &regNum &type
+  ENTRY &ret
+  if (&ret==1)
+  (
+    if &cpuId==0xffffffff
+    (
+      print "Error: read " %String &regName " fail"
+    )
+    else
+    (
+      print "Error: read " %String &regName " fail on CPU#" %Decimal &cpuId
+    )
+    return 1
+  )
+  else
+  (
+    if &cpuId==0xffffffff
+    (
+      print "Info: " %String &regName " = 0x" Format.Hex(8.,&ReadRegVal)
+    )
+    else
+    (
+      print "Info: " %String &regName "_CPU#" %Decimal &cpuId " = 0x" Format.Hex(8.,&ReadRegVal)
+    )
+  )
+
+  return 0
+
+;/*
+; * unsigned long dapInit()
+; */
+dapInit:
+
+  LOCAL &JtagId
+  &JtagId=0
+  
+  if &isDapInit==0
+  (
+    GOSUB readDapId
+    ENTRY &JtagId 
+    print "Info: JTAG ID = 0x" Format.Hex(8.,&JtagId)
+
+    print "Info: Start to config CTRLSTAT"
+    GOSUB ctrlStat
+
+    print "Info: Start to select AP"
+    GOSUB setAP
+    
+    ;;;&isDapInit=1
+  )
+
+  return 0
+
+;/*
+; * unsigned long checkPCSR(unsigned long cpuId)
+; */
+checkPCSR:
+  ENTRY &cpuId
+
+  LOCAL &count &sampleCount &loop
+  LOCAL &vidVal
+  
+  &count=0 
+  &sampleCount=10.
+  &loop=0
+  &vidVal=0
+  
+  print "Info: start to check PCSR when the CPU is not in Debug state"
+
+  ;/*
+  ; * TODO:
+  ; * In this version, I need to init dap every time before printReg
+  ; * in order to get the right value. If not, the second value will be
+  ; * the same as the first one
+  ; */
+  
+  ;;;GOSUB dapInit
+  
+  WHILE &count<&sampleCount
+  (
+    GOSUB dapInit
+    
+    GOSUB printReg 0x28 &COMP_DEBUG &cpuId "EDPCSRlo"
+    ENTRY &ret
+    if (&ret==1.)
+    (
+      return 1
+    )
+  
+    GOSUB dapInit
+        
+    GOSUB printReg 0x2B &COMP_DEBUG &cpuId "EDPCSRhi"
+    ENTRY &ret
+    if (&ret==1.)
+    (
+      return 1
+    )
+  
+    &loop=0
+    WHILE (&loop)<1000.
+    (
+      &loop=&loop+1.
+    )
+
+    &count=&count+1.
+  )
+
+  return 0
+
+;/*
+; * char *Var2Str(unsigned long hex_value, unsigned long hex_length)
+; * example code of value-to-string
+; */
+Var2Str:
+  ENTRY &hex_value &hex_length
+  LOCAL &BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7
+  LOCAL &BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15
+  LOCAL &BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23
+  LOCAL &BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31
+  
+  LOCAL &ret_str &ret_str0 &ret_str1 &ret_str2 &ret_str3
+  
+  if &hex_length==2.
+  (
+    &BS0=Var.STRing((&hex_value&0x1))
+    &BS1=Var.STRing((&hex_value&0x2)>>1.)
+    
+    &ret_str="&BS0 &BS1"
+  )
+  else if &hex_length==4.
+  (
+    &BS0=Var.STRing((&hex_value&0x1))
+    &BS1=Var.STRing((&hex_value&0x2)>>1.)
+    &BS2=Var.STRing((&hex_value&0x4)>>2.)
+    &BS3=Var.STRing((&hex_value&0x8)>>3.)
+    
+    &ret_str="&BS0 &BS1 &BS2 &BS3"
+  )
+  else if &hex_length==32.
+  (
+    &BS0=Var.STRing((&hex_value&0x1))
+    &BS1=Var.STRing((&hex_value&0x2)>>1.)
+    &BS2=Var.STRing((&hex_value&0x4)>>2.)
+    &BS3=Var.STRing((&hex_value&0x8)>>3.)
+    &BS4=Var.STRing((&hex_value&0x10)>>4.)
+    &BS5=Var.STRing((&hex_value&0x20)>>5.)
+    &BS6=Var.STRing((&hex_value&0x40)>>6.)
+    &BS7=Var.STRing((&hex_value&0x80)>>7.)
+    
+    &BS8=Var.STRing((&hex_value&0x100)>>8.)
+    &BS9=Var.STRing((&hex_value&0x200)>>9.)
+    &BS10=Var.STRing((&hex_value&0x400)>>10.)
+    &BS11=Var.STRing((&hex_value&0x800)>>11.)
+    &BS12=Var.STRing((&hex_value&0x1000)>>12.)
+    &BS13=Var.STRing((&hex_value&0x2000)>>13.)
+    &BS14=Var.STRing((&hex_value&0x4000)>>14.)
+    &BS15=Var.STRing((&hex_value&0x8000)>>15.)
+    
+    &BS16=Var.STRing((&hex_value&0x10000)>>16.)
+    &BS17=Var.STRing((&hex_value&0x20000)>>17.)
+    &BS18=Var.STRing((&hex_value&0x40000)>>18.)
+    &BS19=Var.STRing((&hex_value&0x80000)>>19.)
+    &BS20=Var.STRing((&hex_value&0x100000)>>20.)
+    &BS21=Var.STRing((&hex_value&0x200000)>>21.)
+    &BS22=Var.STRing((&hex_value&0x400000)>>22.)
+    &BS23=Var.STRing((&hex_value&0x800000)>>23.)
+    
+    &BS24=Var.STRing((&hex_value&0x1000000)>>24.)
+    &BS25=Var.STRing((&hex_value&0x2000000)>>25.)
+    &BS26=Var.STRing((&hex_value&0x4000000)>>26.)
+    &BS27=Var.STRing((&hex_value&0x8000000)>>27.)
+    &BS28=Var.STRing((&hex_value&0x10000000)>>28.)
+    &BS29=Var.STRing((&hex_value&0x20000000)>>29.)
+    &BS30=Var.STRing((&hex_value&0x40000000)>>30.)
+    &BS31=Var.STRing((&hex_value&0x80000000)>>31.)
+    
+    &ret_str0="&BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7"
+    &ret_str1="&BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15"
+    &ret_str2="&BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23"
+    &ret_str3="&BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31"
+    
+    &ret_str="&ret_str0 &ret_str1 &ret_str2 &ret_str3"
+  )
+  else
+  (
+    print "NOT SUPPORT NOW"
+  )
+;;;  &ret_str="Hello World"
+
+  JTAG.SHIFTREG 1 &ret_str 1 1 1 1 1
+  
+  PRINT "ret_str: &ret_str"
+  
+  RETURN "&ret_str"
+
+;/*
+; * IRi(unsigned long ret_start, unsigned long ret_len, unsigned long ir_len, unsigned long ir_val)
+; * NOTE: the function is called in run time-test/idle state, and keep this state when return
+; */
+IRi:
+  ENTRY &ret_start &ret_len &ir_len &ir_val
+  
+  LOCAL &BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7
+  LOCAL &BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15
+  LOCAL &BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23
+  LOCAL &BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31
+  
+  LOCAL &bitstream
+  LOCAL &shift_val
+  LOCAL &ret_val
+  
+  ; write
+  if &ir_len==14.
+  (
+    &BS0=Var.STRing((&ir_val&0x1))
+    &BS1=Var.STRing((&ir_val&0x2)>>1.)
+    &BS2=Var.STRing((&ir_val&0x4)>>2.)
+    &BS3=Var.STRing((&ir_val&0x8)>>3.)
+    &BS4=Var.STRing((&ir_val&0x10)>>4.)
+    &BS5=Var.STRing((&ir_val&0x20)>>5.)
+    &BS6=Var.STRing((&ir_val&0x40)>>6.)
+    &BS7=Var.STRing((&ir_val&0x80)>>7.)
+    
+    &BS8=Var.STRing((&ir_val&0x100)>>8.)
+    &BS9=Var.STRing((&ir_val&0x200)>>9.)
+    &BS10=Var.STRing((&ir_val&0x400)>>10.)
+    &BS11=Var.STRing((&ir_val&0x800)>>11.)
+    &BS12=Var.STRing((&ir_val&0x1000)>>12.)
+    &BS13=Var.STRing((&ir_val&0x2000)>>13.)
+    
+    &bitstream="&BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7 &BS8 &BS9 &BS10 &BS11 &BS12 &BS13"
+  )
+  else
+  (
+    print "IRi does not support ir_len=" %Decimal &ir_len "bits"
+    return 0
+  )  
+  
+  JTAG.SHIFTTMS 1 1 0 0                                                       ; goto Shift-IR state
+  JTAG.SHIFTREG &bitstream
+  &shift_val=JTAG.SHIFT()
+  
+  ; no need to read IR
+  
+  JTAG.SHIFTTMS 1 0                                                           ; goto run time-test/idle
+  
+  &ret_val=(&shift_val>>&ret_start)&((1<<&ret_len)-1.)
+  
+  if (&showIRDR!=0)
+  (
+    print "IRi shift: 0x" %hex &shift_val "(" format.binary(&ir_len,&shift_val) ")"
+    print "IRi return: 0x" %hex &ret_val "(" format.binary(&ret_len,&ret_val) ")"
+  )
+  
+  RETURN &ret_val
+    
+
+;/*
+; * DRi(unsigned long ret_start, unsigned long ret_len, unsigned long dr_len, unsigned long dr_val)
+; * NOTE: the function is called in run time-test/idle state, and keep this state when return
+; */
+DRi:
+  ENTRY &ret_start &ret_len &dr_len &dr_val
+
+  LOCAL &BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7
+  LOCAL &BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15
+  LOCAL &BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23
+  LOCAL &BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31
+  LOCAL &BS32 &BS33 &BS34 &BS35 &BS36 &BS37 &BS38 &BS39
+  
+  LOCAL &bitstream &tmp_str0 &tmp_str1 &tmp_str2 &tmp_str3 &tmp_str4
+  
+  LOCAL &ret_val
+  LOCAL &shift_val
+  LOCAL &hi
+  
+  ; write
+  if &dr_len==37.
+  (
+    &BS0=Var.STRing((&dr_val&0x1))
+    &BS1=Var.STRing((&dr_val&0x2)>>1.)
+    &BS2=Var.STRing((&dr_val&0x4)>>2.)
+    &BS3=Var.STRing((&dr_val&0x8)>>3.)
+    &BS4=Var.STRing((&dr_val&0x10)>>4.)
+    &BS5=Var.STRing((&dr_val&0x20)>>5.)
+    &BS6=Var.STRing((&dr_val&0x40)>>6.)
+    &BS7=Var.STRing((&dr_val&0x80)>>7.)
+    
+    &BS8=Var.STRing((&dr_val&0x100)>>8.)
+    &BS9=Var.STRing((&dr_val&0x200)>>9.)
+    &BS10=Var.STRing((&dr_val&0x400)>>10.)
+    &BS11=Var.STRing((&dr_val&0x800)>>11.)
+    &BS12=Var.STRing((&dr_val&0x1000)>>12.)
+    &BS13=Var.STRing((&dr_val&0x2000)>>13.)
+    &BS14=Var.STRing((&dr_val&0x4000)>>14.)
+    &BS15=Var.STRing((&dr_val&0x8000)>>15.)
+    
+    &BS16=Var.STRing((&dr_val&0x10000)>>16.)
+    &BS17=Var.STRing((&dr_val&0x20000)>>17.)
+    &BS18=Var.STRing((&dr_val&0x40000)>>18.)
+    &BS19=Var.STRing((&dr_val&0x80000)>>19.)
+    &BS20=Var.STRing((&dr_val&0x100000)>>20.)
+    &BS21=Var.STRing((&dr_val&0x200000)>>21.)
+    &BS22=Var.STRing((&dr_val&0x400000)>>22.)
+    &BS23=Var.STRing((&dr_val&0x800000)>>23.)
+    
+    &BS24=Var.STRing((&dr_val&0x1000000)>>24.)
+    &BS25=Var.STRing((&dr_val&0x2000000)>>25.)
+    &BS26=Var.STRing((&dr_val&0x4000000)>>26.)
+    &BS27=Var.STRing((&dr_val&0x8000000)>>27.)
+    &BS28=Var.STRing((&dr_val&0x10000000)>>28.)
+    &BS29=Var.STRing((&dr_val&0x20000000)>>29.)
+    &BS30=Var.STRing((&dr_val&0x40000000)>>30.)
+    &BS31=Var.STRing((&dr_val&0x80000000)>>31.)
+    
+    ; it seems that T32 only support MAX 31 bits shift in Var.String()
+    &hi=&dr_val>>32.
+    &BS32=Var.STRing((&hi&0x1)>>0.)
+    &BS33=Var.STRing((&hi&0x2)>>1.)
+    &BS34=Var.STRing((&hi&0x4)>>2.)
+    &BS35=Var.STRing((&hi&0x8)>>3.)
+    &BS36=Var.STRing((&hi&0x10)>>4.)
+    
+    ;;;&BS32=Var.STRing((&dr_val&0x100000000)>>32.)
+    ;;;&BS33=Var.STRing((&dr_val&0x200000000)>>33.)
+    ;;;&BS34=Var.STRing((&dr_val&0x400000000)>>34.)
+    ;;;&BS35=Var.STRing((&dr_val&0x800000000)>>35.)
+    ;;;&BS36=Var.STRing((&dr_val&0x1000000000)>>36.)
+    
+    &tmp_str0="&BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7"
+    &tmp_str1="&BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15"
+    &tmp_str2="&BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23"
+    &tmp_str3="&BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31"
+    &tmp_str4="&BS32 &BS33 &BS34 &BS35 &BS36" 
+    
+    &bitstream="&tmp_str0 &tmp_str1 &tmp_str2 &tmp_str3 &tmp_str4"
+  )
+  else
+  (
+    print "DRi does not support dr_len=" %Decimal &dr_len "bits"
+    return 0
+  )
+  
+  JTAG.SHIFTTMS 1 0 0                                                         ; goto Shift-DR state
+  JTAG.SHIFTREG &bitstream
+  &shift_val=JTAG.SHIFT()
+    
+  JTAG.SHIFTTMS 1 0                                                           ; goto run time-test/idle
+  
+  &ret_val=(&shift_val>>&ret_start)&((1<<&ret_len)-1.)
+  
+  if (&showIRDR!=0)
+  (
+    print "DRi shift: 0x" %hex &shift_val "(" format.binary(&dr_len,&shift_val) ")"
+    print "DRi return: 0x" %hex &ret_val "(" format.binary(&ret_len,&ret_val) ")"
+  )
+  
+  return &ret_val
+ 
+
+  
+;/*
+; * IRDRi(unsigned long ret_start, unsigned long ret_len, unsigned long ir_len, unsigned long ir_val, unsigned long dr_len, unsigned long dr_val) 
+; * NOTE: the function is called in run time-test/idle state, and keep this state when return
+; */
+IRDRi:
+  ENTRY &ret_start &ret_len &ir_len &ir_val &dr_len &dr_val
+  
+  LOCAL &BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7
+  LOCAL &BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15
+  LOCAL &BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23
+  LOCAL &BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31
+  LOCAL &BS32 &BS33 &BS34 &BS35 &BS36 &BS37 &BS38 &BS39
+  
+  LOCAL &bitstream &tmp_str0 &tmp_str1 &tmp_str2 &tmp_str3 &tmp_str4
+  
+  LOCAL &ret_val
+  LOCAL &shift_val
+  LOCAL &hi
+  
+  ; write IR first
+  if &ir_len==14.
+  (
+    &BS0=Var.STRing((&ir_val&0x1))
+    &BS1=Var.STRing((&ir_val&0x2)>>1.)
+    &BS2=Var.STRing((&ir_val&0x4)>>2.)
+    &BS3=Var.STRing((&ir_val&0x8)>>3.)
+    &BS4=Var.STRing((&ir_val&0x10)>>4.)
+    &BS5=Var.STRing((&ir_val&0x20)>>5.)
+    &BS6=Var.STRing((&ir_val&0x40)>>6.)
+    &BS7=Var.STRing((&ir_val&0x80)>>7.)
+    
+    &BS8=Var.STRing((&ir_val&0x100)>>8.)
+    &BS9=Var.STRing((&ir_val&0x200)>>9.)
+    &BS10=Var.STRing((&ir_val&0x400)>>10.)
+    &BS11=Var.STRing((&ir_val&0x800)>>11.)
+    &BS12=Var.STRing((&ir_val&0x1000)>>12.)
+    &BS13=Var.STRing((&ir_val&0x2000)>>13.)
+    
+    &bitstream="&BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7 &BS8 &BS9 &BS10 &BS11 &BS12 &BS13"
+  )
+  else
+  (
+    print "IRDRi does not support ir_len=" %Decimal &ir_len "bits"
+  )
+  
+  JTAG.SHIFTTMS 1 1 0 0                                                       ; goto Shift-IR state
+  JTAG.SHIFTREG &bitstream
+  ;;;print JTAG.SHIFT()
+  
+  ; write DR
+  if &dr_len==34.
+  (
+    &BS0=Var.STRing((&dr_val&0x1))
+    &BS1=Var.STRing((&dr_val&0x2)>>1.)
+    &BS2=Var.STRing((&dr_val&0x4)>>2.)
+    &BS3=Var.STRing((&dr_val&0x8)>>3.)
+    &BS4=Var.STRing((&dr_val&0x10)>>4.)
+    &BS5=Var.STRing((&dr_val&0x20)>>5.)
+    &BS6=Var.STRing((&dr_val&0x40)>>6.)
+    &BS7=Var.STRing((&dr_val&0x80)>>7.)
+    
+    &BS8=Var.STRing((&dr_val&0x100)>>8.)
+    &BS9=Var.STRing((&dr_val&0x200)>>9.)
+    &BS10=Var.STRing((&dr_val&0x400)>>10.)
+    &BS11=Var.STRing((&dr_val&0x800)>>11.)
+    &BS12=Var.STRing((&dr_val&0x1000)>>12.)
+    &BS13=Var.STRing((&dr_val&0x2000)>>13.)
+    &BS14=Var.STRing((&dr_val&0x4000)>>14.)
+    &BS15=Var.STRing((&dr_val&0x8000)>>15.)
+    
+    &BS16=Var.STRing((&dr_val&0x10000)>>16.)
+    &BS17=Var.STRing((&dr_val&0x20000)>>17.)
+    &BS18=Var.STRing((&dr_val&0x40000)>>18.)
+    &BS19=Var.STRing((&dr_val&0x80000)>>19.)
+    &BS20=Var.STRing((&dr_val&0x100000)>>20.)
+    &BS21=Var.STRing((&dr_val&0x200000)>>21.)
+    &BS22=Var.STRing((&dr_val&0x400000)>>22.)
+    &BS23=Var.STRing((&dr_val&0x800000)>>23.)
+    
+    &BS24=Var.STRing((&dr_val&0x1000000)>>24.)
+    &BS25=Var.STRing((&dr_val&0x2000000)>>25.)
+    &BS26=Var.STRing((&dr_val&0x4000000)>>26.)
+    &BS27=Var.STRing((&dr_val&0x8000000)>>27.)
+    &BS28=Var.STRing((&dr_val&0x10000000)>>28.)
+    &BS29=Var.STRing((&dr_val&0x20000000)>>29.)
+    &BS30=Var.STRing((&dr_val&0x40000000)>>30.)
+    &BS31=Var.STRing((&dr_val&0x80000000)>>31.)
+    
+    ; it seems that T32 only support MAX 31 bits shift in Var.String()
+    &hi=&dr_val>>32.
+    &BS32=Var.STRing((&hi&0x1)>>0.)
+    &BS33=Var.STRing((&hi&0x2)>>1.)
+    
+    ;;;&BS32=Var.STRing((&dr_val&0x100000000)>>32.)
+    ;;;&BS33=Var.STRing((&dr_val&0x200000000)>>33.)
+    
+    &tmp_str0="&BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7"
+    &tmp_str1="&BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15"
+    &tmp_str2="&BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23"
+    &tmp_str3="&BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31"
+    &tmp_str4="&BS32 &BS33"
+    
+    &bitstream="&tmp_str0 &tmp_str1 &tmp_str2 &tmp_str3 &tmp_str4"
+  )
+  else if &dr_len==37.
+  (
+    &BS0=Var.STRing((&dr_val&0x1))
+    &BS1=Var.STRing((&dr_val&0x2)>>1.)
+    &BS2=Var.STRing((&dr_val&0x4)>>2.)
+    &BS3=Var.STRing((&dr_val&0x8)>>3.)
+    &BS4=Var.STRing((&dr_val&0x10)>>4.)
+    &BS5=Var.STRing((&dr_val&0x20)>>5.)
+    &BS6=Var.STRing((&dr_val&0x40)>>6.)
+    &BS7=Var.STRing((&dr_val&0x80)>>7.)
+    
+    &BS8=Var.STRing((&dr_val&0x100)>>8.)
+    &BS9=Var.STRing((&dr_val&0x200)>>9.)
+    &BS10=Var.STRing((&dr_val&0x400)>>10.)
+    &BS11=Var.STRing((&dr_val&0x800)>>11.)
+    &BS12=Var.STRing((&dr_val&0x1000)>>12.)
+    &BS13=Var.STRing((&dr_val&0x2000)>>13.)
+    &BS14=Var.STRing((&dr_val&0x4000)>>14.)
+    &BS15=Var.STRing((&dr_val&0x8000)>>15.)
+    
+    &BS16=Var.STRing((&dr_val&0x10000)>>16.)
+    &BS17=Var.STRing((&dr_val&0x20000)>>17.)
+    &BS18=Var.STRing((&dr_val&0x40000)>>18.)
+    &BS19=Var.STRing((&dr_val&0x80000)>>19.)
+    &BS20=Var.STRing((&dr_val&0x100000)>>20.)
+    &BS21=Var.STRing((&dr_val&0x200000)>>21.)
+    &BS22=Var.STRing((&dr_val&0x400000)>>22.)
+    &BS23=Var.STRing((&dr_val&0x800000)>>23.)
+    
+    &BS24=Var.STRing((&dr_val&0x1000000)>>24.)
+    &BS25=Var.STRing((&dr_val&0x2000000)>>25.)
+    &BS26=Var.STRing((&dr_val&0x4000000)>>26.)
+    &BS27=Var.STRing((&dr_val&0x8000000)>>27.)
+    &BS28=Var.STRing((&dr_val&0x10000000)>>28.)
+    &BS29=Var.STRing((&dr_val&0x20000000)>>29.)
+    &BS30=Var.STRing((&dr_val&0x40000000)>>30.)
+    &BS31=Var.STRing((&dr_val&0x80000000)>>31.)
+    
+    ; it seems that T32 only support MAX 31 bits shift in Var.String()
+    &hi=&dr_val>>32.
+    &BS32=Var.STRing((&hi&0x1)>>0.)
+    &BS33=Var.STRing((&hi&0x2)>>1.)
+    &BS34=Var.STRing((&hi&0x4)>>2.)
+    &BS35=Var.STRing((&hi&0x8)>>3.)
+    &BS36=Var.STRing((&hi&0x10)>>4.)
+    
+    ;;;&BS32=Var.STRing((&dr_val&0x100000000)>>32.)
+    ;;;&BS33=Var.STRing((&dr_val&0x200000000)>>33.)
+    ;;;&BS34=Var.STRing((&dr_val&0x400000000)>>34.)
+    ;;;&BS35=Var.STRing((&dr_val&0x800000000)>>35.)
+    ;;;&BS36=Var.STRing((&dr_val&0x1000000000)>>36.)
+    
+    &tmp_str0="&BS0 &BS1 &BS2 &BS3 &BS4 &BS5 &BS6 &BS7"
+    &tmp_str1="&BS8 &BS9 &BS10 &BS11 &BS12 &BS13 &BS14 &BS15"
+    &tmp_str2="&BS16 &BS17 &BS18 &BS19 &BS20 &BS21 &BS22 &BS23"
+    &tmp_str3="&BS24 &BS25 &BS26 &BS27 &BS28 &BS29 &BS30 &BS31"
+    &tmp_str4="&BS32 &BS33 &BS34 &BS35 &BS36 
+    
+    &bitstream="&tmp_str0 &tmp_str1 &tmp_str2 &tmp_str3 &tmp_str4"
+  )
+  else
+  (
+    print "IRDRi does not support dr_len=" %Decimal &dr_len "bits"
+    return 0
+  )
+  
+  JTAG.SHIFTTMS 1 1 0 0                                                       ; goto Shift-DR state
+  JTAG.SHIFTREG &bitstream
+  &shift_val=JTAG.SHIFT()
+  
+  JTAG.SHIFTTMS 1 0                                                           ; goto run time-test/idle
+  
+  &ret_val=(&shift_val>>&ret_start)&((1<<&ret_len)-1.)
+  
+  if (&showIRDR!=0)
+  (
+    print "IRDRi shift: 0x" %hex &shift_val "(" format.binary(&dr_len,&shift_val) ")"
+    print "IRDRi return: 0x" %hex &ret_val "(" format.binary(&ret_len,&ret_val) ")"
+  )
+  
+  return &ret_val

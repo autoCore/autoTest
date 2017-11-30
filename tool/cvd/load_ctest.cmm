@@ -1,0 +1,40 @@
+;/**************************************************************
+; * This script is used to load ctest image in Windows T32
+; *
+; * USAGE:
+; *   change the &axffile name which you want to debug
+; *   change the Windows &localpath of ctest
+; *   change the Ubuntu &remotepath of ctest
+; *
+; * NOTE:
+; *   1.The image name must obey the rule that:
+; *     &soc_&board_&module_test.axf,
+; *     which is produced at the path of
+; *     ctest/build/&soc_&board/img/&module/
+; *   2.map the ctest/ as the newwork drive first
+; *
+; **************************************************************/
+
+LOCAL &localpath &remotepath &axffile
+LOCAL &separator &soc &board &project &module
+
+&axffile="aquila_evb_example_test.axf"
+&localpath="Q:\ctest"
+&remotepath="/your/ubuntu/dir/of/baremetal-test/ctest"
+
+&separator="_"
+&soc=STRing.SPLIT("&axffile","&separator",0)
+&board=STRing.SPLIT("&axffile","&separator",1)
+&module=STRing.SPLIT("&axffile","&separator",2)
+&project="&soc&separator&board"
+
+&axffile="&localpath\build\&project\img\&module\&axffile"
+
+PRINT "loading ctest image... &axffile"
+Data.LOAD.Elf &axffile /StripPART "&remotepath" /PATH "&localpath"
+
+data.list
+
+break
+
+;break.set main

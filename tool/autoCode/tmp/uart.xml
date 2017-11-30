@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>uart</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4017000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>UART_RBR</spirit:name>
+<spirit:description>Receive Buffer Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>BYTE_324</spirit:name>
+<spirit:description>byte 3  this field is only valid in 32-bit peripheral bus mode.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BYTE_225</spirit:name>
+<spirit:description>byte 2  this field is only valid in 32-bit peripheral bus mode.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BYTE_126</spirit:name>
+<spirit:description>byte 1  this field is only valid in 32-bit peripheral bus mode.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BYTE_027</spirit:name>
+<spirit:description>byte 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_THR</spirit:name>
+<spirit:description>Transmit Holding Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>BYTE_335</spirit:name>
+<spirit:description>byte 3  this field is only valid in 32-bit peripheral bus mode.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BYTE_236</spirit:name>
+<spirit:description>byte 2  this field is only valid in 32-bit peripheral bus mode.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BYTE_137</spirit:name>
+<spirit:description>byte 1  this field is only valid in 32-bit peripheral bus mode.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BYTE_038</spirit:name>
+<spirit:description>byte 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_DLL</spirit:name>
+<spirit:description>Divisor Latch Low Byte Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DLL</spirit:name>
+<spirit:description>divisor latch low  low-byte compare value to generate baud rate</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_DLH</spirit:name>
+<spirit:description>Divisor Latch High Byte Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DLH</spirit:name>
+<spirit:description>divisor latch high  high-byte compare value to generate baud rate</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_IER</spirit:name>
+<spirit:description>Interrupt Enable Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>HSE</spirit:name>
+<spirit:description>high speed uart enable  when high speed mode is enabled, the uart uses a 59.429 mhz input clock rather than a 14.857 mhz input clock. high speed mode should only be used for baud rates of 1.8 or 3.6 mbps.  0 = high speed mode is disabled (regular mode)  1 = high speed mode is enabled</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DMAE</spirit:name>
+<spirit:description>dma requests enable  0 = dma requests are disabled  1 = dma requests are enabled</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UUE</spirit:name>
+<spirit:description>uart unit enable  0 = unit is disabled  1 = unit is enabled</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NRZE</spirit:name>
+<spirit:description>nrz coding enable  nrz encoding/decoding is only used in uart mode, not in infrared mode. if the serial infrared receiver or transmitter is enabled, nrz coding is disabled.  0 = nrz coding disabled  1 = nrz coding enabled</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RTOIE</spirit:name>
+<spirit:description>receiver time-out interrupt enable  the source for this field is the &lt;time out detected&gt; field in the interrupt identification register.  0 = receiver data time-out interrupt disabled  1 = receiver data time-out interrupt enabled</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_MIE80</spirit:name>
+<spirit:description>modem interrupt enable  the source for this field is the &lt;interrupt source encoded&gt; field in the interrupt identification register.  0 = modem status interrupt disabled  1 = modem status interrupt enabled</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RLSE</spirit:name>
+<spirit:description>receiver line status interrupt enable  the source for this field is the &lt;interrupt source encoded&gt; field in the interrupt identification register.  0 = receiver line status interrupt disabled  1 = receiver line status interrupt enabled</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_TIE82</spirit:name>
+<spirit:description>transmit data request interrupt enable  the source for this field is the &lt;interrupt source encoded&gt; field in the interrupt identification register.  0 = transmit fifo data request interrupt disabled  1 = transmit fifo data request interrupt enabled</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RAVIE</spirit:name>
+<spirit:description>receiver data available interrupt enable  the source for this field is the &lt;interrupt source encoded&gt; field in the interrupt identification register.  0 = receiver data available (trigger threshold reached) interrupt disabled  1 = receiver data available (trigger threshold reached) interrupt enabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_IIR</spirit:name>
+<spirit:description>Interrupt Identification Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FIFOES10</spirit:name>
+<spirit:description>fifo mode enable status  0x0 = non-fifo mode is selected  0x1 to 0x2 = reserved  0x3 = fifo mode is selected (&lt;transmit and receive fifo enable&gt; field in the fifo control register = 1)</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_EOC92</spirit:name>
+<spirit:description>dma end of descriptor chain (see 32-bit peripheral bus section in the &lt;var product number&gt; datasheet)  0 = dma has not signaled the end of its programmed descriptor chain  1 = dma has signaled the end of its programmed descriptor chain</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ABL</spirit:name>
+<spirit:description>auto-baud lock (see auto-baud-rate detection section in the &lt;var product number&gt; datasheet)  0 = auto-baud circuitry has not programmed divisor latch registers  1 = divisor latch registers programmed by auto-baud circuitry</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TOD</spirit:name>
+<spirit:description>time out detected (see character timeout interrupt section in the &lt;var product number&gt; datasheet)  0 = no time out interrupt is pending  1 = time out interrupt is pending (fifo mode only)</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IID10</spirit:name>
+<spirit:description>interrupt source encoded  0x0 = modem status (cts, dsr, ri, dcd modem signals changed state)  0x1 = transmit fifo requests data  0x2 = received data available  0x3 = receive error (overrun, parity, framing, break, fifo error. see modem status register)</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NIP</spirit:name>
+<spirit:description>interrupt pending  0 = interrupt is pending (active low)  1 = no interrupt is pending</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_FCR</spirit:name>
+<spirit:description>FIFO Control Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ITL</spirit:name>
+<spirit:description>interrupt trigger level (threshold)  when the number of bytes in the receive fifo equals the interrupt trigger threshold programmed into this field and the received-data-available interrupt is enabled via the interrupt enable register, an interrupt is generated and appropriate bits are set in the interrupt identification register. the receive dma request is also generated when the trigger threshold is reached.   0x0 = 1 byte or more in fifo causes interrupt (not valid in dma mode)  0x1 = 8 bytes or more in fifo causes interrupt and dma request  0x2 = 16 bytes or more in fifo causes interrupt and dma request  0x3 = 32 bytes or more in fifo causes interrupt and dma request</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BUS</spirit:name>
+<spirit:description>32-bit peripheral bus  0 = 8-bit peripheral bus  1 = 32-bit peripheral bus</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_TRAIL124</spirit:name>
+<spirit:description>trailing bytes  0 = trailing bytes are removed by the &lt;var product number&gt;   1 = trailing bytes are removed by the dmac</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TIL</spirit:name>
+<spirit:description>transmitter interrupt level  0 = interrupt/dma request when fifo is half empty  1 = interrupt/dma request when fifo is empty</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_RESETTF126</spirit:name>
+<spirit:description>reset transmit fifo  when this field is set, all the bytes in the transmit fifo are cleared. the &lt;transmit data request&gt; field in the line status register is set and the interrupt identification register shows a transmitter requests data interrupt, if the &lt;transmit data request interrupt enable&gt; field in the interrupt enable register is set. the transmit shift register is not cleared, and it completes the current transmission.  0 = writing 0 has no effect  1 = the transmit fifo is cleared</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_RESETRF127</spirit:name>
+<spirit:description>reset receive fifo  when this field is set, all the bytes in the receive fifo are cleared. the &lt;data ready&gt; field in the line status register is reset to 0. all the error bits in the fifo and the &lt;fifo error status&gt; field in the line status register are cleared. any error bits, oe, pe, fe or bi, that had been set in the line status register are still set. the receive shift register is not cleared. if the interrupt identification register had been set to received data available, it is cleared.   0 = no effect  1 = the receive fifo is cleared</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TRFIFOE</spirit:name>
+<spirit:description>transmit and receive fifo enable  this field enables/disables the transmit and receive fifos. when set, both fifos are enabled (fifo mode). when clear, the fifos are both disabled (non-fifo mode). writing 0x0 to this field clears all bytes in both fifos. when changing from fifo mode to non-fifo mode and vice versa, data is cleared automatically from the fifos. this field must be set when other fields in this register are written or the other bits are not programmed.  0 = fifos are disabled  1 = fifos are enabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_LCR</spirit:name>
+<spirit:description>Line Control Register</spirit:description>
+<spirit:addressOffset>0X0C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DLAB</spirit:name>
+<spirit:description>divisor latch access bit  must be set to access the divisor latch registers of the baud-rate generator during a read or write operation. must be clear to access the receive buffer, the transmit holding register or the interrupt enable register.  0 = access transmit holding register, receive buffer register, and interrupt enable register  1 = access divisor latch registers (dll and dlh)</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SB</spirit:name>
+<spirit:description>set break  causes a break condition to be transmitted to the receiving uart. acts only on the txd pin and has no effect on the transmit logic. in fifo mode, wait until the transmitter is idle (&lt;transmitter empty&gt; field in the line status register = 1] to set and clear sb.  0 = no effect on txd output  1 = forces txd output to 0 (space)</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>STKYP</spirit:name>
+<spirit:description>sticky parity  forces the bit value at the parity bit location to be the opposite of the &lt;even parity select&gt; field rather than the parity value. this stops parity generation. if &lt;parity enable&gt; = 0, this field is ignored.  0 = no effect on parity bit  1 = forces parity bit to be opposite of &lt;even parity select&gt; field value</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_EPS141</spirit:name>
+<spirit:description>even parity select  if &lt;parity enable&gt; = 0, this field is ignored.  0 = sends or checks for odd parity  1 = sends or checks for even parity</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PEN</spirit:name>
+<spirit:description>parity enable  this field enables a parity bit to be generated on transmission or checked on reception.   0 = no parity  1 = parity</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>STB</spirit:name>
+<spirit:description>stop bits  specifies the number of stop bits transmitted and received in each character. when receiving, the receiver checks only the first stop bit.  this field must be clear.  0 = 1 stop bit</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WLS10</spirit:name>
+<spirit:description>word length select  specifies the number of data bits in each transmitted or received character.  0x0, 0x1, 0x2 = 7-bit character  0x3 = 8-bit character</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_MCR</spirit:name>
+<spirit:description>Modem Control Register</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>AFE</spirit:name>
+<spirit:description>auto-flow control enable  0 = auto-rts and auto-cts are disabled  1 = auto-cts is enabled. if &lt;request to send&gt; is also set, both auto-cts and auto-rts are enabled.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LOOP</spirit:name>
+<spirit:description>loopback mode  this field provides a local loopback feature for diagnostic testing of the uart. when set, the following occurs: the transmitter serial output is set to a logic 1 state. the receiver serial input is disconnected from the pin. the output of the transmit shift register is &lt;q&gt;looped back&lt;/q&gt; into the receive shift register input. the four modem control inputs (ctsn, dsrn, dcdn, and rin) are disconnected from the pins and the modem control output pins (rtsn and dtrn) are forced to their inactive state.  coming out of the loopback mode may result in unpredictable activation of the delta bits (bits 30) in the modem status register. marvell recommends that the modem status register be read once to clear its delta bits.  loopback mode must be configured before the uart is enabled.  the lower four bits of this register are connected to the upper four modem status register bits.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OUT2</spirit:name>
+<spirit:description>out2 signal control  out2 connects the uart interrupt output to the interrupt controller unit. when &lt;loopback mode&gt; is clear  0 = uart interrupt is disabled  1 = uart interrupt is enabled  when &lt;loopback mode&gt; is set, interrupts always go to the &lt;var product number&gt;  0 = &lt;data carrier detect&gt; field in the modem status register forced to 0  1 = &lt;data carrier detect&gt; field forced to 1</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OUT1</spirit:name>
+<spirit:description>test bit  this field is only used in loopback mode. otherwise, it is ignored.  0 = force &lt;ring indicator&gt; field in the modem status register to 0  1 = force &lt;ring indicator&gt; field to 1</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RTS</spirit:name>
+<spirit:description>request to send  0 = non-auto-flow mode  rtsn pin is 1  auto-rts disabled. auto-flow works only with auto-cts.  1 = auto-flow mode  rtsn pin is 0  auto-rts enabled. auto-flow works with both auto-cts and auto-rts.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DTR</spirit:name>
+<spirit:description>data terminal ready  0 = dtrn pin is 1  1 = dtrn pin is 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_LSR</spirit:name>
+<spirit:description>Line Status Register</spirit:description>
+<spirit:addressOffset>0X14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FIFOE</spirit:name>
+<spirit:description>fifo error status  in non-fifo mode, this bit is clear. in fifo mode, this field is set when there is at least one parity error, framing error, or break indication for any of the characters in the fifo. a &lt;var product number&gt; read of the this register does not reset this field. this field is reset when all erroneous characters have been read from the fifo. if dma requests are enabled (&lt;dma requests enable&gt; field in the interrupt enable register set) and this field is set, the error interrupt is generated, and no receive dma request is generated even when the receive fifo reaches the trigger threshold. once the errors have been cleared by reading the fifo, dma requests are re-enabled automatically. if dma requests are not enabled (&lt;dma requests enable&gt; field clear), this field set does not generate an error interrupt.  0 = no fifo or no errors in receive fifo  1 = at least one character in receive fifo has errors</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_TEMT178</spirit:name>
+<spirit:description>transmitter empty  set when the transmit holding register and the transmit shift register are both empty. it is cleared when either the transmit holding register or the transmit shift register contains a data character. in fifo mode, this field is set when the transmit fifo and the transmit shift register are both empty.  0 = there is data in the transmit shift register, the transmit holding register, or the fifo  1 = all the data in the transmitter has been shifted out</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TDRQ</spirit:name>
+<spirit:description>transmit data request  this field indicates that the uart is ready to accept a new character for transmission. in addition, this field causes the uart to issue an interrupt to the &lt;var product number&gt; when the transmit data request interrupt enable is set and generates the dma request to the dma controller if dma requests and fifo mode are enabled. this field is set when a character is transferred from the transmit holding register into the transmit shift register. this field is cleared with the loading of the transmit holding register. in fifo mode, this field is set when half of the characters in the fifo have been loaded into the transmit shift register or the &lt;reset transmit fifo&gt; field in the fifo control register has been set. it is cleared when the fifo has more than half data. if more than 64 characters are loaded into the fifo, the excess characters are lost.  0 = there is data in the holding register or fifo waiting to be shifted out  1 = the transmit fifo has half or less than half data</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BI</spirit:name>
+<spirit:description>break interrupt  this field is set when the received data input is held low for longer than a full-word transmission time (the total time of start bit + data bits + parity bit + stop bit). it is cleared when the &lt;var product number&gt; reads the lsr. in fifo mode, only one character equal to 0x00, is loaded into the fifo regardless of the length of the break condition. bi shows the break condition for the character at the front of the fifo, not the most recently received character.  0 = no break signal has been received  1 = break signal received</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FE</spirit:name>
+<spirit:description>framing error  this field indicates that the received character did not have a valid stop bit. it is set when the bit following the last data bit or parity bit is detected to be 0. it is cleared when the &lt;var product number&gt; reads this register. the uart will resynchronize after a framing error. to do this, it assumes that the framing error was due to the next start bit, so it samples this start bit twice and then reads in the data. in fifo mode, this field shows a framing error for the character at the front of the fifo, not for the most recently received character.  0 = no framing error  1 = invalid stop bit has been detected</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_UA_PE182</spirit:name>
+<spirit:description>parity error  indicates that the received data character does not have the correct even or odd parity, as selected by the even parity select bit. this field is set upon detection of a parity error and is cleared when the &lt;var product number&gt; reads this register. in fifo mode, this field shows a parity error for the character at the front of the fifo, not the most recently received character.   0 = no parity error  1 = parity error has occurred</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OE</spirit:name>
+<spirit:description>overrun error  in non-fifo mode, indicates that data in the receive buffer register was not read by the &lt;var product number&gt; before the next character was received. the new character is lost. in fifo mode, this field indicates that all 64 bytes of the fifo are full and the most recently received byte has been discarded. this field is set upon detection of an overrun condition and cleared when the &lt;var product number&gt; reads this register.  0 = no data has been lost  1 = receive data has been lost</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DR</spirit:name>
+<spirit:description>data ready  set when a complete incoming character has been received and transferred into the receive buffer register or the fifo. in non-fifo mode, this field is cleared when the receive buffer is read. in fifo mode, this field is cleared if the fifo is empty (last character has been read from receive buffer register) or the fifo is reset with the &lt;reset receive fifo&gt; field in the fifo control register.  0 = no data has been received  1 = data is available in receive buffer register or the fifo</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_MSR</spirit:name>
+<spirit:description>Modem Status Register</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DCD</spirit:name>
+<spirit:description>data carrier detect  complement of the data-carrier-detect (dcdn) input. equivalent to &lt;out2 signal control&gt; field in the modem control register if &lt;loopback mode&gt; is set in the modem control register.  0 = dcdn pin is 1  1 = dcdn pin is 0</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RI</spirit:name>
+<spirit:description>ring indicator  complement of the ring-indicator (rin) input. equivalent to &lt;test bit&gt; field in the modem control register if &lt;loopback mode&gt; is set.  0 = rin pin is 1  1 = rin pin is 0</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DSR</spirit:name>
+<spirit:description>data set ready  complement of the data-set-ready (dsrn) input. equivalent to &lt;data terminal ready&gt; field in the modem control register if &lt;loopback mode&gt; is set.  0 = dsrn pin is 1  1 = dsrn pin is 0</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CTS</spirit:name>
+<spirit:description>clear to send  complement of the clear-to-send (ctsn) input. equivalent to &lt;request to send&gt; field in the modem control register if &lt;loopback mode&gt; is set.  0 = ctsn pin is 1  1 = ctsn pin is 0</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DDCD</spirit:name>
+<spirit:description>delta data carrier detect  0 = no change in dcdn pin since last read of this register  1 = dcdn pin has changed state</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERI</spirit:name>
+<spirit:description>trailing edge ring indicator  0 = rin pin has not changed from 0 to 1 since last read of this register  1 = rin pin has changed state</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DDSR</spirit:name>
+<spirit:description>delta data set ready  0 = no change in dsrn pin since last read of this register  1 = dsrn pin has changed state</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DCTS</spirit:name>
+<spirit:description>delta clear to send  0 = no change in ctsn pin since last read of this register  1 = ctsn pin has changed state</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_SCR</spirit:name>
+<spirit:description>Scratchpad Register</spirit:description>
+<spirit:addressOffset>0X1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SCRATCHPAD</spirit:name>
+<spirit:description>scratchpad  this field has no effect on uart functions.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_ISR</spirit:name>
+<spirit:description>Infrared Selection Register</spirit:description>
+<spirit:addressOffset>0X20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RXPL</spirit:name>
+<spirit:description>receive data polarity  0 = sir decoder takes positive pulses as zeros  1 = sir decoder takes negative pulses as zeros</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXPL</spirit:name>
+<spirit:description>transmit data polarity  0 = sir encoder generates a positive pulse for a data bit of 0  1 = sir encoder generates a negative pulse for a data bit of 0</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>XMODE</spirit:name>
+<spirit:description>transmit pulse width select  when this field is clear, the uart 16x clock is used to clock the irda transmit and receive logic. when this field is set, receive decoder operation does not change, and the transmit encoder generates 1.6 ms pulses (that are 3/16 of a bit time at 115.2 kbps) instead of pulses 3/16 of a bit time wide. marvell recommends setting this field.  0 = transmit pulse width is 3/16 of a bit time wide  1 = transmit pulse width is 1.6 ms</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RCVEIR</spirit:name>
+<spirit:description>receiver sir enable  when this field is set, the signal from the rxd pin is processed by the irda decoder before it is fed to the uart. if this field is clear, then all clocking to the irda decoder is blocked and the rxd pin is fed directly to the uart.  0 = receiver is in uart mode  1 = receiver is in infrared mode</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>XMITIR</spirit:name>
+<spirit:description>transmitter sir enable  when this field is set, the normal txd output from the uart is processed by the irda encoder before it is fed to the device pin. if this field is clear, all clocking to the irda encoder is blocked and the uart's txd signal is connected directly to the device pin.  when transmitter sir enable is set, the txd output pin, which is in a normally high default state, switches to a normally low default state. this can cause a false start bit unless the infrared led is disabled before this field is set.  0 = transmitter is in uart mode  1 = transmitter is in infrared mode</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_FOR</spirit:name>
+<spirit:description>Receive FIFO Occupancy Register</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>BYTE_COUNT</spirit:name>
+<spirit:description>byte count  this field is used for the number of bytes (0-63) remaining in the receive fifo.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_ABR</spirit:name>
+<spirit:description>Auto-Baud Control Register</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ABT</spirit:name>
+<spirit:description>abt  0 = formula used to calculate baud rates, allowing all possible baud rates to be chosen by uart as shown in section 9.4.2.1.2  1 = table used to calculate baud rates, which limits uart to choosing common baud rates</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ABUP</spirit:name>
+<spirit:description>abup  0 = &lt;var product number&gt; programs divisor latch registers  1 = uart programs divisor latch registers</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ABLIE</spirit:name>
+<spirit:description>ablie  0 = auto-baud-lock interrupt disabled (source &lt;auto-baud lock&gt; field)  1 = auto-baud-lock interrupt enabled (source &lt;auto-baud lock&gt; field)</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ABE</spirit:name>
+<spirit:description>abe  0 = auto-baud disabled  1 = auto-baud enabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>UART_ACR</spirit:name>
+<spirit:description>Auto-Baud Count Register</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>AP_UA_COUNT_VALUE265</spirit:name>
+<spirit:description>count value  this field is used for the number of 14.857-mhz clock cycles within a start-bit pulse.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

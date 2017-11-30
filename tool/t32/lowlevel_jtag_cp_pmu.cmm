@@ -1,0 +1,58 @@
+;/*=====================================================================================
+; *
+; * usage:
+; *   do lowlevel_jtag_cp_pmu.cmm
+; *
+; *
+; * NOTE: this script must be called at Run-Test/Idle state and before 0x98 0xa
+; *
+; */=====================================================================================
+
+local &cp_state
+
+;
+; bit assignment of 0xA2:
+;
+
+; JTAG ADDR,      DATA length,     DATA BIT,         signal name
+; 0xA2  9 bits,   46 bits
+;                         bit[45:30] = {
+;                           core_psw_mode[1:0],
+;                           core_idle_clk_off_req,
+;                           core_idle_rst_ack, 
+;                           core_idle_rst_req,
+;                           core_wakeup,
+;                           core_idle_ind,
+;                           core_wfi_idle,
+;                           state[4:0],      //value 是0x0， 表示CR5 激活了
+;                           vote_wfi_idle, 
+;                           vote_core_pdwn, 
+;                           vote_core_L1SR_pdwn
+;                          }
+
+
+JTAG.SHIFTTMS 0 1 1 0 0                                                         ; goto Shift-IR state
+JTAG.SHIFTREG 0 1 0 0 0 1 0 1 0                                                 ; shift in 0xA2
+print.FORMAT.BINary(16.,JTAG.SHIFT())
+;;;---->
+
+JTAG.SHIFTTMS 1 1 0 0                                                           ; goto Shift-DR state
+
+print "DR [29:0], 30bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+print.FORMAT.BINary(30.,JTAG.SHIFT())
+;;;---->
+
+print "DR [45:30], 16bits"
+JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+&cp_state=JTAG.SHIFT()
+print.FORMAT.BINary(16.,&cp_state)
+&cp_state=(&cp_state>>3)&0x1f
+print "cp state = 0x" %Hex &cp_state
+;;;---->
+
+
+JTAG.SHIFTTMS 1 1 0 0    ; to run time/idle
+
+
+enddo

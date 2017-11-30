@@ -1,0 +1,35 @@
+; Lock JTAG port
+JTAG.LOCK
+JTAG.PIN ENable
+
+; perform JTAG operation from select dr.
+JTAG.SHIFTTMS 1 0 0                                                         ; goto Shift-IR state
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+JTAG.SHIFTREG 0 0 0 1 1 0 0 1 0                ; shift in 0x98 9 instruction
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+print.FORMAT.BINary(16,JTAG.SHIFT())
+JTAG.SHIFTTMS 1 0 1 0 0               
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+JTAG.SHIFTREG 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0   ; 0x0a
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+print.FORMAT.BINary(16,JTAG.SHIFT())
+Jtag.shifttms 1 0 0 0 0 0 0 0 0 0 0 1
+
+
+
+; Release JTAG port
+
+JTAG.PIN TMS 0 ; Pull TMS pin to 0
+JTAG.PIN TDI 0 ; Pull TDI pin to 0
+JTAG.UNLOCK
+
+ENDDO

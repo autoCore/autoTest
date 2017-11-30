@@ -1,0 +1,6 @@
+
+system.config slave off
+system.reset
+system.RESetTarget
+
+enddo

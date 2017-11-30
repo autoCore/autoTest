@@ -1,0 +1,54 @@
+;/*================================================================
+; *
+; * usage:
+; *
+; * do get_last_pc_artemis.cmm &cores_state &cores_bits
+; *
+; *    for example:
+; *
+; *    do get_last_pc_artemis.cmm 0xb 8
+; *
+; *    0xb:  0b'00001011, want to get last pc of core0/core1/core3
+; *
+; *
+; */===============================================================
+
+entry &cores_state &cores_bits
+
+if (&cores_state==0)||(&cores_bits==0)
+(
+  print "no core is need to get last pc, exit"
+  enddo
+)
+
+on error continue
+
+sys.mode.prepare
+
+local &core_pc_lo &core_pc_hi
+local &dbg_base
+local &core_index
+
+&core_pc_lo=0x0
+&core_pc_hi=0x0
+&dbg_base=0xd5c10000
+&core_index=0.
+
+while &core_index<&cores_bits
+(
+  if ((&cores_state)&(1<<&core_index))!=0
+  (
+    D.S EDAP:&dbg_base+0xfb0 %LE %Long 0xc5acce55
+    &core_pc_lo=Data.Long(EDAP:&dbg_base+0xa0)
+    &core_pc_hi=Data.Long(EDAP:&dbg_base+0xac)
+    D.S EDAP:&dbg_base+0xfb0 %LE %Long 0x0
+    DIALOG.MESSAGE "artemis core &core_index's pc val &core_pc_hi &core_pc_lo"
+
+    &core_pc_lo=0x0
+    &core_pc_hi=0x0
+  )
+  &core_index=&core_index+1.
+  &dbg_base=&dbg_base+0x100000
+)
+
+ENDDO

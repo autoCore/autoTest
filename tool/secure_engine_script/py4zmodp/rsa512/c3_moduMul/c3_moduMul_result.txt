@@ -1,0 +1,28 @@
+*** python for ZMODP *** Modular Multiplication *** start ***
+### Given M, X, Y and r = 2^(2n) mod M: Z = X * Y mod M ###
+
+S1---input param start--
+input data: RSA-512
+
+M=0x
+ 92a9f38233a022df1f4a680986c959d19e3946c593db5a4b8af4824043559e93e70c5e11ca700a21769bb90463eca751fc369435abb742bf9d5748bb53d4e42b
+X=0x
+ 30cd115c5a23ec3967352e46e073efaaf0ff527c8f3b625dbfde317dceea873e9f8fdd1d5fc16d0cbb68a3cd1d17f1b37656bb43a2e3317dceea873e9f8fdd12
+Y=0x
+ 7fcab2488a8d6cc11304d8c29f81d90362675121e670a41b408e8b5b47e6dd6bcf21e824d31d2780cc06082d4043d6e3348dd7a4fdfc478a4cf0e0f010417ee0
+
+---input param end--
+
+
+S2......running......
+        .............done
+
+
+S3---output result start--
+
+ResultZ=0x
+ 55c58ba73a4960e2d72282bbf62cd2c54fe2d366ddcbbc831ff18186d8361b39dc8c2f9b223f7aaaa87d39933df06b0e7911984e6a2a2b4f35d5a84e60893a89
+
+---output result end--
+
+*** python for ZMODP *** Modular Multiplication *** end ***

@@ -1,0 +1,70 @@
+;/*================================================================
+; *
+; * usage:
+; *
+; * do auto_core_assign.cmm &cores_state &cores_bits
+; *
+; *    for example:
+; *
+; *    do auto_core_assign.cmm 0xb 8
+; *
+; *    0xb:  0b'00001011, core0/core1/core3 power on
+; *          ==> core.assigng 1, 2, 4
+; *
+; */===============================================================
+
+entry &cores_state &cores_bits
+
+local &core_assign &core_index &separator &i
+local &source_string &search_string &replace_string
+local &srch_len &sep_len
+
+if (&cores_state==0)||(&cores_bits==0)
+(
+  print "no core is power on, exit"
+  enddo
+)
+
+;/*
+; * replacement algorithm:
+; * &cores_state=0xb &cores_bits=8
+; * 0
+; * 1, 0
+; * 1, 2, 0
+; * 1, 2, 4, 0
+; * 1, 2, 4
+; */
+
+&search_string="0"
+&core_assign="&search_string"
+&separator=", "
+
+&srch_len=STRing.LENgth("&search_string");
+&sep_len=STRing.LENgth("&separator");
+
+&i=0.
+while &i<&cores_bits
+(
+  if ((&cores_state)&(1<<&i))!=0
+  (
+    &core_index=Var.STRing(&i+1)
+
+    &source_string="&core_assign"
+    &replace_string="&core_index&separator&search_string"
+    ;;;&replace_string="&core_index &search_string"
+    &core_assign=string.replace("&source_string","&search_string","&replace_string", -1)  ; replacements the first occurrences of search_string from string end
+  )
+  &i=&i+1.
+)
+
+if "&core_assign"!="&search_string"
+(
+  &core_assign=string.cut("&core_assign",-(&srch_len+&sep_len)) ; cut off the search_string and separator from the end of the string
+  print "core.assign &core_assign"
+  core.assign &core_assign
+)
+else
+(
+  print "all cores are power off"
+  print "core.assign bypass"
+)

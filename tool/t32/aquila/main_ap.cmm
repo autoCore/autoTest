@@ -1,0 +1,92 @@
+LOCAL &core_msk
+&core_msk=0
+
+TERM.RESet
+TERM.METHOD SingleE E:0xC0700000 E:0xC0700004
+TERM.MODE vt100
+TERM.SCROLL ON
+TERM.view
+;TERM.WRITE E:0xC0700000 e:\autoTest.log
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+SCREEN.ALways
+
+DIALOG
+(
+  HEADER "Aquila T32 scripts"
+  POS 1. 0. 28. 1.
+  TEXT "Select Options:"
+
+;choosebox group for Selection A
+  POS 0. 1. 29. 1.
+  LINE "Selection A:"
+  POS 1. 2. 10. 1.
+  OptionA.1: CHOOSEBOX "ap c0.0 only" ""
+  OptionA.2: CHOOSEBOX "ap c0.0+c1.0" ""
+  OptionA.3: CHOOSEBOX "ap c2.0 (pls connect c0.0 first)" ""
+  OptionA.4: CHOOSEBOX "ap all a53 cores" ""
+  OptionA.5: CHOOSEBOX "ap all Artemis cores" ""
+
+;buttons OK (Default) and Cancel
+  POS 1. 9. 10. 1.
+  DEFBUTTON "OK" "CONTinue"
+  POS 14. 9. 10. 1.
+  BUTTON    "Cancel" "GOTO cancel"
+;define action when window is closed
+  CLOSE "GOTO cancel"
+)
+
+;diable OptionB6
+;  DIALOG.DISABLE OptionB.6
+
+;set default selections
+setdefaults:
+  DIALOG.Set OptionA.1
+
+;STOP command halts script execution 
+waitforok:
+  STOP
+;script will continue here when "OK" button is clicked
+  GOTO dialog_ok
+
+
+
+;script continues here when Cancel is clicked"
+cancel:
+  DIALOG.END
+  DIALOG.OK "Cancelled"
+ENDDO
+
+dialog_ok:
+;get selections
+  IF DIALOG.BOOLEAN(OptionA.1)
+    &core_msk=(&core_msk)|(1<<0)
+  IF DIALOG.BOOLEAN(OptionA.2)
+    &core_msk=(&core_msk)|(1<<1)
+  IF DIALOG.BOOLEAN(OptionA.3)
+    &core_msk=(&core_msk)|(1<<2)
+  IF DIALOG.BOOLEAN(OptionA.4)
+    &core_msk=(&core_msk)|(1<<3)
+  IF DIALOG.BOOLEAN(OptionA.5)
+    &core_msk=(&core_msk)|(1<<4)
+
+  IF (&core_msk&(1<<2))!=0
+	B::DO ./Artemis_ETB_Trace.cmm &core_msk
+  IF (&core_msk&(1<<4))!=0
+	B::DO ./Artemis_ETB_Trace.cmm &core_msk
+  ELSE
+	B::DO ./CA53_ETB_Trace.cmm &core_msk
+
+
+;check for illegal selection combinations
+;  IF ("&SelectionA"=="OptionA1")&&("&SelectionB"=="OptionB5")
+;  (
+;    DIALOG.OK "OptionB5 not allowed when OptionA1 is selected"
+;    GOTO setdefaults
+;  )
+;print result
+;  DIALOG.OK "SelectionA: &SelectionA"
+;close dialog window
+  DIALOG.END
+ENDDO

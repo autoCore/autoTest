@@ -1,0 +1,221 @@
+LOCAL &cpuNumber &multiConfig
+PARAMETERS &cpuNumber &multiConfig
+
+&multiConfig=STRing.UPpeR("&multiConfig")
+
+IF "&multiConfig"==""
+  &multiConfig="A53"
+
+; Possible values: 1. - 6. . 6. means 4x Cortex-A53 and 2x Cortex-A73
+; 1. is default
+IF "&cpuNumber"==""
+(
+  &cpuNumber=1.
+  &multiConfig="A53"
+)
+
+IF (&cpuNumber<1.)||(&cpuNumber>8.)
+(
+  DIALOG.OK "Invalid number of CPUs: &cpuNumber - End of script"
+  ENDDO
+)
+
+ON ERROR CONTinue
+
+;;/*using system etb(F) 16KB, What is HW event have been to send funnel->etb*/
+;tmestamp control: 0xd5003000
+;tmestamp read: 0xd5004000
+;cti1(ca53 4 cores): 0xd5006000
+sys.reset
+
+;;z1 160Khz, fpga 1MHz
+system.jtagclock 2Mhz
+do jtag_chain.cmm
+
+system.option enreset off
+system.option trst off
+system.config slave on
+
+SYStem.CPU CORTEXA73A53
+system.config corenumber 8.
+
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+system.config MEMORYACCESSPORT 0.
+system.config.debugaccessport 1.
+system.config AXIACCESSPORT   0.
+system.config.apbaccessport 1.
+
+system.config DAPIRPRE 1. 
+system.config DAPIRPOST 9.
+system.config DAPDRPRE 1.
+system.config DAPDRPOST 1.
+
+core.assign 1. 2. 3. 4. 5. 6. 7. 8.
+;soc
+SYStem.CONFIG.ETB1.Base dap:0xd5005000      ;soc ETB, dont config if using core etb
+
+SYStem.CONFIG.ETR1.Base dap:0xd5020000	;soc etr
+SYStem.CONFIG.STM1.Base dap:0xd5021000	;soc stm
+SYStem.CONFIG.funnel4.Base dap:0xd5007000	;soc funnel
+
+SYStem.CONFIG.cti1.Base dap:0xd5006000	;
+;SYStem.CONFIG.cti0.Base dap:0xd5022000	;
+
+SYStem.CONFIG.funnel1.Base dap:0xd5009000	;funnel
+
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+
+SYStem.CONFIG.COREDEBUG.Base DAP:0xd5810000 dap:0xD5410000 DAP:0xd5910000 dap:0xD5510000 DAP:0xd5a10000 dap:0xD5610000 DAP:0xd5b10000 dap:0xD5710000 
+SYStem.CONFIG.CTI.Base DAP:0xd5820000 dap:0xD5420000 DAP:0xd5920000 dap:0xD5520000 DAP:0xd5a20000 dap:0xD5620000 DAP:0xd5b20000 dap:0xD5720000                                                         
+SYStem.CONFIG.BMC.Base DAP:0xd5830000 dap:0xD5430000 DAP:0xd5930000 dap:0xD5530000 DAP:0xd5a30000 dap:0xD5630000 DAP:0xd5b30000 dap:0xD5730000 
+SYStem.CONFIG.ETM.Base DAP:0xd5840000 dap:0xD5440000 DAP:0xd5940000 dap:0xD5540000 DAP:0xd5a40000 dap:0xD5640000 DAP:0xd5b40000 dap:0xD5740000  
+SYStem.CONFIG.ETB.Base DAP:0xd502a000 dap:0xd500a000 dap:0xd502b000 dap:0xd500b000 dap:0xd502c000 dap:0xd500c000 DAP:0xd502d000 dap:0xd500d000
+
+;choose etb
+;use core etb
+;system.CONFIG.etb0 ATBSource etm.0 ;a73 core0 ;system.CONFIG.etb2 ATBSource etm.2 ;a73 core1
+;system.CONFIG.etb1 ATBSource etm.1 ;a53 core0 ;system.CONFIG.etb3 ATBSource etm.3 ;a53 core1
+
+;according to the address. b0(0, port is 4) L0(1);  6 2;  7 3;  8 4
+SYStem.CONFIG.FUNNEL1.ATBSource ETM.0 4 ETM.1 0 ETM.2 5 ETM.3 1 ETM.4 6 ETM.5 2 ETM.6 7 ETM.7 3
+;end choose etb
+
+
+SYStem.CONFIG.FUNNEL4.ATBSource FUNNEL1 0
+SYStem.CONFIG.ETB1.ATBSource FUNNEL4
+
+; Disable interrupts in debug mode.
+; Set to off to debug interrupt routines
+SYStem.Option IMASKASM ON
+SYStem.Option IMASKHLL ON
+SYStem.Option EnReset OFF               ; Avoid that reset line is pulled low 
+                                        ; during Prepare mode
+SYStem.Option PWRDWN ON
+
+;ETM.TimeStampCLOCK 12800.MHz
+
+core.assign 2
+SYStem.Mode Attach
+
+Break.direct
+D.S DAP:0xD5003000 %LE %Long 1
+
+enddo
+
+;init ddr
+;data.load.binary \\fileserver\public-share\USER\lihong\FPGA\aquila_fpga_mini_test.bin 0xc0800000
+data.load.binary aquila_fpga_mini_test.bin 0xc0800000;for audio 0606 bitfile
+r.s pc 0xc0800000
+go
+wait 3.
+Break.direct
+gosub Release_TL4
+
+enddo
+
+data.set 0 %long 0x14000000  ;set ddr
+data.set 0xd4282db0 %long 0x0 ;set reset address to ddr 0x0
+data.set 0xd428292c %long 0xff ;releae 8 cores
+r.s pc 0x0
+sys.down
+
+GOSUB AssignCore ;core.assign 1 2 3 4; for b0,L0,b1,L1
+sys.attach
+
+ENDDO
+
+AssignCore:
+  IF "&multiConfig"=="MP"
+  (
+    IF &cpuNumber<=8.
+      CORE.NUMber &cpuNumber            ; Assign all Cortex-x cores in a row
+    ELSE
+	(
+	  DIALOG.OK "Invalid number of CPUs: &cpuNumber - End of script"
+	  ENDDO
+	)
+  )
+  ELSE IF "&multiConfig"=="A53"
+  (
+    IF &cpuNumber==1.
+    (
+      CORE.ASSIGN 2.
+    )
+    IF &cpuNumber==2.
+    (
+      CORE.ASSIGN 2. 4.
+    )
+    IF &cpuNumber==3.
+    (
+      CORE.ASSIGN 2. 4. 6.
+    )
+    IF &cpuNumber>=4.
+    (
+      CORE.ASSIGN 2. 4. 6. 8.
+    )
+  )
+  ELSE IF "&multiConfig"=="A73"
+  (
+    IF &cpuNumber==1.
+    (
+      CORE.ASSIGN 1.
+    )
+    IF &cpuNumber==2.
+    (
+      CORE.ASSIGN 1. 3.
+    )
+	IF &cpuNumber==3.
+    (
+      CORE.ASSIGN 1. 3. 5.
+    )
+    IF &cpuNumber>=4.
+    (
+      CORE.ASSIGN 1. 3. 5. 7.
+    )
+  )
+  ELSE
+  (
+    DIALOG.OK "Invalid multiConfig : &multiConfig - End of script"
+    ENDDO
+  )
+RETURN
+
+Release_TL4:
+data.load.elf \\10.1.50.42\s\baremetal-test\ctest\build\aquilac_fpga\img\tl4\aquilac_fpga_tl4_test.axf
+go
+;wait 5.
+;break.direct
+D.S ZSD:0xD4015068 %LE %Long 0x3
+D.S ZSD:0x00000000D401501C %LE %Long 0x3
+D.S ZSD:0x00000000D4282C5C %LE %Long 0x2
+D.S ZSD:0x00000000D428294C %LE %Long 0x7001009
+D.S ZSD:0x00000000C088C038 %LE %Long 0x10
+D.S ZSD:0x00000000D428294C %LE %Long 0x700100f
+D.S ZSD:0x00000000C088C030 %LE %Long 0x08000002
+D.S ZSD:0x00000000C088C02C %LE %Long 0x0000000F
+D.S ZSD:0x00000000D4015090 %LE %Long 0x00000003
+D.S ZSD:0x00000000C088c040 %LE %Long 0x727
+D.S ZSD:0x00000000C0880020 %LE %Long 0xc17
+D.S ZSD:0x00000000C0880024 %LE %Long 0xc17
+D.S ZSD:0x00000000C0880028 %LE %Long 0x717
+D.S ZSD:0x00000000C088002c %LE %Long 0x717
+D.S ZSD:0x00000000C0880030 %LE %Long 0x717
+D.S ZSD:0x00000000C0880034 %LE %Long 0x717
+
+;open all icu
+D.S ZSD:0x00000000C0880000 %LE %Long 0x1003
+
+;open timer clk
+D.S ZSD:0x00000000C088c04c %LE %Long 0x727
+
+;release AUD-IPC clok reset  release AP-IPC clock reset
+D.S ZSD:0xc088c02c %LE %Long 0xf
+D.S ZSD:0xd4015090 %LE %Long 0x3
+
+RETURN
+
+
+

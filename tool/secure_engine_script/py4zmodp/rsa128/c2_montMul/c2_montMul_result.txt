@@ -1,0 +1,28 @@
+*** python for ZMODP *** Montgomery Multiplication *** start ***
+### Z = X * Y * 2^(-n) mod M ###
+
+S1---input param start--
+input data: RSA-128
+
+M=0x
+ e827bc31a610ec69a866b34773fceb59
+X=0x
+ 30405789123000000000000000000000
+Y=0x
+ 77788993200500000000000000000000
+
+---input param end--
+
+
+S2......running......
+        .............done
+
+
+S3---output result start--
+
+ResultZ=0x
+ 1684a0c7e9887123f9835af000000000
+
+---output result end--
+
+*** python for ZMODP *** Montgomery Multiplication *** end ***

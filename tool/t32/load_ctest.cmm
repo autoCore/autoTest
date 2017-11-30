@@ -1,0 +1,56 @@
+;/**************************************************************
+; * This script is used to load ctest image in Windows T32
+; *
+; * USAGE:
+; *   change the &axffile name which you want to debug
+; *   change the &project name to your platform if you compile ctest
+; *     with cmake, or leave it empty string if you compile ctest
+; *     with common makefile
+; *   change the Windows &localpath of ctest
+; *   change the Ubuntu &remotepath of ctest
+; *
+; * NOTE:
+; *   1.The image name must obey the rule if you compile ctest
+; *     with common makefile:
+; *     &soc_&board_&module_test.axf,
+; *     which is produced at the path of
+; *     ctest/build/&soc_&board/img/&module/
+; *   2.map the ctest/ as the newwork drive first
+; *
+; **************************************************************/
+
+LOCAL &localpath &remotepath &axffile
+LOCAL &separator &soc &board &project &module
+LOCAL &start_at &length
+
+&axffile="aquilac_fpga_example_test.axf"
+&project="aquilac_fpga"
+&localpath="Q:\ctest"
+&remotepath="/your/ubuntu/dir/of/baremetal-test/ctest"
+
+if STRing.ComPare("&project","")
+(
+  &separator="_"
+  &soc=STRing.SPLIT("&axffile","&separator",0)
+  &board=STRing.SPLIT("&axffile","&separator",1)
+  &project="&soc&separator&board"
+
+  &start_at=STRing.LENgth("&project")+1
+  &length=STRing.LENgth("&axffile")-STRing.LENgth("&project")-10. ; 10: 2underlines + test.axf
+  &module=STRing.MID("&axffile", &start_at, &length)
+
+  &axffile="&localpath\build\&project\img\&module\&axffile"
+)
+else
+(
+  &axffile="&localpath\build\project\&project\&axffile"
+)
+
+PRINT "loading ctest image... &axffile"
+Data.LOAD.Elf &axffile /StripPART "&remotepath" /PATH "&localpath"
+
+data.list
+
+break
+
+;break.set main

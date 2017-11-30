@@ -1,0 +1,1 @@
+SINGLE_TEST:1.test:AUTOTEST@cmd_name:30s:ready:log_name

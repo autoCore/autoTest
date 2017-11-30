@@ -1,0 +1,34 @@
+SYStem.CONFIG CoreNumber 1
+CORE.ASSIGN 1
+system.jtagclock 1Mhz
+system.option enreset off
+system.option trst off
+system.config slave on
+
+
+system.config DAPIRPRE 1. 
+system.config DAPIRPOST 9.
+system.config DAPDRPRE 1.
+system.config DAPDRPOST 1.
+
+system.config MEMORYACCESSPORT 0
+system.config AXIACCESSPORT   0
+system.config DEBUGACCESSPORT 1
+
+SYStem.MemAccess DAP
+SYStem.CpuAccess Enable
+
+system.cpu CORTEXA53
+
+sys.config corebase      0xD5b10000
+SYS.CONFIG.CTIBase       0xD5b20000	
+
+system.attach
+
+break
+
+do ./load_ctest_nocode.cmm
+
+ENDDO
+
+

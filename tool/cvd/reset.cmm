@@ -1,0 +1,13 @@
+
+system.config slave off
+system.reset
+
+if version.build()==0x100000   ;;for cvd
+(
+  jtag.pin nreset 0 
+  jtag.pin nreset 1 
+)
+else
+  system.RESetTarget
+
+enddo

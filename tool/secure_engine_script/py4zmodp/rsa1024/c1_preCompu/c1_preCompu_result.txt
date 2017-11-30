@@ -1,0 +1,24 @@
+*** python for ZMODP *** Pre-Computation of R(=2^(2n)) *** start ***
+### Given M, compute Z = 2^(2n) mod M ###
+
+S1---input param start--
+input data: RSA-1024
+
+M=0x
+ e72ef44b4a54b63fe1f3c9c8f50db509521eac432b9a8cf93de744a4337937e2232077a692cdcc02b83095e4b92f4ae018b130c81d03d8b6db1989e626ba934497586d3e7755abb0117b14956d5fdae86f4ba0095bc0de63a7761bc63fa1ffb8139385639233b2b7f00389944045a80166d9b2348c5090996ce5128d231e5017
+
+---input param end--
+
+
+S2......running......
+        .............done
+
+
+S3---output result start--
+
+ResultZ=0x
+ 7fcab2488a8d6cc11304d8c29f81d90362675121e670a41b408e8b5b47e6dd6bcf21e824d31d2780cc06082d4043d6e3348dd7a4fdfc478a4cf0e0f010417ee0c2a839aa4d9f344f654e040192affe0c0448ed05d298d4899c2cf73c022d88ffc5d014e6799820c8a936bdb61c6154aebffba1b710babb42f42a42390b5809eb
+
+---output result end--
+
+*** python for ZMODP *** Pre-Computation of R *** end ***

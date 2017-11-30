@@ -1,0 +1,70 @@
+local &ap_core_msk
+entry &ap_core_msk
+
+if version.build()==0x100000   ;;for cvd 
+(
+  system.jtagclock 2Mhz
+  system.option enreset off
+  system.option trst off
+  system.config slave on
+  
+  system.config DAPIRPRE 1. 
+  system.config DAPIRPOST 9.
+  system.config DAPDRPRE 1.
+  system.config DAPDRPOST 1.
+  
+  system.config MEMORYACCESSPORT 0
+  system.config AXIACCESSPORT   0
+  system.config DEBUGACCESSPORT 1
+  system.config.apbaccessport 1.
+  
+  sys.cpu cortexa53 
+
+  IF (&ap_core_msk!=0)
+  (
+    print "AP core mask: &ap_core_msk"
+
+    IF &ap_core_msk==0x01
+    (
+      sys.config corenumber 1.
+      sys.config corebase      0xD5410000
+      SYS.CONFIG.CTIBase       0xD5420000
+    )
+    IF &ap_core_msk==0x03
+    (
+      sys.config corenumber 2.
+      sys.config corebase      0xD5410000 0xD5510000
+      SYS.CONFIG.CTIBase       0xD5420000 0xD5520000
+    )
+    IF &ap_core_msk==0x0f
+    (
+      sys.config corenumber 4.
+      sys.config corebase      0xD5410000 0xD5510000 0xD5610000 0xD5710000
+      SYS.CONFIG.CTIBase       0xD5420000 0xD5520000 0xD5620000 0xD5720000
+    )    
+    IF &ap_core_msk==0x11
+    (
+      sys.config corenumber 2.
+      sys.config corebase      0xD5410000 0xD5810000 
+      SYS.CONFIG.CTIBase       0xD5420000 0xD5820000 
+    )
+    IF &ap_core_msk==0xf0
+    (
+      sys.config corenumber 4.
+      sys.config corebase      0xD5810000 0xD5910000 0xD5a10000 0xD5b10000
+      SYS.CONFIG.CTIBase       0xD5820000 0xD5920000 0xD5a20000 0xD5b20000
+    )    
+    IF &ap_core_msk==0xff
+    (
+      sys.config corenumber 8.
+      sys.config corebase      0xD5410000 0xD5510000 0xD5610000 0xD5710000 0xD5810000 0xD5910000 0xD5a10000 0xD5b10000
+      SYS.CONFIG.CTIBase       0xD5420000 0xD5520000 0xD5620000 0xD5720000 0xD5820000 0xD5920000 0xD5a20000 0xD5b20000
+    )
+  )
+)
+else
+(
+  print "This script can not be used in T32"
+)
+
+ENDDO

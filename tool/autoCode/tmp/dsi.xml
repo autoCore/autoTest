@@ -1,0 +1,3199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>dsi</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4238000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>DSI_CTRL_0</spirit:name>
+<spirit:description>DSI Control Register 0</spirit:description>
+<spirit:addressOffset>0X0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_SOFT_RST</spirit:name>
+<spirit:description>software reset dsi module  1 = reset dsi module  0 = de-assert software reset</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SOFT_RST_REG</spirit:name>
+<spirit:description>software reset config registers  1 = reset dsi config registers to default values  0 = de-assert reset</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CLR_PHY_FIFO</spirit:name>
+<spirit:description>configure clear phy tx fifo  1 = clear fifo data to 0  0 = de-assert clear. it is not used currently and reserved for future use.</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_RST_TXLP</spirit:name>
+<spirit:description>software reset lp tx submodule  1 = reset lp tx module  0 = de-assert software reset</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_RST_CPU</spirit:name>
+<spirit:description>software reset cpu tx submodule  1 = reset cpu tx module  0 = de-assert software reset</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_RST_CPN</spirit:name>
+<spirit:description>software reset cpn tx submodule  1 = reset cpn tx module  0 = de-assert software reset</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_RST_VPN</spirit:name>
+<spirit:description>software reset video panel submodule  1 = reset vpn module  0 = de-assert software reset</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DSI_PHY_RST</spirit:name>
+<spirit:description>software reset dphy submodule  1 = reset dphy  0 = de-assert software reset</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DSI_HCLK_DIS</spirit:name>
+<spirit:description>dsi ahb clock disable. dsi config registers can still be written or read even if dsi ahb clock is disabled.  1 = dsi ahb clock will be gated   0 = dsi ahb clock is passed to dsi module</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DSI_CLK_DIS</spirit:name>
+<spirit:description>dsi clock disable  1 = dsi clock will be gated   0 = dsi clock is passed to dsi module</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_TX_EN</spirit:name>
+<spirit:description>video panel interface tx enable  1 = enable video panel tx packet to dphy. dsi will send video packets to peripheral.   0 = disable video panel interface tx.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_SLV</spirit:name>
+<spirit:description>video panel interface in slave mode  1 = video panel work in slave mode, and it will receive vsync from input lcd interface, and use it to control the internal timing.   0 = video panel interface works in master mode. dsi will send vsync to lcd module and control the v timing and h timing.   this bit must set to 1, vpn just support slave mode.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_EN</spirit:name>
+<spirit:description>command panel interface enable  1 = command panel is running and can accept data from the command panel interface  0 = disable command panel interface.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_EN</spirit:name>
+<spirit:description>video panel interface enable  1 = video panel is running.  0 = disable video panel interface.   setting this field to 1 will star the video panel timing.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CTRL_1</spirit:name>
+<spirit:description>DSI Control Register 1</spirit:description>
+<spirit:addressOffset>0X4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_EOTP_EN</spirit:name>
+<spirit:description>eotp enable  1 = enable eotp packet  0 = disable eotp packet</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_VCH_NO</spirit:name>
+<spirit:description>command panel virtual channel number</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_VCH_NO</spirit:name>
+<spirit:description>video panel virtual channel number for active panel 1  this parameter defines the virtual channel number for vpn</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_IRQ_ST1</spirit:name>
+<spirit:description>DSI Interrupt Status Register1</spirit:description>
+<spirit:addressOffset>0X8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_HS_RXP</spirit:name>
+<spirit:description>dphy hstx contention rxp error</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_HS_RXN</spirit:name>
+<spirit:description>dphy hstx contention rxn error</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_HS_CONTP</spirit:name>
+<spirit:description>dphy hstx contention contp error</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_HS_CONTN</spirit:name>
+<spirit:description>dphy hstx contention contn error</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_IRQ_MASK1</spirit:name>
+<spirit:description>DSI Interrupt Mask Register1</spirit:description>
+<spirit:addressOffset>0XC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_IRQ_MASK1</spirit:name>
+<spirit:description>dsi interrupt mask  this field is used to mask interrupt requests. if one bit is set to 0x1, the corresponding interrupt status is masked.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_IRQ_ST</spirit:name>
+<spirit:description>DSI Interrupt Status Register</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_LAST_LINE</spirit:name>
+<spirit:description>last line interupt</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_CPN_TE</spirit:name>
+<spirit:description>command panel tearing effect.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_TA_TIMEOUT</spirit:name>
+<spirit:description>turnaround acknowledge timeout for dphy</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_TIMEOUT</spirit:name>
+<spirit:description>lp-rx timeout for dphy</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_TX_TIMEOUT</spirit:name>
+<spirit:description>hs tx timeout for dphy</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_STATE_ERR</spirit:name>
+<spirit:description>peripheral status error  after dsi receives an ack with error report packet from slave, it will mark this bit if there is error status reported.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_ERR</spirit:name>
+<spirit:description>dsi rx packet error  dsi receives a packet from slave and the received packet has error status (ecc error/crc error/unknown packet)</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_FIFO_FULL_ERR</spirit:name>
+<spirit:description>rx fifo full error</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_PHY_FIFO_UNDERRUN</spirit:name>
+<spirit:description>phy fifo underrun error</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_REQ_CNT_ERR</spirit:name>
+<spirit:description>tx request count error  the delays between an active panel tx request to the dphy ready are not consistent.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RXPSR_FIFO_FULL_ERR</spirit:name>
+<spirit:description>rx parser fifo full error</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_VPN_REQ_PHY_DLY_ERR</spirit:name>
+<spirit:description>vpn request delay error at phy interface  vpn packets are delayed at the phy interface.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_VPN_BF_UNDERRUN_ERR</spirit:name>
+<spirit:description>vpn buffer underrun error</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_VPN_REQ_ARB_DLY_ERR</spirit:name>
+<spirit:description>vpn request delay error at arbiter interface  vpn packets are delayed at arbiter point.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_VPN_BF_OVERRUN_ERR</spirit:name>
+<spirit:description>vpn buffer overrun error</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_VPN_TIMING_ERR</spirit:name>
+<spirit:description>vpn data timing error  pixel data may be incorrect. data fifo for vpn path is read too early or too late, and fifo is empty when it is read.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_VPN_VACT_DONE</spirit:name>
+<spirit:description>vpn vact done</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_VPN_BF_FULL</spirit:name>
+<spirit:description>vpn buffer full error  pixel data may be incorrect.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_CPN_BF_FULL</spirit:name>
+<spirit:description>cpn buffer full error  pixel data may be incorrect.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_CONT_LP1</spirit:name>
+<spirit:description>dphy lp1 contention detect  ppi errcontertionlp1</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_CONT_LP0</spirit:name>
+<spirit:description>dphy lp0 contention detect  ppi errcontertionlp0</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_SYNC_ESC</spirit:name>
+<spirit:description>dphy sync error  ppi errsyncesc, partial byte detected</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_ERR_ESC</spirit:name>
+<spirit:description>dphy invalid command detect  ppi erresc, invalid esc command detected</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_DPHY_RX_LINE_ERR</spirit:name>
+<spirit:description>dphy invalid line state detect  ppi errcontrol</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_TRG3</spirit:name>
+<spirit:description>dphy rx trigger 3 received  by default, the value of trigger 3 is 0x05, and its meaning is not defined by specification.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_TRG2</spirit:name>
+<spirit:description>dphy rx trigger 2 received  by default, trigger 2 is for acknowledge trigger, and its value is 0x84.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_TRG1</spirit:name>
+<spirit:description>dphy rx trigger 1 received  by default, trigger 1 is for te trigger, and its value is 0xba.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_TRG0</spirit:name>
+<spirit:description>dphy rx trigger 0 received  by default, trigger 0 is for reset trigger, and its value is 0x46.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_ULPS</spirit:name>
+<spirit:description>dphy rx ulps received</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_RX_PKT</spirit:name>
+<spirit:description>dphy rx packet received</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_CPN_TX_DONE</spirit:name>
+<spirit:description>command panel data transmission done</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_CPU_TX_DONE</spirit:name>
+<spirit:description>cpu packet transmission done</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_IRQ_MASK</spirit:name>
+<spirit:description>DSI Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_IRQ_MASK</spirit:name>
+<spirit:description>dsi interrupt mask  this field is used to mask interrupt requests. if one bit is set to 0x1, the corresponding interrupt status is masked.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_FPGA_PHY_CTRL_0</spirit:name>
+<spirit:description>DSI FPGA PHY Control Register 0</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_DPHY_FCLK_REV</spirit:name>
+<spirit:description>fpga dphy fclk reverse</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_TXRX_BYTECLK_REV</spirit:name>
+<spirit:description>fpga dphy txrx_byteclk reverse</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSREQ_LANE3</spirit:name>
+<spirit:description>fpga dphy lane3 hs requeset</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSREQ_LANE2</spirit:name>
+<spirit:description>fpga dphy lane2 hs requeset</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSREQ_LANE1</spirit:name>
+<spirit:description>fpga dphy lane1 hs requeset</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSREQ_LANE0</spirit:name>
+<spirit:description>fpga dphy lane0 hs requeset</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSREQ_LANECLK</spirit:name>
+<spirit:description>fpga dphy laneclk hs requeset</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ENABLECLK</spirit:name>
+<spirit:description>fpga dphy enable clk lane</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ENABLE1125</spirit:name>
+<spirit:description>fpga dphy enable1</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ENABLE0126</spirit:name>
+<spirit:description>fpga dphy enable0</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_MASSLVZ127</spirit:name>
+<spirit:description>fpga dphy masterslaverz</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_TXRXZ</spirit:name>
+<spirit:description>reserved for future use</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_RSTZCAL129</spirit:name>
+<spirit:description>fpga dphy rstzcal</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_SHUTDOWN130</spirit:name>
+<spirit:description>fpga dphy shutdown</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_RESETZ131</spirit:name>
+<spirit:description>fpga dphy resetz</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_FPGA_PHY_CTRL_1</spirit:name>
+<spirit:description>DSI FPGA PHY Control Register 1</spirit:description>
+<spirit:addressOffset>0X1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_DPHY_ENABLE1139</spirit:name>
+<spirit:description>fpga dphy lock</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ENABLE0140</spirit:name>
+<spirit:description>fpga dphy testdout</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_MASSLVZ141</spirit:name>
+<spirit:description>fpga dphy testdin</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_RSTZCAL143</spirit:name>
+<spirit:description>fpga dphy testen</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_SHUTDOWN144</spirit:name>
+<spirit:description>fpga dphy testclr</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_RESETZ145</spirit:name>
+<spirit:description>fpga dphy testclk</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_CMD_0</spirit:name>
+<spirit:description>DSI CPU Packet Command Register 0</spirit:description>
+<spirit:addressOffset>0X20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPU_CMD_REQ</spirit:name>
+<spirit:description>cpu command request  1 = cpu packet request  0 = no request or request done  after software writes a command with this bit set to 1, the dsi module sends out a packet as requested. dsi de-asserts this field after packet is sent.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPU_SP</spirit:name>
+<spirit:description>cpu short packet  1 = cpu packet is a short packet  0 = cpu packet is a long packet</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPU_TURN</spirit:name>
+<spirit:description>cpu turn around  1 = after cpu packet, turn around the bus  0 = don’t turn around bus after cpu packet</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPU_TXLP</spirit:name>
+<spirit:description>low power tx for cpu packets  1 = transfer cpu packets through low power mode  0 = use high-speed mode to send cpu packets</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPU_WC</spirit:name>
+<spirit:description>cpu packet byte count  for high speed transfer, this is the payload byte count for long packets and doesn't include crc bytes. for high speed short packet transfer, this parameter is ignored. for low power transfer, this is the byte count for the whole packet transmission, including crc bytes, and cfg_cpu_sp is ignored.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_CMD_1</spirit:name>
+<spirit:description>DSI CPU Packet Command Register 1</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_TXLP_LPDT</spirit:name>
+<spirit:description>lpdt tx enable  lpdt tx enable signals for low power tx</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TXLP_ULPS</spirit:name>
+<spirit:description>ulps tx enable  ulps tx enable signals for low power tx</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TXLP_TRIGGER_CODE</spirit:name>
+<spirit:description>low power tx trigger code</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_CMD_3</spirit:name>
+<spirit:description>DSI CPU Packet Command Register 3</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPU_DAT_REQ</spirit:name>
+<spirit:description>cpu packet data buffer read/write request  1 = cpu packet data request   0 = no request or request done  after software writes a command with this bit set to 1, the dsi module will write data to the packet data buffer or read data from the data buffer as requested. dsi will de-assert this bit after write/read operation is done. read data will be valid after this bit is reset to zero.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPU_DAT_RW</spirit:name>
+<spirit:description>cpu packet data buffer read/write operation  1 = cpu packet data write operation   0 = cpu packet data read operation</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPU_DAT_ADDR</spirit:name>
+<spirit:description>cpu packet data address  this is the byte address for packet data. every write/read operation, 4 bytes of data will be written or read. software should increase address by 4 after each operation. packet data start from packet header. address 0: bits [7:0] are for type_id, bits [23:8] are for length, and bits [31:24] are for ecc. address 4: payload data if packet is a long packet, and so on. the maximum packet data buffer is 256 bytes.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_WDAT</spirit:name>
+<spirit:description>DSI CPU Packet Data Register</spirit:description>
+<spirit:addressOffset>0X30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPU_WDAT</spirit:name>
+<spirit:description>cpu wdata 0  the dsi can generate packets based on cpu programmed data. this register defines the cpu packet data.  this register is the cpu packet data to be written to the packet data buffer. software should program packet data to this register and then program the dsi cpu packet command register 3 to put the packet data into the tx packet data buffer. for every write/read operation, 4-byte data is written/read. bits [7:0] are the lsb and bits [31:24] are the msb.  for packet data at address 0, bits [7:0] are for type_id, bits [23:8] are for length, and bits [31:24] are for ecc.  for data at address 4, payload data if packet is a long packet, and so on.  if packet is transmitted in high speed, hardware generates ecc and crc to replace this ecc/crc code in the packet data buffer. under low power tx, hardware does not insert ecc/crc and sends out the ecc/crc code in the packet data buffer.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_STATUS_0</spirit:name>
+<spirit:description>DSI CPU Command Status 0</spirit:description>
+<spirit:addressOffset>0X34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPU_PKT_CNT</spirit:name>
+<spirit:description>cpu packet counter  this counter counts how many cpu packets are sent out through dsi. this register is write clear.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_STATUS_1</spirit:name>
+<spirit:description>DSI CPU Command Status 1</spirit:description>
+<spirit:addressOffset>0X38</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPU_CMD_TX_CNT</spirit:name>
+<spirit:description>cpu cmd tx counter  this counter counts how many byte clock cycles it takes to transfer the current cpu command. it begins to count after cpu command is received, and stops to counter after dphy gets ready for another tx request. this counter could help to decide the cfg_l*_slot_**_cnt values of register 0x130, 0x134, 0x1b0, and 0x1b4.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_STATUS_2</spirit:name>
+<spirit:description>DSI CPU Command Status 2</spirit:description>
+<spirit:addressOffset>0X3C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPU_CMD_CNT</spirit:name>
+<spirit:description>cpu cmd execution counter  this counter counts how many byte clock cycles it takes to execute the current cpu command. this counter only counts the cycles which cpu engine is busy. this counter could help to decide the cfg_l*_slot_**_cnt values of register 0x130, 0x134, 0x1b0, and 0x1b4.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_STATUS_3</spirit:name>
+<spirit:description>DSI CPU Command Status 3</spirit:description>
+<spirit:addressOffset>0X40</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_TXLP_CNT</spirit:name>
+<spirit:description>low power tx byte clock count. this counter counts how many byte clock cycles it takes to transfer a low power packet.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPU_STATUS_4</spirit:name>
+<spirit:description>DSI CPU Command Status 4</spirit:description>
+<spirit:addressOffset>0X44</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_BTA_CNT</spirit:name>
+<spirit:description>bus turn around byte clock count. this counter counts how many byte clock cycles it takes to do a bus turn around operation.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPN_STATUS_1</spirit:name>
+<spirit:description>DSI Command Panel Path Status 1</spirit:description>
+<spirit:addressOffset>0X4C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPN_STATUS_1</spirit:name>
+<spirit:description>command panel path status 1.  {smt_bf_cnt[5:0], smt_fifo_bcnt[9:0],
+  3'b0, smt_cs[4:0], 
+  2'b0, smt_wr_on, smt_dma_on,
+  smt_fifo_empty, smt_bf_empty, smt_fifo_full_r, smt_bf_full_r}</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPN_CMD</spirit:name>
+<spirit:description>DSI Command Panel Command Register</spirit:description>
+<spirit:addressOffset>0X50</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPN_TE_EN</spirit:name>
+<spirit:description>command panel tearing effect signal enable</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_RGB_TYPE</spirit:name>
+<spirit:description>command panel data rgb type  0x0 = 888 mode  0x1 = 666 unpacked mode  0x2 = 565 mode  0x3 = 444 mode  0x4 = 332 mode  0x5 = 111 mode</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_BURST_MODE</spirit:name>
+<spirit:description>command panel interface burst mode enable   0 = enable previous command pandel interface.   1 = burst mode interface between lcd and dsi will take effect.  this interface is more efficient than the previous one.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_FIRSTP_SEL</spirit:name>
+<spirit:description>command panel first packet select   0 = fifo empty &lt;1&gt; vsync from dp650</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_DMA_DIS</spirit:name>
+<spirit:description>command panel dma_on disable  1 = disable smt_dma_on signal from lcd controller. dsi will not receive command panel interface data from lcd even smt_dma_on signal is active high.  0 = receive lcd command panel interface data when smt_dma_on is high.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_ADDR0_EN</spirit:name>
+<spirit:description>command panel address bit indicator  0 = when smt_addr = 1, bus data are for pixel rgb data. when smt_addr = 0, bus data are ignored  1 = when smt_addr = 0, bus data are for pixel rgb data. when smt_addr = 1, bus data are ignored.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPN_CTRL_0</spirit:name>
+<spirit:description>DSI Command Panel Control 0 Register</spirit:description>
+<spirit:addressOffset>0X54</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_DCS_LONGWR_CODE</spirit:name>
+<spirit:description>dsi command code for writing command panel data  the default data is 0x39 from dsi specification.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DCS_WR_CON_CODE</spirit:name>
+<spirit:description>dcs command for continuous write  the default value is 0x3c in mipi alliance standard for display command set specification.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DCS_WR_STR_CODE</spirit:name>
+<spirit:description>dcs command for first write  the default value is 0x2c in the mipi alliance standard for display command set specification.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPN_CTRL_1</spirit:name>
+<spirit:description>DSI Command Panel Control 1 Register</spirit:description>
+<spirit:addressOffset>0X58</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPN_PKT_CNT</spirit:name>
+<spirit:description>command panel packet length  this field defines the packet length for command panel packets.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>10</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_FIFO_FULL_LEVEL</spirit:name>
+<spirit:description>command panel fifo full level, in byte count</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>10</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_CPN_STATUS_0</spirit:name>
+<spirit:description>DSI Command Panel Control Status 0</spirit:description>
+<spirit:addressOffset>0X5C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPN_FRM_CNT</spirit:name>
+<spirit:description>command panel frame counter  this counter counts how many command panel frames are sent out through dsi. this register is write clear.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_ST_0</spirit:name>
+<spirit:description>DSI RX Packet 0 Status Register</spirit:description>
+<spirit:addressOffset>0X60</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT0_ST_VLD</spirit:name>
+<spirit:description>rx packet 0 status valid  1 = valid status  0 = invalid status</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_ST_EOTP</spirit:name>
+<spirit:description>rx packet 0 is eotp  1 = received packet is eotp packet  0 = other packet  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_ST_ACK</spirit:name>
+<spirit:description>rx packet 0 is ack packet  1 = received packet is an ack packet with or without error  0 = other packet  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_ST_SP</spirit:name>
+<spirit:description>rx packet 0 short packet  1 = received packet is a short packet  0 = long packet  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_PKT_PTR</spirit:name>
+<spirit:description>rx packet 0 data pointer  packet header in fifo is the raw data from dphy and is before ecc correction.  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_VCH</spirit:name>
+<spirit:description>rx packet 0 virtual channel number  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_ECC_FLAGS</spirit:name>
+<spirit:description>rx packet 0 ecc error flags  bit [11]:  1 = no ecc error  0 = ecc error    bit [10]:  1 = correctable error in data bits    bit [9]:  1 = correctable error happens at parity bits    bit [8]: 1 = incorrectable error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_NO_CRC</spirit:name>
+<spirit:description>rx packet 0 without crc  rx packet doesn't contain crc and crc part contain 0x0000. it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_UNKNOWN_ERR</spirit:name>
+<spirit:description>rx packet 0 type unknown error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_ST_ERR</spirit:name>
+<spirit:description>rx packet 0 ack status error  the ack packet has error status. the dsi_rx_pkt_hdr_0 should be checked to see what error happens. it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_ECC_ERR</spirit:name>
+<spirit:description>rx packet 0 ecc error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT0_CRC_ERR</spirit:name>
+<spirit:description>rx packet crc error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_HDR_0</spirit:name>
+<spirit:description>DSI RX Packet 0 Header Register</spirit:description>
+<spirit:addressOffset>0X64</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT0_HDR</spirit:name>
+<spirit:description>rx packet 0 header  bits [7:0]: dataid  bits [23:8]: length  bits [31:23]: ecc--corrected if error detected.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_ST_1</spirit:name>
+<spirit:description>DSI RX Packet 1 Status Register</spirit:description>
+<spirit:addressOffset>0X68</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT1_ST_VLD</spirit:name>
+<spirit:description>rx packet 1 status valid  1 = valid status  0 = invalid status</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_ST_EOTP</spirit:name>
+<spirit:description>rx packet 1 is eotp  1 = received packet is eotp packet  0 = other packet  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_ST_ACK</spirit:name>
+<spirit:description>rx packet 1 is ack packet  1 = received packet is an ack packet with or without error  0 = other packet  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_ST_SP</spirit:name>
+<spirit:description>rx packet 1 short packet  1 = received packet is a short packet  0 = long packet valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_PKT_PTR</spirit:name>
+<spirit:description>rx packet 1 data pointer  packet header in fifo is the raw data from dphy and is before ecc correction.  valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_VCH</spirit:name>
+<spirit:description>rx packet 1 virtual channel number  valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_ECC_FLAGS</spirit:name>
+<spirit:description>rx packet 1 ecc error flags  bit [11]:  1 = no ecc error  0 = ecc error    bit [10]:  1 = correctable error in data bits    bit [9]:  1 = correctable error happens at parity bits    bit [8]:  1 = incorrectable error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_NO_CRC</spirit:name>
+<spirit:description>rx packet 1 without crc  rx packet doesn't contain crc and crc part contain 0x0000. it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_UNKNOWN_ERR</spirit:name>
+<spirit:description>rx packet type unknown error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_ST_ERR</spirit:name>
+<spirit:description>rx packet 1 ack status error  the dsi_rx_pkt_hdr_0 should be checked to see what error happens. it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_ECC_ERR</spirit:name>
+<spirit:description>rx packet 1 ecc error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT1_CRC_ERR</spirit:name>
+<spirit:description>rx packet 1 crc error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_HDR_1</spirit:name>
+<spirit:description>DSI RX Packet 1 Header Register</spirit:description>
+<spirit:addressOffset>0X6C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT1_HDR</spirit:name>
+<spirit:description>rx packet 1 header</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_CTRL</spirit:name>
+<spirit:description>DSI RX Packet Read Control Register</spirit:description>
+<spirit:addressOffset>0X70</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT_RD_REQ</spirit:name>
+<spirit:description>rx packet fifo read request  1 = read request  0 = invalid req  this bit will be cleared to 0 after read operation is done and rx data valid.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT_RD_PTR</spirit:name>
+<spirit:description>rx packet data fifo read pointer  for every read operation, the hardware will return the data from the pointer address. software must increment this pointer for the next data after each byte is read.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT_RD_DATA</spirit:name>
+<spirit:description>rx fifo read data  valid when rx_pkt_rd_req = 0.  first byte: dataid  second byte: wc0  third byte: wc1  fourth byte: raw ecc received from dphy, not corrected  fifth byte and beyond: long packet data</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_CTRL_1</spirit:name>
+<spirit:description>DSI RX Packet Read Control 1 Register</spirit:description>
+<spirit:addressOffset>0X74</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT_CNT</spirit:name>
+<spirit:description>rx packet count in rx fifo  all lp rx packets are stored in the fifo and start from address 0.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT_BCNT</spirit:name>
+<spirit:description>rx byte count in rx fifo  the whole lp rx data are stored in the fifo and start from address 0.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_ST_2</spirit:name>
+<spirit:description>DSI RX Packet 2 Status Register</spirit:description>
+<spirit:addressOffset>0X78</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT2_ST_VLD</spirit:name>
+<spirit:description>rx packet 2 status valid  1 = valid status  0 = invalid status</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_ST_EOTP</spirit:name>
+<spirit:description>rx packet 2 is eotp  1 = received packet is eotp packet  0 = other packet  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_ST_ACK</spirit:name>
+<spirit:description>rx packet 2 is an ack packet&lt;p&gt;1 = received packet is a ack packet with or without error  0 = other packet  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_ST_SP</spirit:name>
+<spirit:description>rx packet 2 short packet  1 = received packet is a short packet  0 = long packet  valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_PKT_PTR</spirit:name>
+<spirit:description>rx packet 2 data pointer  packet header in fifo is the raw data from dphy and is before ecc correction. valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_VCH</spirit:name>
+<spirit:description>rx packet 2 virtual channel number  valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_ECC_FLAGS</spirit:name>
+<spirit:description>rx packet 2 ecc error flags  bit [11]:   1 = no ecc error  0 = ecc error    bit [10]:  1 = correctable error in data bits    bit [9]:  1 = correctable error happens at parity bits    bit [8]:  1 = incorrectable error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_NO_CRC</spirit:name>
+<spirit:description>rx packet 2 without crc  rx packet doesn't contain crc and crc part contain 0x0000. it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_UNKNOWN_ERR</spirit:name>
+<spirit:description>rx packet 2 type unknown error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_ST_ERR</spirit:name>
+<spirit:description>rx packet 2 ack status error  the dsi_rx_pkt_hdr_0 should be checked to see what error happens. it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_ECC_ERR</spirit:name>
+<spirit:description>rx packet 2 ecc error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RX_PKT2_CRC_ERR</spirit:name>
+<spirit:description>rx packet 2 crc error  it is valid only when rx_pkt0_st_vld = 1.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_PKT_HDR_2</spirit:name>
+<spirit:description>DSI RX Packet 2 Header Register</spirit:description>
+<spirit:addressOffset>0X7C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RX_PKT2_HDR</spirit:name>
+<spirit:description>rx packet 2 header</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_LCD_BDG_CTRL0</spirit:name>
+<spirit:description>DSI LCD Bridge Control Register 0</spirit:description>
+<spirit:addressOffset>0X84</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_FIFO_AFULL_CNT</spirit:name>
+<spirit:description>dsi vpn fifo almost full count
+vpn fifo read_point - write_point shoud be greater than this value</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>12</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_HSYNC_MISSING_FIX</spirit:name>
+<spirit:description>fix the hsync missing bug</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TXLP_LANE_TURN_FIX</spirit:name>
+<spirit:description>fix the txlp lane turn bug</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_FIFO_AFULL_BYPASS</spirit:name>
+<spirit:description>by pass vpn fifo almost full  0 = not bypass  1 = bypass, the lcd output pixel data to vpn fifo  not care the almost full signal</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_VSYNC_EDGE</spirit:name>
+<spirit:description>cpn vsync signal edge select  0 = posedge select  1 = negedge select</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_TE_EDGE</spirit:name>
+<spirit:description>cpn tearing effect signal edge select  0 = posedge select  1 = negedge select</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_TE_MODE</spirit:name>
+<spirit:description>cpn tearing effect mode select  0 = no tearing effect  1 = mode a, tearing effect signal consists of v-blanking only   2 = mode b, tearing effect signal consists of v-blanking and h-blanking  3 = mode c, tearing effect signal output the n h-blanking</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_PIXEL_SWAP</spirit:name>
+<spirit:description>lcd output pixel swap  0 = don't swap lcd output pixel data  1 = swap lcd output pixel data</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SPLIT_EN</spirit:name>
+<spirit:description>split mode enable, this bit should be set as same as lcd split mode  0 =  split mode disable, just dsia is used for display   1 = split mode enable, both dsia and dsib are used for display</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_LCD_BDG_CTRL1</spirit:name>
+<spirit:description>DSI LCD Bridge Control Register 1</spirit:description>
+<spirit:addressOffset>0X88</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CPN_TE_DLY_CNT</spirit:name>
+<spirit:description>cpn tearing effect delay count, the lcd output pixel data will delay cfg_cpn_te_dly_cnt cycles after te pulse</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CPN_TE_LINE_CNT</spirit:name>
+<spirit:description>cpn tearing effect line count, when te_mode = 2, this field will take effect. the lcd output pixel data will wait for cfg_cpn_te_line_cnt te pulse</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_TX_TIMER</spirit:name>
+<spirit:description>DSI TX Timer Register</spirit:description>
+<spirit:addressOffset>0XE4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_TX_TIMER_CNT</spirit:name>
+<spirit:description>tx transmission timer value  this timer monitors the tx operation on the dsi output side. it could generate irq after timer timeout. by default setting, timeout will not happen because the reset value is the maximum value (0xffffffff).</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_RX_TIMER</spirit:name>
+<spirit:description>DSI RX Timer Register</spirit:description>
+<spirit:addressOffset>0XE8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_RX_TIMER_CNT</spirit:name>
+<spirit:description>rx timer value  this timer monitors the rx operation on the dsi operation. it could generate irq after timer timeout. by default setting, timeout will not happen because the reset value is the maximum value (0xffffffff).</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_TURN_TIMER</spirit:name>
+<spirit:description>DSI Turn Around Timer Register</spirit:description>
+<spirit:addressOffset>0XEC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_TURN_TIMER_CNT</spirit:name>
+<spirit:description>bus turn around timer value  this timer monitors the turn around operation on the dsi. it could generate irq after timer timeout. by default setting, timeout will not happen because the reset value is the maximum value (0xffffffff).</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_CTRL_0</spirit:name>
+<spirit:description>DSI Video Panel  Control Register 0</spirit:description>
+<spirit:addressOffset>0X100</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_DLY_CNT</spirit:name>
+<spirit:description>vpn vsync delay count in slave mode. in slave mode, dsi will start h/v timing depending on input vsync timing from lcd module.   in slave mode, after dsi receives a vsync from lcd controller, it will start a vsync timing by delaying this count of clock.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_TX_DLY_CNT</spirit:name>
+<spirit:description>vpn tx delay count  after dsi starts a hsync timing, delay this count of dphy byte clock count to start a vss packet transfer. this is a dsi internal delay to guarantee a fixed tx timing at dphy interface.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_CTRL_1</spirit:name>
+<spirit:description>DSI Video Panel Control Register 1</spirit:description>
+<spirit:addressOffset>0X104</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_VSYNC_RST_EN</spirit:name>
+<spirit:description>lcd vsync reset enable in slave mode  1 = reset dsi vertical state machine when lcd vsync comes. this will only take effect when lcd is in slave mode.  0 = don't reset dsi vertical state machine</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_AUTO_WC_DIS</spirit:name>
+<spirit:description>vpn auto word count disable  this bit has lower priority than cfg_vpn_hact_wc_en  0x0 = enable auto word count calculation, and hardware automatically calculates how many bytes will be sent in each h line slot  0x1 = auto word count calculation will not be effective</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HACT_WC_EN</spirit:name>
+<spirit:description>vpn hact word count enable  this bit has higher priority than cfg_vpn_auto_wc_en  0x0 = cfg_hact_wc will not be effective if cfg_vpn_auto_wc_dis is 0  0x1 = enable hact word count parameter, and cfg_hact_wc will be used to decide how many bytes are sent</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_TIMING_CHECK_DIS</spirit:name>
+<spirit:description>vpn hss/hse/hact tx timing check disable  0x0 = check timing before requesting dphy for tx  0x1 = don't check timing before requesting dphy for tx</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_AUTO_DLY_DIS</spirit:name>
+<spirit:description>vpn auto vsync delay count disable  0x0 = enable auto vsync delay count calculation, and hardware will automatically use halt of cfg_htotal_cnt to replace cfg_vpn_dly_cnt  0x1 = auto vsync delay count disabled, hardware will use the cfg_vpn_dly_cnt for vsync delay</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HLP_PKT_EN</spirit:name>
+<spirit:description>long blanking packet enable  1 = dsi will send out a long blanking packet during hlp time slot  0 = long blanking packet is disabled, dsi will go to low power during this time slot  in most cases, this field should be programmed to 0x0.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HEX_PKT_EN</spirit:name>
+<spirit:description>extra long blanking packet enable  1 = dsi will send out a long blanking packet after pixel data transmission and before hfp  0 = extra long blanking packet is disabled, dsi will go to low power during this time slot  in most cases, this field should be programmed to 0x0.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HFP_PKT_EN</spirit:name>
+<spirit:description>front porch packet enable  1 = dsi will send out a long blanking packet during hfp time slot  0 = hfp long blanking packet is disabled, dsi will go to low power during this time slot  if front porch period is not long enough for dphy to go to low power state and come back to hs again timely for next hss packet, this field should be programmed to 0x1.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HBP_PKT_EN</spirit:name>
+<spirit:description>back porch packet enable  1 = dsi will send out a long blanking packet during hbp time slot  0 = hbp long blanking packet is disabled, dsi will go to low power during this time slot  if back porch period is not long enough for dphy to go to low power state and come back to hs again timely for next pixel data packet, this field should be programmed to 0x1.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HSE_PKT_EN</spirit:name>
+<spirit:description>hse packet enable  1 = dsi will send out hse packet during hbp time slot  0 = hse packet is disabled, dsi will go to low power during this time slot  enable this bit when transmission mode is in non-burst mode with sync pulse.</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HSA_PKT_EN</spirit:name>
+<spirit:description>hsa packet enable  1 = dsi will send out hsa long blanking packet during hbp time slot  0 = hsa packet is disabled, dsi will go to low power during this time slot  if transmission mode is non-burst mode with sync event or burst mode, this field should be disabled. if transmission mode is non-burst mode with sync pulse, this field can be programmed to 0x1.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HEX_SLOT_EN</spirit:name>
+<spirit:description>extra long packet enable after pixel data  1 = enable extra long packet after pixel data transfer, this will insert a long blanking packet before hfp  0 = no extra long packet is inserted after pixel data transfer  this field takes effect only in burst mode.  in most cases, this field should be programmed to 0x0.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_LAST_LINE_TURN</spirit:name>
+<spirit:description>turn around bus at last h line  1 = dsi will turn around the bus every frame during the last h line, this will request slave to return an acknowledge or acknowledge with error  0 = dsi will not turn around the bus during the last h line  in most cases, this field should be programmed to 0x0.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_LPM_FRAME_EN</spirit:name>
+<spirit:description>go to low power every frame  1 = dsi will go to low power mode every frame during the last h line  0 = dsi will not go to low power mode during the last h line  in most cases, this field should be programmed to 0x0.</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_BURST_MODE</spirit:name>
+<spirit:description>dsi transmission mode for lcd 1  0x0 = non-burst mode with sync pulse  0x1 = non-burst mode with sync event  0x2 = burst mode</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_RGB_TYPE</spirit:name>
+<spirit:description>lcd 1 input data rgb mode for lcd 1  0x0 = 565 rgb mode  0x1 = 666 packet mode  0x2 = 666 un-packet mode  0x3 = 888 rgb mode</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_TIMING_0</spirit:name>
+<spirit:description>DSI Video Panel Timing Register 0</spirit:description>
+<spirit:addressOffset>0X110</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_HACT_CNT</spirit:name>
+<spirit:description>vpn hact clock count in byte clock domain. this parameter defines the byte clock cycle numbers for horizontal line pixel data period    the data byte number for this period is hact_byte_cnt = hact_cnt*lane_num</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HTOTAL_CNT</spirit:name>
+<spirit:description>vpn htotal clock count in byte clock domain. this parameter defines the byte clock cycle numbers for horizontal line period    the data byte number for this period is htotal_byte_cnt = htotal_cnt*lane_num</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_TIMING_1</spirit:name>
+<spirit:description>DSI Video Panel Timing Register 1</spirit:description>
+<spirit:addressOffset>0X114</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_HSYNC_CNT</spirit:name>
+<spirit:description>vpn hsync clock count in byte clock domain. this parameter defines the byte clock cycle numbers for horizontal line hsync period    the data byte number for this period is hsync_byte_cnt = hsync_cnt*lane_num</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HBP_CNT</spirit:name>
+<spirit:description>vpn hbp clock count in byte clock domain. this parameter defines the byte clock cycle numbers for horizontal line back porch period    the data byte number for this period is hbp_byte_cnt = hbp_cnt*lane_num    front porch clock count can be calculated by: hfp_cnt = htotal_cnt - hsync_cnt - hact_cnt - hbp_cnt    the data byte number for front porch period is hfp_byte_cnt = hfp_cnt*lane_num</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_TIMING_2</spirit:name>
+<spirit:description>DSI Video Panel Timing Register 2</spirit:description>
+<spirit:addressOffset>0X118</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_VACT_CNT</spirit:name>
+<spirit:description>vpn vact line count</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_VTOTAL_CNT</spirit:name>
+<spirit:description>vpn vtotal line count</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_TIMING_3</spirit:name>
+<spirit:description>DSI Video Panel Timing Register 3</spirit:description>
+<spirit:addressOffset>0X11C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_VSYNC_CNT</spirit:name>
+<spirit:description>vpn vsync line count</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_VBP_CNT</spirit:name>
+<spirit:description>vpn vbp line count</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_WC_0</spirit:name>
+<spirit:description>DSI Video Panel Word Count Register 0</spirit:description>
+<spirit:addressOffset>0X120</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_HBP_WC</spirit:name>
+<spirit:description>vpn hbp packet payload data byte count  this parameter must be programmed if hbp_pkt_en is 0x1, otherwise it can be kept as 0x0   if transmission mode is non-burst mode with sync pulse, hbp_wc = hbp_byte_cnt - hse_byte_cnt(4) - hbp_pkt_overhead(6)  if transmission mode is non-burst mode with sync event or burst mode, hbp_wc = hsync_byte_cnt + hbp_byte_cnt - hss_byte_cnt(4) - hbp_pkt_overhead(6)</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HSA_WC</spirit:name>
+<spirit:description>vpn hsa packet payload data byte count  this parameter must be programmed if hsa_pkt_en is 0x1, otherwise it can be kept as 0x0   if transmission mode is non-burst mode with sync pulse, hsa_wc = hsync_byte_cnt - hss_byte_cnt(4) - hsa_pkt_overhead(6), otherwise it is 0x0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_WC_1</spirit:name>
+<spirit:description>DSI Video Panel Word Count Register 1</spirit:description>
+<spirit:addressOffset>0X124</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_HFP_WC</spirit:name>
+<spirit:description>vpn hfp packet payload data byte count  this parameter must be programmed if hfp_pkt_en is 0x1, otherwise it can be kept as 0x0   if transmission mode is non-burst mode with sync pulse, or non-burst mode with sync event, hfp_wc = hfp_byte_cnt - hact_pkt_overhead(6) - hfp_pkt_overhead(6)   if transmission mode is burst mode and hex_pkt_en = 1, hfp_wc = hfp_byte_cnt - hact_pkt_overhead(6) - hfp_pkt_overhead(6)   if transmission mode is burst mode and hex_pkt_en = 0, hfp_wc = hfp_byte_cnt + (hact_byte_cnt - hact_wc) - hact_pkt_overhead(6) - hfp_pkt_overhead(6)</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HACT_WC</spirit:name>
+<spirit:description>vpn hact packet payload data byte count    this parameter is equal to active pixel rgb data total byte count</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_WC_2</spirit:name>
+<spirit:description>DSI Video Panel Word Count Register 2</spirit:description>
+<spirit:addressOffset>0X128</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_HEX_WC</spirit:name>
+<spirit:description>vpn hex packet payload data byte count  this parameter must be programmed if hex_pkt_en is 0x1, otherwise it can be kept as 0x0   if transmission mode is burst mode, hex_wc = hact_byte_cnt - hact_wc - hex_pkt_overhead(6)   otherwise hex_wc = 0</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_HLP_WC</spirit:name>
+<spirit:description>vpn hlp packet payload data byte count  this parameter must be programmed if hlp_pkt_en is 0x1, otherwise it can be kept as 0x0   if transmission mode is non-burst mode with sync pulse, hlp_wc = htotal_byte_cnt - hsync_byte_cnt - hse_byte_cnt(4) - hlp_pkt_overhead(6)   if transmission mode is non-burst mode with sync event or burst mode, hlp_wc = htotal_byte_cnt - hss_byte_cnt(4) - hlp_pkt_overhead(6)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_SLOT_CNT_0</spirit:name>
+<spirit:description>DSI Video Panel Time Slot Count 0 Register</spirit:description>
+<spirit:addressOffset>0X130</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_SLOT_SP_CNT</spirit:name>
+<spirit:description>vpn time slot count for short packet. this parameter defines a min slot period for short packet transmission, which should ensure dphy can go to low power, send the short packet, and return to hs again in time for next active panel packet which has a strict timing requirement.   if any dsi active panel data flow is working, and cpu or smart interface wants to send short packet between the active panel packets, the internal state machine will try to find a time slot between active panel packets which has a larger period than the defined value. dsi will only send cpu or command panel short packet during such slot to ensure dphy has enough time to go to low power, send the packet, and return to hs again in time for next active panel packet which has a strict timing requirement.  the programming of his parameter is necessary only when multiple panels or data paths are working simultaneously.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_SLOT_LP_CNT</spirit:name>
+<spirit:description>vpn time slot count for long packet. this parameter defines a min slot period for long packet transmission, which should ensure dphy can go to low power, send the long packet, and return to hs again in time for next active panel packet which has a strict timing requirement.   the programming of his parameter is necessary only when multiple panels or data paths are working simultaneously.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_SLOT_CNT_1</spirit:name>
+<spirit:description>DSI Video Panel Time Slot Count 1</spirit:description>
+<spirit:addressOffset>0X134</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_SLOT_TXLP_CNT</spirit:name>
+<spirit:description>vpn time slot count for low power packet tx. this parameter defines a min slot period for low power packet transmission, which should ensure dphy can go to low power, send the low power packet, and return to hs again in time for next active panel packet which has a strict timing requirement.   the programming of his parameter is necessary only when multiple panels or data paths are working simultaneously.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_SLOT_TN_CNT</spirit:name>
+<spirit:description>vpn time slot count for bus turn around. this parameter defines a min slot period for short packet transmission, which should ensure dphy can go to low power, turn around the bus, and return to hs again in time for next active panel packet which has a strict timing requirement.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_SYNC_CODE</spirit:name>
+<spirit:description>DSI Video Panel Sync Code</spirit:description>
+<spirit:addressOffset>0X138</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_STATUS_0</spirit:name>
+<spirit:description>DSI VPN Status Register 0</spirit:description>
+<spirit:addressOffset>0X140</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_RD_ERR</spirit:name>
+<spirit:description>vpn input buffer read error. this includes cfg_vpn_rd_2early, cfg_vpn_line_miss, and cfg_vpn_rd_underrun.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_LINE_MISS</spirit:name>
+<spirit:description>vpn input buffer line miss. this indicates a whole h line pixel data missed.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_RD_2EARLY</spirit:name>
+<spirit:description>vpn input buffer read too early</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_RD_UNDERRUN</spirit:name>
+<spirit:description>vpn input buffer underrun</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_BF_FULL</spirit:name>
+<spirit:description>vpn input buffer full</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_RD_DELAY_ERR</spirit:name>
+<spirit:description>vpn request delay error at arbiter</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_STATUS_0</spirit:name>
+<spirit:description>dsi vpn status register for debug purpose   {l1_lcd[4:0]_cs, l1_vst[6:0], l1_hst[8:0]}</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>21</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_STATUS_1</spirit:name>
+<spirit:description>DSI VPN Status Register 1</spirit:description>
+<spirit:addressOffset>0X144</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_WRDONE_RDDONE_CNT</spirit:name>
+<spirit:description>vpn input buffer write done to input buffer read done clock count. this could help to tune the vsync delay count.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_WR2RD_CNT</spirit:name>
+<spirit:description>vpn input buffer write to input buffer read clock count. this could help to tune the vsync delay count.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_STATUS_2</spirit:name>
+<spirit:description>DSI VPN Status Register 2</spirit:description>
+<spirit:addressOffset>0X148</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_UNDERRUN_CNT</spirit:name>
+<spirit:description>vpn input buffer underrun count</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_RD_DATWR_CNT</spirit:name>
+<spirit:description>vpn input buffer read to data write count</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_STATUS_3</spirit:name>
+<spirit:description>DSI VPN Status Register 3</spirit:description>
+<spirit:addressOffset>0X14C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_REQ_ARB_DLY_CNT</spirit:name>
+<spirit:description>vpn tx req delay count at arbiter interface</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VPN_REQ_PHY_DLY_CNT</spirit:name>
+<spirit:description>vpn tx req delay count at dphy interface</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_VPN_STATUS_4</spirit:name>
+<spirit:description>DSI VPN Status Register 4</spirit:description>
+<spirit:addressOffset>0X150</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VPN_FRM_CNT</spirit:name>
+<spirit:description>dsi vpn tx frame count</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_CTRL_0</spirit:name>
+<spirit:description>DPHY Control Register 0</spirit:description>
+<spirit:addressOffset>0X180</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_RX_TRG_REG_DIS</spirit:name>
+<spirit:description>disable register for low power rx trigger signals. internal use.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TX_LANE_0</spirit:name>
+<spirit:description>new packet tx start from lane 0  =0 if two packets are transferred continuously, all data are packed and distributed to all enabled lanes the second packet could start from any lane  1 = transmission of every new packet starts from lane 0 if two packets are transferred continuously, and the first packet doesn't occupy all lanes, then extra byte of 0 will be inserted in at the end of first packet to ensure the second packet start from lane 0 this is an debug option and should be set to 0</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_FCLK_NOT</spirit:name>
+<spirit:description>reverse the input byte clk from dphy to dsi control logic. the output data to dphy should be valid at falling edge of byte clk.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_STOP_ST_CNT</spirit:name>
+<spirit:description>dphy stop state count. for txlp and phy control</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_RX_DLY_CNT</spirit:name>
+<spirit:description>dphy rx_delay count. for rx control</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_CTRL_1</spirit:name>
+<spirit:description>DPHY Control Register 1</spirit:description>
+<spirit:addressOffset>0X184</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_VDD_ANA_VALID</spirit:name>
+<spirit:description>dphy analog vdd valid</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_VDD_DVM_VALID</spirit:name>
+<spirit:description>dphy digital vdd valid</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_ULPS_REQ_BYTE</spirit:name>
+<spirit:description>dphy all lane force to ulps</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TX_ULPS_CLK_ESC</spirit:name>
+<spirit:description>dphy clk lane force to ulps</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CONT_CLK_HS</spirit:name>
+<spirit:description>dphy clock lane continuous clocking in hs</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_CTRL_2</spirit:name>
+<spirit:description>DPHY Control Register 2</spirit:description>
+<spirit:addressOffset>0X188</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CSR_HSTX_RX_EN</spirit:name>
+<spirit:description>rx enable when dphy hstx   0x0 = disable   0x1 enable</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_LANE_MAP</spirit:name>
+<spirit:description>dphy data map to lane order   0x0 = lane0, lane1, lane2, lane3    0x1 = lane0,  lane3, lane1, lane2    0x2 = lane0, lane2, lane3, lane1    = 0x3 reserved.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_LANE_RESC_EN</spirit:name>
+<spirit:description>dphy lp receiver enable  enable the reverse escape lp receiver. lane immediately transmits to receive mode.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_LANE_EN</spirit:name>
+<spirit:description>dphy data lane enable</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_LANE_TURN</spirit:name>
+<spirit:description>dphy bus turn around  this field indicates that the protocol desires to turn the lane around, allowing the other side to begin transmitting.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_CTRL_3</spirit:name>
+<spirit:description>DPHY Control Register 3</spirit:description>
+<spirit:addressOffset>0X18C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_FORCECLK_HIZ_HS</spirit:name>
+<spirit:description>dphy clk lane force to high-z in hs mode</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_FORCECLK_HIZ_LP</spirit:name>
+<spirit:description>dphy clk lane force to high-z in lp mode</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_FORCE_HIZ_HS</spirit:name>
+<spirit:description>dphy force data lane to high-z in hs mode</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_FORCE_HIZ_LP</spirit:name>
+<spirit:description>dphy data lane force to high-z in lp mode</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_STATUS_0</spirit:name>
+<spirit:description>DPHY Status Register 0</spirit:description>
+<spirit:addressOffset>0X190</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPHY_RDY_HS_BYTE</spirit:name>
+<spirit:description>dphy hs tx ready signals</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TX_REQ_HS_BYTE</spirit:name>
+<spirit:description>dphy hs tx request signals</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_LINE_ERR653</spirit:name>
+<spirit:description>ppi errcontrol  illegal line state detected</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_SYNC_ESC654</spirit:name>
+<spirit:description>ppi errsyncesc  partial byte detected</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_ESC655</spirit:name>
+<spirit:description>ppi erresc  invalid esc command detected</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_CONT_LP0656</spirit:name>
+<spirit:description>ppi errcontentionlp0  contention detect</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_CONT_LP1657</spirit:name>
+<spirit:description>ppi errcontentionlp0  contention detect</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_STATUS_1</spirit:name>
+<spirit:description>DPHY Status Register 1</spirit:description>
+<spirit:addressOffset>0X194</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPHY_ULP_STATE_BYTE</spirit:name>
+<spirit:description>all lanes are ulps</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_STOP_STATE_BYTE</spirit:name>
+<spirit:description>ppi stopstate - all lanes in stop state</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_CLK_ULPS_ACTIVE_N</spirit:name>
+<spirit:description>ppi clock ulpsactivenot</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_RX_CLK_ULPS_N</spirit:name>
+<spirit:description>ppi rxulpsclknot</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_DIR</spirit:name>
+<spirit:description>ppi direction</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ULPS_ACTIVE_N</spirit:name>
+<spirit:description>ppi ulpsactivenot</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_LINE_ERR670</spirit:name>
+<spirit:description>ppi errcontrol - illegal line state detected.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_ESC671</spirit:name>
+<spirit:description>ppi erresc - invalid esc command detected</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_SYNC_ESC672</spirit:name>
+<spirit:description>ppi errsyncesc - partial byte detected</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_CONT_LP0673</spirit:name>
+<spirit:description>ppi errcontentionlp0 - contention detect</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_ERR_CONT_LP1674</spirit:name>
+<spirit:description>ppi errcontentionlp0 - contention detect</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_LPRX_0</spirit:name>
+<spirit:description>DPHY LP RX Register 0</spirit:description>
+<spirit:addressOffset>0X198</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_TRG3</spirit:name>
+<spirit:description>dphy_lane_rx_trg3</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_TRG2</spirit:name>
+<spirit:description>dphy_lane_rx_trg2</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_TRG1</spirit:name>
+<spirit:description>dphy_lane_rx_trg1</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_TRG0</spirit:name>
+<spirit:description>dphy_lane_rx_trg0</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_ULPS</spirit:name>
+<spirit:description>dphy_lane_rx_ulps</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_LPDT</spirit:name>
+<spirit:description>dphy_lane_rx_lpdt</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_DVALID</spirit:name>
+<spirit:description>dphy_lane_rx_dvalid</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RX_CLK</spirit:name>
+<spirit:description>dphy_lane_rx_clk</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_LPRX_1</spirit:name>
+<spirit:description>DPHY LP RX Register 1</spirit:description>
+<spirit:addressOffset>0X19C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPHY_LANE_DOUT_RX</spirit:name>
+<spirit:description>dphy_lane_dout_rx</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_LPTX_0</spirit:name>
+<spirit:description>DPHY LP TX Register 0</spirit:description>
+<spirit:addressOffset>0X1A0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPHY_TX_TRIGGER_ESC_L</spirit:name>
+<spirit:description>tx_trigger_esc[11:0]</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>12</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_TX_ULPS_ESC</spirit:name>
+<spirit:description>tx_ulps_esc</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_TX_LPDT_ESC</spirit:name>
+<spirit:description>tx_lpdt_esc</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_TX_VALID_ESC</spirit:name>
+<spirit:description>tx_valid_esc</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_TX_REQ_ESC</spirit:name>
+<spirit:description>tx_req_esc</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPHY_LANE_RDY_ESC</spirit:name>
+<spirit:description>dphy_lane_rdy_esc</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_LPTX_1</spirit:name>
+<spirit:description>DPHY LP TX Register 1</spirit:description>
+<spirit:addressOffset>0X1A4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPHY_TX_TRIGGER_ESC_H</spirit:name>
+<spirit:description>tx_trigger_esc[15:12]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_LPTX_2</spirit:name>
+<spirit:description>DPHY LP TX Register 2</spirit:description>
+<spirit:addressOffset>0X1A8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPHY_TX_DATA_ESC</spirit:name>
+<spirit:description>tx_data_esc</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_STATUS_2</spirit:name>
+<spirit:description>DPHY Status Register 2</spirit:description>
+<spirit:addressOffset>0X1AC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_TX_REQ_CNT_R</spirit:name>
+<spirit:description>tx previous req to rdy delay count</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TX_REQ_CNT</spirit:name>
+<spirit:description>tx req to rdy delay count</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_TIME_0</spirit:name>
+<spirit:description>DPHY Timing Control Register 0</spirit:description>
+<spirit:addressOffset>0X1C0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_HS_EXIT</spirit:name>
+<spirit:description>length of hs exit period in tx_clk_esc cycles  this field is used for the time to drive lp-11 after hs burst.  hs exit period = (1+cfg_csr_hs_exit)/66 mhz  by default, dphy esc clock frequency is 66 mhz  from mipi spec, the minimum value is 100 ns.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_HS_TRAIL</spirit:name>
+<spirit:description>dphy hs trail period length  this field is used for the time to drive flipped differential state after the last payload data bit of a hs transmission burst.  length of hs trail period is in tx_clk_esc cycles.  hs trail time = (1 + cfg_csr_hs_trail)/66 mhz  from mipi spec, the minimum value is defined by max (8*ui, 60 ns + 4*ui).</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CDG_CSR_TIME_HS_ZERO</spirit:name>
+<spirit:description>dphy hs zero state length  this field is used for the time to drive hs-0 before the sync sequence.  length of hs zero state is in tx_clk_esc cycles.  hs zero state length &gt;= (cfg_csr_time_zero - 2)/66 mhz + 3*tbyte_clk   from mipi spec, the minimum value for (time hs prep + time hs zero) is 145 ns + 10*ui.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_HS_PREP</spirit:name>
+<spirit:description>dphy hs prepare state length  this field is used for the time to drive lp-00 to prepare for hs transmission.   it is the length of hs prepare state period in tx_clk_esc cycles.  time hs prep = (1+ cfg_csr_time_hs_prep)/66 mhz  from mipi specification for dphy, the minimum value for this parameter is 40 ns + 4*ui, and the maximum value is 85 ns_6*ui.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_TIME_1</spirit:name>
+<spirit:description>DPHY Timing Control Register 1</spirit:description>
+<spirit:addressOffset>0X1C4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_TA_GET</spirit:name>
+<spirit:description>time to drive lp-00 by new transmitter in tx_clk_esc cycles  ta get time = (1 + cfg_csr_time_ta_get)/66 mhz  from mipi spec, the typical value is 5*tlpx, where tlpx is dphy lp length: tlpx = (1 + cfg_csr_time_lpx)/66 mhz</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_TA_GO</spirit:name>
+<spirit:description>time to drive lp-00 after turn request in tx_clk_esc cycles  ta go time = (1 + ta_go)/66 mhz  from mipi spec, the typical value is 4*tlpx.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_WAKEUP</spirit:name>
+<spirit:description>dphy hs wakeup period length  this field is the recovery time from ultra-low power state (ulps).  twakeup = (1 + cfg_csr_time_wakeup)/66 mhz  from mipi spec, the minimum value is 1 ms.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_TIME_2</spirit:name>
+<spirit:description>DPHY Timing Control Register 2</spirit:description>
+<spirit:addressOffset>0X1C8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_CK_EXIT</spirit:name>
+<spirit:description>dphy clk exit period length in tx_clk_esc cycles  tck_exit = (1 + cfg_csr_time_ck_exit)/66 mhz  this field should use the same value as cfg_csr_time_hs_exit</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_CK_TRAIL</spirit:name>
+<spirit:description>dphy clk trail period length in tx_clk_esc cycles  this field is the time to drive hs differential state after the last payload clock bit of a hs transmission burst.  clk trail time = (1 + cfg_csr_time_ck_trail)/66 mhz  from mipi spec, the minimum value is 60 ns.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_CK_ZERO</spirit:name>
+<spirit:description>dphy clk zero state length in tx_clk_esc cycles  this field is the time for lead hs-0 drive period before starting the clock.  tck_zero = (1 + cfg_csr_time_ck_zero)/66 mhz  from mipi spec, the minimum value for (tck_prep+tck_zero) is 300 ns, where in &lt;var product number&gt; tck_prep is the same as time hs prep defined by cfg_cst_time_hs_prep.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_CK_LPX</spirit:name>
+<spirit:description>dphy clk lp length  this field is the length of clk low power state period in tx_clk_esc cycles.  clk lpx time = tck_lpx = (1 + cfg_csr_time_ck_lpx) / 66 mhz  this field should be set to the same value as cfg_cst_time_lpx.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_TIME_3</spirit:name>
+<spirit:description>DPHY Timing Control Register 3</spirit:description>
+<spirit:addressOffset>0X1CC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_LPX</spirit:name>
+<spirit:description>dphy lp length  this field is the length of any low power state period in tx_clk_esc cycles.  lpx time = tlpx = (1 + cfg_csr_time_lpx) / 66 mhz  from mipi spec, the minimum value is 50 ns.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_TIME_REQRDY</spirit:name>
+<spirit:description>dphy hs req to rdy length  this field is the minimum byte clock cycles of dsi hs tx request to dphy ready.  sometimes it may be important for this length to be consistent to maintain precise vertical and horizontal timing. in most cases, this parameter should be kept at the default of 0x0.  total cycles between dsi hs tx request to dphy ready is composed by dphy &lt;q&gt;clock lane timing,&lt;/q&gt; &lt;q&gt;gap,&lt;/q&gt; &lt;q&gt;data lane timing&lt;/q&gt; and some other items inside dphy.   clock lane timing = (2*(cfg_csr_time_ck_lpx + 1) + (cfg_csr_time_hs_prep + 1) + (cfg_csr_time_ck_zero + 1))/66 mhz   gap = (16ui +2)/66 mhz  data lane timing = ((2*cfg_csr_time_lpx + 1) + (cfg_csr_time_hs_prep + 1) + (cfg_csr_time_hs_zero + 1))/66 mhz    (1 + cfg_csr_time_reqrdy)/frequecy_byte_clk = (clock lane timing + gap + data lane timing + 10/66 mhz)   one other way to get a value for this parameter is to after dsi active panel data flow is running, read back the value of register dsi_phy_status_2 (0x1ac). bits [7:0] of this register is the current clock cycle value of delay between dsi tx request and dphy ready. add 2 to this value and program it to cfg_csr_time_reqrdy.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_CODE_0</spirit:name>
+<spirit:description>DPHY CODE Register 0</spirit:description>
+<spirit:addressOffset>0X1D0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_TRIG3_CODE</spirit:name>
+<spirit:description>dphy trigger 3 code</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TRIG2_CODE</spirit:name>
+<spirit:description>dphy trigger 2 code</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TRIG1_CODE</spirit:name>
+<spirit:description>dphy trigger 1 code</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_TRIG0_CODE</spirit:name>
+<spirit:description>dphy trigger 0 code</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_CODE_1</spirit:name>
+<spirit:description>DPHY CODE Register 1</spirit:description>
+<spirit:addressOffset>0X1D4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CSR_ULPS_CODE</spirit:name>
+<spirit:description>dphy ultra low power code</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_CSR_LPDT_CODE</spirit:name>
+<spirit:description>dphy low power data transfer code</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_ANA_PWR_CTRL</spirit:name>
+<spirit:description>DPHY ANALOG POWER Controller Register</spirit:description>
+<spirit:addressOffset>0X1E0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_DPHY_ANA_RESETB</spirit:name>
+<spirit:description>dphy analog reset  0 = reaset dphy analog   1= de-reset dphy analog</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ANA_PU</spirit:name>
+<spirit:description>dphy analog power up  0 = power down dphy analog  1= power up dphy analog</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_ANA_CTRL0</spirit:name>
+<spirit:description>DPHY ANALOG Controller Register 0</spirit:description>
+<spirit:addressOffset>0X1E4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_DPHY_LPRX_VTTH</spirit:name>
+<spirit:description>lprx reference voltage high 
+000: 760mv
+…..  20mv per stage
+010: 800mv
+111: 900 mv</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_LPRX_VTHL</spirit:name>
+<spirit:description>lprx reference voltage low
+000: 540mv
+…..  20mv per stage
+010:580mv
+011:600mv
+111: 680 mv</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_LPTX_RES</spirit:name>
+<spirit:description>lptx driver impedance control
+000</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSTX_RES</spirit:name>
+<spirit:description>hstx driver impedance control.
+000: 120 ohm (differential @tt)
+100: 100 ohm
+111:  89   ohm</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSTX_LP</spirit:name>
+<spirit:description>low power mode for hstx driver.   1 = lower power   0 = normal</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ADJ_DLY_CK</spirit:name>
+<spirit:description>adjust delay of ch_ck hstx driver output to manage skew between channels. 30ps (@tt) per stage.
+000: 0 stage       
+111:  7 stages</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_EN_CH_CK</spirit:name>
+<spirit:description>enable for ch_ck.   when disabled, ch_ck is power down mode, pad_ckp and pad_ckn are in high-z mode  0 = disable  1 = enable</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ADJ_DLY3</spirit:name>
+<spirit:description>adjust delay of ch3 hstx driver output to manage skew between channels. 30ps (@tt) per stage.
+000: 0 stage       
+111:  7 stages</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_EN_CH3</spirit:name>
+<spirit:description>enable for ch3.   when disabled, ch3 is power down mode, pad_dn3 and pad_p3 are in high-z mode  0 = disable  1 = enable</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ADJ_DLY2</spirit:name>
+<spirit:description>adjust delay of ch2 hstx driver output to manage skew between channels. 30ps (@tt) per stage.
+000: 0 stage       
+111:  7 stages</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_EN_CH2</spirit:name>
+<spirit:description>enable for ch2.   when disabled, ch2 is power down mode, pad_dn2 and pad_p2 are in high-z mode  0 = disable  1 = enable</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ADJ_DLY1</spirit:name>
+<spirit:description>adjust delay of ch1 hstx driver output to manage skew between channels. 30ps (@tt) per stage.
+000: 0 stage       
+111:  7 stages</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_EN_CH1</spirit:name>
+<spirit:description>enable for ch1.   when disabled, ch1 is power down mode, pad_dn1 and pad_p1 are in high-z mode  0 = disable  1 = enable</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_ADJ_DLY0</spirit:name>
+<spirit:description>adjust delay of ch0 hstx driver output to manage skew between channels. 30ps (@tt) per stage.
+000: 0 stage       
+111:  7 stages</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_EN_CH0</spirit:name>
+<spirit:description>enable for ch0.   when disabled, ch0 is power down mode, pad_dn0 and pad_p0 are in high-z mode  0 = disable  1 = enable</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSI_PHY_ANA_CTRL1</spirit:name>
+<spirit:description>DPHY ANALOG Controller Register 1</spirit:description>
+<spirit:addressOffset>0X1E8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CFG_CLK_SEL</spirit:name>
+<spirit:description>dphy bit clk select    0 = pll_div output    1 = mipi_bit_clk mux output</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SWAP_PN_CH3</spirit:name>
+<spirit:description>swap pn polarity for ch3</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SWAP_PN_CH2</spirit:name>
+<spirit:description>swap pn polarity for ch2</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SWAP_PN_CHCK</spirit:name>
+<spirit:description>swap pn polarity for ch ck</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SWAP_PN_CH1</spirit:name>
+<spirit:description>swap pn polarity for ch1</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SWAP_PN_CH0</spirit:name>
+<spirit:description>swap pn polarity for ch0</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_SET_TEST</spirit:name>
+<spirit:description>select analog phy self-test
+1: enable phy self-test. at this mode, phybypass all control signal
+0: disable phy self-test.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DFG_SET_TEST_LP</spirit:name>
+<spirit:description>select lp or hs self-test mode. it only be valid when sel_test is high.
+1: lp mode self test
+0: hs mode self test</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DFG_TEST_PATTERN</spirit:name>
+<spirit:description>select self-test pattern generation
+00: all 0
+01: all 1
+10: ck pattern (0101)
+11: prbs7</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_EN_CLK_DIV2</spirit:name>
+<spirit:description>enable half rate hstx mode. when enabled, phy will work at half data rate of pll input clock.
+1: enable
+0 disable</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_HSTX_VREF</spirit:name>
+<spirit:description>hstx vreg control
+000: 340mv
+…..  20mv per stage
+011: 400mv
+111: 480 mv</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_LPCDVTHH</spirit:name>
+<spirit:description>lpcd reference voltage high 
+000: 300mv
+…..  20mv per stage
+101:400mv
+111: 440 mv</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_LPCDVTHL</spirit:name>
+<spirit:description>lpcd reference voltage low
+000: 200mv
+…..  20mv per stage
+010: 240mv
+111: 340 mv</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_PULL_DN</spirit:name>
+<spirit:description>pull down enable:
+1: enable pull down pad io for ch1,ch2,ch3,chck when both hstx and lptx are not enabled.
+0: disable pull down pad io for ch1,ch2,ch3,chck when both hstx and lptx are not enabled. it's high z in this state.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CFG_DPHY_PULL_DN_CH0</spirit:name>
+<spirit:description>pull down enable for ch0
+1: enable pull down pad io when all hstx, lptx and lprx are not enabled.
+0: disable pull down  pad io when both hstx and lptx are not enabled. it's high z in this state.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

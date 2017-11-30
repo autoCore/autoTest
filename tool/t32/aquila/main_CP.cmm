@@ -1,0 +1,52 @@
+;/*using system etb 32kB*/
+sys.reset
+system.jtagclock 2Mhz
+;do jtag_chain.cmm ;because ap release cr7, has done this init.
+
+system.cpu cortexr7
+
+;SYStem.CONFIG CoreNumber 1
+
+system.option enreset off
+system.option trst off
+system.config slave on
+
+system.config DAPIRPRE 1. 
+system.config DAPIRPOST 9.
+system.config DAPDRPRE 1.
+system.config DAPDRPOST 1.
+
+system.config MEMORYACCESSPORT 0.
+system.config.debugaccessport 1.
+system.config AXIACCESSPORT   0.
+system.config.apbaccessport 0.
+
+;soc
+SYStem.CONFIG.ETB1.Base 0xd5005000      ;soc ETB
+SYStem.CONFIG.tpiu.Base 0xd5008000      ;soc TPIU
+SYStem.CONFIG.ETR1.Base 0xd500f000	;soc etr
+SYStem.CONFIG.STM1.Base 0xd5020000	;soc stm
+SYStem.CONFIG.funnel4.Base 0xd5007000	;soc funnel
+
+
+
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+
+sys.config corebase 0xD5050000		;r7 for core1
+SYS.CONFIG.CTIBase       0xD5058000		;r7
+SYS.CONFIG.ETMBase       0xD505c000		;r7
+
+SYStem.CONFIG.FUNNEL4.ATBSource ETM.1 etm.2
+SYStem.CONFIG.FUNNEL4.ATBSource ETMDATA 1 etmdata 2
+
+SYStem.CONFIG.ETB1.ATBSource FUNNEL4
+
+;core.assign 1
+
+
+sys.up
+
+ENDDO
+
+
