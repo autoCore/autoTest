@@ -29,10 +29,13 @@ class PerfCapInfo(CapInfo):
 	def do_total_time(self,block):
 		block_bak = block[:]
 		while block_bak:
-			match = re.search(r'c0:(.*?):',block_bak.pop())
+			match = re.search(r'c0:([0-9]+) ms:',block_bak.pop())
 			if match:
-				self.assignAttr('total_time', match.group(1))
-				break
+				if int(match.group(1)) < 1000:
+					pass
+				else:
+					self.assignAttr('total_time', match.group(1)+'ms')
+					break
 
 	def clear(self):
 		self.__init__()
@@ -41,14 +44,14 @@ class PerfCapInfoParse(Parse):
 	def __init__(self, handler):
 		super(PerfCapInfoParse, self).__init__(handler)
 
-		self.addStatistic(r'c0:([0-9]+ ms):[#]+ddr-wr-error[*]+','error')
+		self.addStatistic(r'c0:([0-9]+ ms):[#]+ddr-wr-error:[*]+','error')
 		self.addStatistic(r'c0:([0-9]+ ms):Warning: DP650 underrun','underrun')
 
 		self.addCapture(r'(echo) :(perf[ 0-9]+)','cmd_name')
-		self.addCapture(r'(DDR port 0 read bytes)[ ]+is[ ]+([0-9]+)[ ]+and','DDR_port_0_read_bytes')
-		self.addCapture(r'(DDR port 0 write bytes)[ ]+is[ ]+([0-9]+)[ ]+and','DDR_port_0_write_bytes')
-		self.addCapture(r'(DDR port 3 read bytes)[ ]+is[ ]+([0-9]+)[ ]+and','DDR_port_3_read_bytes')
-		self.addCapture(r'(DDR port 3 write bytes)[ ]+is[ ]+([0-9]+)[ ]+and','DDR_port_3_write_bytes')
+		self.addCapture(r'(DDR port 0 read bytes)[ ]+is[ ]+([0-9]+)','DDR_port_0_read_bytes') # c0:124868 ms:DDR port 0 read bytes   is 2874432
+		self.addCapture(r'(DDR port 0 write bytes)[ ]+is[ ]+([0-9]+)','DDR_port_0_write_bytes')
+		self.addCapture(r'(DDR port 3 read bytes)[ ]+is[ ]+([0-9]+)','DDR_port_3_read_bytes')
+		self.addCapture(r'(DDR port 3 write bytes)[ ]+is[ ]+([0-9]+)','DDR_port_3_write_bytes')
 		self.addCapture(r'(DDR port bandwidth)[ ]+is[ ]+([\.0-9]+)[ ]+(MBps)','DDR_port_bandwidth')
 		self.addCapture(r'(DDR port bandwidth ratio)[ ]+is[ ]+([\.0-9]+)','DDR_port_bandwidth_ratio')
 		self.addCapture(r'(ts for delay)[ ]+is[ ]+([0-9]+)','ts_for_delay')
@@ -123,7 +126,12 @@ if __name__ == '__main__':
 				last_info.append(data.getAttr('file_name'))
 				last_info.append(' '.join(['Under_run:1st',underrun_list[0].underrun_time[0], 'last',underrun_list[-1].underrun_time[-1]]))
 			else:
-				data = random.choice(data_list)
+				while 1:
+					data = random.choice(data_list)
+					if all([data.getAttr('DDR_port_0_read_bytes'),data.getAttr('DDR_port_0_write_bytes'),data.getAttr('DDR_port_3_read_bytes'),
+							data.getAttr('DDR_port_3_write_bytes'),data.getAttr('ts_for_delay'),data.getAttr('DDR_port_bandwidth_ratio'),
+							data.getAttr('DDR_port_bandwidth'),data.getAttr('axi_port3_max_read_latency'),data.getAttr('axi_port3_max_write_latency')]):
+						break
 				last_info.append(data.getAttr('file_name'))
 			last_info.append('total_time:' + data.getAttr('total_time'))
 			target_info = [data.getAttr('DDR_port_0_read_bytes'),data.getAttr('DDR_port_0_write_bytes'),data.getAttr('DDR_port_3_read_bytes'),
@@ -132,6 +140,7 @@ if __name__ == '__main__':
 						'| '.join(last_info)]
 			# print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in data.__dict__.items()]) 
 			# print target_info
+			# raw_input()
 			for j, info in enumerate(target_info):
 				worksheet.write(i+3,j+4,info,create_excel_style())
 	if not os.path.exists(argv.output_dir):

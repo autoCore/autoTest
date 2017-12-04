@@ -4,7 +4,7 @@ import serial
 from serial import Serial
 import threading 
 import platform
-import sys,re,time
+import sys,re,time,os
 
 stop_flag = threading.Event()
 class Uart(threading.Thread):
@@ -16,7 +16,7 @@ class Uart(threading.Thread):
 		self.last_log = None
 		self.case_end_flag = False
 		self.result_log = []
-		self.timeout = 0
+		self.timeout = 0.01
 
 	def input(self,msg):
 		if self.comport:
@@ -68,6 +68,7 @@ class Uart(threading.Thread):
 				port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
 			if port_list:
 				port = port_list[0]
+				os.system('sudo chmod 777 %s'%port)
 				print port
 			else:
 				print "No port"

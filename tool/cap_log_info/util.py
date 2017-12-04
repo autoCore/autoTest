@@ -6,29 +6,28 @@ from xlutils.copy import copy as excel_copy
 
 background_dict = {'black':0, 'white':1, 'red':2, 'green':3, 'blue':4, 'yellow':5, 'pink':6, 'wathet':7}
 class excelCellConfig():
-	def __init__(self, _sheet_obj, _row, _col, _text, bold = False, height = 180, width = 5000, background = 'white'):
+	def __init__(self, _sheet_obj, _row, _col, _text, width = 5000):
 		self.sheet_obj = _sheet_obj
 		self.pos_row = _row
 		self.pos_col = _col
 		self.report_text = _text
 		self.width = width
 
-		self.fnt = xlwt.Font()
-		self.fnt.bold = bold
-		self.fnt.height = height
-
 		self.borders = xlwt.Borders()
 
 		self.al = xlwt.Alignment()
+		self.fnt = xlwt.Font()
+		self.style = None
 
+	def create_style(self, fnt_name = 'Arial', bold = False, height = 180, background = 'white'):
 		self.style = xlwt.XFStyle()
+		self.fnt.bold = bold
+		self.fnt.height = height
 		self.style.font = self.fnt
 		self.style.borders = self.borders
 		self.style.alignment = self.al
 		self.style.pattern.pattern_fore_colour = background_dict[background]  #1 white 2 red 3 green 4 blue 5 yellow 6 pink 7
-
-	def get_style(self):
-		self.fnt.name = 'Arial'
+		self.fnt.name = fnt_name
 		self.fnt.colour_index = 0
 
 		self.borders.left = 1
@@ -38,10 +37,10 @@ class excelCellConfig():
 
 		self.al.horz = self.al.HORZ_CENTER
 		self.al.vert = self.al.VERT_CENTER
-
 		self.style.pattern.pattern = 1
-
 		self.sheet_obj.col(self.pos_col).width = self.width
+
+	def get_style(self):
 		return self.style
 
 
@@ -82,18 +81,13 @@ class Separator(object):
 		def data_blocks(log_block):
 			block = []
 			first = 1
+			block.append(self.data_sprtr)
 			for line in log_block:
-				if first:
-					if self.data_sprtr in line:
-						block.append(line)
-						first = 0
-					continue
 				block.append(line)
 				if self.data_sprtr in line:
 					if block[:-1]: yield ''.join(block[:-1])
 					block = block[-1:]
-			else:
-				if block: yield ''.join(block)
+			if block: yield ''.join(block)
 		data_blocks = data_blocks(source)
 		return data_blocks
 

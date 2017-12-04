@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import sys,os
 import commands
-import xlrd
+import xlrd,xlwt
 import re
-from pyExcelerator import *
+import argparse
 sys.path.append("./tool/autoTest/bin")
 from jtag_t32 import *
 from config import *
@@ -81,8 +81,9 @@ class clk_tree:
 		if 'NULL' == self.get_parent():
 			return 0
 		freq_val = self.get_parent().freq_val[:-1]
+		suffix = self.get_parent().freq_val[-1]
 		freq_val = float(freq_val)/(self.div + 1)
-		freq_val = str(freq_val) + 'M'
+		freq_val = str(freq_val) + suffix
 		self.freq_val = freq_val
 		return self.freq_val
 
@@ -93,10 +94,9 @@ def get_clk_trees(fname_excel):
 	tilebar = work_sheet.row_values(2)
 	parent_list = tilebar[:]
 	for i, _str in enumerate(parent_list):
-		if '(' in _str:
-			parent_list[i] = _str.split('(')[0].strip().upper()
-		else:
-			parent_list[i] = str(_str.strip().upper())
+		match = re.match(r'([A-Z0-9MK_\.]+)',_str.strip().upper())
+		if match: parent_list[i] = match.group(1)
+		# print parent_list[i]
 	nrows = work_sheet.nrows
 	ncols = work_sheet.ncols - 2
 	for i in range(nrows):
@@ -142,11 +142,11 @@ def get_clk_trees(fname_excel):
 		if clk_name in parent_list:
 			i = parent_list.index(clk_name)
 			if '(' in tilebar[i]:
-				_parent,_parent_rate= tilebar[i].split('(')
-				_dict['freq_val'] = _parent_rate.strip().upper().replace(')','')
+				match = re.search(r'\(([0-9MK\.]+)\)',tilebar[i].strip().upper())
+				if match: _dict['freq_val'] = match.group(1)
 			else:
-				_parent = str(tilebar[i].strip().upper())
-				_dict['freq_val'] = _parent
+				match = re.search(r'([0-9MK\.]+)',tilebar[i].strip().upper())
+				if match: _dict['freq_val'] = match.group(1)
 		# print clk_name,_rate
 		clk_obj = clk_tree(_dict)
 		for i in range(ncols):
@@ -242,14 +242,14 @@ def fill_all_reg_val():
 
 
 if __name__ == "__main__":
-	if len(sys.argv) < 2:
-		print "please input excel file"
-		sys.exit(1)
-	fname = sys.argv[1]
-	if os.path.exists(fname):
+	arg_parser = argparse.ArgumentParser()
+	arg_parser.add_argument('file_name',help = 'input file name')
+	argv = arg_parser.parse_args()
+
+	if os.path.exists(argv.file_name):
 		pass
 	else:
-		print '%s not exists'%fname
+		print '%s not exists'%argv.file_name
 		sys.exit(1)
 	print 'Pls first read readme. Make sure your t32 is permitted to remote connect and t32_ip is valid.'
 	get_char = raw_input("If you continue,input y else n:")
@@ -259,10 +259,10 @@ if __name__ == "__main__":
 		sys.exit(0)
 
 	config_init()
-	get_clk_trees(fname)
+	get_clk_trees(argv.file_name)
 	fill_all_reg_val()
 
-	excel_obj = Workbook()
+	excel_obj = xlwt.Workbook()
 	sheet_obj = excel_obj.add_sheet('clock')
 	tilebar = ['clock name','parent 1','parent 2','parent 3','parent 4','clock rate']
 	current_row = 0

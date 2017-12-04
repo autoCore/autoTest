@@ -16,5 +16,3 @@ RCL=NETASSIST
 PACKLEN=1024
 PORT=20002
 
-windows trace32: make sure Core\Advanced Settings\Interfaces\API port\Use Port: yes
-				 make sure Core\Advanced Settings\Interfaces\API port\Port Value: 20002
