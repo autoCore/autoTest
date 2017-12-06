@@ -9,21 +9,19 @@ import copy,os,sys,time,datetime
 from auto_test_uart import *
 import ConfigParser
 
+class MyException(Exception): pass
+class TestEndException(Exception): pass
+
 def signal_handler(signum, frame):
-    print '\nctrl_c exit.'
-    stop_flag.set()
-    sys.exit(0)
+    print '\n'
+    raise TestEndException('ctrl_c exit!')
 
 def get_timeout(timeout):
 	reboot_time_l = [0,1,2,4,8,16,128,512]
 	for  reboot_time in reboot_time_l:
-		if int(timeout) < reboot_time:
+		if int(timeout) <= reboot_time:
 			return reboot_time
 	return 0
-
-class MyException(Exception): pass
-class TestEndException(Exception): pass
-
 
 def create_file_name(dir_string, line_num,suffix_name):
 	fname = os.path.basename(dir_string)
@@ -68,15 +66,20 @@ class AutoTest(object):
 		print 'download end'
 
 	def run_test(self,uart):
-		uart.reset_log_file(self.test_log_dir)
 		print 'start ctest ...'
-		if not uart.expect('ctest#',3):
+		print 'module_name: %s'%self.module_name
+		if not uart.expect('==Press keyboard to Enter Shell ==',3):
 			print 'system error not into ctest'
 		test_result = []
 		for cmd_string,timeout in zip(self.test_cmd_list,self.test_timeout_list):
 			timeout = get_timeout(timeout)
-			print "wait time:%d"%timeout
-			uart.input('reboot %d'%timeout) if timeout else None
+			uart.input('reboot %d'%timeout)
+			if timeout:
+				print "wait time:%d"%timeout
+			else:
+				print 'timeout overrange reboot max time\n'
+				self.set_test_result(['timeout overrange reboot max time'])
+				return
 			uart.input(cmd_string)
 			for timming in range(1,timeout+1):
 				if uart.case_end_flag:
@@ -92,7 +95,6 @@ class AutoTest(object):
 				time.sleep(1)
 			test_result.append('No_result_log') if not test_result else None
 		self.set_test_result(test_result)
-		uart.save_log_file()
 		print 'wait total time: %ds'%timming
 		print 'input cmd:',self.test_cmd_list
 		print 'test result:',test_result
@@ -143,12 +145,13 @@ class AutoTestParse(object):
 	def get_case(self):
 		obj = AutoTest()
 		with open(self.build_res_fname) as file_obj:
-			all_modules = 'SPRTR'.join(file_obj.readlines())
-		all_modules = re.sub(r'\n','',all_modules)
-		all_modules = 'SPRTR' + all_modules + 'SPRTR'
-		auto_case_modules = re.findall(r'SPRTR([a-zA-Z_0-9]+):([^:]+):([^:]+):\[(Success)\]:AUTOTEST@([^:]+):([^:]+)SPRTR',all_modules)
-		no_auto_modules = re.findall(r'SPRTR([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Success\]SPRTR',all_modules)
-		fail_modules = re.findall(r'SPRTR([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Fail\]SPRTR',all_modules)
+			all_modules = '##'.join(file_obj.readlines())
+		all_modules = re.sub(r'\n| {3,}','',all_modules)
+		all_modules = re.sub(r'TIMEOUT_DEFAULT','30',all_modules)
+		all_modules = '#' + all_modules + '#'
+		auto_case_modules = re.findall(r'#([a-zA-Z_0-9]+):([^:]+):([^:]+):\[(Success)\]:AUTOTEST@([^:]+):(.*?)#',all_modules)
+		no_auto_modules = re.findall(r'#([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Success\]#',all_modules)
+		fail_modules = re.findall(r'#([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Fail\]#',all_modules)
 		# print all_modules
 		for line_num, _str in enumerate(fail_modules):
 			obj.to_object(id = line_num, module_name = _str,build_result = 'Fail')
@@ -191,8 +194,10 @@ class AutoTestParse(object):
 				print 'test result:',case.test_result
 				print 'case test done!\n' 
 				continue
+			self.uart.reset_log_file(case.test_log_dir)
 			case.download_binary()
 			case.run_test(self.uart)
+			self.uart.save_log_file()
 
 	def create_report(self):
 		report_result(self.case_list, './tool/tmp/' + 'report_all.pdf')
@@ -215,6 +220,7 @@ class AutoTestParse(object):
 		axf_dir = './build/%s/img/%s'%(self.project_name,test_module)
 		cmd = 'find %s -name *.axf -exec cp {} %s \;'%(axf_dir,test_module_dir)
 		os.system(cmd) if test_module else None
+		os.system('find ./tool -name *.pyc -exec rm {} \;')
 		print 'output:'+test_module_dir
 		print 'clear done'
 
@@ -231,6 +237,8 @@ class VminAutoTestParse(AutoTestParse):
 		vol_high = self.config_options.get('vmin_config',{}).get('vol_high')
 		voltage_grade = int(self.config_options.get('vmin_config',{}).get('voltage_grade'))
 		level = self.config_options.get('vmin_config',{}).get('level')
+		cmd = self.config_options.get('vmin_config',{}).get('cmd')
+		timeout_list = [self.config_options.get('vmin_config',{}).get('timeout')]
 		self.jump_cnt = voltage_grade
 		self.sdl_binary = sdl_binary
 		binary = os.path.join('./tool/usb_autotest/vmin',binary)
@@ -281,15 +289,17 @@ class VminAutoTestParse(AutoTestParse):
 					fail_flag = 0
 			case_bkp = case
 			print 'sdl:%s doing_num:%d total_cnt:%d'%(self.sdl_binary ,doing_num,self.case_cnt)
+			self.uart.reset_log_file(case.test_log_dir)
 			case.download_binary()
 			case.run_test(self.uart)
+			self.uart.save_log_file()
 		
 #pls change to ctest root directory , #./tool/autoTest/autoTest_main.py
 if __name__ == '__main__':
 	signal.signal(signal.SIGINT, signal_handler)
 	signal.signal(signal.SIGTERM, signal_handler)
 	arg_parser = argparse.ArgumentParser()
-	arg_parser.add_argument('project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
+	arg_parser.add_argument('-project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
 	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
 	arg_parser.add_argument('-b','--build',action = 'store_false',help = 'if donot build modules,input -b')
 	arg_parser.add_argument('-v','--vmin',action = 'store_true',help = 'if vmin test,input -v')
@@ -304,14 +314,16 @@ if __name__ == '__main__':
 		autotest.get_case()
 		autotest.auto_test()
 		raise TestEndException
-	except MyException,e:
-		stop_flag.set()
-		print 'ERROR:',e
-	except AssertionError,e:
+	except (MyException,AssertionError),e:
 		stop_flag.set()
 		print 'ERROR:',e
 	except TestEndException:
 		stop_flag.set()
 		autotest.create_report()
 		autotest.clear_result('clock')
+	except Exception,e:
+		stop_flag.set()
+		print 'ERROR:',e
+		autotest.create_report()
+		autotest.clear_result('all_modules')
 

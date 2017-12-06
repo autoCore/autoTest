@@ -33,7 +33,8 @@ class Uart(threading.Thread):
 		try:
 			cnt = int((timeout+self.timeout)/self.timeout)
 			for i in range(cnt):
-				if self.last_log == text: return True
+				# if self.last_log == text: return True
+				if self.last_log and text in self.last_log: return True
 				time.sleep(self.timeout)
 			return False
 		except Exception,e:
