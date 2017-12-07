@@ -90,8 +90,11 @@ class Uart(threading.Thread):
 				line = self.comport.readline().strip()
 				if line and self.send_obj: self.send_obj.send_msg(line)
 				# if line.strip(): print line
-				if self.log and line:
-					self.last_log = line.strip()
+				if self.log:
+					print >>self.log,line
+					self.log.flush()
+				if line:
+					self.last_log = line
 					if 'AUTOTEST@' in self.last_log:
 						match = re.search(r'AUTOTEST@.*?Result\[(.*?)\]:RetCode(\[.*?\])',self.last_log)
 						if match:
@@ -101,10 +104,8 @@ class Uart(threading.Thread):
 								self.result_log.append(match.group(1)+match.group(2))
 					if 'Unknown command' in self.last_log:
 						self.result_log.append(self.last_log.split('-')[0].strip())
-					if 'ctest#' == line.strip():
+					if 'ctest#' == line:
 						self.case_end_flag = True if self.result_log else False
-					print >>self.log,line
-					self.log.flush()
 			except Exception,e:
 				print e,'Serial Exception.Pls check serial'
 				stop_flag.set()

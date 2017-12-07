@@ -154,12 +154,7 @@ def excel_style_config(sheet_obj,row_n,col_n,bold,height):
 	return style
 
 def report_excel(autoTest_object_list,fname):
-	if autoTest_object_list:
-		pass
-	else:
-		print 'autoTest_object_list is blank'
-		return 0
-
+	assert autoTest_object_list, 'autoTest_object_list is blank'
 	title_text = 'ASR Ctest report'
 	excel_obj = Workbook()
 	sheet_obj = excel_obj.add_sheet('test_report')

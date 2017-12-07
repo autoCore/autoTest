@@ -49,14 +49,8 @@ def create_report_page(c_obj,headText,titleBar,page_num):
 	c_obj.drawString(PageNum_pos[x],PageNum_pos[y],'Page '+str(page_num))
 
 def report_result(autoTest_object_list, file_name):
-	if autoTest_object_list:
-		pass
-	else:
-		print 'autoTest_object_list is blank'
-		return 0
-
+	assert autoTest_object_list, 'autoTest_object_list is blank'
 	c = canvas.Canvas(file_name)
-
 	headtext = "ASR Ctest report"
 	# titleBar = ["Module Name","Command Name","Build Result","Test Result"]
 	titleBar = ["ID","Module Name","Command Name","Test Result"]

@@ -9,6 +9,9 @@ import copy,os,sys,time,datetime
 from auto_test_uart import *
 import ConfigParser
 
+sys.path.append("./tool/")
+from autobuild_all import do_autoBuild
+
 class MyException(Exception): pass
 class TestEndException(Exception): pass
 
@@ -150,8 +153,16 @@ class AutoTestParse(object):
 		all_modules = re.sub(r'TIMEOUT_DEFAULT','30',all_modules)
 		all_modules = '#' + all_modules + '#'
 		auto_case_modules = re.findall(r'#([a-zA-Z_0-9]+):([^:]+):([^:]+):\[(Success)\]:AUTOTEST@([^:]+):(.*?)#',all_modules)
-		no_auto_modules = re.findall(r'#([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Success\]#',all_modules)
 		fail_modules = re.findall(r'#([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Fail\]#',all_modules)
+		no_auto_list = re.findall(r'#([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Success\]#',all_modules)
+		no_auto_list = list(set(no_auto_list))
+		no_auto_list.sort()
+		no_auto_modules = []
+		for module in no_auto_list:
+			for case_info in auto_case_modules:
+				if module in case_info: break
+			else:
+				no_auto_modules.append(module)
 		# print all_modules
 		for line_num, _str in enumerate(fail_modules):
 			obj.to_object(id = line_num, module_name = _str,build_result = 'Fail')
@@ -299,7 +310,7 @@ if __name__ == '__main__':
 	signal.signal(signal.SIGINT, signal_handler)
 	signal.signal(signal.SIGTERM, signal_handler)
 	arg_parser = argparse.ArgumentParser()
-	arg_parser.add_argument('-project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
+	arg_parser.add_argument('project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
 	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
 	arg_parser.add_argument('-b','--build',action = 'store_false',help = 'if donot build modules,input -b')
 	arg_parser.add_argument('-v','--vmin',action = 'store_true',help = 'if vmin test,input -v')
@@ -320,7 +331,7 @@ if __name__ == '__main__':
 	except TestEndException:
 		stop_flag.set()
 		autotest.create_report()
-		autotest.clear_result('clock')
+		autotest.clear_result('all_modules')
 	except Exception,e:
 		stop_flag.set()
 		print 'ERROR:',e

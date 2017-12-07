@@ -18,16 +18,25 @@ class BuildModule(threading.Thread):
 		self.axf_dir = _axf_dir
 		self.cases = copy.deepcopy(_cases)
 		self.build_cmd = ''
+		self.binary_list = []
 		self.result = None
 		self.auto_cases = {}
 
 	def get_result(self):
 		return self.result
 
+	def __get_target_binary(self,res_log):
+		res_log = re.sub('\n','',res_log)
+		binary_list = re.findall(r'Linking C executable (.*?\.elf)',res_log)
+		binary_list = list(set(binary_list))
+		if not binary_list:
+			self.binary_list = ['No_target_binary']
+			return
+		file_list = [s for s in os.listdir(self.axf_dir) if os.path.isfile(os.path.join(self.axf_dir,s)) and '.elf' in os.path.join(self.axf_dir,s)]
+		self.binary_list = [b for b in binary_list if b in file_list]
+
 	def run(self):
 		global mutex
-		line_string = ''
-		counter = 0
 		if self.build_type == "make":
 			cmd = "make p=%s m=%s i=64"%(self.project_name,self.module_name)
 		elif self.build_type == "cmake":
@@ -38,25 +47,24 @@ class BuildModule(threading.Thread):
 			if self.module_name in mkall_list:
 				cmd = "./make/%s/mkall.sh %s"%(self.module_name,self.project_name)
 		#end of exceptions
-		(system_run_ret,_log) = commands.getstatusoutput(cmd) #if success ,return 0
+		(system_run_ret,res_log) = commands.getstatusoutput(cmd) #if success ,return 0  Linking C executable example_case0.elf
 		self.build_cmd = cmd
 		#after this, check the binary file
 		m = FileFilt()
-		if self.build_type == "make":
-			counter = m.FindFile(dirr = self.axf_dir, find_file = '.axf') if not system_run_ret else None
-		elif self.build_type == "cmake":
-			counter = m.FindFile(dirr = self.axf_dir, find_file = self.module_name) if not system_run_ret else None
-			m.fileList = [_file for _file in m.fileList if '.elf' in _file]
-			counter = len(m.fileList)
-		if self.module_name in ['tl4_core','sched','jpeg','camafbc','ddrtester','bhmkpwr']:
-			counter = 1
-		self.result = 1 if any([system_run_ret,not counter]) else 0  # if fail 1 else 0
+		if not system_run_ret:
+			if self.build_type == "make":
+				m.FindFile(dirr = self.axf_dir, find_file = '.axf')
+				self.binary_list = m.fileList[:]
+			elif self.build_type == "cmake":
+				self.__get_target_binary(res_log)
+
+		self.result = 1 if any([system_run_ret,not self.binary_list]) else 0  # if fail 1 else 0
 		mutex.acquire()
 		if self.result:
-			print "module: %-20s fail!"%self.module_name
+			print "module: %-30s fail!"%self.module_name
 		else:
-			print "module: %-20s success!"%self.module_name
-			for k in m.fileList:
+			print "module: %-30s success!"%self.module_name
+			for k in self.binary_list:
 				_module_name = re.sub(r'%s_|_test|_case.?'%self.project_name,'',os.path.splitext(k)[0]).lower()
 				self.auto_cases[k] = self.cases.get(_module_name,[])
 				# self.auto_cases.extend(self.cases.get(_module_name,[]))
@@ -73,7 +81,7 @@ class BuildModuleParser(object):
 		self.auto_test_fn = './tool/tmp/~autotest_list'
 		self.res_dir = './tool/tmp'
 
-	def _get_auto_cases(self):
+	def __get_auto_cases(self):
 		assert os.path.exists(self.auto_test_fn),'file:%s not exists'%self.auto_test_fn
 		with open(self.auto_test_fn) as file_obj:
 			all_cases = ''.join(file_obj.readlines())
@@ -104,7 +112,7 @@ class BuildModuleParser(object):
 		print "Collecting autoTestlist ..."
 		find_all_file_text(self.auto_test_fn, "./","TEST_AUTO_CASE_DEFINE")
 		print "Collected!"
-		self._get_auto_cases()
+		self.__get_auto_cases()
 
 	def get_build_list(self):
 		cmake_list = []
@@ -206,14 +214,9 @@ def find_all_file_text(fname, root_dir,target_text):
 			tfile.write(line) if target_text in line and '//' not in line.strip()[:2] else None
 		fileinput.close()
 
-if __name__ == '__main__':
-	arg_parser = argparse.ArgumentParser()
-	arg_parser.add_argument('project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
-	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
-	argv = arg_parser.parse_args()
-
+def do_autoBuild(project,module = ''):
 	try:
-		buildmodules = BuildModuleParser(argv.project_name,argv.module_name)
+		buildmodules = BuildModuleParser(project,module)
 		buildmodules.prepare_build()
 		buildmodules.get_build_list()
 		buildmodules.start_build()
@@ -221,4 +224,12 @@ if __name__ == '__main__':
 	except Exception,e:
 		buildmodules.clear_result()
 		print e
+
+if __name__ == '__main__':
+	arg_parser = argparse.ArgumentParser()
+	arg_parser.add_argument('project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
+	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
+	argv = arg_parser.parse_args()
+
+	do_autoBuild(argv.project_name,argv.module_name)
 
