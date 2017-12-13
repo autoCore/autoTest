@@ -110,54 +110,43 @@ class BuildModuleParser(object):
 		os.system("rm build/ -rf")
 
 		print "Collecting autoTestlist ..."
-		find_all_file_text(self.auto_test_fn, "./","TEST_AUTO_CASE_DEFINE")
+		find_all_file_text(self.auto_test_fn, "./modules","TEST_AUTO_CASE_DEFINE")
 		print "Collected!"
 		self.__get_auto_cases()
 
 	def get_build_list(self):
-		cmake_list = []
-		if self.module_name:
-			module_list = [self.module_name]
-		else:
+		# cmake_list = []
+		module_list = [self.module_name] if self.module_name else None
+		if 'aquilac' in self.project_name and not self.module_name:
+			with open("./project/aquilac/CMakeLists.txt") as cmake_file:
+				cmake_file_text = ''.join(cmake_file.readlines())
+				cmake_file_text = re.sub('\n','',cmake_file_text)
+			module_list = re.findall(r'include_modules\((.*?)\)',cmake_file_text)
+			module_list = [module.split(r'/')[-1] for module in module_list]
+
+		if self.project_name.lower() in ['aquila_evb','aquila_fpga'] and not self.module_name:
 			b = FileFilt()
 			b.FindFile(dirr = "./modules")
 			module_list = b.fileList
 
-		for eachline in fileinput.input("./project/aquilac/CMakeLists.txt"):
-			match = re.search(r'include_modules\((.*?)\)',eachline)
-			cmake_list.append(match.group(1).strip()) if match else None
-		fileinput.close()
-		cmake_list = [module.split(r'/')[-1] for module in cmake_list]
-
-		if 'aquilac' in self.project_name and not self.module_name:
-			module_list = cmake_list[:]
-			# print module_list
-			# raw_input()
-
-		counter = len(module_list)
-		assert counter,'No module\nPlease check your directory, make sure in ctest root directory\n'
-		print 'module total:%d\nmodule list:%s'%(counter,module_list)
-		for k in module_list:
-			#if k in ['ddr','benchmark','coremark','dhrystone','memtester','efuse']:
-			#	continue
-			if k in cmake_list:
-				elf_dir = "./build/project/%s/"%(self.project_name)
-				thread = BuildModule(self.project_name, k, elf_dir, self.auto_cases,"cmake")
-			else:
-				axf_dir = "./build/%s/img/%s/"%(self.project_name, k)
-				thread = BuildModule(self.project_name, k, axf_dir,self.auto_cases,'make')
-			self.build_list.append(thread)
+		# print module_list
+		# raw_input()
+		assert module_list,'No module\nPlease check your directory, make sure in ctest root directory\n'
+		print 'module total:%d\nmodule list:%s'%(len(module_list),module_list)
+		if 'aquilac' in self.project_name:
+			elf_dir = "./build/project/%s/"%(self.project_name)
+			self.build_list = [BuildModule(self.project_name, k, elf_dir, self.auto_cases,"cmake") for k in module_list]
+		elif self.project_name.lower() in ['aquila_evb','aquila_fpga']:
+			self.build_list = [BuildModule(self.project_name, k, "./build/%s/img/%s/"%(self.project_name, k), self.auto_cases,"make") for k in module_list]
 
 	def start_build(self):
 		print '\nbuild module begain......'
-		global mutex,file_log
+		global mutex
 		mutex = threading.Lock()
 		string = "%s's testCode building result!\n"%self.project_name
 		print string
 		for th in self.build_list:
 			th.start()
-			th.join()
-		for th in self.build_list:
 			th.join()
 
 	def clear_result(self):
