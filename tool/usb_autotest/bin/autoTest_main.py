@@ -7,6 +7,7 @@ import signal
 import commands
 import copy,os,sys,time,datetime
 from auto_test_uart import *
+from jtag_t32 import *
 import ConfigParser
 
 sys.path.append("./tool/")
@@ -103,23 +104,27 @@ class AutoTest(object):
 		print 'test result:',test_result
 		print 'case test done!\n'
 
+
 class AutoTestParse(object):
 	"""docstring for ClassName"""
-	def __init__(self,project_name,report_name = 'all_module'):
+	def __init__(self,project_name,report_name = 'all_modules'):
 		self.project_name = project_name
-		self.report_name = report_name
+		self.report_name = report_name if report_name else 'all_modules'
 		self.case_list = []
 		self.case_cnt = 0
 		self.uart = None
 		self.config_options = {}
 		self.log_dir = None
 		self.build_res_fname = None
-		self.auto_case_fname = None
 
-	def prepare_test(self):
+	def prepare_test(self,is_build = False):
 		self.uart = Uart()
 		self.uart.createPort()
 		self.uart.start()
+
+		do_autoBuild(argv.project_name,argv.module_name) if is_build else None
+		ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
+		if ch == 'n': raise MyException('exit')
 
 		conf = ConfigParser.ConfigParser()
 		conf.read('./tool/usb_autotest/autotest.cfg')
@@ -139,14 +144,10 @@ class AutoTestParse(object):
 
 		build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
 		self.build_res_fname =  build_res_fname if build_res_fname else './tool/tmp/~build.result'
-		assert os.path.exists(self.build_res_fname),'No file:%s'%self.build_res_fname
-
-		auto_case_fname = self.config_options.get('basic_config',{}).get('auto_case_fname')
-		self.auto_case_fname =  auto_case_fname if auto_case_fname else './tool/tmp/~autotest_list'
-		assert os.path.exists(self.auto_case_fname),'No file:%s'%self.auto_case_fname
 
 	def get_case(self):
 		obj = AutoTest()
+		assert os.path.exists(self.build_res_fname),'No file:%s'%self.build_res_fname
 		with open(self.build_res_fname) as file_obj:
 			all_modules = '##'.join(file_obj.readlines())
 		all_modules = re.sub(r'\n| {3,}','',all_modules)
@@ -164,6 +165,7 @@ class AutoTestParse(object):
 			else:
 				no_auto_modules.append(module)
 		# print all_modules
+		line_num = 0
 		for line_num, _str in enumerate(fail_modules):
 			obj.to_object(id = line_num, module_name = _str,build_result = 'Fail')
 			obj.set_test_result(['Build_Fail'])
@@ -197,7 +199,6 @@ class AutoTestParse(object):
 		# 	raw_input()
 
 	def auto_test(self):
-		ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
 		for doing_num,case in enumerate(self.case_list):
 			print 'doing_num:%d total_cnt:%d'%(doing_num,self.case_cnt)
 			if case.test_result:
@@ -236,75 +237,94 @@ class AutoTestParse(object):
 		print 'clear done'
 
 class VminAutoTestParse(AutoTestParse):
-	def __init__(self, project_name):
-		super(VminAutoTestParse, self).__init__(project_name)
+	def __init__(self, project_name,report_name = 'vmin'):
+		super(VminAutoTestParse, self).__init__(project_name,report_name)
 		self.jump_cnt = 0
 		self.sdl_binary = ''
 
-	def get_case(self):
+	def prepare_test(self,is_build = False):
+		self.uart = Uart()
+		self.uart.createPort()
+		self.uart.start()
+
+		ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
+		if ch == 'n': raise MyException('exit')
+
+		conf = ConfigParser.ConfigParser()
+		conf.read('./tool/usb_autotest/autotest.cfg')
+		for sec in conf.sections():
+			self.config_options[sec] = {k:v for k,v in conf.items(sec)}
+		# print self.config_options
+
+		autotest_tmp = self.config_options.get('basic_config',{}).get('autotest_tmp')
+		autotest_tmp =  autotest_tmp if autotest_tmp else './tool/tmp'
+		os.mkdir(autotest_tmp) if not os.path.exists(autotest_tmp) else None
+
+		log_dir = self.config_options.get('basic_config',{}).get('log_dir')
+		self.log_dir =  log_dir if log_dir else './tool/tmp/log'
+		os.system(r'rm -rf %s'%self.log_dir) if os.path.exists(self.log_dir) else None
+		os.mkdir(self.log_dir)
+		os.system(r'chmod 777 %s'%self.log_dir)
+
+		build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
+		self.build_res_fname =  build_res_fname if build_res_fname else './tool/tmp/~build.result'
+
 		module_name = self.config_options.get('vmin_config',{}).get('module_name')
-		binary = self.config_options.get('vmin_config',{}).get('test_binary')
+		test_binary = self.config_options.get('vmin_config',{}).get('test_binary')
 		sdl_binary = self.config_options.get('vmin_config',{}).get('sdl_binary')
 		vol_high = self.config_options.get('vmin_config',{}).get('vol_high')
 		voltage_grade = int(self.config_options.get('vmin_config',{}).get('voltage_grade'))
 		level = self.config_options.get('vmin_config',{}).get('level')
 		cmd = self.config_options.get('vmin_config',{}).get('cmd')
-		timeout_list = [self.config_options.get('vmin_config',{}).get('timeout')]
+		timeout = self.config_options.get('vmin_config',{}).get('timeout')
 		self.jump_cnt = voltage_grade
 		self.sdl_binary = sdl_binary
-		binary = os.path.join('./tool/usb_autotest/vmin',binary)
+		test_binary = os.path.join('./tool/usb_autotest/vmin',test_binary)
 		sdl_binary = os.path.join('./tool/usb_autotest/vmin',sdl_binary)
 		os.system('cp %s ./tool/evb/aquilac/sdl.pak'%sdl_binary)
 
 		vol_list = [(float(vol_high)-0.0125*i) for i in range(int(voltage_grade))]
 		vol_list = ['%.4f'%vol for vol in vol_list]
-		cmd = cmd.split()[0]
-		test_cmd_set = []
-		for level in range(int(level)):
-			for vol in vol_list:
-				cmd_str = ' '.join([cmd,vol,str(level)])
-				cmd_list = [cmd_str]
-				test_cmd_set.append([cmd_list,timeout_list])
+		cmd = cmd.split()
+		aute_case_list = []
+		if module_name == 'ddr_vmin':
+			for value in range(int(level)):
+				for vol in vol_list:
+					cmd_str = ' '.join([cmd[0],vol,str(value)])
+					aute_case_list.append('AUTOTEST@' + cmd_str.strip() + ':' + timeout.strip())
+		elif module_name == 'core_vmin':
+			for clst in eval(cmd[3]):
+				for value in range(int(level)):
+					for vol in vol_list:
+						cmd_str = ' '.join([cmd[0],vol,str(value),str(clst)])
+						aute_case_list.append('AUTOTEST@' + cmd_str.strip() + ':' + timeout.strip())
+		line_string = ':'.join([module_name,'vmin_test',test_binary])
+		line_string = '%-150s:[Success]'%(line_string)
+		with open(self.build_res_fname,'w') as file_obj:
+			line_list = [':'.join([line_string,auto_case]) for auto_case in aute_case_list]
+			line_string = '\n'.join(line_list)
+			file_obj.write(line_string+'\n')
 
-		for line_num,test_cmd_set_list in enumerate(test_cmd_set):
-			test_cmd_list,timeout_list = test_cmd_set_list
-			obj = AutoTest()
-			log_file = os.path.join(self.log_dir,create_file_name(binary, line_num,'.log'))
-			obj.to_object(line_num, module_name, binary, test_cmd_list, timeout_list,log_file)
-			self.case_list.append(copy.deepcopy(obj))
-			obj.clear()
-		self.case_cnt = len(self.case_list)
-		assert self.case_cnt, 'get case list fail'
-		# for case in self.case_list:
-		# 	print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in case.__dict__.items()])
-		# 	raw_input()
-
- 
 	def auto_test(self):
-		ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
-		fail_flag = jump_flag = 0
 		for doing_num,case in enumerate(self.case_list):
+			if doing_num%self.jump_cnt == 0:
+				fail_cnt = jump_flag = 0
 			if jump_flag and (doing_num%self.jump_cnt):
 				continue
-			if doing_num%self.jump_cnt == 0:
-				fail_flag = jump_flag = 0
-			else:
-				if re.findall('No_result_log|Cannot find result_log file|ERR',''.join(case_bkp.test_result)):
-					if fail_flag:
-						jump_flag = 1
-						fail_flag = 0
-						continue
-					else:
-						fail_flag = 1
-				else:
-					fail_flag = 0
-			case_bkp = case
 			print 'sdl:%s doing_num:%d total_cnt:%d'%(self.sdl_binary ,doing_num,self.case_cnt)
 			self.uart.reset_log_file(case.test_log_dir)
 			case.download_binary()
 			case.run_test(self.uart)
 			self.uart.save_log_file()
-		
+			if re.findall('No_result_log|Cannot find result_log file|ERR',''.join(case.test_result)):
+				fail_cnt += 1
+				if fail_cnt == 2:
+					jump_flag = 1
+					fail_cnt = 0
+			else:
+				fail_cnt = 0
+
+
 #pls change to ctest root directory , #./tool/autoTest/autoTest_main.py
 if __name__ == '__main__':
 	signal.signal(signal.SIGINT, signal_handler)
@@ -316,12 +336,11 @@ if __name__ == '__main__':
 	arg_parser.add_argument('-v','--vmin',action = 'store_true',help = 'if vmin test,input -v')
 	argv = arg_parser.parse_args()
 	try:
-		cnt = do_autoBuild(argv.project_name,argv.module_name) if argv.build else None
 		if argv.vmin:
-			autotest = VminAutoTestParse(argv.project_name)
+			autotest = VminAutoTestParse(argv.project_name,'vmin')
 		else:
-			autotest = AutoTestParse(argv.project_name)
-		autotest.prepare_test()
+			autotest = AutoTestParse(argv.project_name,argv.module_name)
+		autotest.prepare_test(argv.build)
 		autotest.get_case()
 		autotest.auto_test()
 		raise TestEndException
@@ -331,10 +350,10 @@ if __name__ == '__main__':
 	except TestEndException:
 		stop_flag.set()
 		autotest.create_report()
-		autotest.clear_result('all_modules')
+		autotest.clear_result(autotest.report_name)
 	except Exception,e:
 		stop_flag.set()
 		print 'ERROR:',e
 		autotest.create_report()
-		autotest.clear_result('all_modules')
+		autotest.clear_result(autotest.report_name)
 
