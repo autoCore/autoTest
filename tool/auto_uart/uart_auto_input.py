@@ -5,7 +5,7 @@ from serial import Serial
 import threading 
 import platform
 import sys,os,re
-import time
+import time,datetime
 import argparse
 import signal
 
@@ -81,13 +81,20 @@ class Uart(threading.Thread):
 			elif "Windows" in platform_type:
 				port_list = [list(port) for port in port_list]
 				port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
+			print 'port:',port_list
+			map(os.system,['sudo chmod 755 %s'%p for p in port_list])
 			if port_list:
-				port = port_list[0]
-				os.system('sudo chmod 777 %s'%port)
-				print port
+				if len(port_list) == 1:
+					port = port_list[0]
+				else:
+					while 1:
+						port = raw_input('Pls input port:')
+						if port in port_list: break
+						else:  print 'No device'
 			else:
 				print "No port"
 				sys.exit(0)
+		print 'current port name:',port
 		self.comport = Serial(port, baud, timeout=time_out)
 		self.timeout = time_out
 		if self.comport.isOpen():
@@ -180,24 +187,31 @@ def WAIT_ALL_THREAD_END():
 if __name__ == "__main__":
 	signal.signal(signal.SIGINT, signal_handler)
 	signal.signal(signal.SIGTERM, signal_handler)
+
 	arg_parser = argparse.ArgumentParser()
-	arg_parser.add_argument('-f','--log_file',default = './test_log.log',help='log path or log_file -- example: ./test_log.log')
+	arg_parser.add_argument('-f','--log_file',default = 'test_log',help='log path or log_file -- example: ./test_log')
 	arg_parser.add_argument('-d','--output_dir',default = './',help='output file dir -- example: ./')
+	arg_parser.add_argument('-c','--cmd_file',default = '',help = 'if need autocmd.cfg ,input -c ./tool/auto_uart/autocmd.cfg')
 	argv = arg_parser.parse_args()
 
-	uart = Uart(argv.log_file)
+	now = datetime.datetime.today()
+	date = now.strftime("%d_%h_%H-%M-%S")
+	log_file = '%s_%s.log'%(argv.log_file,date)
+	uart = Uart(log_file)
 	uart.createPort()
 	uart_manager = UartController(uart)
 	uart_manager.start()
 
 	try:
-		with open('./tool/auto_uart/autocmd.cfg') as file_obj:
-			file_text = '|'.join(file_obj.readlines())
-			file_text = '|' + re.sub('\n','',file_text)
-		cmd_set = re.findall('\|AUTOTEST@\((.*?),(.*?)\)',file_text)
-		for cmd,timeout in cmd_set:
-			uart.input(cmd.strip())
-			time.sleep(eval(timeout))
+		if argv.cmd_file:
+			assert os.path.exists(argv.cmd_file)
+			with open(argv.cmd_file) as file_obj:
+				file_text = '|'.join(file_obj.readlines())
+				file_text = '|' + re.sub('\n','',file_text)
+			cmd_set = re.findall('\|AUTOTEST@\((.*?),(.*?)\)',file_text)
+			for cmd,timeout in cmd_set:
+				uart.input(cmd.strip())
+				time.sleep(eval(timeout))
 		WAIT_ALL_THREAD_END()
 	except Exception,e:
 		stop_flag.set()
