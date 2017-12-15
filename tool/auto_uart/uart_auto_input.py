@@ -82,7 +82,7 @@ class Uart(threading.Thread):
 				port_list = [list(port) for port in port_list]
 				port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
 			print 'port:',port_list
-			map(os.system,['sudo chmod 755 %s'%p for p in port_list])
+			map(os.system,['sudo chmod 777 %s'%p for p in port_list])
 			if port_list:
 				if len(port_list) == 1:
 					port = port_list[0]
