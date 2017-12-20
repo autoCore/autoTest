@@ -64,20 +64,22 @@ class AutoTest(object):
 		print 'download binary...'
 		(system_run_ret,_log) = commands.getstatusoutput('sudo ./tool/evb/aquilac/download.sh %s'%self.binary)
 		if system_run_ret:
-			print 'download fail'
-			stop_flag.set()
-			sys.exit()
+			raise MyException('download fail')
 		print 'download end'
+
+	def wait_case_done(self,uart,timeout):
+		return uart.expect('ctest#|BOOTROM: SPL0',timeout)
 
 	def run_test(self,uart):
 		print 'start ctest ...'
 		print 'module_name: %s'%self.module_name
-		if not uart.expect('==Press keyboard to Enter Shell ==',3):
+		if not uart.expect('ctest#',1):
 			print 'system error not into ctest'
 		test_result = []
 		for cmd_string,timeout in zip(self.test_cmd_list,self.test_timeout_list):
 			timeout = get_timeout(timeout)
 			uart.input('reboot %d'%timeout)
+			self.wait_case_done(uart,1)
 			if timeout:
 				print "wait time:%d"%timeout
 			else:
@@ -85,19 +87,15 @@ class AutoTest(object):
 				self.set_test_result(['timeout overrange reboot max time'])
 				return
 			uart.input(cmd_string)
-			for timming in range(1,timeout+1):
-				if uart.case_end_flag:
-					test_result.extend(uart.result_log) if uart.result_log else None
-					uart.input('reboot 0')
-					break
-				sys.stdout.write("timing: %ds\r" %(int(timming)))
-				sys.stdout.flush()
-				time.sleep(1)
-			else:
-				test_result.extend(uart.result_log) if uart.result_log else None
+			timming = self.wait_case_done(uart,timeout+2)
+			if timming:
+				test_result.extend(uart.result_log) if uart.result_log else test_result.append('No_result_log')
 				uart.input('reboot 0')
-				time.sleep(1)
-			test_result.append('No_result_log') if not test_result else None
+				self.wait_case_done(uart,1)
+			else:
+				test_result.extend(uart.result_log) if uart.result_log else test_result.append('No_result_log')
+				self.set_test_result(test_result)
+				raise MyException('No reboot after timeout')
 		self.set_test_result(test_result)
 		print 'wait total time: %ds'%timming
 		print 'input cmd:',self.test_cmd_list
@@ -337,7 +335,8 @@ if __name__ == '__main__':
 	argv = arg_parser.parse_args()
 	try:
 		if argv.vmin:
-			autotest = VminAutoTestParse(argv.project_name,'vmin')
+			report_file = argv.module_name if argv.module_name else 'vmin'
+			autotest = VminAutoTestParse(argv.project_name,report_file)
 		else:
 			autotest = AutoTestParse(argv.project_name,argv.module_name)
 		autotest.prepare_test(argv.build)

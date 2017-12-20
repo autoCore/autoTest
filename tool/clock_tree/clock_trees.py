@@ -275,8 +275,6 @@ if __name__ == "__main__":
 		text_list = []
 		current_row += 1
 		clk_freq = str(clk_obj.get_clk_freq())
-		# sheet_obj.write(current_row, 5, clk_freq)
-		cell_list.append(excel_cell_config(sheet_obj, current_row, 5, clk_freq, width = 6000, background = 'green'))
 		if clk_obj.get_gate_enable():
 			text_list.append(clk_obj.clk_name + '(enable)')
 		else:

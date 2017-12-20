@@ -30,15 +30,18 @@ class Uart(threading.Thread):
 			return 0
 
 	def expect(self,text,timeout):
-		try:
-			cnt = int((timeout+self.timeout)/self.timeout)
-			for i in range(cnt):
-				# if self.last_log == text: return True
-				if self.last_log and text in self.last_log: return True
-				time.sleep(self.timeout)
-			return False
-		except Exception,e:
-			print e
+		uart_timeout = self.timeout/10
+		cnt = int((timeout+uart_timeout)/uart_timeout)
+		timing = 0
+		pattern = re.compile(text)
+		for i in range(cnt):
+			if self.last_log and pattern.match(self.last_log): return uart_timeout*i
+			time.sleep(uart_timeout)
+			if int(uart_timeout*i) != timing:
+				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
+				sys.stdout.flush()
+				timing = int(uart_timeout*i)
+		return False
 
 	def reset_log_file(self,file):
 		if self.log:
@@ -90,7 +93,7 @@ class Uart(threading.Thread):
 				line = self.comport.readline().strip()
 				if line and self.send_obj: self.send_obj.send_msg(line)
 				# if line.strip(): print line
-				if self.log:
+				if self.log and line:
 					print >>self.log,line
 					self.log.flush()
 				if line:
