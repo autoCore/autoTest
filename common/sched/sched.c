@@ -25,7 +25,7 @@ extern unsigned long get_stack_current_sched(void);
 
 static long min_timer_value = 0;
 static sem_t ready_secondary_cpus_semaphore;
-static unsigned int numThreads = 0;
+static unsigned long numThreads = 0;
 static volatile int runningThreadsID[] = {
 	NO_THREAD, NO_THREAD, NO_THREAD, NO_THREAD, NO_THREAD,
 	NO_THREAD, NO_THREAD, NO_THREAD, NO_THREAD, NO_THREAD,
@@ -36,12 +36,12 @@ static volatile int runningThreadsID[] = {
 static PCB_t *pendingPCB[MAX_THREADS + TOTAL_CORES] = {0};
 static PCB_t threadsPCBs[MAX_THREADS + TOTAL_CORES] = {0};
 
-static unsigned int tailPCB = 0;
-static unsigned int headPCB = 0;
+static unsigned long tailPCB = 0;
+static unsigned long headPCB = 0;
 
 static sched_mutex_t queue_mux;
-static unsigned int pendingPCBempty = TRUE;
-static unsigned int pendingPCBfull = FALSE;
+static unsigned long pendingPCBempty = TRUE;
+static unsigned long pendingPCBfull = FALSE;
 
 /* Spare thread handlers for threads already on CPUs */
 static sched_t current_threads_handlers[TOTAL_CORES]= {0};
@@ -70,9 +70,9 @@ static __inline void acquire_spinlock(volatile spinlock_t * plock)
 	dsb();
 }
 
-static __inline unsigned int acquire_trylock(volatile spinlock_t * plock)
+static __inline unsigned long acquire_trylock(volatile spinlock_t * plock)
 {
-	unsigned int lock_state;
+	unsigned long lock_state;
 
 	lock_state = spin_try_lock(plock);
 	dsb();
@@ -189,12 +189,12 @@ int sched_cond_signal(sched_cond_t * cond)
 	threadsPCBs[cond->blockedThreadsID[0]].handler->sleeping = FALSE;
 
 	memmove(cond->blockedThreadsID,
-		cond->blockedThreadsID + sizeof(unsigned int),
-		(cond->blockedThreadsNum - 1) * sizeof(unsigned int));
+		cond->blockedThreadsID + sizeof(unsigned long),
+		(cond->blockedThreadsNum - 1) * sizeof(unsigned long));
 
 	cond->blockedThreadsID =
 	    realloc(cond->blockedThreadsID,
-		    (cond->blockedThreadsNum - 1) * sizeof(unsigned int));
+		    (cond->blockedThreadsNum - 1) * sizeof(unsigned long));
 
 	if (--cond->blockedThreadsNum == 0)
 		cond->cond = FREE;
@@ -206,7 +206,7 @@ int sched_cond_signal(sched_cond_t * cond)
 
 int sched_cond_broadcast(sched_cond_t * cond)
 {
-	unsigned int i;
+	unsigned long i;
 
 	if ((cond == NULL) || (cond->initialized == FALSE))
 		return EINVAL;
@@ -237,7 +237,7 @@ int sched_cond_broadcast(sched_cond_t * cond)
 
 int sched_cond_wait(sched_cond_t * cond, sched_mutex_t * mutex)
 {
-	unsigned int calling_thread_ID, flags;
+	unsigned long calling_thread_ID, flags;
 
 	if (cond == NULL || mutex == NULL)
 		return EINVAL;
@@ -254,7 +254,7 @@ int sched_cond_wait(sched_cond_t * cond, sched_mutex_t * mutex)
 	/* Add calling thread to list of threads blocked on this condition variable */
 	cond->blockedThreadsID =
 	    realloc(cond->blockedThreadsID,
-		    (cond->blockedThreadsNum + 1) * sizeof(unsigned int));
+		    (cond->blockedThreadsNum + 1) * sizeof(unsigned long));
 
 	if (cond->blockedThreadsID == NULL) {
 		sched_mutex_unlock(&cond->blockedMutex);
@@ -315,10 +315,10 @@ int sched_cond_destroy(sched_cond_t * cond)
 
 static void scheduler(void)
 {
-	unsigned int cpuid, parserPCB, currentThreadID;
+	unsigned long cpuid, parserPCB, currentThreadID;
 	int i;
 	PCB_t *tempPendingPCB[MAX_THREADS + TOTAL_CORES];
-	unsigned int ptempPendingPCB = 0;
+	unsigned long ptempPendingPCB = 0;
 	unsigned long stack_addr = 0;
 	long _tmp_time = 0;
 
@@ -490,7 +490,7 @@ int sched_create(sched_t * thread, const sched_attr_t * attr,
 		sched_mutex_unlock(&queue_mux);
 		return -1;
 	} else {
-		unsigned int i = 0;
+		unsigned long i = 0;
 		while (i < MAX_THREADS) {
 			if (threadsPCBs[i].handler == NULL)
 				break;
@@ -513,40 +513,40 @@ int sched_create(sched_t * thread, const sched_attr_t * attr,
 		if (sem_init(&(threadsPCBs[i].handler->descheduled_semaphore), 0) != 0)
 			trace("\nError: initializing semaphore (threadsPCBs[i].handler->descheduled_semaphore");
 
-		threadsPCBs[i].x0 = (unsigned int)start_routine;
-		threadsPCBs[i].x1 = (unsigned int)arg;
-		threadsPCBs[i].x2 = (unsigned int)(threadsPCBs[i].handler);
-		threadsPCBs[i].x3 = (unsigned int)3;
-		threadsPCBs[i].x4 = (unsigned int)4;
-		threadsPCBs[i].x5 = (unsigned int)5;
-		threadsPCBs[i].x6 = (unsigned int)6;
-		threadsPCBs[i].x7 = (unsigned int)7;
-		threadsPCBs[i].x8 = (unsigned int)8;
-		threadsPCBs[i].x9 = (unsigned int)9;
-		threadsPCBs[i].x10 = (unsigned int)0x10;
-		threadsPCBs[i].x11 = (unsigned int)0x11;
-		threadsPCBs[i].x12 = (unsigned int)0x12;
-		threadsPCBs[i].x13 = (unsigned int)0x13;
-		threadsPCBs[i].x14 = (unsigned int)0x14;
-		threadsPCBs[i].x15 = (unsigned int)0x15;
-		threadsPCBs[i].x16 = (unsigned int)0x16;
-		threadsPCBs[i].x17 = (unsigned int)0x17;
-		threadsPCBs[i].x18 = (unsigned int)0x18;
-		threadsPCBs[i].x19 = (unsigned int)0x19;
-		threadsPCBs[i].x20 = (unsigned int)0x20;
-		threadsPCBs[i].x21 = (unsigned int)0x21;
-		threadsPCBs[i].x22 = (unsigned int)0x22;
-		threadsPCBs[i].x23 = (unsigned int)0x23;
-		threadsPCBs[i].x24 = (unsigned int)0x24;
-		threadsPCBs[i].x25 = (unsigned int)0x25;
-		threadsPCBs[i].x26 = (unsigned int)0x26;
-		threadsPCBs[i].x27 = (unsigned int)0x27;
-		threadsPCBs[i].x28 = (unsigned int)0x28;
-		threadsPCBs[i].x29 = (unsigned int)0x29 + i;
+		threadsPCBs[i].x0 = (unsigned long)start_routine;
+		threadsPCBs[i].x1 = (unsigned long)arg;
+		threadsPCBs[i].x2 = (unsigned long)(threadsPCBs[i].handler);
+		threadsPCBs[i].x3 = (unsigned long)3;
+		threadsPCBs[i].x4 = (unsigned long)4;
+		threadsPCBs[i].x5 = (unsigned long)5;
+		threadsPCBs[i].x6 = (unsigned long)6;
+		threadsPCBs[i].x7 = (unsigned long)7;
+		threadsPCBs[i].x8 = (unsigned long)8;
+		threadsPCBs[i].x9 = (unsigned long)9;
+		threadsPCBs[i].x10 = (unsigned long)0x10;
+		threadsPCBs[i].x11 = (unsigned long)0x11;
+		threadsPCBs[i].x12 = (unsigned long)0x12;
+		threadsPCBs[i].x13 = (unsigned long)0x13;
+		threadsPCBs[i].x14 = (unsigned long)0x14;
+		threadsPCBs[i].x15 = (unsigned long)0x15;
+		threadsPCBs[i].x16 = (unsigned long)0x16;
+		threadsPCBs[i].x17 = (unsigned long)0x17;
+		threadsPCBs[i].x18 = (unsigned long)0x18;
+		threadsPCBs[i].x19 = (unsigned long)0x19;
+		threadsPCBs[i].x20 = (unsigned long)0x20;
+		threadsPCBs[i].x21 = (unsigned long)0x21;
+		threadsPCBs[i].x22 = (unsigned long)0x22;
+		threadsPCBs[i].x23 = (unsigned long)0x23;
+		threadsPCBs[i].x24 = (unsigned long)0x24;
+		threadsPCBs[i].x25 = (unsigned long)0x25;
+		threadsPCBs[i].x26 = (unsigned long)0x26;
+		threadsPCBs[i].x27 = (unsigned long)0x27;
+		threadsPCBs[i].x28 = (unsigned long)0x28;
+		threadsPCBs[i].x29 = (unsigned long)0x29 + i;
 
-		threadsPCBs[i].x30 = (unsigned int)thread_wrapper;
-		threadsPCBs[i].elr_el3 = (unsigned int)thread_wrapper;
-		threadsPCBs[i].bak = (unsigned int)thread_wrapper;
+		threadsPCBs[i].x30 = (unsigned long)thread_wrapper;
+		threadsPCBs[i].elr_el3 = (unsigned long)thread_wrapper;
+		threadsPCBs[i].bak = (unsigned long)thread_wrapper;
 
 		threadsPCBs[i].sp = get_thread_stack(i) -0x130;
 		threadsPCBs[i].SPSR_EL3 = 0x6000000d;
@@ -633,7 +633,7 @@ static void __timer_isr(int IntNum, int IntSrc)
 #endif
 
 static int long core_boot_msk = 0;
-static void __cores_boot(unsigned int cpu_id_msk, unsigned long boot_addr_low_32, unsigned long boot_addr_high_32)
+static void __cores_boot(unsigned long cpu_id_msk, unsigned long boot_addr_low_32, unsigned long boot_addr_high_32)
 {
 	trace("boot_secondary_cpu: boot cpu id msk is 0x%x\n\r",cpu_id_msk);
 
@@ -647,10 +647,10 @@ static void __cores_boot(unsigned int cpu_id_msk, unsigned long boot_addr_low_32
 
 void sched_threads_init(void)
 {
-	unsigned int i, j = 0;
-	unsigned int cpuid;
+	unsigned long i, j = 0;
+	unsigned long cpuid;
 
-	unsigned int slave_if[] = {
+	unsigned long slave_if[] = {
 		1,		/*Cluster 0 */
 		2,		/*Cluster 1 */
 		3,		/*Cluster 2 */
@@ -744,7 +744,7 @@ void __sched_idle(void) __attribute__ ((noreturn));
 void __sched_idle(void)
 #endif
 {
-	unsigned int cpuid, tmp;
+	unsigned long cpuid, tmp;
 
 	cpuid = arm_get_coreid();
 	trace("-> CPU%d up...\n\r", cpuid);
@@ -795,7 +795,7 @@ void sched_kill_thread(int thread_id)
 
 int sched_sched_stats(scheduler_stats_t * scheduler_stats)
 {
-	unsigned int i, j;
+	unsigned long i, j;
 
 	if (scheduler_stats == NULL)
 		return -1;
@@ -845,7 +845,7 @@ void sched_kick(void)
 void sched_cancel(void)
 {
 	sched_t *handler;
-	unsigned int calling_thread_ID;
+	unsigned long calling_thread_ID;
 
 	calling_thread_ID = arm_read_thread_id();
 	threadsPCBs[calling_thread_ID].active = FALSE;
@@ -863,8 +863,8 @@ static sched_attr_t cmd_attr0, cmd_attr1, cmd_attr2;
 static void *__test_thread_a(void *d)
 {
 	volatile int i = 0, j = 0;
-	unsigned int cpuid = arm_get_coreid();
-	unsigned int cnt = 0;
+	unsigned long cpuid = arm_get_coreid();
+	unsigned long cnt = 0;
 
 	while (1) {
 		i = j = 0;
@@ -879,8 +879,8 @@ static void *__test_thread_a(void *d)
 static void *__test_thread_b(void *d)
 {
 	volatile int i = 0, j = 0;
-	unsigned int cpuid = arm_get_coreid();
-	unsigned int cnt = 0;
+	unsigned long cpuid = arm_get_coreid();
+	unsigned long cnt = 0;
 
 	while (1) {
 		i = j = 0;
@@ -895,8 +895,8 @@ static void *__test_thread_b(void *d)
 static void *__test_thread_c(void *d)
 {
 	volatile int i = 0, j = 0;
-	unsigned int cpuid = arm_get_coreid();
-	unsigned int cnt = 0;
+	unsigned long cpuid = arm_get_coreid();
+	unsigned long cnt = 0;
 
 	while (1) {
 		i = j = 0;
