@@ -106,6 +106,9 @@ class CapInfo(object):
 	def do(self,name,*args):
 		self.callback('do_',name,*args)
 
+	def capUsefulInfo(self,name,match):
+		pass
+
 	def clear(self):
 		pass
 

@@ -30,12 +30,12 @@ class Uart(threading.Thread):
 			return 0
 
 	def expect(self,text,timeout):
-		uart_timeout = self.timeout/10
+		uart_timeout = 0.001
 		cnt = int((timeout+uart_timeout)/uart_timeout)
 		timing = 0
 		pattern = re.compile(text)
-		for i in range(cnt):
-			if self.last_log and pattern.match(self.last_log): return uart_timeout*i
+		for i in xrange(cnt):
+			if self.last_log and pattern.search(self.last_log): return uart_timeout*i
 			time.sleep(uart_timeout)
 			if int(uart_timeout*i) != timing:
 				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))

@@ -197,10 +197,10 @@ class FileFilt:
 def find_all_file_text(fname, root_dir,target_text):
 	suffix='.c'
 	os.system(r'rm ' + fname) if os.path.exists(fname) else None
-	all_files_list = [os.path.join(root,file) for root,dirs,files in os.walk(root_dir) for file in files if suffix in file]
+	all_files_list = [os.path.join(root,file) for root,dirs,files in os.walk(root_dir) for file in files if file.endswith(suffix)]
 	with open(fname, 'a') as tfile:
 		for line in fileinput.input(files = all_files_list):
-			tfile.write(line) if target_text in line and '//' not in line.strip()[:2] else None
+			tfile.write(line) if target_text in line and not line.strip().startswith('//') else None
 		fileinput.close()
 
 def do_autoBuild(project,module = ''):

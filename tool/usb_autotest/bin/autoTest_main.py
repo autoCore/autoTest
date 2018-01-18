@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from report import report_result
-from report_excel import report_excel
+from report_excel import report_excel,vmin_report
 import argparse
 import signal
 import commands
@@ -73,7 +73,7 @@ class AutoTest(object):
 	def run_test(self,uart):
 		print 'start ctest ...'
 		print 'module_name: %s'%self.module_name
-		if not uart.expect('ctest#',1):
+		if not uart.expect('ctest#',2):
 			print 'system error not into ctest'
 		test_result = []
 		for cmd_string,timeout in zip(self.test_cmd_list,self.test_timeout_list):
@@ -87,7 +87,7 @@ class AutoTest(object):
 				self.set_test_result(['timeout overrange reboot max time'])
 				return
 			uart.input(cmd_string)
-			timming = self.wait_case_done(uart,timeout+2)
+			timming = uart.expect('BOOTROM: SPL0',timeout+2) if self.module_name in ['ipc','tl4'] else self.wait_case_done(uart,timeout+2)
 			if timming:
 				test_result.extend(uart.result_log) if uart.result_log else test_result.append('No_result_log')
 				uart.input('reboot 0')
@@ -210,8 +210,8 @@ class AutoTestParse(object):
 			self.uart.save_log_file()
 
 	def create_report(self):
-		report_result(self.case_list, './tool/tmp/' + 'report_all.pdf')
-		report_excel(self.case_list, './tool/tmp/' + 'report_all.xls')
+		report_result(self.case_list, './tool/tmp/' + self.report_name + '.pdf')
+		report_excel(self.case_list, './tool/tmp/' + self.report_name + '.xls')
 		print "AutoTest completed!\n\r"
 
 	def clear_result(self,test_module = ''):
@@ -221,9 +221,9 @@ class AutoTestParse(object):
 		os.mkdir(test_module_dir)
 		os.system('chmod 777 ' + test_module_dir)
 		os.system('cp ./tool/tmp/log %s -rf'%test_module_dir)
-		find_name = ['report_all*','test_report*']
+		find_name = [self.report_name+'*','test_report*']
 		for _name in find_name:
-			cmd = 'find ./tool/tmp -maxdepth 1 -name %s -exec mv {} %s \;'%(_name,test_module_dir)
+			cmd = 'find ./tool/tmp -maxdepth 1 -name %s -type f -exec mv {} %s \;'%(_name,test_module_dir)
 			os.system(cmd)
 		cmd = 'find ./tool/tmp -maxdepth 1 -name ~* -exec cp {} %s \;'%(test_module_dir)
 		os.system(cmd)
@@ -239,6 +239,12 @@ class VminAutoTestParse(AutoTestParse):
 		super(VminAutoTestParse, self).__init__(project_name,report_name)
 		self.jump_cnt = 0
 		self.sdl_binary = ''
+		self.vmin_list = []
+	def create_report(self):
+		report_result(self.case_list, './tool/tmp/' + self.report_name + '.pdf')
+		report_excel(self.case_list, './tool/tmp/' + self.report_name + '.xls')
+		vmin_report(self.vmin_list, './tool/tmp/' + self.report_name + '.xls')
+		print "AutoTest completed!\n\r"
 
 	def prepare_test(self,is_build = False):
 		self.uart = Uart()
@@ -319,6 +325,7 @@ class VminAutoTestParse(AutoTestParse):
 				if fail_cnt == 2:
 					jump_flag = 1
 					fail_cnt = 0
+					self.vmin_list.append(self.case_list[doing_num-2]) if doing_num > 2 else None
 			else:
 				fail_cnt = 0
 

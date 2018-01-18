@@ -162,7 +162,7 @@ def get_clk_trees(fname_excel):
 			clk_obj.update_parent(_sel,clk_trees_dict.get(_parent,'NULL'))
 
 def find_reg_in_h(reg_name):
-	dirr = './inc/project_chip_reg/aquila'
+	dirr = './inc/project_chip_reg/aquilac'
 	base_h = dirr + '/__regs_base_addr.h'
 	file_list = [os.path.join(dirr,s) for s in os.listdir(dirr) if os.path.isfile(os.path.join(dirr,s))]
 	reg_name_list = []
@@ -205,17 +205,7 @@ def find_reg_in_h(reg_name):
 
 
 def fill_all_reg_val():
-	jtat_connect_cnt = 0
-	while 1:
-		t32api = jtat_connect()
-		jtat_connect_cnt += 1
-		if t32api:
-			break
-		if jtat_connect_cnt == 10:
-			print "Pls check your jtag t32\n\r"
-			sys.exit(1)
-	# print "jtat connect done\n"
-
+	t32api = connect_jtag()
 	for key, clk_obj in clk_trees_dict.items():
 		reg_name_list = [clk_obj.src_reg, clk_obj.gate_reg, clk_obj.fact_reg]
 		reg_addr_list = [find_reg_in_h(reg_name) for reg_name in reg_name_list]
@@ -269,9 +259,10 @@ if __name__ == "__main__":
 	cell_list = []
 	for i, text in enumerate(tilebar):
 		# sheet_obj.write(current_row, i, text)
-		cell_list.append(excel_cell_config(sheet_obj, current_row, i, text, bold = True, height = 200, width = 6000, background = 'wathet'))
+		cell_list.append(excel_cell_config(sheet_obj, current_row, i, text, bold = True, height = 220, width = 6000, background = 'wathet'))
 	for key, clk_obj in sorted(clk_trees_dict.items(),key=lambda item:item[1].id):
-		# print clk_obj.id
+		# print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in clk_obj.__dict__.items()])
+		# raw_input()
 		text_list = []
 		current_row += 1
 		clk_freq = str(clk_obj.get_clk_freq())

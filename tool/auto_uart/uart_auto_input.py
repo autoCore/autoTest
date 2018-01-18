@@ -58,16 +58,20 @@ class Uart(threading.Thread):
 		else:
 			print 'No log file'
 
+
 	def expect(self,text,timeout):
-		try:
-			cnt = int((timeout+self.timeout)/self.timeout)
-			for i in range(cnt):
-				# if self.last_log == text: return True
-				if self.last_log and text in self.last_log: return True
-				time.sleep(self.timeout)
-			return False
-		except Exception,e:
-			print e
+		uart_timeout = 0.001
+		cnt = int((timeout+uart_timeout)/uart_timeout)
+		timing = 0
+		pattern = re.compile(text)
+		for i in xrange(cnt):
+			if self.last_log and pattern.search(self.last_log): return uart_timeout*i
+			time.sleep(uart_timeout)
+			if int(uart_timeout*i) != timing:
+				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
+				sys.stdout.flush()
+				timing = int(uart_timeout*i)
+		return False
 
 	def createPort(self, port = None, baud = 115200, time_out = 0.1):
 		if port:

@@ -8,7 +8,7 @@ import os
 background_dict = {'black':0, 'white':1, 'red':2, 'green':3, 'blue':4, 'yellow':5, 'pink':6, 'wathet':7}
 
 class excel_cell_config():
-	def __init__(self, _sheet_obj, _row, _col, _text, bold = False, height = 180, width = 5000, background = 'white'):
+	def __init__(self, _sheet_obj, _row, _col, _text, bold = False, height = 200, width = 5000, background = 'white'):
 		self.sheet_obj = _sheet_obj
 		self.pos_row = _row
 		self.pos_col = _col
