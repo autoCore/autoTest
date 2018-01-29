@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>slowclock</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD0260000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>STAT_CTRL</spirit:name>
+<spirit:description>Status Control Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>D2_STAT</spirit:name>
+<spirit:description>d2 state status  when this bit is high, d2 state is activated.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EARLY_WAKEUP</spirit:name>
+<spirit:description>early wakeup  the slow clock examines this bit during sleep. when software writes to this bit, the slow clock outputs a wakeup event to the c, even if the sleep period is not over. recurrent writes to this register require a gap of 2 slow clock cycles.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ABSOLUTE_RELATIVE_SELECT</spirit:name>
+<spirit:description>absolute/relative select  this bit chooses which value was initialized for the d2 period.  1 = absolute value how many slow clock cycles to stay in d2   0 = relative value at which slow counter cycle to wake the system.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D2_EN</spirit:name>
+<spirit:description>d2 state enable  1 = enable the tcu to start d2 entry sequence  0 = slow clock cannot enter d2 state</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SCK_SW_RST</spirit:name>
+<spirit:description>slow-clock software reset  1 by software explicit write = slow-clock unit is placed in reset state. in this state, the bit returns a value of 0 upon software read.  0 by software explicit write = slow-clock unit is out of reset. in this state, the bit returns a value of 1 upon software read.  at startup, this bit is set to a value of 1, placing the slow-clock unit in active - out of reset state. in this case, the bit returns value of 1 upon software read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>WAKEUP_REL</spirit:name>
+<spirit:description>Wakeup Event Relative Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>WAKEUP_REL</spirit:name>
+<spirit:description>wakeup event relative  slow count value upon which a wakeup event is output to the c</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>WAKEUP_ABS</spirit:name>
+<spirit:description>Wakeup Event Absolute Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>WAKEUP_ABS</spirit:name>
+<spirit:description>wakeup event absolute  number of slow clock cycles after which a wakeup event is output to the c</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TCU_WAKEUP_REL</spirit:name>
+<spirit:description>Timing Control Unit Wakeup Event Relative Register</spirit:description>
+<spirit:addressOffset>0X0C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TCU_WAKEUP_REL</spirit:name>
+<spirit:description>timing control unit wakeup event  slow count value upon which the clock enable signal is asserted to the tcu. recurrent writes to this register require a gap of two slow clock cycles.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TCU_WAKEUP_ABS</spirit:name>
+<spirit:description>Timing Control Unit Wakeup Event Absolute Register</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TCU_WAKEUP_ABS</spirit:name>
+<spirit:description>timing control unit wakeup  number of slow clock cycles after which the clock enable signal is asserted to the tcu.  when this value is written for scheduled wakeup, it is counted from the last snapshot command slow count register value. when it is written for unscheduled wakeup, it is counted from the last &lt;scnt_int&gt;.  recurrent writes to this register require a gap of 2 slow clock cycles.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SCNT</spirit:name>
+<spirit:description>Slow Clock Count Register</spirit:description>
+<spirit:addressOffset>0X14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SCNT</spirit:name>
+<spirit:description>slow clock count  test register to allow the slow clock count to be read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSNAP</spirit:name>
+<spirit:description>Snapshot Command Slow Count Register</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SSNAP</spirit:name>
+<spirit:description>snapshot command slow count  slow count value associated with the most recently executed snapshot command.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FSNAP</spirit:name>
+<spirit:description>Snapshot Command Offset Register</spirit:description>
+<spirit:addressOffset>0X1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FSNAP</spirit:name>
+<spirit:description>snapshot command offset to next slow clock edge  defined in terms of the high-speed clock edge count  the msb of this register indicates an overflow, which means there was a problem with the 32-khz clock, and no rising edge was found.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SCNT_INT</spirit:name>
+<spirit:description>Slow Clock Interrupt Register</spirit:description>
+<spirit:addressOffset>0X20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SCNT_INT</spirit:name>
+<spirit:description>slow clock interrupt  slow count value upon which an interrupt has occurred during the sleep period.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SCNT_LOAD</spirit:name>
+<spirit:description>Slow Clock Load Register</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SCNT_LOAD</spirit:name>
+<spirit:description>slow clock load  test register to allow the slow counter to be loaded with test data. when loading the slow clock count register with a new value, write to this register on a positive edge of the 32-khz clock. recurrent writes to this register require a gap of two slow clock cycles.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>D2_LEFT</spirit:name>
+<spirit:description>D2 Time Remaining Register</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>D2_LEFT</spirit:name>
+<spirit:description>d2 time remaining  this register allows software to know how much time is left until the scheduled wakeup, and is only relevant when an early wakeup occurs. its calculation is based on the &lt;scnt_int&gt; field value in the slow clock interrupt register.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>M_GSM_MVT_CTL</spirit:name>
+<spirit:description>M_GSM_MVT_CTL Register</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SLOWC_SELECT98</spirit:name>
+<spirit:description>select  this field selects the output signal from the slow clock.  0 = through sticky bit  1 = module output - not through the sticky bit</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SLOWC_RESET99</spirit:name>
+<spirit:description>sticky bit reset  0 = not reset  1 = reset</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SLOWC_100</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

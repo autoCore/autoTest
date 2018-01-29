@@ -1,0 +1,1877 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>usb_otg</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4208000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>USB_ID</spirit:name>
+<spirit:description>Identification Register</spirit:description>
+<spirit:addressOffset>0X000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CIVERSION</spirit:name>
+<spirit:description>identifies the ci version</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>VERSION</spirit:name>
+<spirit:description>identifies the core version</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_REVISION26</spirit:name>
+<spirit:description>revision number of the core</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TAG</spirit:name>
+<spirit:description>identifies the tag of core</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NID</spirit:name>
+<spirit:description>ones complement version of id</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_ID30</spirit:name>
+<spirit:description>configuration number  this number is set to 0x05 and indicates that the peripheral is the usb-hs usb 2.0 core.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HWGENERAL</spirit:name>
+<spirit:description>General Hardware Parameters Register</spirit:description>
+<spirit:addressOffset>0X004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_SM38</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PHYM39</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PHYW40</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_BWT41</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_CLKC42</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_RT43</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HWHOST</spirit:name>
+<spirit:description>Host Hardware Parameters Register</spirit:description>
+<spirit:addressOffset>0X008</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_TTPER50</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_TTASY51</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_NPORT53</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_HC54</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HWDEVICE</spirit:name>
+<spirit:description>Device Hardware Parameters Register</spirit:description>
+<spirit:addressOffset>0X00C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_DEVEP62</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_DC63</spirit:name>
+<spirit:description>device capable  reserved for internal testing</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HWTXBUF</spirit:name>
+<spirit:description>TX Buffer Hardware Parameters Register</spirit:description>
+<spirit:addressOffset>0X010</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_TXLCR70</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_TXCHANADD72</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_TXADD73</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_TCBURST74</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HWRXBUF</spirit:name>
+<spirit:description>RX Buffer Hardware Parameters Register</spirit:description>
+<spirit:addressOffset>0X014</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_RXADD82</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_RXBURST83</spirit:name>
+<spirit:description>reserved for internal testing</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HWRXBUF</spirit:name>
+<spirit:description>RX Buffer Hardware Parameters Register</spirit:description>
+<spirit:addressOffset>0X018</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>EP7_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint7</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP6_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint6</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP5_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint5</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP4_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint4</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP3_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint3</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP2_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint2</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP1_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint1</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP0_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HWRXBUF</spirit:name>
+<spirit:description>RX Buffer Hardware Parameters Register</spirit:description>
+<spirit:addressOffset>0X01C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>EP15_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint15</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP14_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint14</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP13_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint13</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP12_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint12</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP11_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint11</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP10_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint10</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP9_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint9</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EP8_TXFIFO_SIZE</spirit:name>
+<spirit:description>to define tx fifo size for endpoint8</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GPTIMER0LD</spirit:name>
+<spirit:description>Device/Host Timer Registers</spirit:description>
+<spirit:addressOffset>0X080</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>GPTLD</spirit:name>
+<spirit:description>this field is the value to be loaded into the gptcnt countdown timer on a reset action.
+the value in this register represents the time in microseconds minus 1 for the timer
+duration.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>24</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GPTIMER0CTRL</spirit:name>
+<spirit:description></spirit:description>
+<spirit:addressOffset>0X084</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>GTPRUN</spirit:name>
+<spirit:description>this bit enables the general-purpose timer to run. setting or clearing this bit will not have an effect on the gptcnt counter value.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GPTRST</spirit:name>
+<spirit:description>writing a one to this bit will reload the gptcnt with the value in gptld.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GPTMODE</spirit:name>
+<spirit:description>0b' – one shot; '1b' – repeat. this bit selects between a single timer countdown and a
+looped countdown. in one-shot mode, the timer will count down to zero, generate an
+interrupt and stop until the counter is reset by software. in repeat mode, the timer will
+count down to zero, generate an interrupt and automatically reload the counter to begin
+again.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GPTCNT</spirit:name>
+<spirit:description>this field is the value of the running timer.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>24</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GPTIMER1LD</spirit:name>
+<spirit:description></spirit:description>
+<spirit:addressOffset>0X088</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_CAPLENGTH150</spirit:name>
+<spirit:description>caplength</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HCIVERSION</spirit:name>
+<spirit:description>Host Interface Version Number - EHCI Compliant Register</spirit:description>
+<spirit:addressOffset>0X102</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_HCIVERSION157</spirit:name>
+<spirit:description>hciversion</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HCSPARAMS</spirit:name>
+<spirit:description>Host Ctrl. Structural Parameters EHCI Compliant with</spirit:description>
+<spirit:addressOffset>0X104</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_N_TT165</spirit:name>
+<spirit:description>number of transaction translators (n_tt)  this field indicates the number of embedded transaction translators associated with the usb2.0 host controller.  this in a non-ehci field to support embedded tt.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_N_PTT166</spirit:name>
+<spirit:description>number of ports per transaction translator (n_ptt)  this field indicates the number of ports assigned to each transaction translator within the usb2.0 host controller.  this in a non-ehci field to support embedded tt.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PI168</spirit:name>
+<spirit:description>port indicators (p indicator)  this bit indicates whether the ports support port indicator control.  1 = port status and control registers include a read/writeable field for controlling the state of the port indicator  this field will always be 1.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_N_CC169</spirit:name>
+<spirit:description>number of companion controller (n_cc)  this field indicates the number of companion controllers associated with this usb2.0 host controller.  0 = there are no internal companion controllers. port-ownership hand-off is not supported.  in this implementation, this field will always be 0.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_N_PCC170</spirit:name>
+<spirit:description>number of ports per companion controller  this field indicates the number of ports supported per internal companion controller. it is used to indicate the port routing configuration to the system software.  the number in this field must be consistent with &lt;n_ports[3:0]&gt; and &lt;n_cc[3:0]&gt;.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PPC172</spirit:name>
+<spirit:description>port power control  this field indicates whether the host controller implementation includes port power control.  0 = ports do not have port power switches  the value of this field affects the functionality of the port power field in each port status and control register.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_N_PORTS173</spirit:name>
+<spirit:description>number of downstream ports  this field specifies the number of physical downstream ports implemented on this host controller.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_HCCPARAMS</spirit:name>
+<spirit:description>Host Ctrl. Capability Parameters EHCI Compliant</spirit:description>
+<spirit:addressOffset>0X108</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_EECP181</spirit:name>
+<spirit:description>ehci extended capabilities pointer  this optional field indicates the existence of a capabilities list.  0x00 = no extended capabilities are implemented</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_IST182</spirit:name>
+<spirit:description>isochronous scheduling threshold  this field indicates, relative to the current position of the executing host controller, where software can reliably update the isochronous schedule. when bit [7] is zero, the value of the least significant 3 bits indicates the number of micro-frames a host controller can hold a set of isochronous data structures (one or more) before flushing the state.  this field will always be 0.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_ASP184</spirit:name>
+<spirit:description>asynchronous schedule park capability  1 = the host controller supports the park feature for high-speed queue heads in the asynchronous schedule. the feature can be disabled or enabled and set to a specific level by using the &lt;asynchronous schedule park mode enable&gt; and &lt;asp[1:0]&gt; fields in the usb command register.  this field will always be 1.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PFL185</spirit:name>
+<spirit:description>programmable frame list flag  1 = system software can specify and use a smaller frame list and configure the host controller via the &lt;fs[1:0]&gt; field in the usb command register. the frame list must always be aligned on a 4k-page boundary. this requirement ensures that the frame list is always physically contiguous.  this field will always be 1.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_ADC186</spirit:name>
+<spirit:description>64-bit addressing capability  this field will always be 0. no 64-bit addressing capability is supported.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_DCIVERSION</spirit:name>
+<spirit:description>Dev. Interface Version Number Register</spirit:description>
+<spirit:addressOffset>0X120</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_DCIVERSION194</spirit:name>
+<spirit:description>dciversion</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_DCCPARAMS</spirit:name>
+<spirit:description>Device Ctrl. Capability Parameters Register</spirit:description>
+<spirit:addressOffset>0X124</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_HC202</spirit:name>
+<spirit:description>host capable  1 = this controller is capable of operating as an ehci compatible usb 2.0 host controller</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_DC203</spirit:name>
+<spirit:description>device capable  1 = this controller is capable of operating as a usb 2.0 device</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_DEN205</spirit:name>
+<spirit:description>device endpoint number  this field indicates the number of endpoints built into the device controller. if this controller is not device capable, then this field will be 0. valid values are 0 to 16.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_CMD</spirit:name>
+<spirit:description>USB Command Register</spirit:description>
+<spirit:addressOffset>0X140</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_ITC217</spirit:name>
+<spirit:description>interrupt threshold control  the system software uses this field to set the maximum rate at which the host/device controller will issue interrupts. this field contains the maximum interrupt interval measured in micro-frames. valid values are provided below.  value maximum interrupt interval:  0x00 = immediate (no threshold)  0x01 = 1 micro-frame  0x02 = 2 micro-frames  0x04 = 4 micro-frames  0x08 = 8 micro-frames  0x10 = 16 micro-frames  0x20 = 32 micro-frames  0x40 = 64 micro-frames</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_RST219</spirit:name>
+<spirit:description>controller reset (reset)  software uses this field to reset the controller. it is set to 0 by the host/device controller when the reset process is complete. software cannot terminate the reset process early by writing 0 to this register.  host controller: when software writes 1 to this bit, the host controller resets its internal pipelines, timers, counters, state machines etc. to their initial value. any transaction currently in progress on usb is immediately terminated. a usb reset is not driven on downstream ports. software should not set this bit to 1 when the &lt;hchaited&gt; field in the usb status register is a zero. attempting to reset an actively running host controller will result in undefined behavior.  device controller: when software writes 1 to this bit, the device controller resets its internal pipelines, timers, counters, state machines etc. to their initial value. writing 1 to this bit when the device is in the attached state is not recommended, since the effect on an attached host is undefined. in order to ensure that the device is not in an attached state before initiating a device controller reset, all primed endpoints should be flushed and the &lt;run/stop&gt; field in the usb command register should be set to 0.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_RS220</spirit:name>
+<spirit:description>run/stop (rs)  0 = stop  1 = run  host controller: when set to 1, the host controller proceeds with the execution of the schedule. the host controller continues execution as long as this bit is set to a 1. when this bit is set to 0, the host controller completes the current transaction on the usb and then halts. the &lt;hchaited&gt; field in the usb status register indicates when the host controller has finished the transaction and has entered the stopped state. software should not write a 1 to this field unless the host controller is in the halted state (when &lt;hchaited&gt; = 1).  device controller: writing 1 to this field will cause the device controller to enable a pull-up on d+ and initiate an attach event. this control bit is not directly connected to the pull-up enable, as the pull-up will become disabled upon transitional into high-speed mode. software should use this field to prevent an attach event before the device controller has been properly initialized. writing 0 to this will cause a detach event.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_STS</spirit:name>
+<spirit:description>USB Status Register</spirit:description>
+<spirit:addressOffset>0X144</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_TI1228</spirit:name>
+<spirit:description>this bit is set when the counter in the gptimer1ctrl register transitions to zero.
+writing a one to this bit will clear it.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TI2</spirit:name>
+<spirit:description>this bit is set when the counter in the gptimer2ctrl register transitions to zero.
+writing a one to this bit will clear it.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UPI231</spirit:name>
+<spirit:description>this bit is set by the host controller when the cause of an interrupt is a completion of a
+usb transaction where the transfer descriptor (td) has an interrupt on complete (ioc)
+bit set and the td was from the periodic schedule.
+this bit is also set by the host controller when a short packet is detected and the packet
+is on the periodic schedule. a short packet is when the actual number of bytes received
+was less than expected.
+this bit is not used by the device controller and will always be zero.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UAI232</spirit:name>
+<spirit:description>this bit is set by the host controller when the cause of an interrupt is a completion of a
+usb transaction where the transfer descriptor (td) has an interrupt on complete (ioc)
+bit set and the td was from the asynchronous schedule.
+this bit is also set by the host when a short packet is detected and the packet is on the
+asynchronous schedule. a short packet is when the actual number of bytes received
+was less than expected.
+this bit is not used by the device controller and will always be zero.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_NAKI234</spirit:name>
+<spirit:description>this bit is read-only. it is set by hardware when for a particular endpoint both the tx/rx</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_ULPII236</spirit:name>
+<spirit:description>ulpi interrupt  when the ulpi viewport is present in the design, an event completion will set this interrupt.  this is used by both host and device controller. only present in designs where configuration constant vusb_hs_phy_ulpi = 1.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SLI238</spirit:name>
+<spirit:description>dcsuspend  when a device controller enters a suspend state from an active state, this bit will be set to 1. the device controller clears the bit upon exiting from a suspend state.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SRI239</spirit:name>
+<spirit:description>sof received  0 = default. when the device controller detects a start of (micro) frame, this field will be set to 1. when a sof is extremely late, the device controller will automatically set this bit to indicate that an sof was expected. therefore, this field will be set roughly every 1 ms in device fs mode and every 125 ms in hs mode and will be synchronized to the actual sof that is received.  since the device controller is initialized to fs before connect, this field will be set at an interval of 1 ms during the prelude to connect and chirp.  in host mode, this bit will be set every 125 &lt;mu&gt;s and can be used by the host controller driver as a time base.  software writes 1 to this bit to clear it.  this is a non-ehci status bit.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_URI240</spirit:name>
+<spirit:description>usb reset received  when the device controller detects a usb reset and enters the default state, this bit will be set to 1. software can write 1 to this field to clear the usb reset received status bit.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AAI_0B_08H</spirit:name>
+<spirit:description>interrupt on async advance  system software can force the host controller to issue an interrupt the next time the host controller advances the asynchronous schedule by writing 1 to the &lt;interrupt on async advance doorbell&gt; field in the usb command register. this status bit indicates the assertion of that interrupt source.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SEI242</spirit:name>
+<spirit:description>in the bvci implementation of the usbhs core, this bit is not used, and will always be
+cleared to '0b'. in the amba implementation, this bit will be set to '1b' when an error
+response is seen by the master interface (hresp[1:0]=error).</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_FRI243</spirit:name>
+<spirit:description>frame list rollover  the host controller sets this field to 1 when the frame list index rolls over from its maximum value to 0. the exact value at which the rollover occurs depends on the frame list size. for example. if the frame list size (as programmed in the &lt;fs[1:0]&gt; field in the usb command register) is 1024, the usb frame index register rolls over every time frindex[13] toggles. similarly, if the size is 512, the host controller sets this bit to a one every time fhindex[12] toggles.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PCI244</spirit:name>
+<spirit:description>port change detect  the host controller sets this bit to 1 when on any port a connect status occurs, a port enable/disable change occurs, or the &lt;force port resume&gt; field in the port status/control register is set as the result of a j-k transition on the suspended port.  the device controller sets this bit to 1 when the port controller enters the full or high-speed operational state.  when the port controller exits the full or high-speed operation states due to reset or suspend events, the notification mechanisms are the &lt;iaa&gt; field in the usb command register and the &lt;dcsuspend&gt; bits respectively.  this bit is not ehci compatible.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UEI245</spirit:name>
+<spirit:description>usb error interrupt (usberrint)  when completion of a usb transaction results in an error condition, this field is set by the host/device controller. this field is set along with the &lt;ui&gt;, if the td on which the error interrupt occurred also had its interrupt on complete (ioc) bit set.  the device controller detects resume signaling only.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UI246</spirit:name>
+<spirit:description>usb interrupt (usbint)  this field is set by the host/device controller when the cause of an interrupt is a completion of a usb transaction where the transfer descriptor (td) has an interrupt on complete (ioc) bit set.  this bit is also set by the host/device controller when a short packet is detected. a short packet is when the actual number of bytes received was less than the expected number of bytes.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_INTR</spirit:name>
+<spirit:description>USB Interrupt Enable Register</spirit:description>
+<spirit:addressOffset>0X148</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_TIE1254</spirit:name>
+<spirit:description>when this bit is a one, and the ti1 bit in the extsts register is a one, the controller will
+issue an interrupt. the interrupt is acknowledged by software clearing the ti1 bit.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_TIE0255</spirit:name>
+<spirit:description>when this bit is a one, and the ti0 bit in the extsts register is a one, the controller will
+issue an interrupt. the interrupt is acknowledged by software clearing the ti0 bit.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UPEI257</spirit:name>
+<spirit:description>when this bit is a one, and the upi bit in the extsts register is a one, the host
+controller will issue an interrupt at the next interrupt threshold. the interrupt is
+acknowledged by software clearing the upi bit.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UAEI258</spirit:name>
+<spirit:description>when this bit is a one, and the uai bit in the extsts register is a one, the host
+controller will issue an interrupt at the next interrupt threshold. the interrupt is
+acknowledged by software clearing the uai bit.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_NAKE260</spirit:name>
+<spirit:description>nak interrupt enable  this bit is set by software if it wants to enable the hardware interrupt for the &lt;nak interrupt bit&gt; field in the usb status register. if both this bit and the corresponding &lt;nak interrupt bit&gt; field are set, a hardware interrupt is generated.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_ULPIE262</spirit:name>
+<spirit:description>when this bit is a one, and the ulpi interrupt bit in the usbsts register transitions, the
+controller will issue and interrupt. the interrupt is acknowledged by software writing a
+one to the ulpi interrupt bit.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SLE264</spirit:name>
+<spirit:description>sleep enable  when this bit is 1, and the &lt;dcsuspend&gt; field in the usb status register transitions, the device controller will issue an interrupt. the interrupt is acknowledged by software writing 1 to the &lt;dcsuspend&gt; field.  only used by the device controller.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SRE265</spirit:name>
+<spirit:description>sof received enable  when this bit is 1, and the &lt;sof received&gt; field in the usb status register is 1, the device controller will issue an interrupt. the interrupt is acknowledged by software clearing the &lt;sof received&gt; field.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_URE266</spirit:name>
+<spirit:description>usb reset enable  when this bit is 1, and the &lt;usb reset received&gt; field in the usb status register is 1, the device controller will issue an interrupt. the interrupt is acknowledged by software clearing the &lt;usb reset received&gt; field.  only used by the device controller.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_AAE267</spirit:name>
+<spirit:description>interrupt on async advance enable  when this bit is 1, and the &lt;aai 0b-08h&gt; field in the usb status register is 1, the host controller will issue an interrupt at the next interrupt threshold. the interrupt is acknowledged by software clearing the &lt;aai 0b-08h&gt; field.  only used by the host controller.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SEE268</spirit:name>
+<spirit:description>system error enable  when this bit is 1, and bit 4 in the usb status register is 1, the host/device controller will issue an interrupt. the interrupt is acknowledged by software clearing bit 4 in the usb status register.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_FRE269</spirit:name>
+<spirit:description>frame list rollover enable  when this bit is 1, and the &lt;frame list rollover&gt; field in the usb status register is 1, the host controller will issue an interrupt. the interrupt is acknowledged by software clearing the &lt;frame list rollover&gt; field.  only used by the host controller.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PCE270</spirit:name>
+<spirit:description>port change detect enable  when this bit is 1, and the &lt;port change detect&gt; field in the usb status register is 1, the host/device controller will issue an interrupt. the interrupt is acknowledged by software clearing the &lt;port change detect&gt; field.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UEE271</spirit:name>
+<spirit:description>usb error interrupt enable  when this bit is 1, and the &lt;usb error interrupt (usberrint)&gt; field in the usb status register is 1, the host controller will issue an interrupt at the next interrupt threshold. the interrupt is acknowledged by software clearing the &lt;usb error interrupt (usberrint)&gt; field.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_UE272</spirit:name>
+<spirit:description>usb interrupt enable  when this bit is 1 and the &lt;usb interrupt (usbint)&gt; field in the usb status register is 1, the host/device controller will issue an interrupt at the next interrupt threshold. the interrupt is acknowledged by software clearing the &lt;usb interrupt (usbint)&gt; field.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_FRINDEX</spirit:name>
+<spirit:description>USB Frame Index Register</spirit:description>
+<spirit:addressOffset>0X14C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_FRINDEX280</spirit:name>
+<spirit:description>frame index  the value in this register increments at the end of each time frame (e.g. micro-frame). bits [n:3] are used for the frame list current index. this means that each location of the frame list is accessed 8 times (frames or micro-frames) before moving to the next index.  the following illustrates values of n based on the value of the &lt;fs[1:0]&gt; field in the usb command register, when used in host mode.  usbcmd [frame list size] number elements n  0x0 (1024) = 12  0x1 (512) = 11  0x2 (256) = 10  0x3 (128) = 9  0x4 (64) = 8  0x5 (32) = 7  0x6 (16) = 6  0x7 (8) = 5  in device mode, the value is the current frame number of the last frame transmitted. it is not used as an index.  in either mode, bits 2:0 indicate the current microframe.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>14</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_PERIODICLISTBASE</spirit:name>
+<spirit:description>Host Controller Frame List Base Address Register (Host Mode)</spirit:description>
+<spirit:addressOffset>0X154</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_BASEADR287</spirit:name>
+<spirit:description>base address (low)  these bits correspond to memory address signals [31:12], respectively. only used by the host controller.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>20</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_DEVICEADDR</spirit:name>
+<spirit:description>Device Controller USB Device Address Register (Device Mode)</spirit:description>
+<spirit:addressOffset>0X154</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>USBADR</spirit:name>
+<spirit:description>device address  these bits correspond to the usb device address</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBADRA</spirit:name>
+<spirit:description>device address advance  0 = any writes to &lt;device address&gt; are instantaneous  1 = at the same time or before &lt;device address&gt; is written, the write to the device address field is staged and held in a hidden register. after an in occurs on endpoint 0 and is acked, device address will be loaded from the holding register.  hardware will automatically clear this bit on the following conditions:</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ASYNCLISTADDR</spirit:name>
+<spirit:description>Host Controller Next Asynchronous List Address Register</spirit:description>
+<spirit:addressOffset>0X158</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_ASYBASE308</spirit:name>
+<spirit:description>link pointer low (lpl)  these bits correspond to memory address signals [31:5], respectively. this field may only reference a queue head (oh). only used by the host controller.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>27</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPOINTLISTADDR</spirit:name>
+<spirit:description>Address at Endpoint List in Memory Register</spirit:description>
+<spirit:addressOffset>0X158</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>EPBASE</spirit:name>
+<spirit:description>endpoint list pointer (low)  these bits correspond to memory address signals [31:11], respectively. this field will reference a list of up to 32 qhs. (that is, one queue head per endpoint and direction.)</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>21</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_BURSTSIZE</spirit:name>
+<spirit:description>Programmable Burst Size Register - Host Controller</spirit:description>
+<spirit:addressOffset>0X160</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_TXPBURST325</spirit:name>
+<spirit:description>programmable tx burst length  this register represents the maximum length of a the burst in 32-bit words while moving data from system memory to the usb bus.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_RXPBURST326</spirit:name>
+<spirit:description>programmable rx burst length  this register represents the maximum length of a the burst in 32-bit words while moving data from the usb bus to system memory.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTNAK</spirit:name>
+<spirit:description>Endpoint NAK Register</spirit:description>
+<spirit:addressOffset>0X178</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_EPTN334</spirit:name>
+<spirit:description>tx endpoint nak  each tx endpoint has 1 bit in this field. the bit is set when the device sends a nak handshake on a received in token for the corresponding endpoint.  bit 3 – endpoint #3  bit 2 – endpoint #2  bit 1 – endpoint #1  bit 0 – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_EPRN335</spirit:name>
+<spirit:description>rx endpoint nak  each rx endpoint has 1 bit in this field. the bit is set when the device sends a nak handshake on a received out or ping token for the corresponding endpoint.  bit 3 – endpoint #3  bit 2 – endpoint #2  bit 1 – endpoint #1  bit 0 – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTNAKEN</spirit:name>
+<spirit:description>Endpoint NAK Enable Register</spirit:description>
+<spirit:addressOffset>0X17C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_EPTNE342</spirit:name>
+<spirit:description>tx endpoint nak enable  each bit is an enable bit for the corresponding &lt;eptn [15:0]&gt; field in the endptnak. if this bit is set and the corresponding &lt;eptn [15:0]&gt; bit is set, the &lt;nak interrupt bit&gt; field in the usb status register is set.  bit 3 – endpoint #3  bit 2 – endpoint #2  bit 1 – endpoint #1  bit 0 – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_EPRNE343</spirit:name>
+<spirit:description>rx endpoint nak enable  each bit is an enable bit for the corresponding &lt;eprn [15:0]&gt; field in the endptnak. if this bit is set and the corresponding &lt;eprn [15:0]&gt; bit is set, the &lt;nak interrupt bit&gt; field in the usb status register is set.  bit 3 – endpoint #3  bit 2 – endpoint #2  bit 1 – endpoint #1  bit 0 – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_PORTSC</spirit:name>
+<spirit:description>Port Status/Control Register</spirit:description>
+<spirit:addressOffset>0X184</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_PTS350</spirit:name>
+<spirit:description>parallel transceiver select  utmi/utmi+  this bit is not defined in the ehci specification.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_STS351</spirit:name>
+<spirit:description>this register bit is used in conjunction with the configuration constant
+vusb_hs_phy_serial to control whether the parallel or serial transceiver interface is
+selected for fs and ls operation. the serial interface engine can be used in
+combination with the utmi+ physical interface to provide fs/ls signaling instead of the
+parallel interface. if vusb_hs_phy_serial is set for 0 or 1 then this bit is read only. if
+vusb_hs_phy_serial is 2 or 3 then this bit is read/write.
+this bit has no effect unless parallel transceiver select is set to utmi+. the serial/1.1
+and ic_usb physical interface will use the serial interface engine for fs/ls signaling
+regardless of this bit value.</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PTW352</spirit:name>
+<spirit:description>parallel transceiver width  8-bit [60 mhz] utmi  this bit is not defined in the ehci specification.</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PSPD353</spirit:name>
+<spirit:description>port speed  this register field indicates the speed at which the port is operating. for hs mode operation in the host controller and hs/fs operation in the device controller, the port routing steers data to the protocol engine. for fs and ls mode operation in the host controller, the port routing steers data to the protocol engine w/ embedded transaction translator.  0x0 = full speed  0x1 = low speed  0x2 = high speed  this bit is not defined in the ehci specification.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PTS2354</spirit:name>
+<spirit:description>parallel transceiver select – rw. default = implementation dependent.
+msb bit of pts field.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PFSC355</spirit:name>
+<spirit:description>port force full speed connect  writing this bit to 1 will force the port to only connect at full speed. it disables the chirp sequence that allows the port to identify itself as high speed. this is useful for testing fs configurations with a hs host, hub, or device.  this field is not defined in the ehci specification.  this field is for debugging purposes.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PHCD356</spirit:name>
+<spirit:description>phy low power suspend - clock disable (plpscd)  0 = enables the phy clock  1 = disables the phy clock  reading this field will indicate the status of the phy clock.  the phy clock cannot be disabled if it is being used as the system clock.  in device mode, the phy can be put into low power suspend clock disable when the device is not running (&lt;run/stop&gt; field in the usb command register = 0) or the host has signaled suspend (&lt;suspend&gt; field in the port status/control register = 1). low power suspend will be cleared automatically when the host has signaled resume. before forcing a resume from the device, the device controller driver must clear this field.  in host mode, the phy can be put into low power suspend clock disable when the downstream device has been put into suspend mode or when no downstream device is connected. low power suspend is completely under the control of software.  this field is not defined in the ehci specification.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_WKOC357</spirit:name>
+<spirit:description>wake on disconnect enable (wkdscnnt_e)  writing this bit to 1 enables the port to be sensitive to device disconnects as wake-up events.  this field is 0 if &lt;port power&gt; field in the port status/control register is 0 or in device mode.  this bit is output from the controller as signal pwrctl_wake_dscnnt_en (otg/host core only) for use by an external power control circuit.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WKDC</spirit:name>
+<spirit:description>wake on disconnect enable (wkdscnnt_e)  writing this bit to 1 enables the port to be sensitive to device disconnects as wake-up events.  this field is 0 if &lt;port power&gt; field in the port status/control register is 0 or in device mode.  this bit is output from the controller as signal pwrctl_wake_dscnnt_en (otg/host core only) for use by an external power control circuit.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_WKCN359</spirit:name>
+<spirit:description>wake on connect enable (wkcnnt_e)  writing this field to 1 enables the port to be sensitive to device connects as wake-up events.  this field is 0 if &lt;port power&gt; field in the port status/control (portsc) register is zero or in device mode.  this bit is output from the controller as signal pwrctl_wake_dscnnt_en (otg/host core only) for use by an external power control circuit.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PTC360</spirit:name>
+<spirit:description>port test control  any other value than 0 indicates that the port is operating in test mode.  0x0 = test_mode_disable  0x1 = j_ state  0x2 = k_state  0x3 = se0 (host) / nak (device)  0x4 = packet  0x5 = force_enable_hs  0x6 = force_enable_fs  0x7 = force_enable_ls  0x8 to 0xf = reserved  the force_enable_fs and force enable_ls are extensions to the test mode support specified in the ehci specification. writing this field to any of the force_enable_{hs/fs/ls} values will force the port into the connected and enabled state at the selected speed. writing this field back to test_mode_disable will allow the port state machines to progress normally from that point.  low speed operations are not supported as a peripheral device.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PIC361</spirit:name>
+<spirit:description>port indicator control  writing to this field has no effect if the &lt;port indicators (p indicator)&gt; field in the host ctrl. structural parameters (hcsparams) ehci compliant with extensions register is 0. if &lt;port indicators (p indicator)&gt; is 1, then the bit is:  0x0 = port indicators are off  0x1 = amber  0x2 = green  0x3 = undefined  refer to the usb specification revision 2.0 [3] for a description on how these bits are to be used.  this field is output from the controller as signals port_ind_ctl_1 and port_ind_ctl_0 for use by an external led driving circuit.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PO362</spirit:name>
+<spirit:description>port owner hand off is not implemented in this design, therefore this bit will always read
+back as 0b.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PP363</spirit:name>
+<spirit:description>port power (pp)  the function of this field depends on the value of the &lt;ppc&gt; field in the host ctrl. structural parameters ehci compliant with extensions register. the behavior is as follows:  &lt;ppc&gt; pp operation  0 0 ro — a device controller with no otg capability does not have port power control switches.  1 1/0 – rw. host/otg controller requires port power control switches. this field represents the current setting of the switch (0 = off, 1 = on). when power is not available on a port (that is, this field equals 0), the port is non-functional and will not report attaches, detaches, etc.  when an over-current condition is detected on a powered port and &lt;ppc&gt; is 1, the bit in each affected port may be transitioned by the host controller driver from 1 to 0 (removing power from the port).  this feature is implemented in the host/otg controller (&lt;ppc&gt; = 1).  in a device only implementation, port power control is not necessary, thus &lt;ppc&gt; and this field = 0.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_LS364</spirit:name>
+<spirit:description>line status  this field reflects the current logical levels of the d+ (bit 11) and d- (bit 10) signal lines. the encoding of the bits are:  0x0 = se0  0x2 = j-state  0x1 = k-state  0x3 = undefined  in host mode, the use of linestate by the host controller driver is not necessary (unlike ehci) because the port controller state machine and the port routing manage the connection of ls and fs.  in device mode, the use of linestate by the device controller driver is not necessary.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_HSP365</spirit:name>
+<spirit:description>high-speed port  0 = host/device connected to the port is not in a high-speed mode  1 = host/device connected to the port is in high-speed mode</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PR368</spirit:name>
+<spirit:description>port reset  this field is 0 if &lt;port power&gt; is 0.  in host mode:  0 = port is not in reset  1 = port is in reset  when software writes 1 to this field, the bus-reset sequence as defined in the usb specification revision 2.0 is started. this field will automatically change to 0 after the reset sequence is complete. this behavior is different from ehci where the host controller driver is required to set this bit to 0 after the reset duration is timed in the driver.  in device mode: this bit is a read only status bit. device reset from the usb bus is also indicated in the usb status register.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SUSP369</spirit:name>
+<spirit:description>suspend  in host mode:  0 = port not in suspend state  1 = port in suspend state    the &lt;pe&gt; field in the port status/control register and suspend bit of this register define the port states as follows:  0x = disable  10 = enable  11 = suspend  when in suspend state, downstream propagation of data is blocked on this port, except for port reset. the blocking occurs at the end of the current transaction if a transaction was in progress when this bit was written to 1. in the suspend state, the port is sensitive to resume detection. note that the bit status does not change until the port is suspended and that there may be a delay in suspending a port if there is a transaction currently in progress on the usb.  the host controller will unconditionally set this bit to zero when software sets the &lt;fpr&gt; bit to zero. the host controller ignores a write of zero to this bit.  if the host software sets this bit to a one when the port is not enabled (i.e. &lt;pe&gt; bit is a zero), the results are undefined.  this field is zero if &lt;pp&gt; is zero in host mode.    in device mode:  0 = port not in suspend state  1 = port in suspend state  in device mode, this bit is a read only status bit.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_FPR370</spirit:name>
+<spirit:description>force port resume  0 = no resume (k-state) detected/driven on port  1 = resume detected/driven on port    in host mode: software sets this field to 1 to drive resume signaling. the host controller sets this bit to 1 if a j-to-k transition is detected while the port is in the suspend state. when this bit transitions to 1 because a j-to-k transition is detected, the &lt;port change detect&gt; field in the usb status register is also set to 1. this field will automatically change to 0 after the resume sequence is complete. this behavior is different from ehci where the host controller driver is required to set this bit to 0 after the resume duration is timed in the driver.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_OCC373</spirit:name>
+<spirit:description>over-current change  1 = this field gets set to 1 when there is a change to over-current active. software clears this field by writing 1 to this bit position.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_OCA374</spirit:name>
+<spirit:description>over-current active  0 = this port does not have an over-current condition. this field will automatically transition from 1 to 0 when the over current condition is removed.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PEC375</spirit:name>
+<spirit:description>port enable/disable change  0 = no change  1 = port enabled/disabled status has changed  in host mode: for the root hub, this field gets set to 1 only when a port is disabled due to disconnect on the port or due to the appropriate conditions existing at the eof2 point (see chapter 11 of the usb specification). software clears this by writing 1 to it.   this field is 0 if &lt;port power&gt; is 0.  in device mode: the device port is always enabled. (this bit will be 0.)</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_PE376</spirit:name>
+<spirit:description>port enabled/disabled  0 = disable (default)  1 = enable  in host mode: ports can only be enabled by the host controller as a part of the reset and enable. software cannot enable a port by writing 1 to this field. ports can be disabled by either a fault condition (disconnect event or other fault condition) or by the host software. note that the bit status does not change until the port state actually changes. there may be a delay in disabling or enabling a port due to other host controller and bus events.  when the port is disabled, (0) downstream propagation of data is blocked except for reset.  this field is 0 if &lt;port power&gt; is 0 in host mode.  in device mode: the device port is always enabled. (this bit will be 1.)</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_CSC377</spirit:name>
+<spirit:description>connect status change  0 = no change  1 = change in current connect status  in host mode: indicates a change has occurred in the port's current connect status. the host/device controller sets this field for all changes to the port device connect status, even if system software has not cleared an existing connect status change. for example, the insertion status changes twice before system software has cleared the changed condition, hub hardware will be setting an already-set bit (that is, the bit will remain set). software clears this field by writing 1 to it.  this field is 0 if &lt;port power&gt; is zero in host mode.  in device mode: this bit is undefined in device controller mode.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_CCS378</spirit:name>
+<spirit:description>current connect status  in host mode: this value reflects the current state of the port and may not correspond directly to the event that caused the &lt;connect status change&gt; field to be set.  0 = no device is present  1 = device is present on port  this field is 0 if &lt;port power&gt; is zero in host mode.  in device mode: when set to 1, it indicates that the device successfully attached and is operating in either high speed or full speed as indicated by the &lt;high-speed port&gt; field. when set to 0, it indicates that the device did not attach successfully or was forcibly disconnected by the software writing 0 to the run bit in the usb command register. it does not state the device being disconnected or suspended.  0 = not attached  1 = attached</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_OTGSC</spirit:name>
+<spirit:description>OTG Status and Control Register</spirit:description>
+<spirit:addressOffset>0X1A4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DPIE</spirit:name>
+<spirit:description>data pulse interrupt enable</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>1MSE</spirit:name>
+<spirit:description>1 millisecond timer interrupt enable</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BSEIE</spirit:name>
+<spirit:description>b session end interrupt enable  setting this field enables the b session end interrupt.</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BSVIE</spirit:name>
+<spirit:description>b session valid interrupt enable  setting this field enables the b session valid interrupt.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ASVIE</spirit:name>
+<spirit:description>a session valid interrupt enable  setting this field enables the a session valid interrupt.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AVVIE</spirit:name>
+<spirit:description>a vbus valid interrupt enable  setting this field enables the a vbus valid interrupt.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IDIE</spirit:name>
+<spirit:description>usb id interrupt enable  setting this field enables the usb id interrupt.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPIS</spirit:name>
+<spirit:description>data pulse interrupt status  this bit is set when data bus pulsing occurs on dp or dm. data bus pulsing is only detected when the &lt;controller mode&gt; field in the usb device mode register = host (0x3) and the &lt;port power&gt; field in the port status/control register = off (0).  software must write 1 to clear this field.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>1MSS</spirit:name>
+<spirit:description>1 millisecond timer interrupt status  this bit is set once every millisecond.  software must write 1 to clear this bit.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BSEIS</spirit:name>
+<spirit:description>b session end interrupt status  this bit is set when vbus has fallen below the b session end threshold.  software must write 1 to clear this bit.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BSVIS</spirit:name>
+<spirit:description>b session valid interrupt status  this bit is set when vbus has either risen above or fallen below the b session valid threshold (0.8 vdc).  software must write 1 to clear this bit.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ASVIS</spirit:name>
+<spirit:description>a session valid interrupt status  this bit is set when vbus has either risen above or fallen below the a session valid threshold (0.8 vdc).  software must write 1 to clear this bit.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AVVIS</spirit:name>
+<spirit:description>a vbus valid interrupt status  this field is set when vbus has either risen above or fallen below the vbus valid threshold (4.4 vdc) on an a device.  software must write 1 to clear this bit.</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IDIS</spirit:name>
+<spirit:description>usb id interrupt status  this bit is set when a change on the id input has been detected.  software must write 1 to clear this field.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPS</spirit:name>
+<spirit:description>data bus pulsing status  1 = data bus pulsing is being detected on the port</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>1MST</spirit:name>
+<spirit:description>1 millisecond timer toggle  this field toggles once per millisecond.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BSE</spirit:name>
+<spirit:description>b session end  indicates vbus is below the b session end threshold.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BSV</spirit:name>
+<spirit:description>b session valid  indicates vbus is above the b session valid threshold.</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ASV</spirit:name>
+<spirit:description>a session valid  indicates vbus is above the a session valid threshold.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AVV</spirit:name>
+<spirit:description>a vbus valid  indicates vbus is above the a vbus valid threshold.</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_ID408</spirit:name>
+<spirit:description>usb id  0 = a device  1 = b device</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HABA</spirit:name>
+<spirit:description>hardware assist b-disconnect to a-connect  0 = disabled  1 = enable automatic b-disconnect to a-connect sequence</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HADP</spirit:name>
+<spirit:description>hardware assist data pulse (write to set)  1 = start data pulse sequence</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IDPU</spirit:name>
+<spirit:description>id pullup  this field provides control over the id pull-up resister.  0 = off  1 = on  when this bit is 0, the id input will not be sampled.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DP</spirit:name>
+<spirit:description>data pulsing  setting this field causes the pullup on dp to be asserted for data pulsing during srp.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OT</spirit:name>
+<spirit:description>otg termination  this field must be set when the otg device is in device mode, this controls the pulldown on dm.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HAAR</spirit:name>
+<spirit:description>hardware assist auto-reset  0 = disabled  1 = enable automatic reset after connect on host port</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>VC</spirit:name>
+<spirit:description>vbus charge  setting this field causes the vbus line to be charged. this is used for vbus pulsing during srp.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>VD</spirit:name>
+<spirit:description>vbus_discharge  setting this field causes vbus to discharge through a resistor.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_MODE</spirit:name>
+<spirit:description>USB Device Mode Register</spirit:description>
+<spirit:addressOffset>0X1A8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SRT</spirit:name>
+<spirit:description>when the controller is in host mode, this bit enables a bypass of the chirp j/k reset
+handshake, saving 6-7ms in simulation time for each reset sequence. this bit should
+only be used for initial system integration simulations, and should always be set to 0 for
+normal operation.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>VBPS</spirit:name>
+<spirit:description>this bit is connected to the vbus_pwr_select output and can be used for any generic
+control but is named to be used by logic that selects between an on-chip vbus power
+source (charge pump) and an off-chip source in systems when both are available.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SDIS427</spirit:name>
+<spirit:description>stream disable mode  0 = inactive  1 = active  device mode: setting to a 1 disables double priming on both rx and tx for low bandwidth systems. this mode ensures that when the rx and tx buffers are sufficient to contain an entire packet, that the standard double buffering scheme is disabled to prevent overruns/underruns in bandwidth limited systems.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_SLOM432</spirit:name>
+<spirit:description>setup lockout mode  in device mode, this field controls behavior of the setup lock mechanism. see control endpoint operation model.  0 = setup lockouts on  1 = setup lockouts off (dcd requires use of setup data buffer tripwire in the usb command register)</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_ES433</spirit:name>
+<spirit:description>endian select  this field can change the byte ordering of the transfer buffers to match the host microprocessor bus architecture. the bit fields in the microprocessor interface and the dma data structures (including the setup buffer within the device qh) are unaffected by the value of this field because they are based upon 32-bit words.  0 = little endian – first byte referenced in least significant byte of 32-bit word  1 = big endian - first byte referenced in most significant byte of 32-bit word</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_CM434</spirit:name>
+<spirit:description>controller mode  controller mode is defaulted to the proper mode for host only and device only implementations. for those designs that contain both host and device capability, the controller will default to an idle state and will need to be initialized to the desired operating mode after reset. for combination host/device controllers, this register can only be written once after reset. if it is necessary to switch modes, software must reset the controller by writing to the &lt;controller reset (reset)&gt; field in the usb command register before reprogramming this register.  0x0 = idle  0x1 = reserved  0x2 = device controller  0x3 = host controller</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTSETUPSTAT</spirit:name>
+<spirit:description>Endpoint Setup Status Register</spirit:description>
+<spirit:addressOffset>0X1AC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ENDPTSETUPSTAT150</spirit:name>
+<spirit:description>setup endpoint status  for every setup transaction that is received, a corresponding bit in this register is set to 1. software must clear or acknowledge the setup transfer by writing 1 to a respective bit after it has read the setup data from queue head. the response to a setup packet as in the order of operations and total response time is crucial to limit bus time outs while the setup lock our mechanism is engaged. see managing endpoints in the device operational mode.  this register is only used in device mode.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTPRIME</spirit:name>
+<spirit:description>Endpoint Initialization Register</spirit:description>
+<spirit:addressOffset>0X1B0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PETB</spirit:name>
+<spirit:description>prime endpoint transmit buffer  for each endpoint, a corresponding bit is used to request that a buffer prepared for a transmit operation in order to respond to a usb in/interrupt transaction. software should write 1 to the corresponding bit when posting a new transfer descriptor to an endpoint. hardware will automatically use this bit to begin parsing for a new transfer descriptor from the queue head and prepare a transmit buffer. hardware will clear this bit when the associated endpoint(s) is (are) successfully primed.  these bits will be momentarily set by hardware during hardware re-priming operations when a dtd is retired, and the dqh is updated.  petb[3] – endpoint #3  petb[2] – endpoint #2  petb[1] – endpoint #1  petb[0] – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PERB</spirit:name>
+<spirit:description>prime endpoint receive buffer  for each endpoint, a corresponding bit is used to request a buffer prepare for a receive operation for when a usb host initiates a usb out transaction. software should write 1 to the corresponding bit whenever posting a new transfer descriptor to an endpoint. hardware will automatically use this bit to begin parsing for a new transfer descriptor from the queue head and prepare a receive buffer. hardware will clear this bit when the associated endpoint(s) is (are) successfully primed.  these bits will be momentarily set by hardware during hardware re-priming operations when a dtd is retired, and the dqh is updated.  bit 3 – endpoint #3  bit 2 – endpoint #2  bit 1 – endpoint #1  bit 0 – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTFLUSH</spirit:name>
+<spirit:description>Endpoint De-Initialize Register</spirit:description>
+<spirit:addressOffset>0X1B4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FETB</spirit:name>
+<spirit:description>flush endpoint transmit buffer  writing 1 to a bit(s) in this register will cause the associated endpoint(s) to clear any primed buffers. if a packet is in progress for one of the associated endpoints, then that transfer will continue until completion. hardware will clear this register after the endpoint flush operation is successful.  fetb[3] – endpoint #3  fetb[2] – endpoint #2  fetb[1] – endpoint #1  fetb[0] – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FERB</spirit:name>
+<spirit:description>flush endpoint receive buffer  writing 1 to a bit(s) will cause the associated endpoint(s) to clear any primed buffers. if a packet is in progress for one of the associated endpoints, then that transfer will continue until completion. hardware will clear this register after the endpoint flush operation is successful.  bit 3 – endpoint #3  bit 2 – endpoint #2  bit 1 – endpoint #1  bit 0 – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTSTAT</spirit:name>
+<spirit:description>Endpoint STAT Register</spirit:description>
+<spirit:addressOffset>0X1B8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ETBR</spirit:name>
+<spirit:description>endpoint transmit buffer ready  one bit for each endpoint indicates status of the respective endpoint buffer. this bit is set to 1 by the hardware as a response to receiving a command from a corresponding bit in the endpoint initialization register. there will always be a delay between setting a bit in the endpoint initialization register and endpoint indicating ready. this delay time varies based upon the current usb traffic and the number of bits set in the endpoint initialization register. buffer ready is cleared by usb reset, by the usb dma system, or through the endpoint de-initialize register.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ERBR</spirit:name>
+<spirit:description>endpoint receive buffer ready  one bit for each endpoint indicates status of the respective endpoint buffer. this bit is set to 1 by the hardware as a response to receiving a command from a corresponding bit in the endpoint initialization register. there will always be a delay between setting a bit in the endpoint initialization register and endpoint indicating ready. this delay time varies based upon the current usb traffic and the number of bits set in the endpoint initialization register. buffer ready is cleared by usb reset, by the usb dma system, or through the endpoint de-initialize register.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTCOMPLETE</spirit:name>
+<spirit:description>Endpoint Complete Register</spirit:description>
+<spirit:addressOffset>0X1BC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ETCE</spirit:name>
+<spirit:description>endpoint transmit complete event  each bit indicates a transmit event (in/interrupt) occurred and software should read the corresponding endpoint queue to determine the endpoint status. if the corresponding ioc bit is set in the transfer descriptor, then this bit will be set simultaneously with the usbint. writing 1 will clear the corresponding bit in this register.  etce[3] – endpoint #3  etce[2] – endpoint #2  etce[1] – endpoint #1  etce[0] – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ERCE</spirit:name>
+<spirit:description>endpoint receive complete event  each bit indicates a received event (out/setup) occurred and software should read the corresponding endpoint queue to determine the transfer status. if the corresponding ioc bit is set in the transfer descriptor, then this bit will be set simultaneously with the usbint. writing 1 will clear the corresponding bit in this register.  erce[3] – endpoint #3  erce[2] – endpoint #2  erce[1] – endpoint #1  erce[0] – endpoint #0  all other bits are reserved.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTCTRL0</spirit:name>
+<spirit:description>Endpoint Control 0 Register</spirit:description>
+<spirit:addressOffset>0X1C0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_TXE486</spirit:name>
+<spirit:description>tx endpoint enable  1 = enabled  endpoint0 is always enabled.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXT488</spirit:name>
+<spirit:description>tx endpoint type  0x0 = control  endpoint0 is fixed as a control end point.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXS490</spirit:name>
+<spirit:description>tx endpoint stall  0 = end point ok  1 = end point stalled  software can write 1 to this field to force the endpoint to return a stall handshake to the host. it will continue returning stall until the field is cleared by software or it will automatically be cleared upon receipt of a new setup request.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXE492</spirit:name>
+<spirit:description>rx endpoint enable  1 = enabled  endpoint0 is always enabled.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXT494</spirit:name>
+<spirit:description>rx endpoint type  0x0 = control  endpoint0 is fixed as a control end point.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXS496</spirit:name>
+<spirit:description>rx endpoint stall  0 = end point ok  1 = end point stalled  software can write 1 to this field to force the endpoint to return a stall handshake to the host. it will continue returning stall until the field is cleared by software or it will automatically be cleared upon receipt of a new setup request.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USB_ENDPTCTRL1-ENDPTCTRL15</spirit:name>
+<spirit:description>Endpoint Control 1 to Endpoint Control 15 Registers</spirit:description>
+<spirit:addressOffset>0X1C4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>US_TXE504</spirit:name>
+<spirit:description>tx endpoint enable  0 = disabled  1 = enabled  an endpoint should be enabled only after it has been configured.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXR</spirit:name>
+<spirit:description>tx data toggle reset (ws)  write 1 reset pid sequence  whenever a configuration event is received for this endpoint, software must write 1 to this field in order to synchronize the data pid's between the host and device.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXI</spirit:name>
+<spirit:description>tx data toggle inhibit  0 = pid sequencing enabled  1 = pid sequencing disabled  this field is only used for test and should always be written as 0. writing 1 to this field will cause this endpoint to ignore the data toggle sequence and always transmit data0 for a data packet.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXT508</spirit:name>
+<spirit:description>tx endpoint type  0x0 = control  0x1 = isochronous  0x2 = bulk  0x3 = interrupt</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXD</spirit:name>
+<spirit:description>tx endpoint data source  0 = dual port memory buffer/dma engine  this field should always be written as 0.</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXS510</spirit:name>
+<spirit:description>tx endpoint stall  0 = end point ok  1 = end point stalled  this field will be set automatically upon receipt of a setup request if this endpoint is not configured as a control endpoint. it will be cleared automatically upon receipt of a setup request if this endpoint is configured as a control endpoint.  software can write 1 to this field to force the endpoint to return a stall handshake to the host. it will continue to return stall until this field is either cleared by software or automatically cleared as above.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXE512</spirit:name>
+<spirit:description>rx endpoint enable  0 = disabled  1 = enabled  an endpoint should be enabled only after it has been configured.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXR</spirit:name>
+<spirit:description>rx data toggle reset (ws) write  1 = reset pid sequence  whenever a configuration event is received for this endpoint, software must write 1 to this field in order to synchronize the data pid's between the host and device.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXI</spirit:name>
+<spirit:description>rx data toggle inhibit  0 = disabled  1 = enabled  this field is only used for test and should always be written as 0. writing 1 to this field will cause this endpoint to ignore the data toggle sequence and always accept data packet regardless of their data pid.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXT516</spirit:name>
+<spirit:description>rx endpoint type  0x0 = control  0x1 = isochronous  0x2 = bulk  0x3 = reserved</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>US_RXD517</spirit:name>
+<spirit:description>rx endpoint data sink tbd  0 = dual port memory buffer/dma engine  this field should always be written as 0.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXS518</spirit:name>
+<spirit:description>rx endpoint stall  0 = end point ok  1 = end point stalled  this field will be set automatically upon receipt of a setup request if this endpoint is not configured as a control endpoint. it will be cleared automatically upon receipt a setup request if this endpoint is configured as a control endpoint.  software can write 1 to this field to force the endpoint to return a stall handshake to the host. it will continue to returning stall until this field is either cleared by software or automatically cleared as above.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

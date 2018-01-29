@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>kpc</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4012000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>KPC_PC</spirit:name>
+<spirit:description>Keypad Control Register</spirit:description>
+<spirit:addressOffset>0X0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>AS</spirit:name>
+<spirit:description>automatic scan  0 = no effect  1 = a write of 0x1 to this field causes the keypad to be scanned once, then for it to reset to zero</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ASACT</spirit:name>
+<spirit:description>automatic scan on activity  0 = no automatic scan on activity  1 = if &lt;automatic scan&gt; is 0x0, the keypad is scanned to detect the key pressed whenever there is any keypad activity and the key is pressed for a duration longer than the key debounce interval specified by kpkdi[interval].</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKRN</spirit:name>
+<spirit:description>matrix keypad row number  this octal value plus 1 indicates the number of rows in the matrix keypad. examples:  0x0 = number of keypad rows is 1  0x7 = number of keypad rows is 8</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKCN</spirit:name>
+<spirit:description>matrix keypad column number  this octal value plus 1 indicates the number of columns in the matrix keypad. examples:  0x0 = number of keypad columns is 1  0x7 = number of keypad columns is 8</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MI</spirit:name>
+<spirit:description>matrix keypad interrupt  when this field is automatically set to 0x1, an interrupt is sent to the interrupt controller. this field is reset when read. writes to this field are ignored.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IMKP</spirit:name>
+<spirit:description>ignore multiple keypress (applies to matrix-keypad interface only)  0 = in case of automatic scan by keypad activity and manual scan, do not ignore multiple keypresses  1 = in case of automatic scan by keypad activity and manual scan, ignore multiple keypresses after a keypress activity has been detected and scanned</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS7</spirit:name>
+<spirit:description>manual matrix scan line 7  asserted to scan column 7 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS6</spirit:name>
+<spirit:description>manual matrix scan line 6  asserted to scan column 6 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS5</spirit:name>
+<spirit:description>manual matrix scan line 5  asserted to scan column 5 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS4</spirit:name>
+<spirit:description>manual matrix scan line 4  asserted to scan column 4 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS3</spirit:name>
+<spirit:description>manual matrix scan line 3  asserted to scan column 3 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS2</spirit:name>
+<spirit:description>manual matrix scan line 2  asserted to scan column 2 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS1</spirit:name>
+<spirit:description>manual matrix scan line 1  asserted to scan column 1 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MS0</spirit:name>
+<spirit:description>manual matrix scan line 0  asserted to scan column 0 of the matrix keypad.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ME</spirit:name>
+<spirit:description>matrix keypad enable  0 = disabled  1 = enabled</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>KP_MIE47</spirit:name>
+<spirit:description>matrix interrupt enable  0 = disabled  1 = enabled</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DK_DEB_SEL</spirit:name>
+<spirit:description>direct keypad debounce select  1 = direct keypad debounce interval equal to the &lt;direct key debounce interval&gt; field of the keypad key debounce interval register  0 = direct keypad debounce interval equal to the &lt;matrix key debounce interval&gt; field of the keypad key debounce interval register</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DN</spirit:name>
+<spirit:description>direct key number  this octal value + 1 indicates the number of keys in the direct keypad plus the number of rotary-encoder sensor inputs. examples:  0x0 = number of direct keys plus rotary-encoder sensor inputs is 1  0x7 = number of direct keys plus rotary-encoder sensor inputs is 8</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DI</spirit:name>
+<spirit:description>direct keypad interrupt  when this field is automatically set to 0x1, an interrupt is sent to the interrupt controller. this field is reset when read. writes to this field are ignored.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RE_ZERO_DEB</spirit:name>
+<spirit:description>rotary encoder zero debounce interval  1 = rotary encoder logic debounce interval equals zero  0 = rotary encoder logic debounce interval is equal to the direct keypad debounce interval</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REE1</spirit:name>
+<spirit:description>rotary encoder 1 enable  0 = not enabled  1 = enabled</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REE0</spirit:name>
+<spirit:description>rotary encoder 0 enable  0 = disabled  1 = enabled</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE</spirit:name>
+<spirit:description>direct keypad enable  0 = disabled  1 = enabled</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DIE</spirit:name>
+<spirit:description>direct keypad interrupt enable  0 = disabled  1 = enabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_DK</spirit:name>
+<spirit:description>Keypad Direct Key Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DKP</spirit:name>
+<spirit:description>direct key pressed  1 = direct key pressed since last read  0 = reset on register read</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DK7</spirit:name>
+<spirit:description>direct key 7 input</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DK6</spirit:name>
+<spirit:description>direct key 6 input</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DK5</spirit:name>
+<spirit:description>direct key 5 input</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DK4</spirit:name>
+<spirit:description>direct key 4 input</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RB1_DK3</spirit:name>
+<spirit:description>rotary encoder b / direct key 3 input  if rotary encoder 1 is disabled: input = direct key 3  if rotary encoder 1 is enabled: input = rotary encoder 1, sensor b</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RA1_DK2</spirit:name>
+<spirit:description>rotary encoder a / direct key 2 input  if rotary encoder 1 is disabled: input = direct key 2  if rotary encoder 1 is enabled: input = rotary encoder 1, sensor a</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RB0_DK1</spirit:name>
+<spirit:description>rotary encoder b / direct key 1 input  if rotary encoder 0 is disabled: input = direct key 1  if rotary encoder 0 is enabled: input = rotary encoder 0, sensor b</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RA0_DK0</spirit:name>
+<spirit:description>rotary encoder a / direct key 0 input  if rotary encoder 0 is disabled: input = direct key 0  if rotary encoder 0 is enabled: input = rotary encoder 0, sensor a</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_REC</spirit:name>
+<spirit:description>Keypad Rotary Encoder Count Register</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OF1</spirit:name>
+<spirit:description>overflow bit for rotary encoder 1  set to 0x1 when the count value goes above the maximum 8-bit value of 255. reset to 0x0 on read.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UF1</spirit:name>
+<spirit:description>underflow bit for rotary encoder 1  set to 0x1 when the count value goes below zero. reset to 0x0 on read.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RE_COUNT1</spirit:name>
+<spirit:description>count value for rotary encoder 1</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OF0</spirit:name>
+<spirit:description>overflow bit for rotary encoder 0  set to 0x1 when the count value goes above the maximum 8-bit value of 255. reset to 0x0 on read.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UF0</spirit:name>
+<spirit:description>underflow bit for rotary encoder 0  set to 0x1 when the count value goes below zero. reset to 0x0 on read.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RE_COUNT0</spirit:name>
+<spirit:description>count value for rotary encoder 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_MK</spirit:name>
+<spirit:description>Keypad Matrix Key Register</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MKP</spirit:name>
+<spirit:description>mkp  0 = reset on register read  1 = matrix key pressed since last read</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR7</spirit:name>
+<spirit:description>matrix row 7</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR6</spirit:name>
+<spirit:description>matrix row 6</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR5</spirit:name>
+<spirit:description>matrix row 5</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR4</spirit:name>
+<spirit:description>matrix row 4</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR3</spirit:name>
+<spirit:description>matrix row 3</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR2</spirit:name>
+<spirit:description>matrix row 2</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR1</spirit:name>
+<spirit:description>matrix row 1</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MR0</spirit:name>
+<spirit:description>matrix row 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_AS</spirit:name>
+<spirit:description>Keypad Automatic Scan Register</spirit:description>
+<spirit:addressOffset>0X20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SO123</spirit:name>
+<spirit:description>scan on  this field is set to 1 at the beginning of the automatic scan or automatic scan on activity and is cleared to 0 when the scan completes. when set, the data in this register is invalid.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MUKP</spirit:name>
+<spirit:description>multiple keys pressed  0x00 = no key pressed  0x01 = single key pressed. read row and column information from the &lt;row pressed&gt; and &lt;column pressed&gt; fields.  &gt; 0x01 = multiple keys pressed. read the keypress information from the keypad interface automatic scan multiple keypress registers 0 to 3</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>KP_RP126</spirit:name>
+<spirit:description>row pressed  0xf = data invalid (also the reset value)  0x0 = key pressed is in row 0  ...continuing sequentially through...  0x7 = key pressed is in row 7</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP</spirit:name>
+<spirit:description>column pressed  0xf = data invalid (also the reset value)  0x0 = key pressed is in column 0  ...continuing sequentially through...  0x7 = key pressed is in column 7</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_ASMKP0</spirit:name>
+<spirit:description>Keypad Automatic Scan Multiple Keypress Register 0</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SO152</spirit:name>
+<spirit:description>scan on  this field is set to 1 at the beginning of the automatic scan or automatic scan on activity and cleared to 0 when the scan completes. when set, the data in this register is invalid.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC1</spirit:name>
+<spirit:description>matrix keypad column 1 reading  a set bit identifies a key in the corresponding row and column 1:  bit 23 = row 7, sequentially through  bit 16 = row 0</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC0</spirit:name>
+<spirit:description>matrix keypad column 0 reading  a set bit identifies a key in the corresponding row and column 0:  bit 7 = row 7, sequentially through  bit 0 = row 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_ASMKP1</spirit:name>
+<spirit:description>Keypad Automatic Scan Multiple Keypress Register 1</spirit:description>
+<spirit:addressOffset>0X30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SO163</spirit:name>
+<spirit:description>scan on  this field is set to 1 at the beginning of the automatic scan or automatic scan on activity and cleared to 0 when the scan completes. when set, the data in this register is invalid.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC3</spirit:name>
+<spirit:description>matrix keypad column 3 reading  a set bit identifies a key in the corresponding row and column 3:  bit 23 = row 7, sequentially through  bit 16 = row 0</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC2</spirit:name>
+<spirit:description>matrix keypad column 2 reading  a set bit identifies a key in the corresponding row and column 2:  bit 7 = row 7, sequentially through  bit 0 = row 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_ASMKP2</spirit:name>
+<spirit:description>Keypad Automatic Scan Multiple Keypress Register 2</spirit:description>
+<spirit:addressOffset>0X38</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SO174</spirit:name>
+<spirit:description>scan on  this field is set to 1 at the beginning of the automatic scan or automatic scan on activity and cleared to 0 when the scan completes. when set, the data in this register is invalid.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC5</spirit:name>
+<spirit:description>matrix keypad column 5 reading  a set bit identifies a key in the corresponding row and column 5:  bit 23 = row 7, sequentially through  bit 16 = row 0</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC4</spirit:name>
+<spirit:description>matrix keypad column 4 reading  a set bit identifies a key in the corresponding row and column 4:  bit 7 = row 7, sequentially through  bit 0 = row 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_ASMKP3</spirit:name>
+<spirit:description>Keypad Automatic Scan Multiple Keypress Register 3</spirit:description>
+<spirit:addressOffset>0X40</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SO185</spirit:name>
+<spirit:description>scan on  this field is set to 1 at the beginning of the automatic scan or automatic scan on activity and cleared to 0 when the scan completes. when set, the data in this register is invalid.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC7</spirit:name>
+<spirit:description>matrix keypad column 7 reading  a set bit identifies a key in the corresponding row and column 7:  bit 23 = row 7, sequentially through  bit 16 = row 0</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MKC6</spirit:name>
+<spirit:description>matrix keypad column 6 reading  a set bit identifies a key in the corresponding row and column 6:  bit 7 = row 7, sequentially through  bit 0 = row 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>KPC_KDI</spirit:name>
+<spirit:description>Keypad Key Debounce Interval Register</spirit:description>
+<spirit:addressOffset>0X48</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIRECT_KEY_DEBOUNCE_INTERVAL</spirit:name>
+<spirit:description>direct key debounce interval  this field is used for the direct key debounce interval in binary number of 2 ms.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MATRIX_KEY_DEBOUNCE_INTERVAL</spirit:name>
+<spirit:description>matrix key debounce interval  this field is used for the matrix key debounce interval in binary number of 2 ms.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

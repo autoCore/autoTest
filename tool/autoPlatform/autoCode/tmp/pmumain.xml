@@ -1,0 +1,2667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>pmumain</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4050000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>CPSR</spirit:name>
+<spirit:description>Marvell Seagull/Mohawk Power Status Register</spirit:description>
+<spirit:addressOffset>0X0004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_DSPIDL24</spirit:name>
+<spirit:description>reflects the state of the marvell msa core (not marvell msa subsystem). the availability of the marvell msa subsystem memories and peripheral bus to the marvell seagull/mohawk core is still governed by means of mpcrx[dspsd], and is not reflected by this bit.  0 = marvell msa core is currently not in idle state  1 = marvell msa core is currently in idle state</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_IDLE25</spirit:name>
+<spirit:description>reflects the state of the marvell mohawk core.  0x1= core is in external idle or power off mode</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SG_IDLE26</spirit:name>
+<spirit:description>1 = &lt;var processor: comm&gt; is idle   0 = &lt;var processor: comm&gt; is active</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSPAVL27</spirit:name>
+<spirit:description>marvell msa subsystem availability indication. this field should be read after mpcrx[dspsd] is deasserted, to verify the clock is resumed  0 = marvell msa subsystem clock is not running  1 = marvell msa subsystem clock is running</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_WFI28</spirit:name>
+<spirit:description>reflects the state of the marvell mohawk core.  0 = marvell mohawk core is currently not in wfi state  1 = marvell mohawk core is currently in wfi state</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SG_WFI29</spirit:name>
+<spirit:description> seagull wfi flag. it reflects the wfi flag that is directly output from seagull. when seagull enters wfi, this field will be set.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APOFF30</spirit:name>
+<spirit:description>reflects the power state of the marvell mohawk core.   1 = core is currently in power-off mode</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_COMM_TOP_D231</spirit:name>
+<spirit:description>reflects the power state of comm_top   1 = comm_top is in d2 mode. in this mode, msa/seagull are powered off</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_COMM_TOP_STATE33</spirit:name>
+<spirit:description>comm_top low power state   0x8=comm_top is in d0 state    0xb=comm_top is in d2 state</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FCCR</spirit:name>
+<spirit:description>Frequency Change Control Register</spirit:description>
+<spirit:addressOffset>0X0008</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>I2SCLKSEL</spirit:name>
+<spirit:description>i&lt;super 2&gt;s divider clock selection  1 = from vctcxo  0 = from 312 mhz clock</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL1FBD44</spirit:name>
+<spirit:description>actually this register bits are not used in auiqla, it's fixed to 0x30 now.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>POCR</spirit:name>
+<spirit:description>PLL and Oscillator Control Register</spirit:description>
+<spirit:addressOffset>0X000C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FORCE</spirit:name>
+<spirit:description>force all  clocks to be free running  0 = this field does not affect  clock gating  1 = all  output clocks are never gated</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>VCXOST</spirit:name>
+<spirit:description>determines the wait time for vctcxo and clock limiter stabilization. referred to as d1 in table 36.  0x0 = wait time = one 32.768 khz clock cycle  0x1 = wait time = two 32.768 khz clock cycles  \xc9   0xe5  wait time = 230 32.768 khz clock cycles  0xe6  reserved  \xc9   0xff  reserved</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WAITPLLLOCKTIMEVALUE</spirit:name>
+<spirit:description>determines the wait time for pll lock. referred to as d2 in table 36. this value determines lock time for both plls (pll1 and pll2).  0x0 = main pll lock time = 1 vctcxo/2 cycle   0x1 = main pll lock time = 2 vctcxo/2 cycles           \xc9   0xfff  main pll lock time = 4096 vctcxo/2 cycles</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>12</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>POSR</spirit:name>
+<spirit:description>PLL and Oscillator Status Register</spirit:description>
+<spirit:addressOffset>0X0010</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_PLL1_LOCK63</spirit:name>
+<spirit:description>1: pll1 is locked</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL2REFD</spirit:name>
+<spirit:description>pll2 refdiv  decoding -tbd</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL2FBD</spirit:name>
+<spirit:description>pll2 fbdiv   decoding - tbd</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL1FBD67</spirit:name>
+<spirit:description>pll1 fbdiv   decoding - tbd</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SUCCR</spirit:name>
+<spirit:description>Slow UART (UART 1) Clock Generation Control Register</spirit:description>
+<spirit:addressOffset>0X0014</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>UARTDIVN</spirit:name>
+<spirit:description>uart clock generation programmable divider numerator value.  the uart clock is generated using a fractional divider. see section 1.5.2.3, slow uart clock divider programming, on page 73 for calculating the required values. this divider configuration is common to all uart modules</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>13</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UARTDIVD</spirit:name>
+<spirit:description>uart clock generation programmable divider denominator value.  the uart clock is generated using a fractional divider. see section 1.5.2.3, slow uart clock divider programming, on page 73 for calculating the required values. this divider configuration is common to all uart modules</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>13</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>VRCR</spirit:name>
+<spirit:description>VCTCXO SW request Control Register</spirit:description>
+<spirit:addressOffset>0X0018</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_83</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>23</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_REQ</spirit:name>
+<spirit:description>sw request of vctcxo</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_85</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQ_POL2</spirit:name>
+<spirit:description>vcxo_req2 request polarity</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQ_POL1</spirit:name>
+<spirit:description>vcxo_req1 request polarity</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQ_POL0</spirit:name>
+<spirit:description>vcxo_req request polarity</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_89</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQ_EN2</spirit:name>
+<spirit:description>enable vcxo_req2 for vcxo_out2</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQ_EN1</spirit:name>
+<spirit:description>enable vcxo_req1 for vcxo_out1</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQ_EN0</spirit:name>
+<spirit:description>enable vcxo_req for vcxo_out</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>PLL3CR</spirit:name>
+<spirit:description>PLL3 Control Register</spirit:description>
+<spirit:addressOffset>0X001C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PLL3SSC_MODE</spirit:name>
+<spirit:description>spectrum spread mode
+00: center-spread
+01: up-spread
+10: down-spread
+11: down-spread</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SSC_FORCE_LOCK100</spirit:name>
+<spirit:description>set pll force lock 
+0: disable
+1: enable, when reg3&lt;4&gt;=0, set force lock to pll_lk signal</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP_STEP101</spirit:name>
+<spirit:description>increase spectrum spread depth by 2
+0: disable
+1: spread depth x2</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP102</spirit:name>
+<spirit:description>set spectrum spread depth(peak-peak)
+0000: no ssc
+0001: 500ppm
+0010: 1000ppm
+0011: 1500ppm
+0100: 2000ppm
+0101: 2500ppm
+0110: 3000ppm
+0111: 3500ppm
+1000: 4000ppm
+1001: 4500ppm
+1010: 5000ppm
+1011: 5500ppm
+1100: 6000ppm
+1101: 6000ppm
+1110: 6000ppm
+1111: 6000ppm</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL3_PU</spirit:name>
+<spirit:description>pll3 power on  0 = pll off  1 = pll on; pll3 is automatically off whenever pll is off.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL3_FBDIV</spirit:name>
+<spirit:description>pll3 fbdiv</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL3_FRCDIV</spirit:name>
+<spirit:description>pll3 frcdiv</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CRSR</spirit:name>
+<spirit:description>Marvell Seagull/Mohawk Reset Status Register</spirit:description>
+<spirit:addressOffset>0X0028</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_SWR116</spirit:name>
+<spirit:description>software controlled, reset events tracking field. this field may be written (and read) to any value between 0x0 and 0xf.   this field's content does not affect  functionality in any way</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WDTR118</spirit:name>
+<spirit:description>indicates whether the last system reset was caused by a watchdog timer reset event  0 = last system reset was not caused by watchdog timer reset  1 = last system reset was caused by watchdog timer reset  depending on the type of reset the device has experienced, one of the reset values in [2:0] is 1 and the others are 0.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_EMR119</spirit:name>
+<spirit:description>indicates whether the last system reset was caused by an external master reset event  0 = last system reset was not caused by external master reset  1 = last system reset was caused by external master reset  depending on the type of reset the device has experienced, one of the reset values in [2:0] is 1 and the others are 0.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_POR120</spirit:name>
+<spirit:description>indicates whether the last system reset was caused by a power on reset  event  0 = last system reset was not caused by power on reset  1 = last system reset was caused by power on reset  depending on the type of reset the device has experienced, one of the reset values in [2:0] is 1 and the others are 0.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>XDCR</spirit:name>
+<spirit:description>Delay control register for WFSTATE</spirit:description>
+<spirit:addressOffset>0X002C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>XDCR_TIE4</spirit:name>
+<spirit:description>pmost_cnt_done (pmose to drowsy)</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>XDCR_TO2</spirit:name>
+<spirit:description>firewall_cnt2-done (from firewall to prefirewall2)</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>XDCR_TO1</spirit:name>
+<spirit:description>nmos_cnt2_done (from nmos2 to firewall)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GPCR</spirit:name>
+<spirit:description>General Purpose Clock Generation Control Register</spirit:description>
+<spirit:addressOffset>0X0030</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>GPCDIVN</spirit:name>
+<spirit:description>general purpose clock generation programmable divider numerator value.  this clock is generated using a fractional divider, off the vctcxo clock. see section 1.5.2.3, slow uart clock divider programming, on page 73 for examples of calculating the programmed values.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GPCDIVD</spirit:name>
+<spirit:description>general purpose clock generation programmable divider denominator value.  this clock is generated using a fractional divider, off the vctcxo clock. see section 1.5.2.3, slow uart clock divider programming, on page 73 for examples of calculating the programmed values.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>PLL2CR</spirit:name>
+<spirit:description>PLL2 Control Register</spirit:description>
+<spirit:addressOffset>0X0034</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PLL2SSC_MODE</spirit:name>
+<spirit:description>spectrum spread mode
+00: center-spread
+01: up-spread
+10: down-spread
+11: down-spread</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SSC_FORCE_LOCK145</spirit:name>
+<spirit:description>set pll force lock 
+0: disable
+1: enable, when reg3&lt;4&gt;=0, set force lock to pll_lk signal</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP_STEP146</spirit:name>
+<spirit:description>increase spectrum spread depth by 2
+0: disable
+1: spread depth x2</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP147</spirit:name>
+<spirit:description>set spectrum spread depth(peak-peak)
+0000: no ssc
+0001: 500ppm
+0010: 1000ppm
+0011: 1500ppm
+0100: 2000ppm
+0101: 2500ppm
+0110: 3000ppm
+0111: 3500ppm
+1000: 4000ppm
+1001: 4500ppm
+1010: 5000ppm
+1011: 5500ppm
+1100: 6000ppm
+1101: 6000ppm
+1110: 6000ppm
+1111: 6000ppm</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL2_PU</spirit:name>
+<spirit:description>pll2 power on  0 = pll2 off  1 = pll2 on; pll3 is automatically off whenever pll1 is off.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL2_FBDIV</spirit:name>
+<spirit:description>pll2 fbdiv</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL2_FRCDIV</spirit:name>
+<spirit:description>pll2 frcdiv</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SCCR</spirit:name>
+<spirit:description>Slow Clock Control Register</spirit:description>
+<spirit:addressOffset>0X0038</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>BB_F_SLP_EN</spirit:name>
+<spirit:description>force modem into sleep mode.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AFE_CLK_EN</spirit:name>
+<spirit:description>afe calibration clock (26 mhz vcxo) enable  0 = disable  1 = enable</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SCS</spirit:name>
+<spirit:description>slow clock select:  0 = 32khz internal clock is derived from vctcxo divider  1 = 32khz internal clock uses 32khz clock input</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ISCCRx</spirit:name>
+<spirit:description>I2S Clock Generation Control Register</spirit:description>
+<spirit:addressOffset>0X0040</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_SYSCLK_EN169</spirit:name>
+<spirit:description>enables the i2s clock input to sysclkn generator as well as the output of the generator.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SYSCLK_BASE170</spirit:name>
+<spirit:description>selects the i2s m/n divider input clock frequency:  0 = sysclkn generator base clock rate is 26 mhz  1 = sysclkn generator base clock rate is 156 mhz.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BITCLK_EN171</spirit:name>
+<spirit:description>enables the i2s clock input to the bit clock generator.</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BITCLK_DIV_468172</spirit:name>
+<spirit:description>determine bitclk1:sysclk1 relation:  0x0 = reserved  0x1 = bitclk1 rate is the sysclk1 rate divide by 4  0x2 = bitclk1 rate is the sysclk1 rate divide by 6  0x3 = bitclk1 rate is the sysclk1 rate divide by 8</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DENOM173</spirit:name>
+<spirit:description>i2s clock generation programmable divider denominator value.  the i2s sysclk is generated using a fractional divider. see section 1.5.2.4, i2s clock divider programming, on page 74 for calculating the required values.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>12</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_NOM174</spirit:name>
+<spirit:description>i2s clock generation programmable divider numerator value.  the i2s sysclk is generated using a fractional divider. see section 1.5.2.4, i2s clock divider programming, on page 74 for calculating the required values.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>15</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>PLL5CR</spirit:name>
+<spirit:description>PLL5 Control Register</spirit:description>
+<spirit:addressOffset>0X004C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PLL5SSC_MODE181</spirit:name>
+<spirit:description>spectrum spread mode
+00: center-spread
+01: up-spread
+10: down-spread
+11: down-spread</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SSC_FORCE_LOCK182</spirit:name>
+<spirit:description>set pll force lock 
+0: disable
+1: enable, when reg3&lt;4&gt;=0, set force lock to pll_lk signal</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP_STEP183</spirit:name>
+<spirit:description>increase spectrum spread depth by 2
+0: disable
+1: spread depth x2</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP184</spirit:name>
+<spirit:description>set spectrum spread depth(peak-peak)
+0000: no ssc
+0001: 500ppm
+0010: 1000ppm
+0011: 1500ppm
+0100: 2000ppm
+0101: 2500ppm
+0110: 3000ppm
+0111: 3500ppm
+1000: 4000ppm
+1001: 4500ppm
+1010: 5000ppm
+1011: 5500ppm
+1100: 6000ppm
+1101: 6000ppm
+1110: 6000ppm
+1111: 6000ppm</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL5_PU</spirit:name>
+<spirit:description>pll5 power on  0 = pll5 off  1 = pll on; pll5 is automatically off whenever pll is off.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL5_FBDIV</spirit:name>
+<spirit:description>pll5 fbdiv</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL5_FRCDIV</spirit:name>
+<spirit:description>pll5 frcdiv</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>PLL4CR</spirit:name>
+<spirit:description>PLL4 Control Register</spirit:description>
+<spirit:addressOffset>0X0050</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PLL5SSC_MODE196</spirit:name>
+<spirit:description>spectrum spread mode
+00: center-spread
+01: up-spread
+10: down-spread
+11: down-spread</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SSC_FORCE_LOCK197</spirit:name>
+<spirit:description>set pll force lock 
+0: disable
+1: enable, when reg3&lt;4&gt;=0, set force lock to pll_lk signal</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP_STEP198</spirit:name>
+<spirit:description>increase spectrum spread depth by 2
+0: disable
+1: spread depth x2</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SPRD_DEP199</spirit:name>
+<spirit:description>set spectrum spread depth(peak-peak)
+0000: no ssc
+0001: 500ppm
+0010: 1000ppm
+0011: 1500ppm
+0100: 2000ppm
+0101: 2500ppm
+0110: 3000ppm
+0111: 3500ppm
+1000: 4000ppm
+1001: 4500ppm
+1010: 5000ppm
+1011: 5500ppm
+1100: 6000ppm
+1101: 6000ppm
+1110: 6000ppm
+1111: 6000ppm</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL4_PU</spirit:name>
+<spirit:description>pll4 power on  0 = pll off  1 = pll on; pll4 is automatically off whenever pll4 is off.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL4_FBDIV</spirit:name>
+<spirit:description>pll4 fbdiv</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PLL4_FRCDIV</spirit:name>
+<spirit:description>pll4 frcdiv</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FCAP</spirit:name>
+<spirit:description>&lt;var Processor: Application&gt; Core Frequency Change Control Register</spirit:description>
+<spirit:addressOffset>0X0054</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>C2_PLLSEL</spirit:name>
+<spirit:description>&lt;var processor: application&gt; cluster2 core clock selection  0x0 = pll1 1248 mhz  0x1 = pll1 832 mhz     0x2= pll3_div2(1.05g)   0x3=pll2_div2          0x4=pll5_div1   0x5=pll6_div1      0x6=pll4_div1(1.75g)             0x7=pll3_div1(2.1g)</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>C1_PLLSEL</spirit:name>
+<spirit:description>&lt;var processor: application&gt; cluster1 core clock selection  0x0 = pll1 1248 mhz  0x1 = pll1 832 mhz     0x2= pll3_div2(1.05g)   0x3=pll2_div2   0x4=pll5_div1   0x5=pll6_div1   0x6=pll4_div1(1.75g)    0x7 = reserved</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>C0_PLLSEL</spirit:name>
+<spirit:description>&lt;var processor: application&gt; cluster0 core clock selection  0x0 = pll1 624 mhz  0x1 = pll1 832 mhz     0x2= pll1 499mhz    0x3 = pll3_div2(1.05g)    0x4 = pll1 1248mhz     0x5~0x7 reserved</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FCDCLK</spirit:name>
+<spirit:description>DCLK Frequency Change Control Register</spirit:description>
+<spirit:addressOffset>0X005C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_DCLKSEL225</spirit:name>
+<spirit:description>ddr clock selection                7=pll3 div2                               6=pll5 div2                              0x5 = pll4 div2                             0x4 = pll2 div2                          0x3 = pll6_div1                           0x2 = pll2 div1                     0x1= pll1 832 mhz                          0x0 = pll1 624 mhz</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>FCACLK</spirit:name>
+<spirit:description>ACLK Frequency Change Control Register</spirit:description>
+<spirit:addressOffset>0X0060</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ACLKSEL</spirit:name>
+<spirit:description>axi clock selection  0x0 = pll1 416 mhz  0x1 = pll1 312 mhz</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DSOC</spirit:name>
+<spirit:description>Debug Signals Output Control Register</spirit:description>
+<spirit:addressOffset>0X0100</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TPCTL</spirit:name>
+<spirit:description>test points control mux select. this field determines whether the test points mux is controlled by tunit, by means of pm_ext_tpsel input port or by means of tpsel field of this register  0 = test points mux control is by means of pm_ext_tpsel input bus  1 = test points mux control is by means of dsoc[tpsel] field</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TPSEL</spirit:name>
+<spirit:description>test points mux select - each combination of these bits will yield a different set of signals driven on the cw_bus_out output bus. detailed description of these signals may be found in the  mas</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>WDTPCR</spirit:name>
+<spirit:description>WDT (CP Timers) Control Register</spirit:description>
+<spirit:addressOffset>0X0200</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_FNCLKSEL253</spirit:name>
+<spirit:description>0x0 = 13 mhz clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_RST255</spirit:name>
+<spirit:description>timers h/w reset generation (resets both apb &amp; functional domains)  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_FNCLK256</spirit:name>
+<spirit:description>timers + wdtfunctional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ABCLK</spirit:name>
+<spirit:description>cp timers and wdt apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>RIPCCR</spirit:name>
+<spirit:description>RIPC Control Register</spirit:description>
+<spirit:addressOffset>0X0210</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_RST265</spirit:name>
+<spirit:description>r-ipc h/w reset generation  )  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_APBCLK267</spirit:name>
+<spirit:description>r-ipc apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DBG</spirit:name>
+<spirit:description>DBG Register</spirit:description>
+<spirit:addressOffset>0X0214</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DBG_CP_AXI_ACCESS_MSK</spirit:name>
+<spirit:description>debug used. mask communicon processor axi request.  0= not mask.  1= mask.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DBG_CP_DDR_ACCESS_MSK</spirit:name>
+<spirit:description>debug used. mask communicon processor ddr request.  0= not mask.  1= mask.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APSLPW</spirit:name>
+<spirit:description>Marvell Seagull/Mohawk Power Control Register</spirit:description>
+<spirit:addressOffset>0X1000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_INTCLR285</spirit:name>
+<spirit:description>interrupt clear register.   a write of 1 followed by a write of 0 to this field clears the pm_moh_wakeup_int output of .  the read value is the last value written to this field.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP0286</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 0 disable  0 = wake-up port 0 is enabled  1 = wake-up port 0 is disabled</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP1287</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 1 disable  0 = wake-up port 1 is enabled  1 = wake-up port 1 is disabled</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP2288</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 2 disable  0 = wake-up port 2 is enabled  1 = wake-up port 2 is disabled</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP3289</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 3 disable  0 = wake-up port 3 is enabled  1 = wake-up port 3 is disabled</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP4291</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 4 disable  0 = wake-up port 4 is enabled  1 = wake-up port 4 is disabled</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP5292</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 5 disable  0 = wake-up port 5 is enabled  1 = wake-up port 5 is disabled</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP6293</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 6 disable  0 = wake-up port 6 is enabled  1 = wake-up port 6 is disabled</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPWP7294</spirit:name>
+<spirit:description>sleep mode wake-up decoder port 7 disable  0 = wake-up port 7 is enabled  1 = wake-up port 7 is disabled</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APSR</spirit:name>
+<spirit:description>Marvell Seagull/Mohawk Power Status Register</spirit:description>
+<spirit:addressOffset>0X1004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_DSPIDL303</spirit:name>
+<spirit:description>reflects the state of the marvell msa core (not marvell msa subsystem). the availability of the marvell msa subsystem memories and peripheral bus to the marvell seagull/mohawk core is still governed by means of mpcrx[dspsd], and is not reflected by this bit.  0 = marvell msa core is currently not in idle state  1 = marvell msa core is currently in idle state</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_IDLE304</spirit:name>
+<spirit:description>reflects the state of the marvell mohawk core.  0x1= core is in external idle or power off mode</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SG_IDLE305</spirit:name>
+<spirit:description>1 = &lt;var processor: comm&gt; is idle   0 = &lt;var processor: comm&gt; is active</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSPAVL306</spirit:name>
+<spirit:description>marvell msa subsystem availability indication. this field should be read after mpcrx[dspsd] is deasserted, to verify the clock is resumed  0 = marvell msa subsystem clock is not running  1 = marvell msa subsystem clock is running</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_WFI307</spirit:name>
+<spirit:description>reflects the state of the marvell mohawk core.  0 = marvell mohawk core is currently not in wfi state  1 = marvell mohawk core is currently in wfi state</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SG_WFI308</spirit:name>
+<spirit:description> seagull wfi flag. it reflects the wfi flag that is directly output from seagull. when seagull enters wfi, this field will be set.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APOFF309</spirit:name>
+<spirit:description>reflects the power state of the marvell mohawk core.   1 = core is currently in power-off mode</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_COMM_TOP_D2310</spirit:name>
+<spirit:description>reflects the power state of comm_top   1 = comm_top is in d2 mode. in this mode, msa/seagull are powered off</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_COMM_TOP_STATE312</spirit:name>
+<spirit:description>comm_top low power state   0x8=comm_top is in d0 state    0xb=comm_top is in d2 state</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APRR</spirit:name>
+<spirit:description>Marvell Seagull/Mohawk Programmable Reset Register</spirit:description>
+<spirit:addressOffset>0X1020</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SGR_SEL</spirit:name>
+<spirit:description>communication processor reset mode select.  1=direct mode. set cpr will reset communication processor immediately.  0=silent reset mode. set cpr will not reset communication processor immediately. only when all communication processor memory and register request finished, communication processor can be reseted.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SGR_RST</spirit:name>
+<spirit:description>communication processor reset status.  1= communication processor at reset state.  0=communication at active state.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SIRST_CNT</spirit:name>
+<spirit:description>communication processor silent reset wait time
+this field determines the wait time for the completion of a
+silent reset to communication processor. when the wait
+counter has reached this value, silrst is set to 1.</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>21</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST_DONE</spirit:name>
+<spirit:description>reset done flag. this bit is set when sirst_cnt counter to 0</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLAVE_R324</spirit:name>
+<spirit:description>slave_reset_out pin sw reset control  1 = slave_reset_out is low.  0 = slave_reset_out may be high base on reset_in and wdt reset.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSRAMINT325</spirit:name>
+<spirit:description>this signal hold the msa from start execution after released from reset. it will be used to hold msa from start execution till his boot address in sram will be initial with valid code.  1 = execution is hold  0 = msa is running</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WDTR326</spirit:name>
+<spirit:description>negate hardware reset to the wdt after system reset. this field is reset due to a wdt reset event  reading 0 = wdt reset is still asserted from the last system reset  reading 1 = wdt reset is negated  writing 0 = operation is ignored  writing 1 = negates the wdt reset  the actual release of the wdt reset signal might be delayed by up to 11/2 cycles of the 32.768 khz clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BBR327</spirit:name>
+<spirit:description>apply global hardware reset to the baseband logic  0 = hardware reset is negated  1 = hardware reset is asserted  the baseband logic reset is effected also from dprr register.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSPR328</spirit:name>
+<spirit:description>apply global hardware reset to the whole marvell msa subsystem.  0 = hardware reset is negated  1 = hardware reset is asserted</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_APR329</spirit:name>
+<spirit:description>this is read only bit - cp_wf_fuse  0 = mohawk core was the second core to boot  1 = mohawk core was the first core to boot.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CPR330</spirit:name>
+<spirit:description>apply hardware reset to the communication processor (seagull core).  1 = core is hold in reset.  0 = core is released from reset  the initial value of this bit is determined by cp_wf_fuse_not  cp_wf_fuse = 1 (seagull core is the first one to boot).  cp_wf_fose not is 0 when seagull wakeup first</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ACGR</spirit:name>
+<spirit:description>Marvell Seagull/Mohawk Clock Gating Register</spirit:description>
+<spirit:addressOffset>0X1024</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_WDT_13M339</spirit:name>
+<spirit:description>enable the functional 13 mhz clock output of the main  to the watchdogtimer.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_1248M341</spirit:name>
+<spirit:description>enable the functional 1248 mhz clock output.   0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_624M342</spirit:name>
+<spirit:description>enable the functional 624 mhz clock output.   0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_832M343</spirit:name>
+<spirit:description>enable the functional 832 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_312M344</spirit:name>
+<spirit:description>enable the functional 312 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_104M345</spirit:name>
+<spirit:description>enable the functional 104 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_52M346</spirit:name>
+<spirit:description>enable the functional 52 mhz clock output for ap pmu and ap perihrals.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_48M347</spirit:name>
+<spirit:description>enable the functional 48 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GPC348</spirit:name>
+<spirit:description>enable the m/n clock generator of the vcxo clockconfigured through gpcr, the clcok is output to vcxo_out pad func3  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_FUART349</spirit:name>
+<spirit:description>enable the functional fast uart clock output (58.5 mhz) of the main  to the application processor apb portion.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_52M350</spirit:name>
+<spirit:description>enable the functional 52 mhz clock output for apb peripherals  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_TWSI351</spirit:name>
+<spirit:description>enable the 32m clock of the functional twsi clock output of the main  to the application processor apb portion.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_208M352</spirit:name>
+<spirit:description>enable the functional 208 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_26M353</spirit:name>
+<spirit:description>enable the functional 26 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_13M354</spirit:name>
+<spirit:description>enable the functional 13 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_6.5M355</spirit:name>
+<spirit:description>enable the functional 6.5 mhz clock output.  0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_SUART356</spirit:name>
+<spirit:description>enable the functional m/n slow uart clock output (configured through succr) of the main  to the application processor apb portion. it's just uart slow clock(14.17m) source enable   0 = clock not enabled  1 = clock enabled.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CLK_416M357</spirit:name>
+<spirit:description>enable the functional 416 mhz clock output.   0 = clock not enabled  1 = clock enabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ARSR</spirit:name>
+<spirit:description>Marvell Seagull/Mohawk Reset Status Register</spirit:description>
+<spirit:addressOffset>0X1028</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_SWR366</spirit:name>
+<spirit:description>software controlled, reset events tracking field. this field may be written (and read) to any value between 0x0 and 0xf.   this field's content does not affect  functionality in any way</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WDTR368</spirit:name>
+<spirit:description>indicates whether the last system reset was caused by a watchdog timer reset event  0 = last system reset was not caused by watchdog timer reset  1 = last system reset was caused by watchdog timer reset  depending on the type of reset the device has experienced, one of the reset values in [2:0] is 1 and the others are 0.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_EMR369</spirit:name>
+<spirit:description>indicates whether the last system reset was caused by an external master reset event  0 = last system reset was not caused by external master reset  1 = last system reset was caused by external master reset  depending on the type of reset the device has experienced, one of the reset values in [2:0] is 1 and the others are 0.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_POR370</spirit:name>
+<spirit:description>indicates whether the last system reset was caused by a power on reset  event  0 = last system reset was not caused by power on reset  1 = last system reset was caused by power on reset  depending on the type of reset the device has experienced, one of the reset values in [2:0] is 1 and the others are 0.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>PWRMODE_STAUTS</spirit:name>
+<spirit:description>Power Mode Status Register</spirit:description>
+<spirit:addressOffset>0X1030</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PWRMODE_STATUS377</spirit:name>
+<spirit:description>this field indicates that the system has entered and exited which state. one bit for one low power mode. if set to 1 indicate the low power mode has occured. it is cleared by set 1 to approprate bit of clr_pwrmode_status  bit0 for d1p mode  bit1 for d1pp mode   bit2 for d1 mode  bit3 for d2 mode  bit 4 for d2p   bit5 for d2pp mode  bit6 for cluster0 m2  bit7 for cluster1 m2</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PWRMODE_STATUS378</spirit:name>
+<spirit:description>this field indicates that the system has entered and exited which state. one bit for one low power mode. if set to 1 indicate the low power mode has occured. it is cleared by set 1 to approprate bit of clr_pwrmode_status  bit0 for d1p mode  bit1 for d1pp mode   bit2 for d1 mode  bit3 for d2 mode  bit 4 for d2p   bit5 for d2pp mode  bit6 for cluster0 m2  bit7 for cluster1 m2  bit8 for cluster2 m2</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CLR_PWRMODE_STATUS</spirit:name>
+<spirit:description>clear power mode status. set 1 to cleare approprate of pwrmode_status bit.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AWUCRS</spirit:name>
+<spirit:description>Wakeup and Clock Resume Lines Status Register</spirit:description>
+<spirit:addressOffset>0X1048</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_BB_DROWSY_EN386</spirit:name>
+<spirit:description>bb_drowsy_en</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BB_VCTCXO_REQ387</spirit:name>
+<spirit:description>bb_vctcxo_req</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_MSA_WAKE_PM_BB_CLKRES388</spirit:name>
+<spirit:description>msa_wake/pm_bb_clkres</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_PM_CLKRES389</spirit:name>
+<spirit:description>pm_clkres</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GSM_WAKEUP390</spirit:name>
+<spirit:description>gsm wakeup</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_FB_WAKEUP391</spirit:name>
+<spirit:description>fb wakeup</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_ASYNC_INT392</spirit:name>
+<spirit:description>ap async int</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_FULL_IDLE393</spirit:name>
+<spirit:description>ap full idle</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SDH1_AUDIO394</spirit:name>
+<spirit:description>sdh1/audio wakeup</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SDH2395</spirit:name>
+<spirit:description>sdh2 wakeup</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_KEYPRESS396</spirit:name>
+<spirit:description>keypress</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_TRACKBALL397</spirit:name>
+<spirit:description>trackball</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_NEWROTARY398</spirit:name>
+<spirit:description>newrotary</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WDT399</spirit:name>
+<spirit:description>wdt</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_RTC_ALARM400</spirit:name>
+<spirit:description>rtc alarm</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CP_TIMER_3401</spirit:name>
+<spirit:description>cp timer 3</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CP_TIMER_2402</spirit:name>
+<spirit:description>cp timer 2</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CP_TIMER_1403</spirit:name>
+<spirit:description>cp timer 1</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP1_TIMER_3404</spirit:name>
+<spirit:description>ap1 timer 3</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP1_TIMER_2405</spirit:name>
+<spirit:description>ap1 timer 2</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP1_TIMER_1406</spirit:name>
+<spirit:description>ap1 timer 1</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP0_2_TIMER_3407</spirit:name>
+<spirit:description>ap0 timer 3 and ap2 timer 3</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP0_2_TIMER_2408</spirit:name>
+<spirit:description>ap0 timer 2 and ap2 timer 2</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP0_2_TIMER_1409</spirit:name>
+<spirit:description>ap0 timer 1 and ap2 timer 1</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP7410</spirit:name>
+<spirit:description>wakeup7 line in status</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP6411</spirit:name>
+<spirit:description>wakeup6 line in status</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP5412</spirit:name>
+<spirit:description>wakeup5 line in status</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP4413</spirit:name>
+<spirit:description>wakeup4 line in status</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP3414</spirit:name>
+<spirit:description>wakeup3 line in status</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP2415</spirit:name>
+<spirit:description>wakeup2 line in status</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP1416</spirit:name>
+<spirit:description>wakeup1 line in status</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP0417</spirit:name>
+<spirit:description>wakeup0 line in status</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AWUCRM</spirit:name>
+<spirit:description>Wakeup and Clock Resume Lines Mask Register</spirit:description>
+<spirit:addressOffset>0X104C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_AUDIO_WAKEUP424</spirit:name>
+<spirit:description>mask audio_wakeup</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_GT_WAKEUP425</spirit:name>
+<spirit:description>mask ap generic timer wakeup</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GSM_WAKEUPWMX426</spirit:name>
+<spirit:description>mask gsm wakeup from pm_clkres</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_FB_WAKEUPX427</spirit:name>
+<spirit:description>mask fb wakeup from pm_clkres</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GSM_WAKEUPWM428</spirit:name>
+<spirit:description>mask gsm wakeup from msa_wake</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_FB_WAKEUPWM429</spirit:name>
+<spirit:description>mask fb wakeup rom msa_wake</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_ASYNC_INT430</spirit:name>
+<spirit:description>mask ap async int from pm_clkres</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP_FULL_IDLE431</spirit:name>
+<spirit:description>mask ap full idle from pm_clkres</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SDH1_AUDIO432</spirit:name>
+<spirit:description>mask sdh1/audio wakeup</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SDH2433</spirit:name>
+<spirit:description>mask sdh2 wakeup</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_KEYPRESS434</spirit:name>
+<spirit:description>mask keypress wakeup</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_TRACKBALL435</spirit:name>
+<spirit:description>mask trackball wakeup</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_NEWROTARY436</spirit:name>
+<spirit:description>mask newrotary wakeup</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WDT437</spirit:name>
+<spirit:description>mask wdt wakeup</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_RTC_ALARM438</spirit:name>
+<spirit:description>mask rtc alarm wakeup</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CP_TIMER_3439</spirit:name>
+<spirit:description>mask cp timer int3 wakeup</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CP_TIMER_2440</spirit:name>
+<spirit:description>mask cp timer int2 wakeup</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_CP_TIMER_1441</spirit:name>
+<spirit:description>mask cp timer int1 wakeup</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP1_TIMER_3442</spirit:name>
+<spirit:description>mask ap timer1 int3 wakeup</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP1_TIMER_2443</spirit:name>
+<spirit:description>mask ap timer1 int2 wakeup</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP1_TIMER_1444</spirit:name>
+<spirit:description>mask ap timer1 int1 wakeup</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP0_2_TIMER_3445</spirit:name>
+<spirit:description>mask ap timer0 and ap timer2 int3 wakeup</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP0_2_TIMER_2446</spirit:name>
+<spirit:description>mask ap timer0 and ap timer2 int2 wakeup</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_AP0_2_TIMER_1447</spirit:name>
+<spirit:description>mask ap timer0 and ap timer2 int1 wakeup</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP7448</spirit:name>
+<spirit:description>mask wakeup7 input to pm_clkres</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP6449</spirit:name>
+<spirit:description>mask wakeup6 input to pm_clkres</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP5450</spirit:name>
+<spirit:description>mask wakeup5 input to pm_clkres</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP4451</spirit:name>
+<spirit:description>mask wakeup4 input to pm_clkres</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP3452</spirit:name>
+<spirit:description>mask wakeup3 input to pm_clkres</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP2453</spirit:name>
+<spirit:description>mask wakeup2 input to pm_clkres</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP1454</spirit:name>
+<spirit:description>mask wakeup1input to pm_clkres</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WAKEUP0455</spirit:name>
+<spirit:description>mask wakeup0 input to pm_clkres</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBCSCR</spirit:name>
+<spirit:description>APB Clock Source Control Register</spirit:description>
+<spirit:addressOffset>0X1050</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APB_52M</spirit:name>
+<spirit:description>system apb clk source selection  0 = clock is 26 mhz  1 = clock is 52 mhz</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>AWUCRS1</spirit:name>
+<spirit:description>Wakeup and Clock Resume Lines Status Register1</spirit:description>
+<spirit:addressOffset>0X1064</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_AP_GT_WAKEUP472</spirit:name>
+<spirit:description>ap generic timer wakeup status</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SHGPIOCTRL</spirit:name>
+<spirit:description>Sensor hub GPIO control </spirit:description>
+<spirit:addressOffset>0X1080</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>BYPASS_SH_INT0</spirit:name>
+<spirit:description>this bit used to select the interrupt source for sensor hub int0
+0: from gpio74 interrupt
+1:from pmic interrupt</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SGADDRMAPEN481</spirit:name>
+<spirit:description>this bit control the interrupt trigger type for pmic to audio island
+0:high level trigger
+1:low level trigger</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EN_PMIC_INT</spirit:name>
+<spirit:description>0:disable 
+1:enable</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GPIO_OUT_SEL</spirit:name>
+<spirit:description>bit[23:16] control the out put source for gpio81,80,79,78,65,66,65,62,61
+0:from ap
+1:from gpo of audio island</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>INT_EN</spirit:name>
+<spirit:description>bit[15:8] control the interrupt enable for gpio81~gpio74 .
+0:disable 
+1:enable</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>INT_TYPE</spirit:name>
+<spirit:description>bit[7:0] control the interrupt trigger type for gpio81~gpio74 .
+0:high level trigger
+1:low level trigger</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SGADDRMAP</spirit:name>
+<spirit:description>Marvell Seagull  Address Map</spirit:description>
+<spirit:addressOffset>0X1084</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SGADDRMAPEN493</spirit:name>
+<spirit:description>seagull address map enable  1=enable  0=disable</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SGADDRMAPTG</spirit:name>
+<spirit:description>seagull address map target address. if seagull address map enable and seagull write to 0xffff003f to 0xffffffff and seagull read from 0xffff0000 to 0xffffffff, the high 16bit address will use sgaddrmaptg.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>MSAADDRMAP</spirit:name>
+<spirit:description>MSA  Address Map</spirit:description>
+<spirit:addressOffset>0X1088</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MSAADDRMAPEN</spirit:name>
+<spirit:description>msa address map enable  1=enable  0=disable</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSAADDRMAPTG</spirit:name>
+<spirit:description>msa address map target address. if msa address map enable and msa write/read address in the range from 0xd2000000 to 0xd3ffffff, msa address high 7bit will use msaaddrmaptg</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>MSAMEMCTRL</spirit:name>
+<spirit:description>MSA Memory Control</spirit:description>
+<spirit:addressOffset>0X1080</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SRAM_FUSE_REPAIR_CTRL</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GSRAM_WTC511</spirit:name>
+<spirit:description>grayback gsram wtc</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GSRAM_RTC512</spirit:name>
+<spirit:description>grayback gsram rtc</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GSRAM_ROM_RTC_REF513</spirit:name>
+<spirit:description>grayback l2 rom rtc ref</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_GSRAM_ROM_RTC514</spirit:name>
+<spirit:description>grayback l2 rom rtc</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_RESERVED515</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PMU2GB_WAKEUP_EN</spirit:name>
+<spirit:description>mask for pmu2gb_wakeup signal: 1 = not masked; 0 = masked</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSA_L1_PDLVMC</spirit:name>
+<spirit:description>gb l1 memory pdlvmc</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSA_L1_PDFVSSM</spirit:name>
+<spirit:description>gb l1 memory pdfvssm</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSA_L1_RTC_SACMEM</spirit:name>
+<spirit:description>gb l1 memory rtc</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSA_L1_WTC_SACMEM</spirit:name>
+<spirit:description>gb l1 memory wtc</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSA_TRANSACTION_FIX</spirit:name>
+<spirit:description>0 = gb wrap transaction fix enable; 1 = old implementation</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSA_AIB_GB_L2_RATIO</spirit:name>
+<spirit:description>aib gb l2 sram clock ratio</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSA_AIB_GB_L2_LATENCY</spirit:name>
+<spirit:description>aib gb l2 sram latency</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPSRAM_PDFVSSM</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPSRAM_PDLVMC</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_SRAM_WTC</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_SRAM_RTC</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_SRAM_FIX_PRIOR0</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_SRAM_PIPE_MEM</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_SRAM_CLOCK_GATING</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APCR_CLUSTER0</spirit:name>
+<spirit:description>Marvell &lt;var Processor: Application MP&gt; Cluster 0 Power Control Register</spirit:description>
+<spirit:addressOffset>0X1090</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_AXISDD538</spirit:name>
+<spirit:description>allow axi bus and agents to be shut down after marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores enters idle state.  0 = axi shutdown not allowed  1 = axi shutdown allowed</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSPSD539</spirit:name>
+<spirit:description>not used</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPEN540</spirit:name>
+<spirit:description>allow pmu to switch the system to sleep mode once it reached system idle mode.  0 = sleep mode not allowed  1 = sleep mode allowed</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DDRCORSD542</spirit:name>
+<spirit:description>allow marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown. the clocks are halted when cpcr[ddrcorsd], apcr[ddrcorsd] &amp; dpcr[ddrcorsd] are set and marvell &lt;var processor: application mp&gt; core is in idle mode   0 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown not allowed  1 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_APBSD543</spirit:name>
+<spirit:description>allow pmu to shut down apb clock to all of its recipients, overriding other per-module fields. the apb clock is actually shut down once the marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores are idle and cpcr[apbsd], apcr[apbsd] &amp; dpcr[apbsd] are set  0 = apb clock shutdown not allowed  1 = apb clock shutdown allowed</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BBSD544</spirit:name>
+<spirit:description>allow pmu to shut down all clocks provided to the baseband logic, except 32.768 khz clock. the baseband logic clocks are halted as soon as cpcr[bbsd], apcr[bbsd] &amp; dpcr[bbsd] are set and pm_bb_clkres port is negated.  0 = bb clocks shutdown not allowed  1 = bb clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_VCTCXOSD546</spirit:name>
+<spirit:description>allow vctcxo shutdown when system is in sleep mode. vctcxo is shutdown when cpcr[vctcxosd], apcr[vctcxosd] &amp; dpcr[vctcxosd] are set &amp; the system enters sleep mode  0 = vctcxo shutdown not allowed  1 = vctcxo shutdown allowed</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_MSASLPEN548</spirit:name>
+<spirit:description>allow msa to switch msa subsystem to sleep mode once it reached msa sub system idle mode.the sleep mode is allowed when cpcr[msaslpen], apcr[msaslpen] &amp; dpcr[msaslpen]  0 = msa sleep mode not allowed  1 = msa sleep mode allowed  base on the cpmu setting, msa subsystem may be powered down.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_STBYEN549</spirit:name>
+<spirit:description>allow apps subsystem to shutdown and go into udr-mode when ap subsystem is in sleep mode. udr is enabled when cpcr[stbyen], apcr[stbyen] are both set &amp; ap subsystem enters ap sleep.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LDMA_MASK551</spirit:name>
+<spirit:description>ldma mask  this field is used to mask the lte dma hardware voting for ddr shutdown.  0 = lte dma hardware voting for ddr shutdown enabled  1 = lte dma hardware voting for ddr shutdown not allowed</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APCR_CLUSTER1</spirit:name>
+<spirit:description>Marvell &lt;var Processor: Application MP&gt; Cluster 1 Power Control Register</spirit:description>
+<spirit:addressOffset>0X1094</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_AXISDD560</spirit:name>
+<spirit:description>allow axi bus and agents to be shut down after marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores enters idle state.  0 = axi shutdown not allowed  1 = axi shutdown allowed</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSPSD561</spirit:name>
+<spirit:description>not used</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPEN562</spirit:name>
+<spirit:description>allow pmu to switch the system to sleep mode once it reached system idle mode.  0 = sleep mode not allowed  1 = sleep mode allowed</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DDRCORSD564</spirit:name>
+<spirit:description>allow marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown. the clocks are halted when cpcr[ddrcorsd], apcr[ddrcorsd] &amp; dpcr[ddrcorsd] are set and marvell &lt;var processor: application mp&gt; core is in idle mode   0 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown not allowed  1 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_APBSD565</spirit:name>
+<spirit:description>allow pmu to shut down apb clock to all of its recipients, overriding other per-module fields. the apb clock is actually shut down once the marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores are idle and cpcr[apbsd], apcr[apbsd] &amp; dpcr[apbsd] are set  0 = apb clock shutdown not allowed  1 = apb clock shutdown allowed</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BBSD566</spirit:name>
+<spirit:description>allow pmu to shut down all clocks provided to the baseband logic, except 32.768 khz clock. the baseband logic clocks are halted as soon as cpcr[bbsd], apcr[bbsd] &amp; dpcr[bbsd] are set and pm_bb_clkres port is negated.  0 = bb clocks shutdown not allowed  1 = bb clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_VCTCXOSD568</spirit:name>
+<spirit:description>allow vctcxo shutdown when system is in sleep mode. vctcxo is shutdown when cpcr[vctcxosd], apcr[vctcxosd] &amp; dpcr[vctcxosd] are set &amp; the system enters sleep mode  0 = vctcxo shutdown not allowed  1 = vctcxo shutdown allowed</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_MSASLPEN570</spirit:name>
+<spirit:description>allow msa to switch msa subsystem to sleep mode once it reached msa sub system idle mode.the sleep mode is allowed when cpcr[msaslpen], apcr[msaslpen] &amp; dpcr[msaslpen]  0 = msa sleep mode not allowed  1 = msa sleep mode allowed  base on the cpmu setting, msa subsystem may be powered down.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_STBYEN571</spirit:name>
+<spirit:description>allow apps subsystem to shutdown and go into udr-mode when ap subsystem is in sleep mode. udr is enabled when cpcr[stbyen], apcr[stbyen] are both set &amp; ap subsystem enters ap sleep.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LDMA_MASK573</spirit:name>
+<spirit:description>ldma mask  this field is used to mask the lte dma hardware voting for ddr shutdown.  0 = lte dma hardware voting for ddr shutdown enabled  1 = lte dma hardware voting for ddr shutdown not allowed</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APCR_CLUSTER2</spirit:name>
+<spirit:description>Marvell &lt;var Processor: Application MP&gt; Cluster 2 Power Control Register</spirit:description>
+<spirit:addressOffset>0X109C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_AXISDD583</spirit:name>
+<spirit:description>allow axi bus and agents to be shut down after marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores enters idle state.  0 = axi shutdown not allowed  1 = axi shutdown allowed</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSPSD584</spirit:name>
+<spirit:description>not used</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPEN585</spirit:name>
+<spirit:description>allow pmu to switch the system to sleep mode once it reached system idle mode.  0 = sleep mode not allowed  1 = sleep mode allowed</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DDRCORSD587</spirit:name>
+<spirit:description>allow marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown. the clocks are halted when cpcr[ddrcorsd], apcr[ddrcorsd] &amp; dpcr[ddrcorsd] are set and marvell &lt;var processor: application mp&gt; core is in idle mode   0 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown not allowed  1 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_APBSD588</spirit:name>
+<spirit:description>allow pmu to shut down apb clock to all of its recipients, overriding other per-module fields. the apb clock is actually shut down once the marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores are idle and cpcr[apbsd], apcr[apbsd] &amp; dpcr[apbsd] are set  0 = apb clock shutdown not allowed  1 = apb clock shutdown allowed</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BBSD589</spirit:name>
+<spirit:description>allow pmu to shut down all clocks provided to the baseband logic, except 32.768 khz clock. the baseband logic clocks are halted as soon as cpcr[bbsd], apcr[bbsd] &amp; dpcr[bbsd] are set and pm_bb_clkres port is negated.  0 = bb clocks shutdown not allowed  1 = bb clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_VCTCXOSD591</spirit:name>
+<spirit:description>allow vctcxo shutdown when system is in sleep mode. vctcxo is shutdown when cpcr[vctcxosd], apcr[vctcxosd] &amp; dpcr[vctcxosd] are set &amp; the system enters sleep mode  0 = vctcxo shutdown not allowed  1 = vctcxo shutdown allowed</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_MSASLPEN593</spirit:name>
+<spirit:description>allow msa to switch msa subsystem to sleep mode once it reached msa sub system idle mode.the sleep mode is allowed when cpcr[msaslpen], apcr[msaslpen] &amp; dpcr[msaslpen]  0 = msa sleep mode not allowed  1 = msa sleep mode allowed  base on the cpmu setting, msa subsystem may be powered down.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_STBYEN594</spirit:name>
+<spirit:description>allow apps subsystem to shutdown and go into udr-mode when ap subsystem is in sleep mode. udr is enabled when cpcr[stbyen], apcr[stbyen] are both set &amp; ap subsystem enters ap sleep.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LDMA_MASK596</spirit:name>
+<spirit:description>ldma mask  this field is used to mask the lte dma hardware voting for ddr shutdown.  0 = lte dma hardware voting for ddr shutdown enabled  1 = lte dma hardware voting for ddr shutdown not allowed</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APCR_PER</spirit:name>
+<spirit:description>Marvell Peripheral 1 Power Control Register</spirit:description>
+<spirit:addressOffset>0X1098</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MAI_AXISDD606</spirit:name>
+<spirit:description>allow axi bus and agents to be shut down after marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores enters idle state.  0 = axi shutdown not allowed  1 = axi shutdown allowed</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DSPSD607</spirit:name>
+<spirit:description>not used</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_SLPEN608</spirit:name>
+<spirit:description>allow pmu to switch the system to sleep mode once it reached system idle mode.  0 = sleep mode not allowed  1 = sleep mode allowed</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_DDRCORSD610</spirit:name>
+<spirit:description>allow marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown. the clocks are halted when cpcr[ddrcorsd], apcr[ddrcorsd] &amp; dpcr[ddrcorsd] are set and marvell &lt;var processor: application mp&gt; core is in idle mode   0 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown not allowed  1 = marvell &lt;var processor: comm&gt;/&lt;var processor: application mp&gt; core and tc ddr clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_APBSD611</spirit:name>
+<spirit:description>allow pmu to shut down apb clock to all of its recipients, overriding other per-module fields. the apb clock is actually shut down once the marvell &lt;var processor: comm&gt;/ &lt;var processor: application&gt; cores are idle and cpcr[apbsd], apcr[apbsd] &amp; dpcr[apbsd] are set  0 = apb clock shutdown not allowed  1 = apb clock shutdown allowed</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_BBSD612</spirit:name>
+<spirit:description>allow pmu to shut down all clocks provided to the baseband logic, except 32.768 khz clock. the baseband logic clocks are halted as soon as cpcr[bbsd], apcr[bbsd] &amp; dpcr[bbsd] are set and pm_bb_clkres port is negated.  0 = bb clocks shutdown not allowed  1 = bb clocks shutdown allowed</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_VCTCXOSD614</spirit:name>
+<spirit:description>allow vctcxo shutdown when system is in sleep mode. vctcxo is shutdown when cpcr[vctcxosd], apcr[vctcxosd] &amp; dpcr[vctcxosd] are set &amp; the system enters sleep mode  0 = vctcxo shutdown not allowed  1 = vctcxo shutdown allowed</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_MSASLPEN616</spirit:name>
+<spirit:description>allow msa to switch msa subsystem to sleep mode once it reached msa sub system idle mode.the sleep mode is allowed when cpcr[msaslpen], apcr[msaslpen] &amp; dpcr[msaslpen]  0 = msa sleep mode not allowed  1 = msa sleep mode allowed  base on the cpmu setting, msa subsystem may be powered down.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_STBYEN617</spirit:name>
+<spirit:description>allow apps subsystem to shutdown and go into udr-mode when ap subsystem is in sleep mode. udr is enabled when cpcr[stbyen], apcr[stbyen] are both set &amp; ap subsystem enters ap sleep.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LDMA_MASK619</spirit:name>
+<spirit:description>ldma mask  this field is used to mask the lte dma hardware voting for ddr shutdown.  0 = lte dma hardware voting for ddr shutdown enabled  1 = lte dma hardware voting for ddr shutdown not allowed</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SPRR</spirit:name>
+<spirit:description>Marvell Secure Core Programmable Reset Register</spirit:description>
+<spirit:addressOffset>0X3000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>WDTRST</spirit:name>
+<spirit:description>system hot reset  when this field is set to 1, it equals a watchdog reset event and watchdog reset generated. this field can only be write with a value of 1. writes of 0 are ignored.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_WDTR631</spirit:name>
+<spirit:description>negate hardware reset to wdt after system reset  this field is reset due to a wdt reset event  reading 0 = wdt reset is still asserted from the last system reset  reading 1 = wdt reset is negated  writing 0 = operation is ignored  writing 1 = negates the wdt reset</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SPR</spirit:name>
+<spirit:description>this is read only bit - sp_wf_fuse  0 = secure core was not boot core  1 = secure core was the first core to boot</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MAI_APR635</spirit:name>
+<spirit:description>apply hardware reset to application processor  1 = core is held in reset.  0 = core is released from reset  the initial value of this bit is determined by sp_wf_fuse_not.  sp_wf_fuse = 1 (secure core is not first one to boot).  sp_wf_fuse is 0 when secure core is boot core.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CRMR</spirit:name>
+<spirit:description>CR7 DDR address remap</spirit:description>
+<spirit:addressOffset>0X1084</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LRME</spirit:name>
+<spirit:description>lte ddr remap enable   0 = lte ddr remap disabled 1 = lte ddr remap enabled</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LRMADDR</spirit:name>
+<spirit:description>lte ddr remap address.    when lte ddr remap is enabled, lte ddr address [32:28] is replaced with lrmaddr[4:0] in this field</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CRME</spirit:name>
+<spirit:description>cr7 ddr remap enable   0 = cr7 ddr remap disabled 1 = cr7 ddr remap enabled</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CRMADDR</spirit:name>
+<spirit:description>cr7 ddr remap address.    when cr7 ddr remap is enabled, cr7 ddr address [32:28] is replaced with crmaddr[4:0] in this field</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

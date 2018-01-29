@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>timingctrl</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD401E000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>AIB_spare0_reg</spirit:name>
+<spirit:description>AIB spare0 Register</spirit:description>
+<spirit:addressOffset>0X7F8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>AIB_spare1_reg</spirit:name>
+<spirit:description>AIB spare1 Register</spirit:description>
+<spirit:addressOffset>0X7FC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

@@ -1,0 +1,1050 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>msadmac</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xFFD01000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>DCR</spirit:name>
+<spirit:description>DMA Control Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>START_STATUS_0</spirit:name>
+<spirit:description>start/status channel 0</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START_STATUS_1</spirit:name>
+<spirit:description>start/status channel 1</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START_STATUS_2</spirit:name>
+<spirit:description>start/status channel 2</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START_STATUS_3</spirit:name>
+<spirit:description>start/status channel 3</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START_STATUS_4</spirit:name>
+<spirit:description>start/status channel 4</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START_STATUS_5</spirit:name>
+<spirit:description>start/status channel 5</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START_STATUS_6</spirit:name>
+<spirit:description>start/status channel 6</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START_STATUS_7</spirit:name>
+<spirit:description>start/status channel 7</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_0</spirit:name>
+<spirit:description>terminate channel 0</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_1</spirit:name>
+<spirit:description>terminate channel 1</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_2</spirit:name>
+<spirit:description>terminate channel 2</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_3</spirit:name>
+<spirit:description>terminate channel 3</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_4</spirit:name>
+<spirit:description>terminate channel 4</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_5</spirit:name>
+<spirit:description>terminate channel 5</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_6</spirit:name>
+<spirit:description>terminate channel 6</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TERM_CHANNEL_7</spirit:name>
+<spirit:description>terminate channel 7</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DESR</spirit:name>
+<spirit:description>DMA Error Source Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MV0</spirit:name>
+<spirit:description>matrixed value programming error for channel 0</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MV1</spirit:name>
+<spirit:description>matrixed value programming error for channel 1</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MV2</spirit:name>
+<spirit:description>matrixed value programming error for channel 2</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MV3</spirit:name>
+<spirit:description>matrixed value programming error for channel 3</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MV4</spirit:name>
+<spirit:description>matrixed value programming error for channel 4</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MV5</spirit:name>
+<spirit:description>matrixed value programming error for channel 5</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MV6</spirit:name>
+<spirit:description>matrixed value programming error for channel 6</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MV7</spirit:name>
+<spirit:description>matrixed value programming error for channel 7</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE0</spirit:name>
+<spirit:description>data error indication for channel 0</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE1</spirit:name>
+<spirit:description>data error indication for channel 1</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE2</spirit:name>
+<spirit:description>data error indication for channel 2</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE3</spirit:name>
+<spirit:description>data error indication for channel 3</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE4</spirit:name>
+<spirit:description>data error indication for channel 4</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE5</spirit:name>
+<spirit:description>data error indication for channel 5</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE6</spirit:name>
+<spirit:description>data error indication for channel 6</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DE7</spirit:name>
+<spirit:description>data error indication for channel 7</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV0</spirit:name>
+<spirit:description>overflow indication for channel 0</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV1</spirit:name>
+<spirit:description>overflow indication for channel 1</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV2</spirit:name>
+<spirit:description>overflow indication for channel 2</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV3</spirit:name>
+<spirit:description>overflow indication for channel 3</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV4</spirit:name>
+<spirit:description>overflow indication for channel 4</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV5</spirit:name>
+<spirit:description>overflow indication for channel 5</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV6</spirit:name>
+<spirit:description>overflow indication for channel 6</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>OV7</spirit:name>
+<spirit:description>overflow indication for channel 7</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary0</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary1</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary2</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary3</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x40</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary4</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x50</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary5</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x60</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary6</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x70</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary7</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x80</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary8</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x90</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary9</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x94</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary10</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x98</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CSAR0..7:Primary11</spirit:name>
+<spirit:description>Channel Source Address Registers</spirit:description>
+<spirit:addressOffset>0x9C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SA</spirit:name>
+<spirit:description>source address  the address from which the data is read. the value read from the register represents the current address that is read by the channel.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary0</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary1</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary2</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary3</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x44</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary4</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x54</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary5</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x64</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary6</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x74</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary7</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0x84</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary8</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0xA0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary9</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0xA4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary10</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0xA8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CDAR0..7:Primary11</spirit:name>
+<spirit:description>Channel Destination Address Registers</spirit:description>
+<spirit:addressOffset>0xAC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DA</spirit:name>
+<spirit:description>destination address  the address into which the data is written. the value in this register represents the current address to be written by the channel.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary0</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary1</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary2</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x38</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary3</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x48</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary4</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x58</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary5</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x68</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary6</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x78</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary7</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0x88</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary8</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0xB0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary9</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0xB4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary10</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0xB8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CBCR0..7:Primary11</spirit:name>
+<spirit:description>Channel Byte Count Registers</spirit:description>
+<spirit:addressOffset>0xBC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PLEN</spirit:name>
+<spirit:description>packet length  when written, sets the length of each packet in the transaction, given in data units. (the unit size is set via the &lt;transfer size&gt; field in the channel control register). the value of this field can range from 1 to 16383 units.  when read, this field reflects the number of units remaining in the current packet (in case the channel is interrupted by a higher priority channel or if the channel is terminated early by an end of receive signal from a peripheral device.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>14</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EWD</spirit:name>
+<spirit:description>end of receive (eor) with data  this bit is set when a device sends the dmac an eor with data to end the packet transfer, and the channel terminates the current packet normally.  the &lt;plen&gt; field can be read to calculate the number of units transferred (by subtracting the term from the &lt;plen&gt; field as originally programmed.  this bit is cleared automatically each time the channel is started.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EWOD</spirit:name>
+<spirit:description>end of receive (eor) without data  this bit is set when a device sends the dmac an eor without data, possibly indicating a timeout condition from the peripheral device. the channel terminates the current packet normally.  the &lt;plen&gt; field can be read to calculate the number of units transferred (by subtracting the term from the &lt;plen&gt; originally programmed.  this bit is cleared automatically each time the channel is started.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PCNT</spirit:name>
+<spirit:description>packet count  the number of packets that will be moved by the dma controller. this value can range from 0 to 1023.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>10</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary0</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary1</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary2</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x3C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary3</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x4C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary4</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x5C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary5</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x6C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary6</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x7C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..7:Primary7</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0x8C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>GE</spirit:name>
+<spirit:description>go enable  0 = one-shot transaction  1 = peripheral-demand mode transaction</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IE</spirit:name>
+<spirit:description>interrupt enable  0 = an interrupt will not be asserted by this channel  1 = an interrupt will be asserted to the msa or &lt;var processor: comm&gt; core upon completion of dma transfer  in the case of a software-initiated channel termination, an interrupt will not be generated.</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TSZ130</spirit:name>
+<spirit:description>transfer size  0x0 = transfer is in 8-bit units  0x1 = transfer is in 16-bit units  0x2 = transfer is in 32-bit units  0x3 = transfer is in 64-bit units</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SAPM132</spirit:name>
+<spirit:description>source address post modifier  0x0 = increment by &lt;transfer size&gt;  0x1 = decrement by &lt;transfer size&gt;  0x2 = no change  0x3 = reserved</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DAPM133</spirit:name>
+<spirit:description>destination address post modifier  0x0 = increment by &lt;transfer size&gt;  0x1 = decrement by &lt;transfer size&gt;  0x2 = no change  0x3 = reserved</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TD135</spirit:name>
+<spirit:description>transfer direction  0 = transfer from port a to port b  1 = transfer from port b to port a  ports a and b are specific for each dma (see definitions in dma c1 and dma c2 sections in the &lt;var product number&gt; datasheet, and section 4.3.2.6, dma c3)</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RTCM137</spirit:name>
+<spirit:description>request to channel mapping  map a dma channel to a dma_req[n] input (and its corresponding ack signal).  0x0 = map this dma channel to dma_req[0]  0x1 = map this dma channel to dma_req[1]  0x2 = map this dma channel to dma_req[2]  0x3 = map this dma channel to dma_req[3]  0x4 = map this dma channel to dma_req[4]  0x5 = map this dma channel to dma_req[5]  0x6 = map this dma channel to dma_req[6]  0x7 = map this dma channel to dma_req[7]  this field has no effect in one-shot mode.  programming two dccrs with same rtcm values and activating the two channels is forbidden and results in a matrixed value programming error.  it may also result in not completing the transfer. (in this case - software must clear the matrixed value programming error and restart the relevant dma channels with proper values in rtcm).</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..3:Secondary0</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0xC0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..3:Secondary1</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0xC4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..3:Secondary2</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0xC8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>CCR0..3:Secondary3</spirit:name>
+<spirit:description>Channel Control Registers</spirit:description>
+<spirit:addressOffset>0xCC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TE</spirit:name>
+<spirit:description>toggle enable  0 = toggle mode is disabled for the channel  1 = toggle mode is enabled for the channel</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TI</spirit:name>
+<spirit:description>terminate on interrupt  0 = no termination upon interrupt (that is, no change)  1 = the channel is terminated upon next channel interrupt</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TS</spirit:name>
+<spirit:description>toggling status  0 = primary channel is currently active  1 = secondary channel is currently active  each channel always begins with the primary set of parameters.  when a channel is not active, this bit is reset to 0 (that is, during toggle mode, this bit is reset after channel termination)</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TSZ149</spirit:name>
+<spirit:description>same value as read in ccr*[tsz] field of same channel  transfer size  0x0 = transfer is in 8-bit units  0x1 = transfer is in 16-bit units  0x2 = transfer is in 32-bit units  0x3 = transfer is in 64-bit units</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SAPM151</spirit:name>
+<spirit:description>source address post modifier  0x0 = increment by &lt;transfer size&gt;  0x1 = decrement by &lt;transfer size&gt;  0x2 = no change  0x3 = reserved</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DAPM152</spirit:name>
+<spirit:description>destination address post modifier  0x0 = increment by &lt;transfer size&gt;  0x1 = decrement by &lt;transfer size&gt;  0x2 = no change  0x3 = reserved</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TD154</spirit:name>
+<spirit:description>same value as read in ccr*[td] field of same channel  transfer direction  0 = transfer from port a to port b  1 = transfer from port b to port a  ports a and b are specific for each dma (see definitions in dma c1 section in the &lt;var product number&gt; datasheet)</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RTCM156</spirit:name>
+<spirit:description>request to channel mapping  map a dma channel to a dma_req[n] input (and its corresponding ack signal).  0x0 = map this dma channel to dma_req[0]   0x1 = map this dma channel to dma_req[1]  0x2 = map this dma channel to dma_req[2]  0x3 = map this dma channel to dma_req[3]  0x4 = map this dma channel to dma_req[4]  0x5 = map this dma channel to dma_req[5]  0x6 = map this dma channel to dma_req[6]  0x7 = map this dma channel to dma_req[7]  this field has no effect in one-shot mode.  programming two dccrs with same rtcm values and activating the two channels is forbidden and results in a matrixed value programming error.  it may also result in not completing the transfer. (in this case, software must clear the matrixed value programming error, and restart the relevant dma channels with proper values in rtcm).</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

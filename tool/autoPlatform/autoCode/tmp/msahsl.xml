@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>msahsl</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xFFC0CD00</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>HSL_LASTDATA</spirit:name>
+<spirit:description>Software Message Last Word Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LAST_DATA</spirit:name>
+<spirit:description>software message last word</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_DATA</spirit:name>
+<spirit:description>Software Message Body Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>HS_DATA26</spirit:name>
+<spirit:description>software message body</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_HEADER</spirit:name>
+<spirit:description>Software Message Header Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>HEADER</spirit:name>
+<spirit:description>software message header</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_SINGLE</spirit:name>
+<spirit:description>Single Software Message Register</spirit:description>
+<spirit:addressOffset>0X0C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SINGLE</spirit:name>
+<spirit:description>single software message</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_CFG</spirit:name>
+<spirit:description>HSL Configuration Register</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DISABLE_NESTING</spirit:name>
+<spirit:description>1 = inhibit the logging of new messages when a long message is in progress  0 = nesting allowed</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SWLOG_ON</spirit:name>
+<spirit:description>1 = software messages are visible on the hsl port (filtered according to the hsl enable register)  0 = software messages are not visible on the hsl port</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCULOG_ON</spirit:name>
+<spirit:description>1 = tcu instructions are visible on the hsl port  0 = tcu instruction are not visible on the hsl port</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HSL_DIVR</spirit:name>
+<spirit:description>defines the hsl output clock frequency  0x0 = divide by 1  0x1 = divide by 2  0x2 = divide by 4  0x3 = divide by 8</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HSL_PORT_EN</spirit:name>
+<spirit:description>1 = hsl is active  0 = hsl is idle, hsl clock is disabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_SWENABLE0</spirit:name>
+<spirit:description>Software Enable 0 Register</spirit:description>
+<spirit:addressOffset>0X20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SW_ENABLE0</spirit:name>
+<spirit:description>message filter  reading this register requires one &lt;q&gt;dummy&lt;/q&gt; read from the same register. the first read operation does not return correct data, only the second read does.   pipeline operation is allowed. for pipeline operation, one dummy read is required only after the last read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_SWENABLE1</spirit:name>
+<spirit:description>Software Enable 1 Register</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SW_ENABLE1</spirit:name>
+<spirit:description>message filter.   reading this register requires one &lt;q&gt;dummy&lt;/q&gt; read from the same register. the first read operation does not return correct data, only the second read does.   pipeline operation is allowed. for pipeline operation, one dummy read is required only after the last read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_SWENABLE2</spirit:name>
+<spirit:description>Software Enable 2 Register</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SW_ENABLE2</spirit:name>
+<spirit:description>message filter  reading this register requires one &lt;q&gt;dummy&lt;/q&gt; read from the same register. the first read operation does not return correct data, only the second read does.   pipeline operation is allowed. for pipeline operation, one dummy read is required only after the last read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_SWENABLE3</spirit:name>
+<spirit:description>Software Enable 3 Register</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SW_ENABLE3</spirit:name>
+<spirit:description>message filter  reading this register requires one &lt;q&gt;dummy&lt;/q&gt; read from the same register. the first read operation does not return correct data, only the second read does.   pipeline operation is allowed. for pipeline operation, one dummy read is required only after the last read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_TCUENABLE</spirit:name>
+<spirit:description>Timing Control Unit Register</spirit:description>
+<spirit:addressOffset>0X30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TCU_ENABLE</spirit:name>
+<spirit:description>tcu message filtering  reading this register requires one &lt;q&gt;dummy&lt;/q&gt; read from the same register. the first read operation does not return correct data, only the second read does.   pipeline operation is allowed. for pipeline operation, one dummy read is required only after the last read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>HSL_STACK</spirit:name>
+<spirit:description>Nesting Stack Register</spirit:description>
+<spirit:addressOffset>0X34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>STACK</spirit:name>
+<spirit:description>filter stack  reading this register requires one &lt;q&gt;dummy&lt;/q&gt; read from the same register. the first read operation does not return correct data, only the second read does.   pipeline operation is allowed. for pipeline operation, one dummy read is required only after the last read.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

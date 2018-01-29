@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>cpdma</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD0200000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>DMA_CSR031</spirit:name>
+<spirit:description>DMA Channel Control/Status Registers 0-31</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_RUN16</spirit:name>
+<spirit:description>run  this field allows software to start or stop the channel. if it is cleared in the middle of the burst, the burst is completed before the channel stops. setting this field starts the stopped channel.  if the channel is in a descriptor-fetch transfer and this field is set before writing a valid descriptor address to the dma descriptor address registers, no-descriptor fetch occurs.  this bit is reset as soon as it is cleared and when the channel stops normally. after the channel stops, the &lt;stop interrupt&gt; field is set. the &lt;stop interrupt&gt; field must be polled to read the channel status or to set the &lt;stop interrupt enabled&gt; field and expect an interrupt after the channel stops.  0 = stops the channel  1 = starts the channel</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_NODESCFETCH17</spirit:name>
+<spirit:description>no-descriptor fetch  this bit controls whether or not a channel has a descriptor. if this field is set, the channel is considered a simple channel with no descriptors. in this case, the dma does not initiate descriptor fetches when software sets the &lt;run&gt; field or when the byte count for the current transfer reaches zero.  to program the channel for a no-descriptor-fetch transfer, software must set, then write to the individual dma source address registers 0-31, dma target address registers 0-31, and dma command registers 0-31 for that channel. the dma descriptor address registers are not used in this mode and must not be written. the &lt;run&gt; field must be set to allow the channel to start the transfer.   if this field is cleared, the dmac initiates descriptor-fetches when software writes to the dma descriptor address registers, when the byte count for the current transfer reaches zero.  0 = descriptor-fetch transfer  1 = no-descriptor-fetch transfer</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_STOPIRQEN18</spirit:name>
+<spirit:description>stop interrupt enabled  this field enables the interrupt when the &lt;stop interrupt&gt; field is set. if this field is cleared, no interrupt is generated after the channel stops.  the &lt;stop interrupt&gt; field is set after system reset de-assertion. thus, if &lt;stop interrupt&gt; is set before the channel is started, an interrupt is generated.  0 = no interrupt if the channel is in uninitialized or stopped state  1 = interrupt enabled if the channel is in uninitialized or stopped state</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_EORIRQEN19</spirit:name>
+<spirit:description>setting the end-of-receive interrupt enable  this field triggers an interrupt on an eor condition. clearing this bit does not generate an eor-related interrupt.  0 = interrupt not triggered even if the &lt;end of receive interrupt&gt; field is set  1 = enable interrupt if &lt;end of receive interrupt&gt; is set</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_EORJMPEN20</spirit:name>
+<spirit:description>jump to the next descriptor on eor  this field controls the descriptor flow when the mapped peripheral signals an eor to the dmac. see descriptor behavior on end-of-receive (eor) figure for the behavior of the descriptor during this condition.  this control bit has no effect on the channel for no-descriptor-fetch transfers (&lt;no-descriptor fetch&gt; set). the dmac completes the peripheral-to-memory data transfer on an eor, regardless of this field.  0 = dmac continues to hold the current descriptor and waits until the mapped peripheral makes another receive request.  1 = dmac jumps to the channel's next descriptor on receiving an eor from the mapped peripheral.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_EORSTOPEN21</spirit:name>
+<spirit:description>stop channel on eor  this field has no effect on the channel for no-descriptor-fetch transfers (&lt;no-descriptor fetch&gt; set). the dmac completes the peripheral-to-memory data transfer on an eor, regardless of this field.  setting this field causes the dmac to stop the channel on an eor and set the corresponding &lt;stop interrupt&gt; field. if the &lt;stop interrupt enabled&gt; field is set when this field is set, an interrupt occurs.  see descriptor behavior on end-of-receive (eor) figure for the behavior of the descriptor.  0 = dmac continues to hold the current descriptor and waits until the mapped peripheral makes another receive request.  1 = dmac stops the channel that received an eor from the mapped peripheral.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_SETCMPST22</spirit:name>
+<spirit:description>set descriptor compare status  this field partially controls &lt;descriptor compare status&gt;. setting this bit sets &lt;descriptor compare status&gt;. clearing this field has no effect on &lt;descriptor compare status&gt;. software can set the &lt;descriptor compare status&gt; even if the descriptor is not configured in the compare mode (&lt;descriptor compare enable&gt; field in dma command registers 0-31 = 0).   0 = no effect on &lt;descriptor compare status&gt;  1 = set &lt;descriptor compare status&gt;</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_CLRCMPST23</spirit:name>
+<spirit:description>clear descriptor compare status  this field partially controls &lt;descriptor compare status&gt;. setting this field clears &lt;descriptor compare status&gt;. clearing this field has no effect on &lt;descriptor compare status&gt;. software can set &lt;descriptor compare status&gt; even if the descriptor is not configured in the compare mode.  0 = no effect on &lt;descriptor compare status&gt;  1 = clear &lt;descriptor compare status&gt;</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_RASIRQEN24</spirit:name>
+<spirit:description>request after channel stopped interrupt enable  0 = interrupt not triggered when a peripheral asserts a dma request after the channel has stopped  1 = set interrupt bit for that channel in the &lt;channel interrupt&gt; in the dma interrupt register when a peripheral asserts a dma request after the channel has stopped.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_MASKRUN25</spirit:name>
+<spirit:description>mask &lt;run&gt; during a programmed i/o write to this register  0 = software (programmed i/o write) can modify &lt;run&gt; during a write transaction  1 = software (programmed i/o write) can not modify &lt;run&gt; during a write transaction</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_CMPST27</spirit:name>
+<spirit:description>descriptor compare status  this field indicates the most recent status of the source and target compare operation. it is set on a successful compare of the source and target fields. an unsuccessful comparison clears it. refer to the description of &lt;addrmode&gt; in the dma command registers 0-31 for the various addressing modes used for this comparison. for details regarding the descriptor compare mode, refer to &lt;descriptor compare enable&gt; in the dma command registers 0 to 31.  the dmac updates cmpst only in descriptor compare mode (&lt;descriptor compare enable&gt; = 1).  this field can be set and cleared by setting &lt;set descriptor compare status&gt; and &lt;clear descriptor compare status&gt;, respectively.  if software attempts to concurrently set and clear this field by setting both &lt;set descriptor compare status&gt; and &lt;clear descriptor compare status&gt;, &lt;set descriptor compare status&gt; has higher precedence. modifying this bit after &lt;run&gt; is set and the channel is actively running leads to faulty behavior of the descriptor chain. the channel must be stopped before setting or clearing this field.  0 = indicates an unsuccessful address compare in descriptor-compare mode.  1 = indicates a successful compare of the current descriptor source and target addresses in descriptor-compare mode.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_EORINT28</spirit:name>
+<spirit:description>end of receive interrupt  eorint pertains only to internal peripherals. this field indicates the status of the mapped peripheral's receive data. it is set after the dmac reads out the last trailing sample from the peripheral's receive fifo. the descriptor behavior on end-of-receive (eor) figure illustrates the behavior of the descriptor during this condition.  0 = dma continues with current descriptor because the internal peripheral is still actively receiving data  1 = channel mapped internal peripheral has no data remaining in its receive fifo and has completed all receive transactions. refer to the description of &lt;jump to the next descriptor on eor&gt; for the behavior of the dmac during this condition.</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQPEND30</spirit:name>
+<spirit:description>request pending  this field indicates a pending request for the dma channel.  reqpend is cleared for a channel if that channel has no pending request or the request has just been issued to the memory interface in case of a read or write from the external companion chip to memory.   if dreq assertion sets reqpend and &lt;run&gt; is cleared to stop that channel, reqpend and the internal registers that hold the dreq assertion information, do not remain set. if the channel is restarted, reqpend must be reset by a descriptor that transfers dummy data (for example, a memory-to-memory transfer from a temporary location to another temporary location).   0 = no request is pending for the channel  1 = a request is pending for the channel</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_RASINTR32</spirit:name>
+<spirit:description>request after channel stopped  0 = no interrupt   1 = interrupt caused due to a request made by the peripheral after the respective channel stopped  this bit is reset by writing a 1.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_STOPINTR33</spirit:name>
+<spirit:description>stop interrupt  this is a read-only bit that reflects the channel state.  software must clear &lt;stop interrupt enabled&gt; to reset the interrupt. reprogramming the dma descriptor address registers and setting &lt;run&gt; restarts the channel.  0 = channel is running  1 = channel is in uninitialized or stopped state. if &lt;stop interrupt enabled&gt; is set, the dmac generates an interrupt.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_ENDINTR34</spirit:name>
+<spirit:description>end interrupt  this field indicates that the current descriptor finished successfully and that &lt;end interrupt enable&gt; in the dma command registers 0-31 is set.   0 = no interrupt  1 = interrupt was caused due to successful completion of the current transaction and &lt;length of the transfer in bytes&gt; field in dma command registers 0-31 = 0</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_STARTINTR35</spirit:name>
+<spirit:description>start interrupt  this field indicates that the current descriptor was loaded successfully and that &lt;startirqen&gt; in the dma command registers 0-31 is set.   0 = no interrupt  1 = interrupt was caused due to successful descriptor fetch</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_BUSERRINTR36</spirit:name>
+<spirit:description>bus error interrupt  this field indicates that an error occurred during a data transfer on the internal bus. the error may be due to a bad descriptor source or target address (any address that is in the non-burstable or reserved space can cause a bus error on the system bus). only one error per channel is logged. the channel that caused the error is not updated at the end of the transfer and is not accessible until it is reprogrammed and the corresponding &lt;run&gt; field is set.  0 = no interrupt  1 = interrupt was caused by bus error</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_ALGN</spirit:name>
+<spirit:description>DMA Alignment Register</spirit:description>
+<spirit:addressOffset>0XA0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_DALGNX52</spirit:name>
+<spirit:description>alignment control for channel x  0 = source and target addresses of channel x are default aligned (internal peripherals default to 4 byte alignment, external bus addresses default to 8 byte alignment)  1 = source and target addresses of channel x are as defined by user (byte aligned)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_PCSR</spirit:name>
+<spirit:description>DMA Programmed I/O Control Status Register</spirit:description>
+<spirit:addressOffset>0XA4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_BRGSPLIT70</spirit:name>
+<spirit:description>activate posted writes and split reads  0 = de-activate posted writes, split responses, split completions and retries.  activate posted writes, split responses, split completions and retries.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPCSR_2_R</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DPCSR_1_R</spirit:name>
+<spirit:description></spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_BRGBUSY74</spirit:name>
+<spirit:description>bridge busy status  0 = no pending pio transactions across peripheral bus. a new pio transaction is not retried in this case.  1 = pending pio transaction across peripheral bus. any further pio transactions on the system bus are retried.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_RQSR0</spirit:name>
+<spirit:description>DREQ Status Register 0</spirit:description>
+<spirit:addressOffset>0XE0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CLR88</spirit:name>
+<spirit:description>clearing pending request  writing 0x1 to this field clears the &lt;request pending&gt; field and thereby clears all pending requests made by the external dma request pin dreq. writing 0x0 to this field has no effect. this field can be used for clearing the requests if the channel mapped to dreq was prematurely stopped by software. this field must be set only after the mapped channel has stopped (&lt;stop interrupt&gt; field in the dma channel control/status registers 0-31 is set). clearing the requests of a running channel results in unpredictable behavior.  0 = no effect on &lt;request pending&gt;  1 = clear all pending requests registered in &lt;request pending&gt;</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQPEND90</spirit:name>
+<spirit:description>request pending  indicates the number of pending requests on dreq.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_RQSR1</spirit:name>
+<spirit:description>DREQ Status Register 1</spirit:description>
+<spirit:addressOffset>0XE4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CLR98</spirit:name>
+<spirit:description>clearing pending request  writing 0x1 to this field clears the &lt;request pending&gt; field and thereby clears all pending requests made by the external dma request pin dreq. writing 0x0 to this field has no effect. this field can be used for clearing the requests if the channel mapped to dreq was prematurely stopped by software. this field must be set only after the mapped channel has stopped (&lt;stop interrupt&gt; field in the dma channel control/status registers 0-31 is set). clearing the requests of a running channel results in unpredictable behavior.  0 = no effect on &lt;request pending&gt;  1 = clear all pending requests registered in &lt;request pending&gt;</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQPEND100</spirit:name>
+<spirit:description>request pending  indicates the number of pending requests on dreq.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_RQSR2</spirit:name>
+<spirit:description>DREQ Status Register 2</spirit:description>
+<spirit:addressOffset>0XE8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CLR107</spirit:name>
+<spirit:description>clearing pending request  writing 0x1 to this field clears the &lt;request pending&gt; field and thereby clears all pending requests made by the external dma request pin dreq. writing 0x0 to this field has no effect. this field can be used for clearing the requests if the channel mapped to dreq was prematurely stopped by software. this field must be set only after the mapped channel has stopped (&lt;stop interrupt&gt; field in the dma channel control/status registers 0-31 is set). clearing the requests of a running channel results in unpredictable behavior.  0 = no effect on &lt;request pending&gt;  1 = clear all pending requests registered in &lt;request pending&gt;</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>REQPEND109</spirit:name>
+<spirit:description>request pending  indicates the number of pending requests on dreq.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_INT</spirit:name>
+<spirit:description>DMA Interrupt Register</spirit:description>
+<spirit:addressOffset>0XF0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_CHLINTRX123</spirit:name>
+<spirit:description>channel interrupt  this field indicates that dma channel x has been interrupted.  0 = no interrupt  1 = interrupt</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_RCMRx0</spirit:name>
+<spirit:description>DMA Request to Channel Map Registers 0-63 and 64-99</spirit:description>
+<spirit:addressOffset>0x0100</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_RCMRx1</spirit:name>
+<spirit:description>DMA Request to Channel Map Registers 0-63 and 64-99</spirit:description>
+<spirit:addressOffset>0x1100</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_MAPVLD133</spirit:name>
+<spirit:description>map valid channel  defines whether the request is mapped to a valid channel. if the field is set, the request is mapped to a valid channel indicated by &lt;channel number&gt;. if the field is cleared, the request is unmapped.  this bit can also be used to mask the request.  0 = request is unmapped  1 = request is mapped to a valid channel indicated by &lt;channel number&gt;</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_CHLNUM135</spirit:name>
+<spirit:description>channel number  indicates the valid channel number if &lt;map valid channel&gt; is set. do not map two active requests to the same channel since it produces unpredictable results.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_DADRx</spirit:name>
+<spirit:description>DMA Descriptor Address Registers</spirit:description>
+<spirit:addressOffset>0X200</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_DESCRIPTOR_ADDRESS150</spirit:name>
+<spirit:description>descriptor address  contains address of next descriptor.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>28</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_BREN152</spirit:name>
+<spirit:description>enable descriptor branch  works with the &lt;descriptor compare status&gt; field in the dma channel control/status registers 0-31 to determine which descriptor is fetched next. if both this field and &lt;descriptor compare status&gt; are set, the dmac fetches the next descriptor from (ddadrx + 32 bytes). if either of the bits is cleared, dmac fetches the next descriptor from the dma descriptor address registers.  this field is relevant only for descriptor-fetch transactions (&lt;no-descriptor fetch&gt; field in the dma channel control/status registers 0-31 = 0).  see dreq timing requirements figure for details about the operational flow.  0 = disable descriptor branching. fetch the next descriptor from register ddadrx.  1 = enable descriptor branching</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_STOP153</spirit:name>
+<spirit:description>stop  if this field is cleared, a new descriptor fetch based on dma descriptor address registers and other control information is initiated after the current descriptor is completely processed.  0 = run channel  1 = stop channel after completely processing this descriptor and before fetching the next descriptor (&lt;length of the transfer in bytes&gt; field in dma command registers 0-31 = 0)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_SADRx</spirit:name>
+<spirit:description>DMA Source Address Registers 0-31</spirit:description>
+<spirit:addressOffset>0X204</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_SRCADDR170</spirit:name>
+<spirit:description>source address  source address of the on-chip peripheral, external peripheral, companion chip, or address of a memory location</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>29</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_SRCADDR2171</spirit:name>
+<spirit:description>srcaddr[2] if &lt;source address&gt; is a memory location and alignment register is configured. see dma alignment register for programming details and restrictions.  srcaddr[2] if &lt;source address&gt; is an on-chip peripheral.  reserved for all companion-chip or external peripheral-related transfers.  reserved for special dma modes, such as compare modes.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_SRCADDR0172</spirit:name>
+<spirit:description>srcaddr[1:0] if &lt;source address&gt; is a memory location and alignment register is configured. see dma alignment register for programming details and restrictions.  reserved if &lt;source address&gt; is an on-chip peripheral.  reserved for all companion-chip or external peripheral related transfers.  reserved for special dma modes, such as compare modes.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_TADRx</spirit:name>
+<spirit:description>DMA Target Address Registers 0-31</spirit:description>
+<spirit:addressOffset>0X208</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_TRGADDR189</spirit:name>
+<spirit:description>target address  target address of the on-chip peripheral, external peripheral, companion chip, or address of a memory location</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>29</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_TRGADDR2190</spirit:name>
+<spirit:description>trgaddr[2] if &lt;target address&gt; is a memory location and alignment register is configured. see dma alignment register for programming details and restrictions.  trgaddr[2] if &lt;target address&gt; is an on-chip peripheral.  reserved for all companion-chip or external peripheral-related transfers.  reserved for special dma modes, such as compare modes.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_TRGADDR0191</spirit:name>
+<spirit:description>trgaddr[1:0], if target address is a memory location and alignment register is configured. see dma alignment register for programming details and restrictions.  reserved if target address is an on-chip peripheral.  reserved for all companion-chip or external peripheral related transfers.  reserved for special dma modes, such as compare modes.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMA_CMDx</spirit:name>
+<spirit:description>DMA Command Registers 0-31</spirit:description>
+<spirit:addressOffset>0X20C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_INCSRCADDR205</spirit:name>
+<spirit:description>source address increment  if the source address is an internal peripheral fifo address or external i/o address, the address is not incremented on each successive access. in these cases, this field must be cleared.  0 = do not increment source address  1 = increment source address</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_INCTRGADDR206</spirit:name>
+<spirit:description>target address increment  if the target address is an internal peripheral fifo address or external i/o address, the address is not incremented on each successive accesses. in these cases, this field must be cleared.  0 = do not increment target address  1 = increment target address</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_FLOWSRC207</spirit:name>
+<spirit:description>source flow control  the flow control of the source bit must be set if the source is an on-chip peripheral or external companion chip.  setting both this field and &lt;target flow control&gt; causes unpredictable behavior.  0 = do not wait for request signals associated with this channel  1 = wait for a request signal before initiating the data transfer</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_FLOWTRG208</spirit:name>
+<spirit:description>target flow control  the flow control of the target bit must be set if the target is an on-chip peripheral or external companion chip.  setting both the &lt;source flow control&gt; and this field causes unpredictable behavior.  0 = do not wait for request signals associated with this channel  1 = wait for a request signal before initiating the data transfer</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_CMPEN210</spirit:name>
+<spirit:description>descriptor compare enable  this field must be cleared for normal dma operations.  setting the field enables the descriptor-compare mode, in which the dmac treats the current descriptor as a special case and compares data that corresponds to the source and target fields.   &lt;addrmode&gt; is used to determine the addressing mode before the compare operation.  0 = dma does not perform any address-compare operations  1 = dma recognizes the current descriptor as a special case and compares data based on the source address and target address fields. if the compare is true, the channel's &lt;descriptor compare status&gt; field in the dma channel control/status registers 0-31 is set. if the compare is false, &lt;descriptor compare status&gt; is cleared.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_ADDRMODE212</spirit:name>
+<spirit:description>addressing mode  this field controls the addressing mode for descriptor comparison and is valid only in the descriptor compare mode (&lt;descriptor compare enable&gt; = 1).  reserved if &lt;descriptor compare enable&gt; = 0.  if &lt;descriptor compare enable&gt; is set, the bits specify the addressing modes of the source address and target address fields. if either field contains an address, the dmac fetches the data at that address and uses it for the compare operation.  0 = source address field contains address, and target address field contains address  1 = source address field contains address, and target address field contains data  if dalgnx is clear, then the lowest three bits of immediate data are forced to be 0 before comparison. if dalgnx is set, then the lowest three bits of immediate data are not forced to be 0 before comparison.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_STARTIRQEN213</spirit:name>
+<spirit:description>start interrupt enable  this field indicates that the interrupt is enabled as soon as the descriptor is loaded.   in no-descriptor-fetch transfers, this field is reserved.  0 = interrupt not triggered after descriptor is loaded  1 = set interrupt bit for that channel in the &lt;channel interrupt&gt; field in the dma interrupt register when the descriptor (4 words) for the channel is loaded</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_ENDIRQEN214</spirit:name>
+<spirit:description>end interrupt enable  0 = interrupt is not triggered when length decrements to zero.  1 = set the dint interrupt bit for the channel when length decrements to zero.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_SIZE216</spirit:name>
+<spirit:description>maximum burst size  maximum burst size of each data transfer  0x0 = reserved  0x1 = 8 bytes  0x2 = 16 bytes  0x3 = 32 bytes  the size must be less than or equal to the serviced peripheral fifo trigger threshold to properly handle the respective fifo trailing bytes.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_WIDTH217</spirit:name>
+<spirit:description>width of the on-chip peripheral  this field is reserved for operations that do not involve on-chip peripherals, such as memory-to-memory moves and companion-chip-related operations.  width must be 0x0 for memory-to-memory moves or companion-chip-related operations.  0x0 = reserved for on-chip peripheral-related transactions  0x1 = 1 byte  0x2 = half-word (2 bytes)  0x3 = word (4 bytes)</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DM_LEN219</spirit:name>
+<spirit:description>length of the transfer in bytes  this field is the length of transfer in bytes. len = 0 means zero bytes for descriptor-fetch transactions. len = 0 is an invalid setting for no-descriptor-fetch transactions. programming len = 0 in the descriptor-fetch mode when &lt;descriptor compare enable&gt; is clear (normal data transfer mode) causes the channel to immediately discard the descriptor after it is fetched from memory. if the descriptor chain has more descriptors, the channel fetches the next valid descriptor. the channel stops if the descriptor chain has no more descriptors. the maximum transfer length is (8k-1) bytes.  if the transfer is of the memory-to-memory type, the length of the transfer may be any value (except for the len = 0 restriction in no-descriptor-fetch mode) up to a maximum of (8k -1) bytes. if the transfer involves an external peripheral (or a companion chip), then the length of the transfer must be an integer multiple of the peripheral fifo threshold (or water-mark).  if the transfer involves any of the on-chip peripherals, the length of the transfer must be as follows:</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>13</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DUMMY_REGISTER</spirit:name>
+<spirit:description>This is a Dummy Register</spirit:description>
+<spirit:addressOffset>0X0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DM_DUMMY234</spirit:name>
+<spirit:description>this is a dummy register used as a workaround to fix an issue with the rev 2.21 perl script that requires another register follow the last include file (shown above). ignore this register as it will not show up in documentation anyway. (mclark)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

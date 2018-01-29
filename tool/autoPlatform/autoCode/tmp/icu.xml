@@ -1,0 +1,1263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>icu</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4282000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>ICU_CFG_x_0</spirit:name>
+<spirit:description>Interrupt 0 to 63 Configuration Registers</spirit:description>
+<spirit:addressOffset>0X000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CPU7_INT16</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core7 interrupt  1 = route to core7 interrupt</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU6_INT17</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core6 interrupt  1 = route to core6 interrupt</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU5_INT18</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core5 interrupt  1 = route to core5 interrupt</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU4_INT19</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core4 interrupt  1 = route to core4 interrupt</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU3_INT21</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core3 interrupt  1 = route to core3 interrupt</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU2_INT22</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core2 interrupt  1 = route to core2 interrupt</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU1_INT23</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core1 interrupt  1 = route to core1 interrupt</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU0_INT24</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core0 interrupt  1 = route to core0 interrupt</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_FIQ26</spirit:name>
+<spirit:description>irq/fiq  1 = route to irq  0 = route to fiq</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PRIORITY_MASKING27</spirit:name>
+<spirit:description>priority/masking  0xf to 0x1 = interrupt arbitration priority  0x0 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_CFG_x_1</spirit:name>
+<spirit:description>Interrupt 64 to 127 Configuration Registers</spirit:description>
+<spirit:addressOffset>0X100</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CPU7_INT36</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core7 interrupt  1 = route to core7 interrupt</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU6_INT37</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core6 interrupt  1 = route to core6 interrupt</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU5_INT38</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core5 interrupt  1 = route to core5 interrupt</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU4_INT39</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core4 interrupt  1 = route to core4 interrupt</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU3_INT41</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core3 interrupt  1 = route to core3 interrupt</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU2_INT42</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core2 interrupt  1 = route to core2 interrupt</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU1_INT43</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core1 interrupt  1 = route to core1 interrupt</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CPU0_INT44</spirit:name>
+<spirit:description>&lt;var processor: application&gt; core0 interrupt  1 = route to core0 interrupt</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRQ_FIQ46</spirit:name>
+<spirit:description>irq/fiq  1 = route to irq  0 = route to fiq</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PRIORITY_MASKING47</spirit:name>
+<spirit:description>priority/masking  0xf to 0x1 = interrupt arbitration priority  0x0 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_INT_STATUS_0</spirit:name>
+<spirit:description>Interrupt Status Register 0</spirit:description>
+<spirit:addressOffset>0X200</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_STATUS_0</spirit:name>
+<spirit:description>interrupt status [31:0] (after masking)  0 = interrupt is not pending   1 = interrupt is pending</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_INT_STATUS_1</spirit:name>
+<spirit:description>Interrupt Status Register 1</spirit:description>
+<spirit:addressOffset>0X204</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_STATUS_1</spirit:name>
+<spirit:description>interrupt status [63:32] (after masking)  0 = interrupt is not pending   1 = interrupt is pending</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_INT_STATUS_2</spirit:name>
+<spirit:description>Interrupt Status Register 2</spirit:description>
+<spirit:addressOffset>0X208</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_STATUS_2</spirit:name>
+<spirit:description>interrupt status [95:64] (after masking)  0 = interrupt is not pending   1 = interrupt is pending</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_INT_STATUS_3</spirit:name>
+<spirit:description>Interrupt Status Register 3</spirit:description>
+<spirit:addressOffset>0X20C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_STATUS_3</spirit:name>
+<spirit:description>interrupt status [127:96] (after masking)  0 = interrupt is not pending   1 = interrupt is pending</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc0_FIQ_NUM</spirit:name>
+<spirit:description>APc0 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X220</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING83</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM84</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc0_IRQ_NUM</spirit:name>
+<spirit:description>APc0 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X224</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING92</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM93</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc0_GBL_INT_MSK</spirit:name>
+<spirit:description>APc0 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X228</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK101</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK102</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc1_FIQ_NUM</spirit:name>
+<spirit:description>APc1 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X230</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING110</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM111</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc1_IRQ_NUM</spirit:name>
+<spirit:description>APc1 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X234</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING119</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM120</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc1_GBL_INT_MSK</spirit:name>
+<spirit:description>APc1 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X238</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK128</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK129</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc2_FIQ_NUM</spirit:name>
+<spirit:description>APc2 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X240</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING137</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM138</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc2_IRQ_NUM</spirit:name>
+<spirit:description>APc2 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X244</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING146</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM147</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc2_GBL_INT_MSK</spirit:name>
+<spirit:description>APc2 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X248</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK155</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK156</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc3_FIQ_NUM</spirit:name>
+<spirit:description>APc3 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X250</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING164</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM165</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc3_IRQ_NUM</spirit:name>
+<spirit:description>APc3 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X254</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING173</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM174</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc3_GBL_INT_MSK</spirit:name>
+<spirit:description>APc3 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X258</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK182</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK183</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc4_FIQ_NUM</spirit:name>
+<spirit:description>APc4 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X270</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING191</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM192</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc4_IRQ_NUM</spirit:name>
+<spirit:description>APc4 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X274</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING200</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM201</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc4_GBL_INT_MSK</spirit:name>
+<spirit:description>APc4 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X278</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK209</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK210</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc5_FIQ_NUM</spirit:name>
+<spirit:description>APc5 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X280</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING218</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM219</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc5_IRQ_NUM</spirit:name>
+<spirit:description>APc5 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X284</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING227</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM228</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc5_GBL_INT_MSK</spirit:name>
+<spirit:description>APc5 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X288</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK236</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK237</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc6_FIQ_NUM</spirit:name>
+<spirit:description>APc6 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X290</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING245</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM246</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc6_IRQ_NUM</spirit:name>
+<spirit:description>APc6 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X294</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING254</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM255</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc6_GBL_INT_MSK</spirit:name>
+<spirit:description>APc6 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X298</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK263</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK264</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc7_FIQ_NUM</spirit:name>
+<spirit:description>APc7 FIQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X2A0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING272</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM273</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc7_IRQ_NUM</spirit:name>
+<spirit:description>APc7 IRQ Selected Interrupt Number Register</spirit:description>
+<spirit:addressOffset>0X2A4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>INT_PENDING281</spirit:name>
+<spirit:description>interrupt pending  0 = no pending interrupt  1 = pending interrupt available</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_INT_NUM282</spirit:name>
+<spirit:description>selected interrupt number</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_APc7_GBL_INT_MSK</spirit:name>
+<spirit:description>APc7 Global Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X2A8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IRQ_MSK290</spirit:name>
+<spirit:description>global irq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIQ_MSK291</spirit:name>
+<spirit:description>global fiq masking bit, can be cleared by pmu hardware  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_ARM_INT_STATUS</spirit:name>
+<spirit:description></spirit:description>
+<spirit:addressOffset>0X300</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>AP_L2_INT_STATUS</spirit:name>
+<spirit:description>ap l2 int status</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C2_COMMIRQ_STATUS</spirit:name>
+<spirit:description>ap cluster2  2 cores commirq status</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C2_AXIERR_STATUS</spirit:name>
+<spirit:description>ap cluster2 axierr status</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CCI_EVNTCNTOVERFLOW_STATUS</spirit:name>
+<spirit:description>cci evntcntoverflow  status</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CCI_ERRORIRQ_STATUS</spirit:name>
+<spirit:description>cci errorirq status</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C1_COMMIRQ_STATUS</spirit:name>
+<spirit:description>ap cluster1  4 cores commirq status</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C1_AXIERR_STATUS</spirit:name>
+<spirit:description>ap cluster1 axierr status</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C0_COMMIRQ_STATUS</spirit:name>
+<spirit:description>ap cluster0  4 cores commirq status</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C0_AXIERR_STATUS</spirit:name>
+<spirit:description>ap cluster0 axierr status</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_L2_UECC_INT_STATUS</spirit:name>
+<spirit:description>seagull l2 uecc interrupt status</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_L2_ECC_INT_STATUS</spirit:name>
+<spirit:description>seagull l2 ecc interrupt status</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_L2_PA_ECC_INT_STATUS</spirit:name>
+<spirit:description>seagull l2 pa ecc interrupt status</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_ARM_INT_MSK</spirit:name>
+<spirit:description>ARM Interrupt Mask Register</spirit:description>
+<spirit:addressOffset>0X304</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>AP_L2_INT_MASK</spirit:name>
+<spirit:description>ap l2 int mask  0 = interrupt is not masked  1 = interrupt is masked.  currently it's not used.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C2_COMMIRQ_MASK</spirit:name>
+<spirit:description>ap cluster2  2 cores commirq mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C2_AXIERR_MASK</spirit:name>
+<spirit:description>ap cluster2 axierr mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CCI_EVNTCNTOVERFLOW_MASK</spirit:name>
+<spirit:description>cci evntcntoverflow  mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CCI_ERRORIRQ_MASK</spirit:name>
+<spirit:description>cci errorirq mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C1_COMMIRQ_MASK</spirit:name>
+<spirit:description>ap cluster1  4 cores commirq mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C1_AXIERR_MASK</spirit:name>
+<spirit:description>ap cluster1 axierr mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C0_COMMIRQ_MASK</spirit:name>
+<spirit:description>ap cluster0  4 cores commirq mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AP_C0_AXIERR_MASK</spirit:name>
+<spirit:description>ap cluster0 axierr mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_L2_UECC_INT_MSK</spirit:name>
+<spirit:description>seagull l2 uecc interrupt mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_L2_ECC_INT_MSK</spirit:name>
+<spirit:description>seagull l2 ecc interrupt mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_L2_PA_ECC_INT_MSK</spirit:name>
+<spirit:description>seagull l2 pa ecc interrupt mask  0 = interrupt is not masked  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>CP_WDT_INT_CLR</spirit:name>
+<spirit:description>CP WDT interrupt clear</spirit:description>
+<spirit:addressOffset>0X308</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CP_WDT_INT_AP_CLR</spirit:name>
+<spirit:description>ap internal clearing of cp_wdt_irq.    1 = ap internally clear the cp_wdt (cp_wdt_irq origin is not cleared).    0 = no action</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CP_WDT_INT_SENSE</spirit:name>
+<spirit:description>cp wdt int selection.    0 = use original cp_wdt interrupt.    1 = use the ap internal cleared cp_wdt interrupt</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_INT_WAKEUP_MASK</spirit:name>
+<spirit:description>ICU Interrupt Wakeup Mask</spirit:description>
+<spirit:addressOffset>0X30C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE9_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core9 mask  1 = mask</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE8_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core8 mask  1 = mask</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE7_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core7 mask  1 = mask</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE6_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core6 mask  1 = mask</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE5_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core5 mask  1 = mask</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE4_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core4 mask  1 = mask</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE3_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core3 mask  1 = mask</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE2_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core2 mask  1 = mask</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE1_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core1 mask  1 = mask</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICU_INT_WAKEUP_TO_AP_CORE0_MSK</spirit:name>
+<spirit:description>icu int wakeup to ap core0 mask  1 = mask</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_DMA_NON_SEC_AP_CORES_INT_ST</spirit:name>
+<spirit:description>DMA Non-secure Interrupt to AP Cores Status Register</spirit:description>
+<spirit:addressOffset>0X318</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMA_NON_SEC_AP_CORES_INT_STATUS</spirit:name>
+<spirit:description>dma non-secure interrupt to ap cores interrupt status  this field contains one bit for each dma channel interrupt that is pending (after masking).  0 = dma interrupt is not pending   1 = dma interrupt is pending</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_DMA_NON_SEC_AP_INT_MSK</spirit:name>
+<spirit:description>DMA Non-secure Interrupt to AP Cores Mask Register</spirit:description>
+<spirit:addressOffset>0X31C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMA_NON_SEC_AP_CORES_INT_MASK</spirit:name>
+<spirit:description>dma non-secure interrupt mask to ap cores. this field contains one bit for each dma channel interrupt mask.  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_DMA_SEC_AP_CORES_INT_ST</spirit:name>
+<spirit:description>DMA Secure Interrupt to AP Cores Status Register</spirit:description>
+<spirit:addressOffset>0X320</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMA_SEC_AP_CORES_INT_STATUS</spirit:name>
+<spirit:description>dma secure interrupt to ap cores interrupt status  this field contains one bit for each dma channel interrupt that is pending (after masking).  0 = dma interrupt is not pending   1 = dma interrupt is pending</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>ICU_DMA_SEC_AP_INT_MSK</spirit:name>
+<spirit:description>DMA Secure Interrupt to AP Cores Mask Register</spirit:description>
+<spirit:addressOffset>0X324</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMA_SEC_AP_CORES_INT_MASK</spirit:name>
+<spirit:description>dma secure interrupt mask to ap cores. this field contains one bit for each dma channel interrupt mask.  1 = interrupt is masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

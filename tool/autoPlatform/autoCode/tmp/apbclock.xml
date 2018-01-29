@@ -1,0 +1,1360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>apbclock</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4015000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>APBC_UART1_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for UART 1</spirit:description>
+<spirit:addressOffset>0X0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL15</spirit:name>
+<spirit:description>functional clock select  0x0 = 58.5 mhz  0x1 = 14.7456 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST17</spirit:name>
+<spirit:description>uart reset generation  this field resets both apb and functional domains.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK18</spirit:name>
+<spirit:description>uart functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK19</spirit:name>
+<spirit:description>uart  apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_UART2_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for UART 2</spirit:description>
+<spirit:addressOffset>0X4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL27</spirit:name>
+<spirit:description>functional clock select  0x0 = 58.5 mhz  0x1 = 14.7456 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST29</spirit:name>
+<spirit:description>uart reset generation  this field resets both apb and functional domains.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK30</spirit:name>
+<spirit:description>uart functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK31</spirit:name>
+<spirit:description>uart  apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_GPIO_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for GPIO</spirit:description>
+<spirit:addressOffset>0X8</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL39</spirit:name>
+<spirit:description>functional clock select  0x0 to 0x7 = no clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST41</spirit:name>
+<spirit:description>gpio reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK42</spirit:name>
+<spirit:description>gpio functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK43</spirit:name>
+<spirit:description>gpio apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_PWM0_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for PWM 0</spirit:description>
+<spirit:addressOffset>0XC</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL52</spirit:name>
+<spirit:description>functional clock select  0x0 = 13 mhz  0x1 = 32 khz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST54</spirit:name>
+<spirit:description>pwm 0 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK55</spirit:name>
+<spirit:description>pwm 0 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK56</spirit:name>
+<spirit:description>pwm 0/1 apb bus clock enable/disable  0 = clock off  1 = clock on. this bit controls the apb clocks for both pwm0 and pwm1.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_PWM1_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for PWM 1</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL65</spirit:name>
+<spirit:description>functional clock select  0x0 = 13 mhz  0x1 = 32 khz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST67</spirit:name>
+<spirit:description>pwm 1 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK68</spirit:name>
+<spirit:description>pwm 1 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_PWM2_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for PWM 2</spirit:description>
+<spirit:addressOffset>0X14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL78</spirit:name>
+<spirit:description>functional clock select  0x0 = 13 mhz  0x1 = 32 khz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST80</spirit:name>
+<spirit:description>pwm 2 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK81</spirit:name>
+<spirit:description>pwm 2 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK82</spirit:name>
+<spirit:description>pwm 2/3 apb bus clock enable/disable  0 = clock off  1 = clock on. this bit controls the apb clocks for both pwm2 and pwm3.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_PWM3_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for PWM 3</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL91</spirit:name>
+<spirit:description>functional clock select  0x0 = 13 mhz  0x1 = 32 khz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST93</spirit:name>
+<spirit:description>pwm 3 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK94</spirit:name>
+<spirit:description>pwm 3 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_SSP0_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for SSP 0</spirit:description>
+<spirit:addressOffset>0X1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SEL_SSP_FUNC_CLK104</spirit:name>
+<spirit:description>ac97 clock switch  this bit enables the ssp module to switch clocks internally.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLKSEL105</spirit:name>
+<spirit:description>functional clock select  0x0 = 6.5 mhz  0x1 = 13 mhz  0x2 = 26 mhz  0x3 = 52 mhz   0x4 = 3.25 mhz  0x5 = 1.625 mhz  0x6 = 812.5 khz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST107</spirit:name>
+<spirit:description>ssp 0 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK108</spirit:name>
+<spirit:description>ssp 0 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK109</spirit:name>
+<spirit:description>ssp 0 apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_IPC_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for Inter-Processor Communication</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL119</spirit:name>
+<spirit:description>functional clock select  all values = no clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST121</spirit:name>
+<spirit:description>inter-processor communication (ipc) reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK122</spirit:name>
+<spirit:description>ipc functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK123</spirit:name>
+<spirit:description>ipc apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_RTC_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for RTC</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PM_POWER_SENSOR</spirit:name>
+<spirit:description>power enabled  this field enables the register read/writes for the rtc module by indicating power enable. set this field to 0x1 before enabling rtc operations.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLKSEL132</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 khz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST134</spirit:name>
+<spirit:description>rtc reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK135</spirit:name>
+<spirit:description>rtc functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK136</spirit:name>
+<spirit:description>rtc apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI0_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI0</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL144</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST146</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK147</spirit:name>
+<spirit:description>twsi0 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK148</spirit:name>
+<spirit:description>twsi0 apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_KPC_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for Keypad Controller</spirit:description>
+<spirit:addressOffset>0X30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL156</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 khz  0x1 = 16 khz  0x2 = 26 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST158</spirit:name>
+<spirit:description>keypad controller reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK159</spirit:name>
+<spirit:description>keypad controller functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK160</spirit:name>
+<spirit:description>keypad controller apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TIMERS_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for Timer 0</spirit:description>
+<spirit:addressOffset>0X34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL168</spirit:name>
+<spirit:description>functional clock select  0x0 = 13 mhz  0x1 = 32 khz  0x2 = 6.5 mhz  0x3 = 3.25 mhz  0x4 = 1 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST170</spirit:name>
+<spirit:description>timers reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK171</spirit:name>
+<spirit:description>timers functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK172</spirit:name>
+<spirit:description>timers apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_AIB_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for AIB</spirit:description>
+<spirit:addressOffset>0X3C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL180</spirit:name>
+<spirit:description>functional clock select  all values = no clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST182</spirit:name>
+<spirit:description>aib reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK183</spirit:name>
+<spirit:description>aib functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK184</spirit:name>
+<spirit:description>aib apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_SW_JTAG_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for JTAG Software Emulation</spirit:description>
+<spirit:addressOffset>0X40</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL192</spirit:name>
+<spirit:description>functional clock select  all values = no clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST194</spirit:name>
+<spirit:description>jtag software emulation reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK195</spirit:name>
+<spirit:description>jtag software emulation functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK196</spirit:name>
+<spirit:description>jtag software emulation apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TIMERS1_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for Timers 1</spirit:description>
+<spirit:addressOffset>0X44</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL204</spirit:name>
+<spirit:description>functional clock select  0x0 = 13 mhz  0x1 = 32 khz  0x2 = 6.5 mhz  0x3 = 3.25 mhz  0x4 = 1 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST206</spirit:name>
+<spirit:description>timers 1 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK207</spirit:name>
+<spirit:description>timers 1 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK208</spirit:name>
+<spirit:description>timers 1 apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_ONEWIRE_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for One-Wire</spirit:description>
+<spirit:addressOffset>0X48</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL216</spirit:name>
+<spirit:description>functional clock select  all values = no clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST218</spirit:name>
+<spirit:description>one-wire reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK219</spirit:name>
+<spirit:description>one-wire functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK220</spirit:name>
+<spirit:description>one-wire apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_SSP2_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for SSP 2</spirit:description>
+<spirit:addressOffset>0X4C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SEL_SSP_FUNC_CLK229</spirit:name>
+<spirit:description>ac97 clock switch  this bit enables the ssp module to switch clocks internally.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLKSEL230</spirit:name>
+<spirit:description>functional clock select  0x0 = 6.5 mhz  0x1 = 13 mhz  0x2 = 26 mhz  0x3 = 52 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST232</spirit:name>
+<spirit:description>ssp 2 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK233</spirit:name>
+<spirit:description>ssp 2 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK234</spirit:name>
+<spirit:description>ssp 2 apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_ASFAR</spirit:name>
+<spirit:description>AIB Secure First Access Register</spirit:description>
+<spirit:addressOffset>0X50</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ASFAR</spirit:name>
+<spirit:description>first access key  writing the value of 0xbaba to this register will match the key. this register will get cleared to 0x0 when one secure access is completed.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_ASSAR</spirit:name>
+<spirit:description>AIB Secure Second Access Register</spirit:description>
+<spirit:addressOffset>0X54</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ASSAR</spirit:name>
+<spirit:description>section access key  writing the value of 0xeb10 to this register will match the key. this register will get cleared to 0x0 when one secure access is completed.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_DRO_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register forDRO</spirit:description>
+<spirit:addressOffset>0X58</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RST259</spirit:name>
+<spirit:description>dro reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK261</spirit:name>
+<spirit:description>dro apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI1_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI1</spirit:description>
+<spirit:addressOffset>0X60</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL269</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST271</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK272</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK273</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_COUNTER_CLK_SEL</spirit:name>
+<spirit:description>Clock Control Register for Generic Counter</spirit:description>
+<spirit:addressOffset>0X64</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>LOW_FREQ_STEP</spirit:name>
+<spirit:description>generic counter step of low frequency  under low frequency, this is the generic counter step value.  its default is 26 mhz/32768 = 0x319</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FREQ_SW_SEL</spirit:name>
+<spirit:description>generic counter frequency software select  if freq_hw_en = 0 generic counter clock frequency select  0x0 = 26 mhz  1 = 32 khz</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FREQ_HW_CTRL</spirit:name>
+<spirit:description>generic counter frequency controlled by hardware  0x0 = software freq_sw_sel bit  1 = hardware vctcxo_en signal  if vctcxo_en = 1, generic counter clock frequency is 26 mhz  if  vctcxo_en = 0, generic counter clock frequency is 32 khz</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TIMERS2_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for Timers 2</spirit:description>
+<spirit:addressOffset>0X68</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL292</spirit:name>
+<spirit:description>functional clock select  0x0 = 13 mhz  0x1 = 32 khz  0x2 = 6.5 mhz  0x3 = 3.25 mhz  0x4 = 1 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST294</spirit:name>
+<spirit:description>timers 1 reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK295</spirit:name>
+<spirit:description>timers 1 functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK296</spirit:name>
+<spirit:description>timers 1 apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TSEN_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for Temperature Sensor</spirit:description>
+<spirit:addressOffset>0X6C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TSEN_RST_EN</spirit:name>
+<spirit:description>temperature sensor reset enable  0x0 = release reset  0x1 = reset temperature sensor</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TSEN_FCLK_EN</spirit:name>
+<spirit:description>temperature sensor function clock enable  0x0 = disable temperature sensor function clock  1 = enable temperature sensor function clock</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TSEN_PCLK_EN</spirit:name>
+<spirit:description>temperature sensor apb clock enable  0x0 = disable temperature sensor apb clock  1 = enable temperature sensor apb clock</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI2_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI2</spirit:description>
+<spirit:addressOffset>0X70</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL314</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST316</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK317</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK318</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI3_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI3</spirit:description>
+<spirit:addressOffset>0X74</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL326</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST328</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK329</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK330</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_UART3_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for UART 3</spirit:description>
+<spirit:addressOffset>0X78</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL338</spirit:name>
+<spirit:description>functional clock select  0x0 = 58.5 mhz  0x1 = 14.7456 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST340</spirit:name>
+<spirit:description>uart reset generation  this field resets both apb and functional domains.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK341</spirit:name>
+<spirit:description>uart functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK342</spirit:name>
+<spirit:description>uart  apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI4_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI4</spirit:description>
+<spirit:addressOffset>0X7C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL350</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST352</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK353</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK354</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI5_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI5</spirit:description>
+<spirit:addressOffset>0X80</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL362</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST364</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK365</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK366</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI6_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI6</spirit:description>
+<spirit:addressOffset>0X84</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL374</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST376</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK377</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK378</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI7_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI7</spirit:description>
+<spirit:addressOffset>0X88</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL386</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST388</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK389</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK390</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_TWSI8_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for TWSI8</spirit:description>
+<spirit:addressOffset>0X8C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL398</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST400</spirit:name>
+<spirit:description>twsi reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK401</spirit:name>
+<spirit:description>twsi functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK402</spirit:name>
+<spirit:description>twsi apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_IPC_AP2AUD_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for Inter-Processor Communication（AP to Audio）</spirit:description>
+<spirit:addressOffset>0X90</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL410</spirit:name>
+<spirit:description>functional clock select  all values = no clock</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST412</spirit:name>
+<spirit:description>inter-processor communication (ipc) reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK413</spirit:name>
+<spirit:description>ipc functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK414</spirit:name>
+<spirit:description>ipc apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APBC_I3C_CLK_RST</spirit:name>
+<spirit:description>Clock/Reset Control Register for I3C</spirit:description>
+<spirit:addressOffset>0X98</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FNCLKSEL422</spirit:name>
+<spirit:description>functional clock select  0x0 = 32 mhz  0x1 = 52 mhz  0x2 = 62.4 mhz  all other values = reserved, do not use</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RST424</spirit:name>
+<spirit:description>i3c reset generation  this field resets both the apb and functional domain.  0 = no reset  1 = reset</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FNCLK425</spirit:name>
+<spirit:description>i3c functional clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APBCLK426</spirit:name>
+<spirit:description>i3c apb bus clock enable/disable  0 = clock off  1 = clock on</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

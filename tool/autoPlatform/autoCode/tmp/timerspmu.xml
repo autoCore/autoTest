@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>timerspmu</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4080000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>TMR_CCR</spirit:name>
+<spirit:description>Timer Clock Control Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_CS_226</spirit:name>
+<spirit:description>1. cp timers and watchdog timer(0xd403_a000) and gpb timers and watchdog timer(0xf020_9000): clock source for timer #2  0x0 or 0x3=1 3 mhz fast clock  0x1 or 0x2 = 32.768 khz.                                                     2.  timers and watchdog timer( 0xd408_0000): clock source for timer #2  0x0 = 13mhz fast clock    0x1 = 32.768 khz  0x2 = 32.768 khz  0x3 = 13mhz fast clock</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_CS_128</spirit:name>
+<spirit:description>1. cp timers and watchdog timer(0xd403_a000) and gpb timers and watchdog timer(0xf020_9000): clock source for timer #1  0x0 or 0x3=1 3 mhz fast clock  0x1 or 0x2 = 32.768 khz.                                                     2.  timers and watchdog timer( 0xd408_0000):clock source for timer #1  0x0 = 13mhz fast clock    0x1 = 32.768 khz  0x2 = 32.768 khz  0x3 = ext.clock -udc sof clock</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_CS_029</spirit:name>
+<spirit:description>1. cp timers and watchdog timer(0xd403_a000) and gpb timers and watchdog timer(0xf020_9000): clock source for timer #0  0x0 or 0x3=1 3 mhz fast clock  0x1 or 0x2 = 32.768 khz.                                                     2.  timers and watchdog timer( 0xd408_0000):clock source for timer #0  0x0 = 13mhz fast clock    0x1 = 32.768 khz  0x2 = ext. clock-udc sof clock  0x3 = 13mhz fast clock</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_Tn_Mm</spirit:name>
+<spirit:description>Timer Match Registers</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_TMR_TN_MM36</spirit:name>
+<spirit:description>timer n match register m value</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_CRn</spirit:name>
+<spirit:description>Timer Count Registers</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_TCRN57</spirit:name>
+<spirit:description>timer n count register  the counter is incremented at the rising edge of the selected clock. these registers are read under risk of metastability. read the timer counters value write for read request register to avoid metastability.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_SRn</spirit:name>
+<spirit:description>Timer Status Registers</spirit:description>
+<spirit:addressOffset>0X34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_M266</spirit:name>
+<spirit:description>match status of tmr_tn_m2  0 = timer match register tmr_tn_m2 has not matched the counter since the last interrupt clear  1 = timer match register tmr_tn_m2 has matched the counter since the last interrupt clear</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_M167</spirit:name>
+<spirit:description>match status of tmr_tn_m1  0 = timer match register tmr_tn_m1 has not matched the counter since the last interrupt clear  1 = timer match register tmr_tn_m1 has matched the counter since the last interrupt clear</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_M068</spirit:name>
+<spirit:description>match status of tmr_tn_m0  0 = timer match register tmr_tn_m0 has not matched the counter since the last interrupt clear  1 = timer match register tmr_tn_m0 has matched the counter since the last interrupt clear</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_IERn</spirit:name>
+<spirit:description>Timer Interrupt Enable Registers</spirit:description>
+<spirit:addressOffset>0X40</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_IE277</spirit:name>
+<spirit:description>interrupt enable for match comparator 2  0 = do not allow a match between match register 2 to its os timer to assert interrupt bit m2 in the corresponding timer status register or assert timer#_irq output  1 = allow a match between match register 2 to its os timer to assert interrupt bit m2 in the corresponding tsrn or assert timer#_irq output</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_IE178</spirit:name>
+<spirit:description>interrupt enable for match comparator 1  0 = do not allow a match between match register 1 to its os timer to assert interrupt bit m1 in the corresponding timer status register or assert timer#_irq output  1 = allow a match between match register 1 to its os timer to assert interrupt bit m1 in the corresponding tsrn or assert timer#_irq output</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_IE079</spirit:name>
+<spirit:description>interrupt enable for match comparator 0  0 = do not allow a match between match register 0 to its os timer to assert interrupt bit m0 in the corresponding timer status register or assert timer#_irq output  1 = allow a match between match register 0 to its os timer to assert interrupt bit m0 in the corresponding timer status register or assert timer#_irq output</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_PLVRn</spirit:name>
+<spirit:description>Timer Preload Value Registers</spirit:description>
+<spirit:addressOffset>0X4C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_TPLVRN87</spirit:name>
+<spirit:description>timer n preload value that is loaded into timer count register when a match occurs between tmr_tn_tm and timer count registers. the corresponding timer preload control register selects the match comparator.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_PLCRn</spirit:name>
+<spirit:description>Timer Preload Control Registers</spirit:description>
+<spirit:addressOffset>0X58</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_MCS96</spirit:name>
+<spirit:description>match comparator select  0x0 = free running mode (up to max value)  0x1 = enable preload with match comparator 0  0x2 = enable preload with match comparator 1  0x3 = enable preload with match comparator 2</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WMER</spirit:name>
+<spirit:description>Timers Watchdog Match Enable Register</spirit:description>
+<spirit:addressOffset>0X64</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_WRIE105</spirit:name>
+<spirit:description>watchdog reset/interrupt enable  0 = watchdog timer expiration generates a watchdog interrupt, a watchdog timer reset is not generated  1 = watchdog timer expiration generates a watchdog timer reset, a watchdog interrupt is not generated</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_WE106</spirit:name>
+<spirit:description>wdt count enable  0 = disable wdt count, reset wdt's value to zero  1 = enable counting, the wdt always starts from zero  due to the chain of synchronizers that transform this signal from domain to domain, the wdt timer enable and disable operation do not occur immediately</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WMR</spirit:name>
+<spirit:description>Timers Watchdog Match Register</spirit:description>
+<spirit:addressOffset>0X68</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_WTM115</spirit:name>
+<spirit:description>16-bit watchdog timer match</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WVR</spirit:name>
+<spirit:description>Timers Watchdog Value Register</spirit:description>
+<spirit:addressOffset>0X6C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_WTV123</spirit:name>
+<spirit:description>watchdog timer value    read the current value of wdt. the value may be read while the register is in transition, so the reading must be completed in a double read procedure and a comparison of the two read values.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WSR</spirit:name>
+<spirit:description>Timers Watchdog Status Register</spirit:description>
+<spirit:addressOffset>0X70</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_WTS132</spirit:name>
+<spirit:description>watchdog timer reset indication  indicates that reset was caused by the wdt.  read:  0 = watchdog timer did not cause reset because this bit was cleared  1 = watchdog timer caused reset    write:  0 = clear the wdt reset status  1 = no affect</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_ICRn</spirit:name>
+<spirit:description>Timer Interrupt Clear Registers</spirit:description>
+<spirit:addressOffset>0X74</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_TCLR2141</spirit:name>
+<spirit:description>interrupt clear for match comparator 2  write:  0 = no affect  1 = clear level interrupt and corresponding status bit</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_TCLR1142</spirit:name>
+<spirit:description>interrupt clear for match comparator 1  write:  0 = no affect  1 = clear level interrupt and corresponding status bit</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_TCLR0143</spirit:name>
+<spirit:description>interrupt clear for match comparator 0  write:  0 = no affect  1 = clear level interrupt and corresponding status bit</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WICR</spirit:name>
+<spirit:description>Timers Watchdog Interrupt Clear Register</spirit:description>
+<spirit:addressOffset>0X80</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_WICLR152</spirit:name>
+<spirit:description>wdt interrupt clear  write:  0 = no affect  1 = clear interrupt</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_CER</spirit:name>
+<spirit:description>Timers Count Enable Register</spirit:description>
+<spirit:addressOffset>0X84</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_T2EN161</spirit:name>
+<spirit:description>timer #2 count enable  0 = count is disabled  1 = count is enabled  due to the chain of synchronizers that transform this signal from domain to domain, the timers enable and disable operation does not occur immediately.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_T1EN162</spirit:name>
+<spirit:description>timer #1 count enable  0 = count is disabled  1 = count is enabled  due to the chain of synchronizers that transform this signal from domain to domain, the timers enable and disable operation does not occur immediately.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_T0EN163</spirit:name>
+<spirit:description>timer #0 count enable  0 = count is disabled  1 = count is enabled  due to the chain of synchronizers that transform this signal from domain to domain, the timers enable and disable operation does not occur immediately.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_CMR</spirit:name>
+<spirit:description>Timers Count Mode Register</spirit:description>
+<spirit:addressOffset>0X88</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_T2MODE172</spirit:name>
+<spirit:description>timer #2 count mode  0 = periodic timer mode  1 = free-run mode, wraps around to 0 when it hits 0xffffffff</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_T1MODE173</spirit:name>
+<spirit:description>timer #1 count mode  0 = periodic timer mode  1 = free-run mode, wraps around to 0 when it hits 0xffffffff</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TM_T0MODE174</spirit:name>
+<spirit:description>timer #0 count mode  0 = periodic timer mode  1 = free-run mode, wraps around to 0 when it hits 0xffffffff</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_ILRn</spirit:name>
+<spirit:description>Timer Interrupt Length Registers</spirit:description>
+<spirit:addressOffset>0X8C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TNIL2</spirit:name>
+<spirit:description>interrupt length for match comparator 2  0 = level interrupt, lasts more then one timer clock.   status of this interrupt can be read in tsrn[2]. the interrupt should be cleared via writing logical 1 to ticlrn[2]  1 = reserved</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TNIL1</spirit:name>
+<spirit:description>interrupt length for match comparator 1  0 = level interrupt, lasts more then one timer clock.   status of this interrupt can be read in tsrn[1]. the interrupt should be cleared via writing logical 1 to ticlrn[1]  1 = reserved</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TNIL0</spirit:name>
+<spirit:description>interrupt length for match comparator 0  0 = level interrupt, lasts more then one timer clock.   status of this interrupt can be read in tsrn[0]. the interrupt should be cleared via writing logical 1 to ticlrn[0]  1 = reserved</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WCR</spirit:name>
+<spirit:description>Timers Watchdog Counter Reset Register</spirit:description>
+<spirit:addressOffset>0X98</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_WCR195</spirit:name>
+<spirit:description>watchdog timer counter value reset  write:  0 = no effect  1 = clears the value of wdt counter</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WFAR</spirit:name>
+<spirit:description>Timers Watchdog First Access Register</spirit:description>
+<spirit:addressOffset>0X9C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_KEY209</spirit:name>
+<spirit:description>watchdog access key  writing the value of 0xbaba to this register matches the key</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_WSAR</spirit:name>
+<spirit:description>Timers Watchdog Second Access Register</spirit:description>
+<spirit:addressOffset>0XA0</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TM_KEY217</spirit:name>
+<spirit:description>watchdog access key  writing the value of 0xeb10 to this register matches the key</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TMR_CVWRn</spirit:name>
+<spirit:description>Timer Counters Value Write for Read Request Register</spirit:description>
+<spirit:addressOffset>0XA4</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TCVWR</spirit:name>
+<spirit:description>this register prevents the risk of instability on counter value reading  write:   0 = no effect  1 = capture value of tcrn  read:  returns the captured value of the timer count register.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

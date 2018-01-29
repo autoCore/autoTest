@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>twsi</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4011000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>TWSI_CR</spirit:name>
+<spirit:description>Standard TWSI Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RXOV_IE</spirit:name>
+<spirit:description>receive fifo overrun interrupt enable  0 = receive fifo overrun (isr[rxov]) interrupt is not enabled  1 = receive fifo overrun (isr[rxov]) interrupt is enabled</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXF_IE</spirit:name>
+<spirit:description>receive fifo full interrupt enable  0 = receive fifo full (isr[rxf]) interrupt is not enabled  1 = receive fifo full (isr[rxf]) interrupt is enabled</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXHF_IE</spirit:name>
+<spirit:description>receive fifo half full interrupt enable  0 = receive fifo half full (isr[rxhf]) interrupt is not enabled  1 = receive fifo half full (isr[rxhf]) interrupt is enabled</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXE_IE</spirit:name>
+<spirit:description>transmit fifo empty interrupt enable  0 = transmit fifo empty (isr[txe]) interrupt is not enabled  1 = transmit fifo empty (isr[txe]) interrupt is enabled</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXDONE_IE</spirit:name>
+<spirit:description>transaction done interrupt enable  0 = transaction done (isr[txd]) interrupt is not enabled.  1 = transaction done (isr[txd]) interrupt is enabled.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSDE</spirit:name>
+<spirit:description>master stop detected enable:  0 = master stop detect (isr[msd]) status is not enabled.  1 = master stop detect (isr[msd]) status is enabled.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSDIE</spirit:name>
+<spirit:description>master stop detected interrupt enable:  0 = disable interrupt.  1 = enables the twsi unit to interrupt the &lt;var product number&gt; upon detecting a master stop sent by the twsi unit.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SSDIE</spirit:name>
+<spirit:description>slave stop detected interrupt enable:  0 = disable interrupt.  1 = enables the twsi to interrupt the &lt;var product number&gt; when it detects a stop condition while in slave mode.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SADIE</spirit:name>
+<spirit:description>slave address detected interrupt enable:  0 = disable interrupt.  1 = enables the twsi to interrupt the &lt;var product number&gt; upon detecting a slave address match or a general call address.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BEIE</spirit:name>
+<spirit:description>bus error interrupt enable:  0 = disable interrupt.  1 = enables the twsi to interrupt the &lt;var product number&gt; for the following twsi bus errors:</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GCD</spirit:name>
+<spirit:description>general call disable:  0 = enable the twsi to respond to general call messages.  1 = disable twsi response to general call messages as a slave.  this bit must be set when sending a master mode general call message from the twsi.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DRFIE</spirit:name>
+<spirit:description>dbr receive full interrupt enable:  0 = disable interrupt.  1 = enables the twsi to interrupt the &lt;var product number&gt; when the idbr has received a data byte from the twsi bus.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ITEIE</spirit:name>
+<spirit:description>idbr transmit empty interrupt enable:  0 = disable interrupt.  1 = enables the twsi to interrupt the &lt;var product number&gt; after transmitting a byte onto the twsi bus.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ALDIE</spirit:name>
+<spirit:description>arbitration loss detected interrupt enable:  0 = disable interrupt.  1 = enables the twsi to interrupt the &lt;var product number&gt; upon losing arbitration while in master mode.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_41</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IUE</spirit:name>
+<spirit:description>twsi unit enable:  0 = disables the unit and does not master any transactions or respond to any slave transactions.  1 = enables the twsi (defaults to slave-receive mode).  software must guarantee the twsi bus is idle before setting this bit.  software must guarantee that the internal clock to the twsi unit is enabled (d0cken_b[4] must be set) before setting or clearing this bit.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SCLE</spirit:name>
+<spirit:description>scl enable:  0 = disables the twsi from driving the scl line.  1 = enables the twsi clock output for master-mode operation.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MA</spirit:name>
+<spirit:description>master abort:  used by the twsi in master mode to generate a stop without transmitting another data byte:  0 = the twsi transmits stop on if icr[stop] is set.  1 = the twsi sends stop without data transmission.  when in master-transmit mode, after transmitting a data byte, the icr[tb] bit is cleared and idbr[ite] bit is set. when no more data bytes need to be sent, setting master abort bit sends the stop. the icr[tb] bit must remain clear.  in master-receive mode, when a nak is sent without a stop (icr[stop] bit was not set) and the &lt;var product number&gt; does not send a repeated start, setting this bit sends the stop. once again, the icr[tb] bit must remain clear.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>I2C_BUS_RESET_REQ</spirit:name>
+<spirit:description>the twsi will do bus reset upon this bit set.this bit is self-cleared</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UR</spirit:name>
+<spirit:description>unit reset:  0 = no reset.  1 = reset the twsi only.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MODE</spirit:name>
+<spirit:description>bus mode (master operation):  0:0 up to 100 kbps operation - standard-mode  0:1 up to 400 kbps operation - fast-mode  1:0up to 3.4 mbps slave operation slave and up to 3.3 mbps master operation - hs-mode, standard mode when not doing a high speed transfer  1:1up to 3.4 mbps slave operation and up to 3.3 mbps master operation - hs-mode, fast mode when not doing a high speed transfer  bus mode (slave operation):  0:xhs-mode is disabled. twsi unit uses standard/fast mode timing on the sda pin.  1:xhs-mode is enabled. twsi unit uses hs-mode timing on the sda pin when a master code is received.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_DMA_EN49</spirit:name>
+<spirit:description>dma enable for both tx and rx fifos  0 = dma mode is not enabled  1 = dma mode enabled</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GPIOEN</spirit:name>
+<spirit:description>gpio mode enable for scl during hs mode.  0 = gpio mode is not enabled and so we have open collector output for scl.  1 = gpio mode is enabled and so scl output is directly driven by twsi.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FIFOEN</spirit:name>
+<spirit:description>fifo mode  0 = fifo mode is not enabled and so we idbr has to be used to write and read data  1 = fifo mode is enabled and so fifos can be used.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXBEGIN</spirit:name>
+<spirit:description>transaction begin. set this for a new transaction only after isr[txdone] is set  0 = no transaction starting  1 = a new transaction begins  this is cleared by the hardware at the end of each transaction after a stop bit is sent out. the s/w has to set it again to start a new transaction.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_TB55</spirit:name>
+<spirit:description>transfer byte:  used to send or receive a byte on the twsi bus:  0 = cleared by twsi when the byte is sent/received.  1 = send/receive a byte.   the &lt;var product number&gt; can monitor this bit to determine when the byte transfer has completed. in master or slave mode, after each byte transfer including acknowledge pulse, the twsi holds the scl line low (inserting wait states) until tb is set.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ACKNAK56</spirit:name>
+<spirit:description>the positive/negative acknowledge control bit, acknak, defines the type of acknowledge pulse sent by the twsi when in master receive mode:  0 = send a positive acknowledge (ack) pulse after receiving a data byte.  1 = send a negative acknowledge (nak) pulse after receiving a data byte.  the twsi automatically sends an ack pulse when responding to its slave address or when responding in slave-receive mode, regardless of the acknak control-bit setting.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_STOP57</spirit:name>
+<spirit:description>stop:  used to initiate a stop condition after transferring the next data byte on the twsi bus when in master mode. in master-receive mode, the acknak control bit must be set in conjunction with the stop bit. see section 12.4.3.3, stop condition for details of the stop state.  0 = do not send a stop.  1 = send a stop.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>START</spirit:name>
+<spirit:description>start:  used to initiate a start condition to the twsi unit when in master mode. see section 12.4.3.1, start condition for details of the start state.  0 = do not send a start pulse.  1 = send a start pulse.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_SR</spirit:name>
+<spirit:description>TWSI Status Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RXOV</spirit:name>
+<spirit:description>receive fifo overrun (used in fifo mode)  0 = transmit fifo not overrun  1 = transmit fifo overrun happened</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXF</spirit:name>
+<spirit:description>receive fifo full (used in fifo mode)  0 = receive fifo in not full  1 = receive fifo is full</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXHF</spirit:name>
+<spirit:description>receive fifo half full (used in fifo mode)  0 = receive fifo in not half full  1 = receive fifo is half full</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_TXE77</spirit:name>
+<spirit:description>transmit fifo empty (used in fifo mode)  0 = transmit fifo is not empty  1 = transmit fifo is empty</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXDONE</spirit:name>
+<spirit:description>transaction done (used in fifo mode)  0 = transaction is not done.   1 = transaction is done</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MSD</spirit:name>
+<spirit:description>master stop detected:  0 = no master stop detected.  1 = this bit is set by the twsi unit when all of the following are true:</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_83</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SSD</spirit:name>
+<spirit:description>slave stop detected:  0 = no stop detected.  1 = set when the twsi detects a stop while in slave-receive or slave-transmit mode.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SAD</spirit:name>
+<spirit:description>slave address detected:  0 = no slave address was detected.  1 = the twsi detected a seven-bit address that matches the general call address or isar. an interrupt is signalled when enabled in the icr.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BED</spirit:name>
+<spirit:description>bus error detected:  0 = no error detected.  1 = the twsi sets this bit when it detects one of the following error conditions:  as a master transmitter, no ack was detected on the interface after a byte was sent.  as a slave receiver, the twsi generates a nak pulse.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GCAD</spirit:name>
+<spirit:description>general call address detected:  0 = no general call address received.  1 = twsi received a general call address.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IRF</spirit:name>
+<spirit:description>idbr receive full:  0 = the idbr has not received a new data byte or the twsi is idle.  1 = the idbr register received a new data byte from the twsi bus. an interrupt is signalled when enabled in the icr.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ITE</spirit:name>
+<spirit:description>idbr transmit empty:  0 = the data byte is still being transmitted.  1 = the twsi has finished transmitting a data byte on the twsi bus. an interrupt is signalled when enabled in the icr.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ALD</spirit:name>
+<spirit:description>arbitration loss detected:  used during multi-master operation:  0 = cleared when arbitration is won or never took place.  1 = set when the twsi loses arbitration.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EBB</spirit:name>
+<spirit:description>early bus busy  0 = twsi bus is idle or the twsi is using the bus (that is, unit busy).  1 = set when the unit detects that the scl or sda line is low without a start condition. bit will remain set until the twsi unit detects the bus is idle by detecting a stop condition. bit will also be set whenever the ibb bit is set.</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IBB</spirit:name>
+<spirit:description>twsi bus busy:  0 = twsi bus is idle or the twsi is using the bus (that is, unit busy).  1 = set when the twsi bus is busy but the &lt;var product number&gt; twsi is not involved in the transaction.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UB</spirit:name>
+<spirit:description>unit busy:  0 = twsi not busy.  1 = set when the &lt;var product number&gt; twsi is busy. this is defined as the time between the first start and stop.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ACKNAK95</spirit:name>
+<spirit:description>ack/nack status:  0 = the twsi received or sent an ack on the bus.   1 = the twsi received or sent a nak.on the bus.  this bit is used in slave-transmit mode to determine when the byte transferred is the last one. this bit is updated after each byte and ack/nak information is received.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RWM</spirit:name>
+<spirit:description>read/write mode:  0 = the twsi is in master-transmit or slave-receive mode.   1 = the twsi is in master-receive or slave-transmit mode.   this is the r/nw bit of the slave address. it is cleared automatically by hardware after a stop state.</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_97</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>13</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_SAR</spirit:name>
+<spirit:description>TWSI Slave Address Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_106</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>25</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SLAVE_ADDRESS</spirit:name>
+<spirit:description>the seven-bit address to which the twsi responds when in slave-receive mode</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_DBR</spirit:name>
+<spirit:description>TWSI Data Buffer Register</spirit:description>
+<spirit:addressOffset>0X0C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_118</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>24</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DATA_BUFFER</spirit:name>
+<spirit:description>buffer for twsi bus send/receive data.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_LCR</spirit:name>
+<spirit:description>TWSI Load Count Register</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>HLVL</spirit:name>
+<spirit:description>decrementer load value for high speed mode scl (master mode) for low phase. the twsi in master mode will generate an scl to support up to 1.8 mbps data rate with the reset value.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HLVH</spirit:name>
+<spirit:description>decrementer load value for high speed mode scl (master mode) for high phase. the twsi in master mode will generate an scl to support up to 1.8 mbps data rate with the reset value.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FLV</spirit:name>
+<spirit:description>decrementer load value for fast mode scl (master mode) for both high and low phase.   twsi in master mode generates an scl to support up to 400 kbps data rate with the reset value.</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SLV</spirit:name>
+<spirit:description>decrementer load value for standard mode scl (master mode) for both high &amp; low phase.   twsi in master mode generates an scl to support up to 100 kbps data rate with the reset value.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>9</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_WCR</spirit:name>
+<spirit:description>TWSI Wait Count Register</spirit:description>
+<spirit:addressOffset>0X14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_142</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>17</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HS_COUNT2</spirit:name>
+<spirit:description>count value for defining high speed mode stop bit setup and hold times.  default: decimal 5</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HS_COUNT1</spirit:name>
+<spirit:description>count value for defining high speed mode start bit setup and hold times.  default: decimal 1</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_COUNT147</spirit:name>
+<spirit:description>controls the counter values defining the setup and hold times in standard and fast mode  recommended values:  01010 =&gt; 33 mhz twsi functional clock  10100 =&gt; 66 mhz twsi functional clock  default: decimal 26</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_RST_CYC</spirit:name>
+<spirit:description>TWSI Bus reset cycle counter</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RST_CYC</spirit:name>
+<spirit:description>the cycles of scl during bus reset</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_BMR</spirit:name>
+<spirit:description>TWSI Bus Monitor Register</spirit:description>
+<spirit:addressOffset>0X1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_168</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>30</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SCL</spirit:name>
+<spirit:description>ibmr[scl] continuously reflects the value of the scl pin.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_SDA170</spirit:name>
+<spirit:description>ibmr[sda] continuously reflects the value of the sda pin.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_WFIFO</spirit:name>
+<spirit:description>TWSI Write FIFO Register</spirit:description>
+<spirit:addressOffset>0X20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_179</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>20</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CONTROL</spirit:name>
+<spirit:description>twsi bus send/receive data control bits. these control bits are essentially icr[3:0] bits.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_DATA181</spirit:name>
+<spirit:description>twsi bus send data for write transactions and dummy data for read transactions</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_WFIFO_WPTR</spirit:name>
+<spirit:description>TWSI Write FIFO Write Pointer Register</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_189</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>28</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_DATA190</spirit:name>
+<spirit:description>this is the location in the tx fifo where the next entry will be written to by the software.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_WFIFO_RPTR</spirit:name>
+<spirit:description>TWSI Write FIFO Read Pointer Register</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_198</spirit:name>
+<spirit:description>reserved</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>28</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWSI0_DATA199</spirit:name>
+<spirit:description>this is the location in the tx fifo where the next entry will be read from by the hardware.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_RFIFO</spirit:name>
+<spirit:description>TWSI Read FIFO Register</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_DATA208</spirit:name>
+<spirit:description>twsi bus receive data for read transactions.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_RFIFO_WPTR</spirit:name>
+<spirit:description>TWSI Read FIFO Write Pointer Register</spirit:description>
+<spirit:addressOffset>0X30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_DATA217</spirit:name>
+<spirit:description>this is the location in the rx fifo where the next entry will be written to by the hardware.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>TWSI_RFIFO_RPTR</spirit:name>
+<spirit:description>TWSI Read FIFO Read Pointer Register</spirit:description>
+<spirit:addressOffset>0X34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TWSI0_DATA226</spirit:name>
+<spirit:description>this is the location in the rx fifo where the next entry will be read from by the software.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

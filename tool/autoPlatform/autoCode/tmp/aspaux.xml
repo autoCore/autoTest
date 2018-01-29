@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>aspaux</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xFFB00000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>MCTL</spirit:name>
+<spirit:description>MCTL Control Register</spirit:description>
+<spirit:addressOffset>0X0000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>IVG_14_CNTL</spirit:name>
+<spirit:description>control ivg 14 4-to-1 mux  0x0 = option 0  0x1 = option 1  0x2 = option 2  0x3 = option 3</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IVG_7_CNTL</spirit:name>
+<spirit:description>control ivg 7 4-to-1 mux  0x0 = option 0  0x1 = option 1  0x2 = option 2  0x3 = option 3</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SIHS0_1</spirit:name>
+<spirit:description>Second Interrupt High Select Mux 0/1 Register</spirit:description>
+<spirit:addressOffset>0X0004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MUX22</spirit:name>
+<spirit:description>mux</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SILS0_1</spirit:name>
+<spirit:description>Second Interrup Low Select Mux 0/1 Register</spirit:description>
+<spirit:addressOffset>0X000C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MUX29</spirit:name>
+<spirit:description>mux</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>C1DM</spirit:name>
+<spirit:description>DMA C1 Mux Control Register</spirit:description>
+<spirit:addressOffset>0X0014</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>C1DM_MUX</spirit:name>
+<spirit:description>c1dm mux control</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMAC1_EOCINH_WR</spirit:name>
+<spirit:description>GB DMAC 1 EOC Inhibit Register</spirit:description>
+<spirit:addressOffset>0X0018</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMAC1_EOCINH</spirit:name>
+<spirit:description>gb dmac 1 eoc inhibit</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_CONTROL</spirit:name>
+<spirit:description>COEL ASP Control Register</spirit:description>
+<spirit:addressOffset>0X001C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>COEL_APB_EXT_IF1:0</spirit:name>
+<spirit:description>coel_apb_ext_if[1]  0x1 = aspec monitor only   0x3 = ext r/w</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_DIGRF_GP1</spirit:name>
+<spirit:description>ASP_DIGRF_GP1 Register</spirit:description>
+<spirit:addressOffset>0X0020</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>M1_TX_WB_LCT</spirit:name>
+<spirit:description>output to the digrf m1_tx_wb_lct</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_DIGRF_GP2</spirit:name>
+<spirit:description>ASP_DIGRF_GP2 Register</spirit:description>
+<spirit:addressOffset>0X0024</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>M1_TX_WB_WR_EN</spirit:name>
+<spirit:description>output to the digrf m1_tx_wb_wr_en</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_DIGRF_GP3</spirit:name>
+<spirit:description>ASP_DIGRF_GP3 Register</spirit:description>
+<spirit:addressOffset>0X0028</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>M1_RX_HW_DATA_C_RDEN</spirit:name>
+<spirit:description>output to the digrf m1_rx_hw_data_c_rden</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_DIGRF_GP4</spirit:name>
+<spirit:description>ASP_DIGRF_GP4 Register</spirit:description>
+<spirit:addressOffset>0X002C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TX_WB_SM_RE</spirit:name>
+<spirit:description>output to the digrf_tx_wb_sm_reset  0x0 = asserted  0x1 = de-asserted</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_DIGRF_CLKEN</spirit:name>
+<spirit:description>ASP_DIGRF Clock Enable Register</spirit:description>
+<spirit:addressOffset>0X0030</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>COEL_ASP_DIGRF_CLKEN</spirit:name>
+<spirit:description>coel_asp_digrf_clken</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_SPARE1</spirit:name>
+<spirit:description>ASP_SPARE1 Register</spirit:description>
+<spirit:addressOffset>0X0034</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGRF4_WB_TX_LCT</spirit:name>
+<spirit:description>digrf4 wb_tx_lct signals</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_ASP_SPARE2</spirit:name>
+<spirit:description>ASP_SPARE2 Register</spirit:description>
+<spirit:addressOffset>0X0038</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_15_14</spirit:name>
+<spirit:description>select tcu signals [15:14]  this field is used to select tcu_gpob signals to be m_tcu_time_signals[7] to super_log in fb modem.  0 = m1_tcu_gpob[3]  0 = m1_tcu_gpob[7]  0 = m1_tcu_gpob[11]  0 = m1_tcu_gpob[15]</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_13_12</spirit:name>
+<spirit:description>select tcu signals [13:12]  this field is used to select tcu_gpob signals to be m_tcu_time_signals[6] to super_log in fb modem.  0 = m1_tcu_gpob[2]  0 = m1_tcu_gpob[6]  0 = m1_tcu_gpob[10]  0 = m1_tcu_gpob[14]</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_11_10</spirit:name>
+<spirit:description>select tcu signals [11:10]  this field is used to select tcu_gpob signals to be m_tcu_time_signals[5] to super_log in fb modem.  0 = m1_tcu_gpob[1]  0 = m1_tcu_gpob[5]  0 = m1_tcu_gpob[8]  0 = m1_tcu_gpob[13]</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_9_8</spirit:name>
+<spirit:description>select tcu signals [9:8]  this field is used to select tcu_gpob signals to be m_tcu_time_signals[4] to super_log in fb modem.  0 = m1_tcu_gpob[0]  0 = m1_tcu_gpob[4]  0 = m1_tcu_gpob[8]  0 = m1_tcu_gpob[12]</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_7_6</spirit:name>
+<spirit:description>select tcu signals [7:6]  this field is used to select tcu_gpoa signals to be m_tcu_time_signals[3] to super_log in fb modem.  0 = m1_tcu_gpoa[3]  0 = m1_tcu_gpoa[7]  0 = m1_tcu_gpoa[11]  0 = m1_tcu_gpoa[15]</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_5_4</spirit:name>
+<spirit:description>select tcu signals [5:4]  this field is used to select tcu_gpoa signals to be m_tcu_time_signals[2] to super_log in fb modem:   0 = m1_tcu_gpoa[2]  0 = m1_tcu_gpoa[6]  0 = m1_tcu_gpoa[10]  0 = m1_tcu_gpoa[14]</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_3_2</spirit:name>
+<spirit:description>select tcu signals [3:2]  this field is used to select tcu_gpoa signals to be m_tcu_time_signals[1] to super_log in fb modem.  0 = m1_tcu_gpoa[1]  0 = m1_tcu_gpoa[5]  0 = m1_tcu_gpoa[8]  0 = m1_tcu_gpoa[13]</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCU_TIME_SIG_SEL_1_0</spirit:name>
+<spirit:description>select tcu signals [1:0]  this field is used to select tcu_gpoa signals to be m_tcu_time_signals[0] to super_log in fb modem.  0 = m1_tcu_gpoa[0]  0 = m1_tcu_gpoa[4]  0 = m1_tcu_gpoa[8]  0 = m1_tcu_gpoa[12]</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

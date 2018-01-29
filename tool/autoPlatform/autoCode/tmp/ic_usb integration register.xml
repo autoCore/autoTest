@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>ic_usb integration register</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD1051000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>USBSPH_MISC</spirit:name>
+<spirit:description>USB SPH Miscellaneous Control Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+</spirit:register>
+<spirit:register>
+<spirit:name>USBSPH_INT</spirit:name>
+<spirit:description>USB SPH Interrupt Register</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>USB_RESUME_INT</spirit:name>
+<spirit:description>usb resume interrupt enable  1 = assertion of bit [6] will cause an interrupt</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HSIC_READY_INT_EN</spirit:name>
+<spirit:description>hsic ready interrupt enable  when hsic function is implemented, if this bit is set to 1, bit [2] will result in an interrupt</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HSIC_CONNECT_INT_EN</spirit:name>
+<spirit:description>hsic connect interrupt enable  when hsic function is implemented, if this bit is set to 1, bit [1] will result in an interrupt</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_RESUME_INT28</spirit:name>
+<spirit:description>usb resume interrupt status  write of 1 clears this bit to 0</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_31</spirit:name>
+<spirit:description>hsic phy ready interrupt</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HSIC_CONNECT_INT</spirit:name>
+<spirit:description>hsic connect interrupt status  this field is used for hsic function implementation, write 1 clear to 0</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>INTERRUPT</spirit:name>
+<spirit:description>interrupt from usb core</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>USBSPH_MISC_CTRL</spirit:name>
+<spirit:description>USB SPH Misc Control Register</spirit:description>
+<spirit:addressOffset>0X34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OTG_CLK480_READY</spirit:name>
+<spirit:description>480m clock from otg phy is ready
+1: 480m clock is ready
+0: 480m clock is not ready</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_PLL_LOCK_BYPASS45</spirit:name>
+<spirit:description>480m clock ready bypass  this field is used to bypass the function in the &lt;480m clock ready&gt; field.  1 =  xcvr_clk to usb_core will always be running even if the &lt;480m clock ready&gt; field is set to 0</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_PLL_LOCK46</spirit:name>
+<spirit:description>480m clock ready  this field is used for xcvr_clock gating to usb_core  0 = xcvr_clk sent to usb_core will be gated</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_XCVR_UDRDIS47</spirit:name>
+<spirit:description>xcvr clock disable  this field works together with the &lt;software disable control of xcvr_clk&gt; field to disable xcvr_clk generation  refer to application notes for the clock disable sequence.
+1= xcvr_clk sent to icusb controller will be invalid</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>XCVR_SWDIS</spirit:name>
+<spirit:description>software disable control of xcvr_clk  1 = xcvr_clk generated from usb2 phy 480m clock will be disabled</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SER_SEL_D2</spirit:name>
+<spirit:description>ser wakeup circuit
+1: dp/dm xor with dp_d2/dm_d2 generate wakeup signal
+0: dp/dm xor with dp_d1/dm_d1 generate wakeup signal</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICUSB_SUSPENDM_EN</spirit:name>
+<spirit:description>suspendm from icusb sph controller will effect otg phy suspendm or not
+1: when icusb sph suspendm is not indicate phy suspend, phy will not suspend. when icusb sph suspendm want phy suspend, then if phy suspend or not depend on otg controller
+0: suspendm of ogt phy will not be effected by sph suspendm</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ICUSB_IN_USE_CP</spirit:name>
+<spirit:description>1: cp side sw program icusb to work, this will make usb2 phy power up
+0:cp side sw will not run icusb function</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CLKSEL</spirit:name>
+<spirit:description>clock select  1 = selects clk_32k to power control block</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PDWN_EN</spirit:name>
+<spirit:description>power down selection  0 = &lt;power down&gt; field will take effect</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_RTC55</spirit:name>
+<spirit:description>rtc  this field is used for the rtc for both the txbuffer and rxbuffer dpram.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_WTC56</spirit:name>
+<spirit:description>wtc  this field is used for the wtc for both the txbuffer and rxbuffer dpram.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>USBSP_PDWN57</spirit:name>
+<spirit:description>power down  this field is used for power down of both the txbuffer and rxbuffer dpram.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

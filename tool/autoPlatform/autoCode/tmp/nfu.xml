@@ -1,0 +1,1059 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>nfu</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD4283000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>NFU_DCR</spirit:name>
+<spirit:description>Data Flash Control Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SPARE_EN</spirit:name>
+<spirit:description>spare area enable  set this field to use the spare area of the nand flash for data storage. if this field is set and ecc is not enabled (&lt;ecc enable&gt; cleared), it is possible to write to and read from the entire data area and spare area. if this field is clear, the spare area is not available to users. if this field and &lt;ecc enable&gt; are set, the remaining spare bytes after ecc is written are available to software. refer to the tables on data area available to programmer when page_sz = 01 and data area available to programmer when page_sz = 00 (following this register) which specify the data bytes available for program/read, to the user per page for different settings in this field and the &lt;ecc enable&gt; field. the number specified in the dma data column in these tables is the number of bytes that the dma descriptors must be configured to transfer per page when the dfc is operating in dma mode.  the new ecc control register defines the number of bytes used by ecc in the &lt;ecc bytes used in spare area&gt; field in the ecc control register. for hamming ecc, the compatible definition is used. for extended ecc, additional bytes are required to achieve the needed error recovery.  0 = write/read to available spare area disabled  1 = write/read to available spare area enabled</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ECC_EN</spirit:name>
+<spirit:description>ecc enable  when this field is set, it enables the computation of ecc and error detection and correction. when this field is clear, ecc computation and error checks are not performed.  the new eccctrl register defines the type of ecc to be performed. the compatible algorithm is to use a single bit error correct, double bit detect hamming code where a syndrome is generated for each 512 bytes. for extended correction, a bch algorithm with 16-bit per 2 kb page correcting code is used.  0 = ecc is disabled for write and read data  1 = ecc is enabled for write and read data</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NF_DMA_EN22</spirit:name>
+<spirit:description>dma request enable  set this field to enable command and data dma requests. when this field is clear, no dma requests are asserted.  0 = data and command dma are disabled  1 = data and command dma are enabled</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ND_RUN</spirit:name>
+<spirit:description>nand controller run mode  when this field is set, the nand controller starts to execute the command in the command buffer. if the command buffer is empty when this field is set, the nand controller asserts the command-dma request if the dma request is enabled. this field is cleared when the nand flash controller finishes the execution of a command with the &lt;next command&gt; field in the data controller command buffer 0 register clear, indicating the end of the command sequence. for a bad-block detect, this field is cleared after the command buffer is emptied. clearing this field during a command execution results in an immediate termination of transactions to the flash device and clears the data and command buffers.  0 = nand controller is not in run mode  1 = nand controller is in run mode</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DWIDTH_C</spirit:name>
+<spirit:description>data bus width of the nand flash controller  this field defines the data-bus width used by the nand flash controller to communicate to the flash memory device(s).  when this field = 1 and the &lt;data bus width of the nand flash memory&gt; field = 0, two flash devices are connected to the same chip. see the sequential row read (srr) functionality section.  0 = data bus width is 8 bits  1 = data bus width is 16 bits</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DWIDTH_M</spirit:name>
+<spirit:description>data bus width of the nand flash memory  this field defines the data bus width of the nand flash-memory devices used in the memory system. this field and the &lt;data bus width of the nand flash controller&gt; field determine the way nand flash devices are interfaced. table 3-9 on page 3-21 shows the valid data-width settings. the &lt;data bus width of the nand flash controller&gt; = 0 and this field = 1 is an invalid setting, and if used, the flash controller behavior defaults to &lt;data bus width of the nand flash controller&gt; = 0 and this field = 0.   when &lt;data bus width of the nand flash controller&gt; = 1 and this field = 0, two flash devices are connected to the same chip. see the sequential row read (srr) functionality section.  0 = data bus width is 8 bits  1 = data bus width is 16 bits</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PAGE_SZ</spirit:name>
+<spirit:description>page size of the flash device  this field defines the page size of the flash memory. all memory devices used in the flash-memory system must have the same bus width, page size, command set, and timing parameters.  refer to the tables on data area available to programmer when page_sz = 01 and data area available to programmer when page_sz = 00 (following this register) which describe the data area available to the programmer when this field is set to 0x0 and 0x1.  0x0 = 512 bytes main and 16 bytes spare area, 528 bytes total  0x1 = 2048 bytes main and 64 bytes spare area, 2112 bytes total  0x2 = reserved to define 4096 byte page  0x3 = reserved to define 8192 byte page</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEQ_DIS</spirit:name>
+<spirit:description>sequential page read disable  this field should be set if sequential page read is not wanted. when this field is clear, all multi-page reads are completed sequentially. the device is addressed only when the first page is read, and subsequent page reads are performed by toggling nd_ren when the device is ready. consult the data sheet of the flash part under 'sequential row read' or similar for details.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ND_STOP</spirit:name>
+<spirit:description>nand flash controller clean stop  this field puts the controller in a quiescent state cleanly if set before going into a low power mode. the controller will finish the current operation in execution (excluding automatic status check) and clear the &lt;nand controller run mode&gt; field to go into idle state when this bit is set to 1.   software needs to set this bit to 1 before entering low power mode and wait for the &lt;nand controller run mode&gt; field to become 0 before it enters low power mode. refer to the low power mode section for the exact low power entry/exit sequence.  the usage model for this field is to interrupt the nand controller and dma when processing a long chain of commands. this field is of limited utility when the dfc is not used in dma mode as the time between setting the &lt;nand controller run mode&gt; field and the completion of the command does not leave much opportunity to set the bit. one way to have a synchronous stop is to set this field at the same time that one sets the &lt;nand controller run mode&gt; field, but this is obviously a contrived example with no practical utility.  0 = do not put the controller in idle  1 = stop the controller and put it into an idle state for low power mode entry</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FORCE_CSX</spirit:name>
+<spirit:description>force chip select false on busy  if this field is set, then the ce for the addressed flash must be de-asserted during the time where busy is expected to be asserted. in addition, during all operations, dfi arbitration must be allowed during the command and/or data transfer phases. under normal operation, ce shall stay asserted throughout the command and also throughout the data transfer phases, but if the dfi is being arbitrated away from the dfc, the command sequence or data sequence shall be interrupted at the beginning of the current cycle by first de-asserting ce and then relinquishing the dfi to the other slave. during an address phase where ale is asserted, ale is de-asserted along with ce. when the dfc re-acquires the dfi, ale and ce will assert and address cycles will continue with we strobes.  0 = assert chip select during entire command, except during command overlap  1 = de-assert chip select during busy phases</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CLR_PG_CNT</spirit:name>
+<spirit:description>clear page count  when set, this field clears the data controller page count register. after the nand interface page count register is cleared, this field is reset. when a program failure occurs, this field can be used to clear the page count values after software reads the number of pages programmed correctly.  0 = page count not cleared  1 = clear page count</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>STOP_ON_UNCOR</spirit:name>
+<spirit:description>stop on uncorrectable error  if an uncorrectable error is received on a read and this field is set, the &lt;next command&gt; field in the data controller command buffer 0 register is reset and further command dma processing is halted.  0 = do not stop on uncorrectable error  1 = stop on uncorrectable error</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RD_ID_CNT</spirit:name>
+<spirit:description>read id byte count  this field specifies the number of data bytes to read from the flash device when a read-id command is issued. for a read id command, the page count should be set to 1 (&lt;page count&gt; field in data controller command buffer 2 register should be zero).   values from 0x1 to 0x7. specifies the number of bytes of read id data to be read from the flash device.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RA_START</spirit:name>
+<spirit:description>row address start position  this field specifies the address cycle where row address starts in the addressing sequence. when this field is clear, the &lt;addr2&gt; field in the data controller command buffer 1 register (address sent out in the second addressing cycle) contains the first row address. when this field is set, the &lt;addr3&gt; field in the data controller command buffer 1 register (address sent out in the third addressing cycle) contains the first row address.   0 = row address supplied to flash from second address cycle onwards  1 = row address supplied to flash from third address cycle onwards  the purpose of this field is to support older nand configurations that had 3 (or maybe 4) bytes of address. certain old small capacity and small block devices have the column address separated into a byte of address (&lt;addr1&gt;) where the most significant bit of the column was addressed if necessary by the first command byte. to access bytes 0-255, the first command byte was 0x00 and to access bytes 256-511, the first command byte is 0x01. however, most of the time, an entire page will be read anyway, so sub block addressing is not commonly used. for large page nand devices, this bit should always be set to 1.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PG_PER_BLK</spirit:name>
+<spirit:description>pages per block  this field specifies the number of pages in one block of the flash device. when cleared, this field indicates 32 pages/block, and when set, it indicates 64 pages/block. this field along with the &lt;row address start position&gt; field is used by the dfc to increment the row address in multi-page commands.  0x0 = flash device has 32 pages per block  0x2 = flash device has 64 pages per block  0x1 = flash device has 128 pages per block  0x3 = flash device has 256 pages per block</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ND_ARB_EN</spirit:name>
+<spirit:description>data flash bus arbiter enable  this field enables the bus arbiter in the dfc, which controls the ownership of the data-flash bus. the data flash bus is shared between the smc and the dfc to transfer data to/from external memory devices. the ownership of df_sclk (the clock supplied to external memory devices on the data flash interface) is also controlled by the bus arbiter. when the dfc is granted the data flash bus, df_sclk is driven low. when this field is clear, the bus arbiter in the dfc is disabled, and the data flash bus and df_sclk are granted permanently to the smc. this field must be set when dfc operation is preferred.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RDYM</spirit:name>
+<spirit:description>flash device ready interrupt mask  this field is used to mask an interrupt request that is asserted when nd_rdy makes a transition from low to high, as indicated by the &lt;rdy&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled, and whenever &lt;rdy&gt; is set, an interrupt request is made to the interrupt controller. when this field is cleared, the interrupt is masked and the state of the &lt;rdy&gt; status field does not generate an interrupt.  if more than one rnb signal is used, this mask bit enables/disables interrupts for both.  0 = flash device ready interrupt is enabled  1 = flash device ready interrupt is disabled</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS0_PAGEDM</spirit:name>
+<spirit:description>nd_cs0n page done interrupt mask  this field is used to mask or enable an interrupt request that is asserted when a page transaction (read or write) to a flash device interfaced using nd_cs0n is completed, as indicated by the &lt;nd_cs0n page done&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled and whenever &lt;nd_cs0n page done&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the page_dn status bit does not generate an interrupt.  0 = nd_cs0n page done interrupt is enabled  1 = nd_cs0n page done interrupt is disabled</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS1_PAGEDM</spirit:name>
+<spirit:description>nd_cs1n page done interrupt mask  this field is used to mask or enable an interrupt request that is asserted when a page transaction (read or write) to flash device interfaced using nd_cs1n is completed as indicated by the &lt;nd_cs1n page done&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled, and whenever &lt;data controller status register&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the page_dn status bit does not generate an interrupt.  0 = nd_cs1n page done interrupt is enabled  1 = nd_cs1n page done interrupt is disabled</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS0_CMDDM</spirit:name>
+<spirit:description>nd_cs0n command done interrupt mask  this field is used to mask or enable an interrupt request that is asserted when the command for the flash device interfaced using nd_cs0n has been executed, as indicated by the &lt;nd_cs0n command done&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled and whenever &lt;nd_cs0n command done&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;nd_cs0n command done&gt; field does not generate an interrupt.  0 = nd_cs0n command done interrupt is enabled  1 = nd_cs0n command done interrupt is disabled</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS1_CMDDM</spirit:name>
+<spirit:description>nd_cs1n command done interrupt mask  this field is used to mask or enable an interrupt request that is asserted when the command for the flash device interfaced using nd_cs1n has been executed, as indicated by the &lt;nd_cs1n command done&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled, and whenever &lt;nd_cs1n command done&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;nd_cs1n command done&gt; status bit does not generate an interrupt.  0 = nd_cs1n command done interrupt is enabled  1 = nd_cs1n command done interrupt is disabled</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS0_BBDM</spirit:name>
+<spirit:description>nd_cs0n bad block detect interrupt mask  this field is used to mask or enable an interrupt request that is asserted when the status check at the end of a page write or block erase to a device interfaced using nd_cs0n returns a bad-block error, as indicated by the &lt;nd_cs0n bad block detect&gt; field in the data controller status register. when this field = 0, the interrupt is enabled and whenever &lt;nd_cs0n bad block detect&gt; is set, an interrupt request is made to the interrupt controller. when this field = 1, the interrupt is masked and the state of the &lt;nd_cs0n bad block detect&gt; status bit does not generate an interrupt.  0 = nd_cs0n bad block detect interrupt is enabled  1 = nd_cs0n bad block detect interrupt is disabled</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS1_BBDM</spirit:name>
+<spirit:description>nd_cs1n bad block detect interrupt mask  this field is used to mask or enable an interrupt request that is asserted when the status check at the end of a page write or block erase to a device interfaced using nd_cs1n returns a bad block error, as indicated by the &lt;nd_cs1n bad block detect&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled, and whenever &lt;nd_cs1n bad block detect&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;nd_cs1n bad block detect&gt; status bit does not generate an interrupt.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UNCERRM</spirit:name>
+<spirit:description>ecc failure error interrupt mask  this field is used to mask or enable an interrupt request that is asserted when an uncorrectable hamming double-bit error is detected in any of the data streams as indicated by the &lt;uncorrectable error&gt; field in that data controller status register. when in extended ecc mode, this field indicates a failure with the bch ecc. when this field is cleared, the interrupt is enabled and whenever &lt;uncorrectable error&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;uncorrectable error&gt; status bit does not generate an interrupt. no data correction is possible for either kind of failure.  0 = ecc failure error interrupt is enabled  1 = ecc failure error interrupt is disabled</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CORERRM</spirit:name>
+<spirit:description>correctable error interrupt mask  this field is used to mask or enable an interrupt request that is asserted when either a single-bit error is detected in any of the data streams when in hamming ecc mode or when the number of error exceeds the threshold defined in the ecc control register when in bch mode. this condition is indicated by the &lt;correctable error&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled and whenever &lt;correctable error&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;uncorrectable error&gt; field in the data controller status register does not generate an interrupt. this interrupt is an indication only and can be used to determine if read disturbs require a block to be rewritten.  0 = single-bit error interrupt is enabled  1 = single-bit error interrupt is disabled</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WRDREQM</spirit:name>
+<spirit:description>write data request interrupt mask  this field is used to mask or enable an interrupt request that is asserted when a write command is loaded into command buffer and data buffer is empty, as indicated by the &lt;write data request&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled and whenever &lt;write data request&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;write data request&gt; status bit does not generate an interrupt.  0 = write data request interrupt is enabled  1 = write data request interrupt is disabled</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RDDREQM</spirit:name>
+<spirit:description>read data request interrupt mask  this field is used to mask or enable an interrupt request that is asserted when the data buffer has been loaded with a page of read data, as indicated by the &lt;read data request&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled, and whenever &lt;read data request&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;read data request&gt; status bit does not generate an interrupt.  0 = read data request interrupt is enabled  1 = read data request interrupt is disabled</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WRCMDREQM</spirit:name>
+<spirit:description>write command request interrupt mask  this field is used to mask or enable an interrupt request that is asserted when a write to the command buffer is requested, as indicated by the &lt;write command request&gt; field in the data controller status register. when this field is cleared, the interrupt is enabled, and whenever &lt;write command request&gt; is set, an interrupt request is made to the interrupt controller. when this field is set, the interrupt is masked and the state of the &lt;read data request&gt; field in the data controller status register does not generate an interrupt.  0 = write command request interrupt is enabled  1 = write command request interrupt is disabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DTR0CS0</spirit:name>
+<spirit:description>Data Controller Timing Parameter 0 Register for ND_CS0n</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TADL_X_ND</spirit:name>
+<spirit:description>ad-l adjust</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SELCNTR</spirit:name>
+<spirit:description>select read counter  this field determines the source of the read strobe.  0 = strobe is measured by phase values in the read enable return delay register  1 = strobe is &lt;read strobe count delay&gt; + 1 dfc clocks from the rising edge of ren.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RD_CNT_DEL</spirit:name>
+<spirit:description>read strobe count delay  when enabled by the &lt;select read counter&gt; field, this value is the number of dfc clocks after the rising edge of ren to latch read data into the dfc from the dfi.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCH</spirit:name>
+<spirit:description>enable signal hold time  enable signal hold time (tch) defines the hold time (with respect to the rising edge of nd_wen) of nd_cs0n, nd_cs1n, nd_ale, and nd_cle.  value from 0 to 7. specifies the hold time for nd_cs0n, nd_cs1n, nd_ale, and nd_cle outputs in terms of nand controller clock periods.  hold time = tch+1.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TCS</spirit:name>
+<spirit:description>enable signal setup time   enable signal setup time (tcs) defines the setup time (with respect to the falling edge of nd_wen) of nd_cs0n, nd_cs1n, nd_ale, and nd_cle.   value from 0 to 7. specifies the setup time for nd_cs0n, nd_cs1n, nd_ale, and nd_cle outputs in terms of nand controller clock periods.  setup time = tcs+1.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWH</spirit:name>
+<spirit:description>nd_wen high duration  the period for which nd_wen remains high, while address or data is being input to the nand flash device in multiple nd_wen cycles, is specified by nd_wen high duration (twh). the valid values for twh are 0 through 7. actual high duration of nd_wen is twh+1 nand controller clock cycles.  value from 0 to 7. specifies the nd_wen high duration, in terms of nand controller clock periods.  nd_wen high duration = twh+1 for a series of write pulses. for the last write pulse of a command, the duration is max(twh,tch)+1.  also note that this is the minimum duration that is guaranteed. the maximum duration for which the nd_wen is high is greater than twh nand clock cycles if the dfi bus is granted to the smc during this time.</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWP</spirit:name>
+<spirit:description>nd_wen pulse width  the period for which nd_wen is asserted low is specified in we_pulse width (twp). the valid values for twp are 0 through 7. actual high duration of nd_wen pulse would be twp+1 nand controller clock cycles. the nd_wen cycle time is twh+twp+2 nand controller clock cycles.  value from 0 to 7. specifies the nd_wen pulse width in terms of nand controller clock periods.  nd_wen pulse width = twp+1.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_NRE_EDGE</spirit:name>
+<spirit:description>if the sel_nre_egde=1 -&gt; select -ve edge as refernece for read data else +ve edge(default)</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ETRP</spirit:name>
+<spirit:description>extended trp  this bit is the msb for the trp value.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TRH</spirit:name>
+<spirit:description>nd_ren high duration  the period for which nd_ren remains high while nd_ren is being toggled to access data during a read operation is specified by nd_ren high duration (trh). the valid values for trh are 0 through 7. actual high duration of nd_ren is trh+1 nand controller-clock cycles.  value from 0 to 7. specifies the nd_ren high duration in terms of nand controller clock periods.  nd_ren high duration = trh+1.  also note that this is the minimum duration that is guaranteed. the maximum duration for which the nd_ren is high is greater than trh nand clock cycles if the dfi bus is granted to the smc during this time.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TRP</spirit:name>
+<spirit:description>nd_ren pulse width  this field in conjunction with the &lt;extended trp&gt; field determine the period for which nd_ren is asserted low. the valid values for trp are 0 through 16. actual high duration of the nd_ren pulse is {etrp,trp}+1 nand controller clock cycles. the nd_ren cycle time would be trh+trp+2 nand controller clock cycles.  value from 0 to 16. specifies the nd_ren pulse width in terms of nand controller clock periods.  nd_ren pulse width = {etrp, trp} +1.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DTR1CS0</spirit:name>
+<spirit:description>Data Controller Timing Parameter 1 Register for ND_CS0n</spirit:description>
+<spirit:addressOffset>0X0C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TR</spirit:name>
+<spirit:description>nd_wen high to nd_ren low for read  value from 1 to 65535. specifies the delay between nd_wen high and nd_ren low for read in terms of nand controller clock periods. this delay depends on the value programmed in tch (in data controller timing parameter 0 register for nd_cs0n) in addition to tr programmed value.  delay = (tch + 1) + (tr+2)</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WAIT_MODE</spirit:name>
+<spirit:description>this bit determines how the information in this register is used to determine state machine transitions on read operations.   0 = the tr time value specified in this register solely determine the duration. when this count has not expired, the state machine stalls and when the count reaches tr, regardless of the state of rnb, the operation will proceed. in other words rnb is ignored.  1 = the tr time value specified in this register determine the minimum duration. when this count has not expired, the state machine stalls. when this count has expired, there may be an additional stall if rnbx is still indicating busy. the proceed condition is the and of the time out from the defined timer and rnbx i.e. to proceed, both the time value must have expired and rnbx must be signaling &lt;q&gt;ready&lt;/q&gt;.  for all reads, the timer always counts after the read command has been issued and this bit only determines the actual state machine proceed condition.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TR_PRESCALE</spirit:name>
+<spirit:description>tr multiplied by 16 when it set to 1</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TRHW_X</spirit:name>
+<spirit:description>    2'b00 : trhw_cnt_x = 6'h00; //wait 0 clocks
+    2'b01 : trhw_cnt_x = 6'h0f;// 16 clocks
+    2'b10 : trhw_cnt_x = 6'h20; //32 clocks
+    2'b11 : trhw_cnt_x = 6'h30; //48 clocks</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TWHR</spirit:name>
+<spirit:description>nd_wen high to nd_ren low for a read status  for a status-read command, nd_wen high to nd_ren low delay (twhr) specifies the delay between de-assertion of nd_wen and assertion of nd_ren.  the actual delay depends on tar, twh, and tch (the latter two in the data controller timing parameter 0 register for nd_cs0n) as well.  delay = max(tar, max(0, twhr - max(twh, tch)))  also note that this is the minimum duration that is guaranteed. the maximum duration is greater than twhr nand clock cycles if the dfi bus is granted to the smc during this time.</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TAR</spirit:name>
+<spirit:description>nd_ale low to nd_ren low delay   for a read-id command, nd_ale low to nd_ren low delay (tar) specifies the delay between de-assertion of nd_ale and assertion of nd_ren. the valid values for tar are 0 to 15.   the actual delay depends on tar, twh, and tch (the latter two in the data controller timing parameter 0 register for nd_cs0n) as well.  delay = max(tar, max(0, twhr - max(twh, tch)))+2</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DSR</spirit:name>
+<spirit:description>Data Controller Status Register</spirit:description>
+<spirit:addressOffset>0X14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ERR_CNT</spirit:name>
+<spirit:description>block error count  if the &lt;ecc enable&gt; field in the data flash control register is true, the &lt;bch enable&gt; field in the ecc control register is true and a ecc check has been performed, these bits indicate the number of errors encountered. if either &lt;ecc enable&gt; or &lt;bch enable&gt; are false, this field is 0x00. the error count is the number of non-zero syndromes. writing 0x1f into this field will reset the error count.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TRUSTVIO</spirit:name>
+<spirit:description>trust violation  this field is set when a trusted partition access violation occurs.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RDY109</spirit:name>
+<spirit:description>the nand flash-ready (rdy) status bit is set when nand_rnb (nand flash ready/busy) has made a low-to-high transition, indicating the ready state entry of flash device(s). the nand flash-ready condition can be programmed to cause an interrupt by clearing the flash-device-ready interrupt mask (rdym). this status field is updated continuously each time nand_rnb input makes a low-to-high transition, regardless of the type of command sent to the flash device.  in a ganged configuration (two 8-bit parts connected as a logical 16-bit part, where the rnb signals of each part are wire anded), the rdy reflects the worst case time from the two ganged parts.  0 = the nd_rdy input has not transitioned from low to high  1 = the nd_rdy input has transitioned from low to high</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RDY111</spirit:name>
+<spirit:description>nand flash ready  the nand flash-ready (rdy) status bit is set when nand_rnb (nand flash ready/busy) has made a low-to-high transition, indicating the ready state entry of flash device(s). the nand flash-ready condition can be programmed to cause an interrupt by clearing the flash-device-ready interrupt mask (rdym). this status bit is updated continuously each time nand_rnb input makes a low-to-high transition, regardless of the type of command sent to the flash device.  in a ganged configuration (two 8-bit parts connected as a logical 16-bit part, where the rnb signals of each part are wire anded) the rdy reflects the worst case time from the two ganged parts.  0 = the ready/busy_ input has not transitioned from low to high  1 = the ready/busy_ input has transitioned from low to high</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS0_PAGED</spirit:name>
+<spirit:description>nd_cs0n page done  this status field is set when the read or write transaction to flash device(s) interfaced using nd_cs0n has completed a page of access including any user-defined spare-area access and ecc. this field is not set if an auto-status check after a program command results in a failure. this field is not set for read id, read status, and erase commands. page-done condition can be programmed to cause an interrupt by clearing the &lt;nd_cs0n page done interrupt mask&gt; field.   0 = the current read/write transaction on nd_cs0n has not reached a page boundary  1 = the current read/write transaction on nd_cs0n has reached a page boundary</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS1_PAGED</spirit:name>
+<spirit:description>nd_cs1n page done  this status field is set when the read or write transaction to flash device(s) interfaced using nd_cs1n has completed a page of access including any user-defined spare-area access and ecc. this field is not set if an auto-status check after a program command results in a failure. this field is not set for read id, read status, and erase commands. page-done condition can be programmed to cause an interrupt by clearing the &lt;nd_cs1 page done interrupt mask&gt; field.</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS0_CMDD</spirit:name>
+<spirit:description>nd_cs0n command done  this field is set when the execution of the command sent to the flash device(s) on nd_cs0n completes successfully. this field is not set if an auto-status check after a program/erase command returns a failure. a command-done condition can be programmed to cause an interrupt by clearing the &lt;nd_cs0n command done interrupt mask&gt; field in the data flash control register. command done is set when the command has finished being sequenced to the dfi, but whether or not a particular command is finished depends on the specific command. a read type command is done when it has been sequenced, but it is still required that the data buffer be emptied, so setting this field does not signify that the dfc is ready for the next operation.  0 = the command execution on nd_cs0n has not successfully completed  1 = the command execution on nd_cs0n has successfully completed</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS1_CMDD</spirit:name>
+<spirit:description>nd_cs1n command done  this field is set when the execution of the command sent to the flash device(s) on nd_cs0n is completed successfully. this field is not set if an auto-status check after a program/erase command returns a failure. command-done condition can be programmed to cause an interrupt by clearing the nd_cs0n command-done mask (cs1_cmddm). command done is set when the command has finished being sequenced to the dfi, but whether or not a particular command is finished depends on the specific command. a read type command is done when it has been sequenced, but it is still required that the data buffer be emptied, so setting cs0_cmdd does not signify that the dfc is ready for the next operation.  0 = the command execution on nd_cs1n has not successfully completed  1 = the command execution on nd_cs1n has successfully completed</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS0_BBD</spirit:name>
+<spirit:description>nd_cs0n bad block detect  this status field is set when the status read after a program/erase operation to flash device(s) interfaced using nd_cs0n returns a program/erase failure. a bad-block detect condition can be programmed to cause an interrupt by clearing the &lt;nd_cs0n bad block detect interrupt mask&gt; field in the data flash control register. when two 8-bit nand flash devices are interfaced to the 16-bit nand flash controller data bus (&lt;data bus width of the nand flash controller&gt; field in the data flash control register = 1 and &lt;data bus width of the nand flash memory&gt; field in the data flash control register = 0) using nd_cs0n, a program/erase failure in any one of the two devices results in this field getting set. because both flash devices are addressed at the same time, software must mark the corresponding blocks as non-valid.   0 = no bad block is encountered while a write/erase on nd_cs0n  1 = bad block is encountered while a write/erase on nd_cs0n</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CS1_BBD</spirit:name>
+<spirit:description>nd_cs1n bad block detect  this status field is set when the status read after a program/erase operation to flash device(s) interfaced using nd_cs1n returns a program/erase failure. a bad-block detect condition can be programmed to cause an interrupt by clearing the &lt;nd_cs1n bad block detect interrupt mask&gt; field in the data flash control register. when two 8-bit nand flash devices are interfaced to the 16-bit nand flash controller data bus (&lt;data bus width of the nand flash controller&gt; field in the data flash control register = 1 and &lt;data bus width of the nand flash memory&gt; field in the data flash control register = 0) using nd_cs1n, a program/erase failure in any one of the two devices results in this field getting set. because both flash devices are addressed at the same time, software can mark the corresponding blocks as non-valid.   0 = no bad block is encountered while a write/erase on nd_cs1n  1 = bad block is encountered while a write/erase on nd_cs1n</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>UNCERR</spirit:name>
+<spirit:description>uncorrectable error  this status bit is set when an uncorrectable error is detected in any of the read data streams. uncorrectable error condition can be programmed to cause an interrupt by clearing the &lt;ecc failure error interrupt mask&gt; field in the data flash control register.  for &lt;bch enable&gt; in the ecc control register == 0 &amp;&amp; &lt;ecc enable&gt; field in the data flash control register == 1 (hamming ecc is enabled) an uncorrectable error is the detection of two errors in a syndrome range. hamming codes are guaranteed to detect all possible 2 bit errors over their syndrome range. for &lt;bch enable&gt; == 1&amp;&amp; &lt;ecc enable&gt; == 1 (bch ecc is enabled) an uncorrectable error is the detection of more errors than be corrected. bch codes are not guaranteed to detect all possible error cases in excess of their correction ability, and it is possible (although highly unlikely) for the bch engine to report a false correction success.   when an uncorrectable error is detected, the bad-block detect bits (cs0_bbd, cs1_bbd) are not set and nand control bad block registers (ndbbrx) are not updated. software must take corrective action in this scenario. software could read ndcbx registers to get the block address that returned erroneous data and mark this block as invalid.  0 = no uncorrectable error is encountered in any of the page read data streams  1 = uncorrectable error is encountered in one of the page read data streams</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CORERR</spirit:name>
+<spirit:description>correctable error  the corerr status bit is set when a correctable error is detected in any of the read data streams. a correctable error condition can be programmed to cause an interrupt by clearing the correctable error mask (corerrm).  0 = no correctable error is encountered in any of the page read data streams.  1 = correctable error is encountered in one of the page read data streams.  for ndeccctrl.bch_en == 0 &amp;&amp; ndcr.ecc_en == 1 (i.e. hamming ecc is enabled) a correctable error is the detection of one error in a syndrome range. for ndeccctrl.bch_en == 1&amp;&amp; ndcr.ecc_en == 1 (i.e. bch ecc is enabled) a correctable error is the detection of less than or equal to the maximum number of errors the bch can detect.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WRDREQ</spirit:name>
+<spirit:description>write data request  the write-data-request (wrdreq) status bit is set when a write command is loaded into the nand flash controller command buffer and data buffer is empty. the write data request status bit can be programmed to cause an interrupt by clearing the write-data-request mask (wrdreqm).   0 = no write to the data buffer is required.  1 = current command is a page write and data buffer has not been loaded.</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RDDREQ</spirit:name>
+<spirit:description>read data request  the read-data-request (rddreq) status bit is set when the data buffer is loaded with a complete page (including spare data if spare_en is set) of read data for a read operation. for read id and read-status operations, rddreq is set when the data buffer is loaded with the requested number of read data bytes as specified in the command.  when ecc is enabled for hamming, rddreq is set once per entire data buffer transfer. when bch ecc is enabled, rddreq is set once per 32 bytes of read data transfer. if not in dma mode, the processor must check that this bit is set after each 32 byte read from nddb.  0 = no read from the data buffer is required.  1 = data buffer has read data available.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WRCMDREQ</spirit:name>
+<spirit:description>write command request  the write-command-request (wrcmdreq) status bit is set when one of the following conditions is met, indicating a request to write a command to the nand flash controller command buffer.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DPCR</spirit:name>
+<spirit:description>Data Controller Page Count Register</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PG_CNT_1</spirit:name>
+<spirit:description>page count for device interfaced using nd_cs1n  the page count for a flash device on nd_cs1n (pg_cnt_1) indicates the number of pages completed (programmed or read) for a given nand flash-controller command. ndcb0[auto_rs] (see ndcb0) must be set for a multi-page program or multi-page read command. the page count gets reset when a command execution is finished. pg_cnt_1 is incremented after each page of data is programmed or read. however, if the status check after programming a page indicates a failure, pg_cnt_1 is not incremented and software can read this value to find out the last page programmed correctly and then set ndcr[clr_pg_cnt] to clear the page count values (see spare area used for ecc table).</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PG_CNT_0</spirit:name>
+<spirit:description>page count for device interfaced using nd_cs0n  page count for flash device on nd_cs0n (pg_cnt_0) indicates the number of pages completed (programmed or read) for a given nand flash controller command. ndcb0[auto_rs] (see ndcb0 must be set for a multi-page program or multi-page read command. the page count gets reset when a command execution is finished. pg_cnt_0 is incremented after each page of data is programmed or read. however, if the status check after programming a page indicates a failure, pg_cnt_0 is not incremented and software can read this value to find out the last page programmed correctly and then set ndcr[clr_pg_cnt] to clear the page count values (see ndcr).</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DBBRx</spirit:name>
+<spirit:description>Data Controller Bad Block Registers 0 and 1</spirit:description>
+<spirit:addressOffset>0X1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>BAD_BLOCK_INFORMATION</spirit:name>
+<spirit:description>for a program command bbad block information contained in these registers consists of addr5, addr4, addr3, and addr2 for the command that resulted in a bad block detection. addr5 occupies the most significant byte and addr2 the least significant byte in ndbdrx. for an erase command bad block information contained in these registers consists of addr4, addr3, addr2, and addr1 for the command that resulted in a bad block detection. addr4 occupies the most significant byte and addr1 the least significant byte in ndbdrx.  when a bad block is detected (the cs0_bbd or cs1_bbd bits in ndsr gets set), software reads the corresponding ndbdrx registers, uses the relevant portions of the bad-block information to get the bad-block address, and mark these blocks addresses as non-valid. writes to the ndbbrx registers are ignored.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DREDEL</spirit:name>
+<spirit:description>Read Enable Return Delay Register</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ND_DIN_SEL</spirit:name>
+<spirit:description>1 = use din clocked by delayed re  0 = use din delayed by delay element</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ND_DATA_DLY</spirit:name>
+<spirit:description>din dly to controller</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ND_RECLK_DLY</spirit:name>
+<spirit:description>re dly when used as reclk</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ND_RE_DLY</spirit:name>
+<spirit:description>re dly to controller</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DECCCTRL</spirit:name>
+<spirit:description>ECC Control Register</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ECC_SPARE</spirit:name>
+<spirit:description>ecc bytes used in spare area  this read-only value determines the number of bytes in the spare area that are dedicated to ecc storage. the number of bytes is determined by the &lt;ecc enable&gt; field in the data flash control register and bch_en.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ECC_THRESH</spirit:name>
+<spirit:description>ecc warning threshold  ecc threshold. when &lt;bch enable&gt; is true and the &lt;ecc enable&gt; field in the data flash control register is true, and the number of corrected errors exceeds this value, the corerr status is set. currently, with a maximum of 16 errors correctable, values greater than 16 have the effect of disabling corerr status.</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BCH_EN</spirit:name>
+<spirit:description>bch enable  when &lt;ecc enable&gt; in the data flash control register is true, reads from a page will perform ecc to the following degrees of correctability:  0 = 2 bits per 512 byte page and 8 bits per 2048 byte page, distributed as one error in every other bit per 512 byte sector  1 = 16 bits per 2048 byte page (plus spare area, if enabled)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DBZCNT</spirit:name>
+<spirit:description>Timer for ND_RnB0 and ND_RnB1</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ND_RNBCNT1</spirit:name>
+<spirit:description>rnb busy count 1  this field is cleared to zero on the 1 -&gt; 0 transition of rnb[1] and while rnb[1] is low, the field counts basic dfc controller clocks. when rnb[1] has a 0 -&gt; 1 transition, the count freezes.</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>26</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ND_RNBCNT0</spirit:name>
+<spirit:description>rnb busy count 0  this field is cleared to zero on the 1 -&gt; 0 transition of rnb[1] and while rnb[0] is low, the field counts basic dfc controller clocks. when rnb[0] has a 0 -&gt; 1 transition, the count freezes.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DMUTEX</spirit:name>
+<spirit:description>NAND Controller MUTEX Lock Register</spirit:description>
+<spirit:addressOffset>0X30</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MUTEX</spirit:name>
+<spirit:description>mutex lock  this field implements a test-and-set operation on the flash controller mutex lock.  when the controller is idle (both ndrnb bits indicate ready and nd_run is false) and this register is read, the current value of mutex is returned and is set immediately after. if the mutex was already set, it remains set.  when the controller is not idle (if either ndrnb bits indicate busy or nd_run is true) mutex will return true, and the register bit will not be changed.  consecutive back-to-back reads of this register will never both return false. the mutex can never be set when the controller is not idle (i.e. either ndrnb bits indicate busy or &lt;nand controller run mode&gt; in the data flash control register is true), but it can be cleared.  the intent of this register is to support a mutually exclusive ownership lock for the nand controller which is guaranteed to be in the same power state as the nand controller itself. this will support multiple asymmetric core implementations where the two cores may wish to declare ownership of the nand controller resource and/or these two cores may be in different power states.  writing a 1 to this field will clear it if it was set. the processor that read a false from this register is the only processor permitted to write the 1 to clear, however there is no hardware protection to enforce this.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DCMDMAT</spirit:name>
+<spirit:description>Partition Command Match Registers</spirit:description>
+<spirit:addressOffset>0X34</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>VALIDCNT</spirit:name>
+<spirit:description>valid count  if this field is zero, the register may be written. if this register is not zero, it defines the number of fields (from lsb to msb) that contain valid values. if this field is 0x1, only the right most field is defined and so on.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NAKEDDIS217</spirit:name>
+<spirit:description>naked disallow  if this field is 1, the associated cmd field cannot be issued as either a reset semantic or as a naked command semantic. this prevents a malicious entity from creating command sequences where the address is not present with the command byte.</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ROWADD218</spirit:name>
+<spirit:description>row address  if this field is 1, the address to be matched to the partition register starts at add1 (i.e. like an erase semantic). if the bit is 0, the address to be matched is a function of the &lt;row address start position&gt; field in the data flash control register. if &lt;row address start position&gt; is 0, the address match starts at add2, and if &lt;row address start position&gt; is 1, the address match starts at add3.  in addition, the value of the &lt;pages per block&gt; field in the data flash control register determines which bits of the block address are ignored to obtain the 'true' block address. partition matches are not on a page boundary but on a block boundary as the true protection is per nand block.</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NF_CMD219</spirit:name>
+<spirit:description>command match  this is the bit pattern to match to cmd1.</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NAKEDDIS220</spirit:name>
+<spirit:description>naked disallow  if this bit is 1, the associated cmd field cannot be issued as either a reset semantic or as a naked command semantic. this prevents a malicious entity from creating command sequences where the address is not present with the command byte.</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ROWADD221</spirit:name>
+<spirit:description>row address  if this field is 1, the address to be matched to the partition register starts at add1 (i.e. like an erase semantic). if the field is 0, the address to be matched is a function of the &lt;row address start position&gt; field in the data flash control register. if &lt;row address start position&gt; is 0, the address match starts at add2, and if &lt;row address start position&gt; is 1, the address match starts at add3.  in addition, the value of the &lt;pages per block&gt; field in the data flash control register determines which bits of the block address are ignored to obtain the 'true' block address. partition matches are not on a page boundary but on a block boundary as the true protection is per nand block.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NF_CMD222</spirit:name>
+<spirit:description>command match  this is the bit pattern to match to cmd1.</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NAKEDDIS223</spirit:name>
+<spirit:description>naked disallow  if this field is 1, the associated cmd field cannot be issued as either a reset semantic or as a naked command semantic. this prevents a malicious entity from creating command sequences where the address is not present with the command byte.</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ROWADD224</spirit:name>
+<spirit:description>row address  if this field is 1, the address to be matched to the partition register starts at add1 (i.e. like an erase semantic). if the bit is a zero, the address to be matched is a function of the &lt;row address start position&gt; field in the data flash control register. if &lt;row address start position&gt; is 0, the address match starts at add2, and if &lt;row address start position&gt; is 1, the address match starts at add3.  in addition, the value of the &lt;pages per block&gt; field in the data flash control register determines which bits of the block address are ignored to obtain the 'true' block address. partition matches are not on a page boundary but on a block boundary as the true protection is per nand block.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NF_CMD225</spirit:name>
+<spirit:description>command match  this is the bit pattern to match to cmd1.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DDB</spirit:name>
+<spirit:description>Data Controller Data Buffer Register</spirit:description>
+<spirit:addressOffset>0X40</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>NAND_FLASH_DATA</spirit:name>
+<spirit:description>nand flash data  this field holds the write/read data.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NFU_DCB0</spirit:name>
+<spirit:description>Data Controller Command Buffer 0</spirit:description>
+<spirit:addressOffset>0X48</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CMD_XTYPE</spirit:name>
+<spirit:description>command extended type  this field extends the command type semantic field and is defined only for read and write semantics.  the read semantic is divided into three sections, command dispatch, data transfer (after ready is high), and dma transfer. if the third section is disabled, the operation being performed is referred to as 'read sniffing'. here the purpose is to read a page and compute the number of ecc correction bits to make sure that the total correction is within the safe range of the nand management algorithm.  the write semantic is divided into three sections, initial command dispatch, data transfer, and command issue.  the reason for this extended field is to enable larger block support. all blocks larger than 2 kb will composed of 2 kb chunks, and to simplify the controller logic, these chunks are moved to and from the nand as a separate command semantic.  read semantics:  0x0 = monolithic read  0x1 = last naked read  0x2 = illegal  0x3 = illegal  0x4 = read sniff  0x5 = naked read sniff  0x6 = command dispatch  0x7 = illegal    write semantics:  0x0 = monolithic write  0x1 = naked write with final command  0x2 = illegal  0x3 = final command  0x4 = command dispatch with write  0x5 = naked write  0x6 = command dispatch  0x7 = illegal</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LEN_OVRD</spirit:name>
+<spirit:description>length override  0 = use the lengths defined by the &lt;page size of the flash device&gt; field in the data flash control register for the operation. a command block consists of three writes and the ndlencnt value in ndcb3 may not be written.  1 = use the length defined in &lt;ndlencnt&gt; in data controller command buffer 3 for the operation, regardless of the programming of the &lt;page size of the flash device&gt; field. a command block consists of four writes and the data controller command buffer 3 register must be written.</spirit:description>
+<spirit:bitOffset>28</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RDY_BYP</spirit:name>
+<spirit:description>ready bypass  0 = the current command will wait for the timeout as specified in ndtr1cs0 for the indicated csel to be true before proceeding  1 = the current command will continue to the next command (if there is one as defined by the nc bit)  the purpose for this function is to enable a real-time schedule of operations to the two chip selects where operations on one nand can continue while operations on the other nand are in progress. this is useful to enable striping where multiple identical operations are scheduled to the two chip selects.  this field is in addition to the capability mentioned in the command sequence and parallel execution section in the &lt;var product number&gt; datasheet and allows virtually any operation pair to be overlapped.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ST_ROW_EN</spirit:name>
+<spirit:description>status row address enable  for onfi nand parts, the status command may be performed on a per logical unit basis. the logical unit is addressed by the row address defined in the read, program or erase command.  if this field is set, both the automatic status cycle at the end of each read or write or any 'manual' status read will supply the row address where the row address is defined by the &lt;number of address cycles&gt; field and by the &lt;row address start position&gt; field in the data flash control register.  for read and program commands the &lt;number of address cycles&gt; field defines the total number of address cycles and the &lt;row address start position&gt; field defines which address bytes form the row address.  for the erase command, the &lt;number of address cycles&gt; itself defines the number of row address cycles and the &lt;row address start position&gt; field is ignored.</spirit:description>
+<spirit:bitOffset>26</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AUTO_RS</spirit:name>
+<spirit:description>auto read status  when set, this field enables the automatic checking of the program/erase status by issuing a read status command. the bit pattern to be used for the status command is defined in the data controller command buffer 2. when this field is clear, no automatic status check is performed. when automatic status check is performed, status-read data is not written into the data buffer. the status-read data is checked by the dfc for the success of program/erase operation, and in case of failure, the appropriate bad-block-detected bits are updated in ndsr (ndsr), the address of the bad block is saved in the ndbbrlx registers (ndbbrx) and further dma mode processing is halted.  set this field for program and erase commands only. setting this field for commands other than program or erase may result in incorrect operation by the dfc.  this field must be set for multipage program and read commands (when &lt;page count&gt; in the data controller command buffer 2 is non-zero) to ensure that a read-status command is issued after every page program and page read to verify the success of the program operation.  0 = no automatic read status command execution after program/erase  1 = automatic read status command execution after program/erase</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CSEL</spirit:name>
+<spirit:description>cs select  this field selects the chip-select signal (nd_cs[0]n or nd_cs[1]n) to be activated for the command execution.   0 = nd_cs[0]n is asserted for the access.  1 = nd_cs[1]n is asserted for the access.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NF_CMD_TYPE255</spirit:name>
+<spirit:description>command type  this field defines the type of nand flash command represented by cmd1 (and cmd2 if for a double byte command).</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NC</spirit:name>
+<spirit:description>next command  this field (if set) indicates the presence of another valid command following the current command. the nand flash controller makes the next command dma request if this field bit is set. the last command of a command sequence must have this field clear.  0 = no valid command following the current command  1 = valid command following the current command</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DBC</spirit:name>
+<spirit:description>double byte command  this field (if set) indicates that the current command involves the transfer of two commands to the nand flash. this field must be clear for a single-byte command.  0 = current command is a single-byte command  1 = current command is a double-byte command</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ADDR_CYC</spirit:name>
+<spirit:description>number of address cycles  this field specifies the number of address cycles in which the nand flash is to be addressed. valid values for address cycles are 1 to 5 for nand commands program, read, erase and read-id. for example, if this field is programmed as 4, addr1, addr2, addr3, and addr4 (see nand controller command buffer 1 section) are sent to the flash device in successive address cycles, while addr5 is ignored (see nand controller command buffer 2 section).    valid values for address cycles for reset and read-status commands is 0. if software programs a non-zero value for these commands, the nand controller will simply ignore it.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CMD2</spirit:name>
+<spirit:description>second command  this field contains the second byte of command sent to nand flash after cmd1 and address in a double-byte command.</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CMD1</spirit:name>
+<spirit:description>first command  this field contains the first byte command sent to the nand flash when the command execution begins.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NDCB1</spirit:name>
+<spirit:description>Data Controller Command Buffer 1</spirit:description>
+<spirit:addressOffset>0X4C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ADDR4</spirit:name>
+<spirit:description>addr4  address sent out to the flash device on the fourth addressing cycle</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ADDR3</spirit:name>
+<spirit:description>addr3  address sent out to the flash device on the third addressing cycle</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ADDR2</spirit:name>
+<spirit:description>addr2  address sent out to the flash device on the second addressing cycle</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ADDR1</spirit:name>
+<spirit:description>addr1  address sent out to the flash device on the first addressing cycle</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NDCB2</spirit:name>
+<spirit:description>Data Controller Command Buffer 2</spirit:description>
+<spirit:addressOffset>0X50</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ST_MASK</spirit:name>
+<spirit:description>status mask  this is the mask applied to the status field to determine failure. this value is anded with the status word and the resulting byte is ored over the [7:0] field, and if any result is true, the status is indicating failure.  a status mask of 0x00 is singular in that it defines a mask of 0x01 instead. if software issues 0x00 to this field, the value actually loaded will be 0x01. this singularity is to achieve compatibility with current dma descriptors and other software which should have reserved fields set to 0.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ST_CMD</spirit:name>
+<spirit:description>status command  the default status command is 0x70, but onfi allows logical unit status checks. this field allows the non-standard status command to be defined for both status commands as well as auto status reads.  a status command of 0x00 is singular in that it defines a status command of 0x70 instead. if software issues 0x00 to this field, the value actually loaded will be 0x70. this singularity is to achieve compatibility with current dma descriptors and other software which should have reserved fields programmed to zeros.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PAGE_COUNT</spirit:name>
+<spirit:description>page count  page_count specifies the number of pages of data to be transferred for a program or read command. set this field to 0 for all commands except multipage program/read commands (commands where more than one page is programmed or read), in which case page_count + 1 specifies the number of pages serviced.   value from 0 to 63. specifies the number of pages of data to be transferred for the current command.  number of pages to be transferred = page_count +1</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ADDR5</spirit:name>
+<spirit:description>addr5  address sent out to the flash device on the fifth addressing cycle.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NDCB3</spirit:name>
+<spirit:description>Data Controller Command Buffer 3</spirit:description>
+<spirit:addressOffset>0X54</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ADDR7</spirit:name>
+<spirit:description>addr7  address sent out to the flash device on the seventh addressing cycle.</spirit:description>
+<spirit:bitOffset>24</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ADDR6</spirit:name>
+<spirit:description>addr6  address sent out to the flash device on the sixth addressing cycle.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NDLENCNT</spirit:name>
+<spirit:description>ndlencnt  when the arbitrary length count is selected, this value is used to count the data cycles for any and all selected operations. as a practical matter, this value should not exceed the 2176 byte buffer size.   when ecc is enabled and bch is selected, this value must be a multiple of 32 bytes.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NSACR</spirit:name>
+<spirit:description>SRAM Attributes Control Register</spirit:description>
+<spirit:addressOffset>0X58</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>PWDN</spirit:name>
+<spirit:description>nfu sram power down</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NF_WTC309</spirit:name>
+<spirit:description>nfu sram wtc</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NF_RTC310</spirit:name>
+<spirit:description>nfu sram rtc</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NDARBCR</spirit:name>
+<spirit:description>NAND DFI Arbitration Control Register</spirit:description>
+<spirit:addressOffset>0X5C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>ARB_CNT</spirit:name>
+<spirit:description>arbitration count  the dfc will maintain the dfi for a minimum of clock cycles as defined by this field. the values programmed into the timing registers determine the number of actual nand cycles this represents.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>16</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>NDPTXCSX</spirit:name>
+<spirit:description>Partition Region Control Registers for CS0 and CS1</spirit:description>
+<spirit:addressOffset>0X60</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>VALID</spirit:name>
+<spirit:description>valid entry  when set, this block address boundary is valid and partition matches are performed. valid entries must be allocated consecutively for each chip enable group.</spirit:description>
+<spirit:bitOffset>31</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LOCK</spirit:name>
+<spirit:description>lock entry  when set, this block address boundary cannot be rewritten except with a hardware reset. in general, it is expected that this field will always be set during normal usage of these registers.  if it is desired to allow access to the entire nand device but to prevent update of the partition registers as part of a denial-of-service, all partition registers could be locked without being either valid or trusted.</spirit:description>
+<spirit:bitOffset>30</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TRUSTED</spirit:name>
+<spirit:description>trusted region  when set, this block address boundary below this entry can only be accessed when in trusted zone. any access by a non-trusted access to the trust region causes the operation which matches a value in the ndcmdmat registers, to never be issued, the status to set trustvio, and further command processing stops.  it is possible to lock the entire nand device.  a trusted region will match all cmd1 values against the ndcmdmat registers and if there is any match, the address is compared. if the address matches, the operation is prevented.  in general, it is expected that a trusted region would desire to disallow program and erase type commands, and these commands would appear in the ndcmdmat registers.</spirit:description>
+<spirit:bitOffset>29</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BLOCKADD</spirit:name>
+<spirit:description>block address  this entry defines the boundary of the block address (as defined by the command) for this partition. blockadd for the last partition register for each chip select must be set to the address of the last block in the nand device. this value is anded with the addx values to prevent address spoofing.  if not all four partitions make sense, allocate partitions as desired and replicate the last partition value on unneeded partitions. block addresses must be assigned in strictly monotonically increasing order.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>24</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

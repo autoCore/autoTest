@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>gpbaux</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xF0240000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>COEL_GPB_MON_MUX</spirit:name>
+<spirit:description>Monitor Mux Register</spirit:description>
+<spirit:addressOffset>0X0000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SPARE1_TP_SEL</spirit:name>
+<spirit:description>spare1_tp_sel  this field controls the specific signal that is output to the coel_spare1_tp test point, according to the values below.  0x0 = m1_ds32_cli_obs_0 output to coel_spare1_tp  0x1 = m1_ds32_cli_obs_1 output to coel_spare1_tp  0x2 = m1_ds32_c</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_JTAG</spirit:name>
+<spirit:description>sw vs. jtag control  0x1 = jtag controls the monitor mux and the signal sent to coel_spare1_tp  0x0 = sw_mon_mux controls the monitor mux and the signal sent to coel_spare1_tp</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_MON_MUX3</spirit:name>
+<spirit:description>sw_mon_mux3  if software controls the monitor mux of test points [31:24], then this field determines which signals are output to the pads as follows:  0x0 = wb modem tp outputs to the pads  0x1 = gsm apb tp outputs to the pads  0x2 = gsm gpb tp output</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_MON_MUX2</spirit:name>
+<spirit:description>sw_mon_mux2  if software controls the monitor mux of test points [23:16], then this field determines which signals are output to the pads as follows:  0x0 = wb modem tp outputs to the pads  0x1 = gsm apb tp outputs to the pads  0x2 = gsm gpb tp output</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_MON_MUX1</spirit:name>
+<spirit:description>if software controls the monitor mux of test points [15:8], then this field determines which signals are output to the pads as follows:  0x0 = wb modem tp outputs to the pads  0x1 = gsm apb tp outputs to the pads  0x2 = gsm gpb tp outputs to the pads&lt;p</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_MON_MUX0</spirit:name>
+<spirit:description>sw_mon_mux0  if software controls the monitor mux of test points [7:0], then this field determines which signals are output to the pads as follows:  0x0 = wb modem tp outputs to the pads  0x1 = gsm apb tp outputs to the pads  0x2 = gsm gpb tp outputs</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>C2DM</spirit:name>
+<spirit:description>C2 DMA Muxing Register</spirit:description>
+<spirit:addressOffset>0X0004</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>C2DM</spirit:name>
+<spirit:description>dma muxing</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>DMAC2_EOCINH_WR</spirit:name>
+<spirit:description>DMAC 2 EOC Inhibit Register</spirit:description>
+<spirit:addressOffset>0X0008</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DMAC2_EOCINH_WR</spirit:name>
+<spirit:description>dmac 2 eoc inhibit</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_GPB_CONTROL</spirit:name>
+<spirit:description>GPB Control Register</spirit:description>
+<spirit:addressOffset>0X000C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>EXT_GPB_CYCLE</spirit:name>
+<spirit:description>external gpb cycle  sets the number of cycles for an external gpb clock cycle</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EXT_GPB_CLK</spirit:name>
+<spirit:description>external gpb clock  chicken bit for external clock</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EXT_GPB_MODE</spirit:name>
+<spirit:description>external gpb mode  0x1 = monitor  0x3 = ext r/w</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_GPB_AFE_CONTROL</spirit:name>
+<spirit:description>GPB AFE Control Register</spirit:description>
+<spirit:addressOffset>0X0010</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>WB_PAD_CONTROL_OUT_SEL</spirit:name>
+<spirit:description>wb_pad_control_out_sel  0x0 = pad (default)  0x1 = wb</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WB_PAD_CONTROL_IN_SEL</spirit:name>
+<spirit:description>wb_pad_control_in_sel  0x0 = pad (default)  0x1 = gilint</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WB_PAD_IQ_RX_SEL</spirit:name>
+<spirit:description>wb_pad_iq_rx_sel  0x0 = pad (default)  0x1 = wb</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WB_PAD_IQ_TX_SEL</spirit:name>
+<spirit:description>wb_pad_iq_tx_sel  0x0 = wb (default)  0x1 = pad</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LEGACY_DIGRF_GILINT_SELECT</spirit:name>
+<spirit:description>legacy_digrf_gilint_select  this field controls the digrf module mux, primary, and diversity.  0x0 = selects legacy  0x1 = selects digrf  0x2 = selects gilint  0x3 = coel outputs 0x0000</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AFE_CONTROL_SPARE</spirit:name>
+<spirit:description>afe control spare bits</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DIG_ANA_INT</spirit:name>
+<spirit:description>digital/analog interface</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>AFE_TEST_MODE</spirit:name>
+<spirit:description>afe test mode  0x0 = normal mode  0x1 = external afe  0x2 = afe test - input to afe  0x3 = afe test - output from afe</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SW_RESET_AFE</spirit:name>
+<spirit:description>software reset for integrated afe</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>WB_AFE_SMP_CLK_CFG</spirit:name>
+<spirit:description>WB AFE Sample Clock Configuration Register</spirit:description>
+<spirit:addressOffset>0X0014</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DIGGP_GSRAM_WTC67</spirit:name>
+<spirit:description>grayback gsram wtc</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DIGGP_GSRAM_RTC68</spirit:name>
+<spirit:description>grayback gsram rtc</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DIGGP_GSRAM_ROM_RTC_REF70</spirit:name>
+<spirit:description>grayback l2 rom rtc ref</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DIGGP_GSRAM_ROM_RTC71</spirit:name>
+<spirit:description>grayback l2 rom rtc</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GPB_COEL_SPARE1</spirit:name>
+<spirit:description>GPB Coel Spare1 Register</spirit:description>
+<spirit:addressOffset>0X0018</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SEL_LSM_UART_TXMSG1_TRIG</spirit:name>
+<spirit:description>select fb rx time signals or tx time signals to lsm_uart module  0 = rx   1 = tx</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SEL_LSM_UART_TXMSG2_TRIG</spirit:name>
+<spirit:description>select fb rx time signals or tx time signals to lsm_uart module  0 = tx  1 = rx</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MASK_FB_TX_TIME_SIG_SCC</spirit:name>
+<spirit:description>mask fb_tx_time_sig_scc[12] to lsm_uart module  0 = masked  1 = not masked</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MASK_FB_TX_TIME_SIG_PCC</spirit:name>
+<spirit:description>mask fb_tx_time_sig_pcc[12] to lsm_uart module  0 = masked  1 = not masked</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MASK_FB_RX_TIME_SIG_SCC</spirit:name>
+<spirit:description>mask fb_rx_time_sig_scc[12] to lsm_uart module  0 = masked  1 = not masked</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>MASK_FB_RX_TIME_SIG_PCC</spirit:name>
+<spirit:description>mask fb_rx_time_sig_pcc[12] to lsm_uart module  0 = masked  1 = not masked</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GPB_COEL_SPARE2</spirit:name>
+<spirit:description>GPB Coel Spare2 Register</spirit:description>
+<spirit:addressOffset>0X001C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FB_ENABLE_30P72M</spirit:name>
+<spirit:description>clock enable of 30.72 mhz clock in fb sleep timer  1 = enable  0 = disable</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>WTCRTC_DIGRF4</spirit:name>
+<spirit:description>digrf4 memory control signals</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GSM_SW_RSTN_GPB</spirit:name>
+<spirit:description>software reset of gsm gpb peripherals  0 = apply reset  1 = release reset</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FB_SLEEP_EN</spirit:name>
+<spirit:description>fb sleep enable/disable  0x1 = fb sleep enable   0x0 = fb sleep disable</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

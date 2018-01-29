@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>ssp</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD401B000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>SSP_TOP_CTRL</spirit:name>
+<spirit:description>SSP Top Control Register</spirit:description>
+<spirit:addressOffset>0X00</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TTELP</spirit:name>
+<spirit:description>txd three-state enable on last phase  0 = txdx is three-stated 1/2 clock cycle after the beginning of the lsb  1 = txdx output signal is three-stated on the clock edge that ends the lsb</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TTE</spirit:name>
+<spirit:description>txd three-state enable  0 = txdx output signal is not three-stated  1 = txd is three-stated when not transmitting data</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SCFR</spirit:name>
+<spirit:description>slave clock free running  0 = clock input to sspsclkx is continuously running  1 = clock input to sspsclkx is only active during data transfers.</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>IFS</spirit:name>
+<spirit:description>invert frame signal  0 = sspsfrmx polarity is determined by the psp polarity bits  1 = sspsfrmx will be inverted from normal-sspsfrmx (as defined by the psp polarity bits). (works in all frame formats: spi, ssp, and psp)</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>HOLD_FRAME_LOW</spirit:name>
+<spirit:description>hold frame low control  1=after this field is set to 1 and the ssp is operating in master mode, the output frame clock ssp_sfrm_gpio will hold low. used for spi and nmw format rx fifo auto full control, which makes the frame clock is still low during there's no bit clock, or the data transfers before the stop clock will be discarded.</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SSP0_TRAIL25</spirit:name>
+<spirit:description>trailing byte  0 = trailing bytes are handled by the &lt;var product number&gt;  1 = trailing bytes are handled by dma bursts</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>LBM</spirit:name>
+<spirit:description>loopback mode (test mode bit)  0 = normal serial port operation is enabled  1 = output of tx serial shifter is internally connected to input of rx serial shifter</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SPH</spirit:name>
+<spirit:description>motorola spi sspsclk phase setting  0 = sspsclkx is inactive until one cycle after the start of a frame and active until 1/2 cycle before the end of a frame  1 = sspsclkx is inactive until 1/2 cycle after the start of a frame and active until one cycle before the end of a frame</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SPO</spirit:name>
+<spirit:description>motorola spi sspsclk polarity setting  0 = the inactive or idle state of sspsclkx is low  1 = the inactive or idle state of sspsclkx is high</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DSS</spirit:name>
+<spirit:description>ssp work data size,  register bits value 0~31 indicated data size 1~32 bits,  usually use data size 8bits, 16bits, 24bits, 32bits</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SFRMDIR</spirit:name>
+<spirit:description>ssp frame (sspsfrmx) direction  0 = master mode, sspx port drives sspsfrmx  1 = slave mode, sspx port receives sspsfrmx</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SCLKDIR</spirit:name>
+<spirit:description>ssp serial bit rate clock (sspsclkx) direction  0 = master mode, sspx port drives sspsclkx  1 = slave mode, sspx port receives sspsclkx</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FRF</spirit:name>
+<spirit:description>frame format  0x0 = motorola* serial peripheral interface (spi)   0x1 = texas instruments* synchronous serial protocol (ssp)  0x2 = national semiconductor microwire*  0x3 = programmable serial protocol (psp)</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SSE</spirit:name>
+<spirit:description>synchronous serial port enable  0 = sspx port is disabled   1 = sspx port is enabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_FIFO_CTRL</spirit:name>
+<spirit:description>SSP FIFO Control Register</spirit:description>
+<spirit:addressOffset>0X04</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>STRF</spirit:name>
+<spirit:description>select fifo for efwr (test mode bit)  only when the &lt;enable fifo write/read&gt; field = 1  0 = txfifo is selected for both writes and reads through the ssp data register  1 = rxfifo is selected for both writes and reads through the ssp data register</spirit:description>
+<spirit:bitOffset>19</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EFWR</spirit:name>
+<spirit:description>enable fifo write/read (test mode bit)  0 = fifo write/read special function is disabled (normal sspx operational mode)  1 = fifo write/read special function is enabled</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXFIFO_AUTO_FULL_CTRL</spirit:name>
+<spirit:description>rx fifo auto full control  =1after this field is set to 1 and the ssp is operating in master mode, the ssp fsm returns to idle state and stops the ssp_sclk_gpio. when rx fifo is full, the ssp fsm continues transferring data after the rx fifo is not full. this field is used to avoid an rx fifo overrun issue.  1= enable rx fifo auto full control</spirit:description>
+<spirit:bitOffset>17</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FPCKE</spirit:name>
+<spirit:description>fifo packing enable  0 = fifo packing mode disabled  1 = fifo packing mode enabled</spirit:description>
+<spirit:bitOffset>16</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TXFIFO_WR_ENDIAN</spirit:name>
+<spirit:description>apb_pwdata write to tx fifo endian  0x0 = txfifo_wdata[31:0] = apb_pwdata[31:0]  0x1 = fifo_wdata[31:0] = {apb_pwdata[15:0], apb_pwdata[31:16]}  0x2 = txfifo_wdata[31:0] = {apb_pwdata[7:0], apb_pwdata[15:8], apb_pwdata[23:16], apb_pwdata[31:24]}  0x3 = txfifo_wdata[31:0] = {apb_pwdata[23:16], apb_pwdata[31:24], apb_pwdata[7:0], apb_pwdata[15:8]}</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RXFIFO_RD_ENDIAN</spirit:name>
+<spirit:description>apb_prdata read from rx fifo endian  0x0 = apb_prdata[31:0] = rxfifo_wdata[31:0]  0x1 = apb_prdata[31:0] = {rxfifo_wdata[15:0], rxfifo_wdata[31:16]}  0x2 = apb_prdata[31:0]= {rxfifo_wdata[7:0], rxfifo_wdata[15:8], rxfifo_wdata[23:16], rxfifo_wdata[31:24]}  0x3 = apb_prdata[31:0]= {rxfifo_wdata[23:16], rxfifo_wdata[31:24], rxfifo_wdata[7:0], rxfifo_wdata[15:8]}</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RSRE</spirit:name>
+<spirit:description>receive service request enable  0 = dma service request is disabled  1 = dma service request is enabled</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TSRE</spirit:name>
+<spirit:description>transmit service request enable  0 = dma service request is disabled  1 = dma service request is enabled</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RFT</spirit:name>
+<spirit:description>rxfifo trigger threshold  this field sets the threshold level at which rxfifo asserts interrupt. the level should be set to the preferred threshold value minus 1.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TFT</spirit:name>
+<spirit:description>txfifo trigger threshold  this field sets the threshold level at which txfifo asserts interrupt. the level should be set to the preferred threshold value minus 1.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_INT_EN</spirit:name>
+<spirit:description>SSP Interrupt Enable Register</spirit:description>
+<spirit:addressOffset>0X08</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>EBCEI</spirit:name>
+<spirit:description>enable bit count error interrupt  0 = interrupt due to a bit count error is disabled  1 = interrupt due to a bit count error is enabled</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TIM</spirit:name>
+<spirit:description>transmit fifo underrun interrupt mask  0 = tur events generate an ssp interrupt  1 = tur events do not generate an ssp interrupt</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RIM</spirit:name>
+<spirit:description>receive fifo overrun interrupt mask  0 = ror events generate an ssp interrupt  1 = ror events do not generate an ssp interrupt</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SSP0_TIE61</spirit:name>
+<spirit:description>transmit fifo interrupt enable  0 = txfifo threshold-level-reached interrupt is disabled  1 = txfifo threshold-level-reached interrupt is enabled</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RIE</spirit:name>
+<spirit:description>receive fifo interrupt enable  0 = rxfifo threshold-level-reached interrupt is disabled  1 = rxfifo threshold-level-reached interrupt is enabled</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TINTE</spirit:name>
+<spirit:description>receiver time-out interrupt enable  0 = receiver time-out interrupt is disabled  1 = receiver time-out interrupt is enabled</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PINTE</spirit:name>
+<spirit:description>peripheral trailing byte interrupt enable  0 = peripheral trailing byte interrupt is disabled  1 = peripheral trailing byte interrupt is enabled</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_TO</spirit:name>
+<spirit:description>SSP Time Out Register</spirit:description>
+<spirit:addressOffset>0X0C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>TIMEOUT</spirit:name>
+<spirit:description>timeout value  timeout value is the value (0 to 2&lt;super 24&gt;-1) that defines the time-out interval. the time-out interval is given by the equation shown in the timeout interval equation.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>24</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_DATAR</spirit:name>
+<spirit:description>SSP Data Register</spirit:description>
+<spirit:addressOffset>0X10</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SSP0_DATA88</spirit:name>
+<spirit:description>data  this field is used for data to be written to the txfifo read from the rxfifo.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_STATUS</spirit:name>
+<spirit:description>SSP Status Register</spirit:description>
+<spirit:addressOffset>0X14</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>OSS</spirit:name>
+<spirit:description>odd sample status  0 = rxfifo entry has two samples  1 = rxfifo entry has one sample    note that this bit needs to be looked at only when fifo packing is enabled (&lt;fifo packing enable&gt; field in ssp fifo control register is set). otherwise, this bit is zero.  when sspx port is in packed mode and the cpu is used instead of dma to read the rxfifo, the cpu should make sure that &lt;receive fifo not empty&gt; = 1 and this field = 0 before it attempts to read the rxfifo.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TX_OSS</spirit:name>
+<spirit:description>tx fifo odd sample status  when sspx port is in packed mode, the number of samples in the tx fifo is:   (&lt;transmit fifo level&gt;*2 + this field), when &lt;transmit fifo not full&gt; = 1  32, when &lt;transmit fifo not full&gt; = 0.  the tx fifo cannot accept new data when &lt;transmit fifo not full&gt; = 1 and &lt;transmit fifo level&gt; = 15 and this field = 1. (the tx fifo has 31 samples).    0 = txfifo entry has an even number of samples  1 = txfifo entry has an odd number of samples  note that this bit needs to be read only when fifo packing is enabled (&lt;fifo packing enable&gt; in the ssp fifo control register is set). otherwise, this bit is zero.</spirit:description>
+<spirit:bitOffset>22</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BCE</spirit:name>
+<spirit:description>bit count error  0 = the sspx port has not experienced a bit count error  1 = the sspsfrmx signal was asserted when the bit counter was not zero</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ROR</spirit:name>
+<spirit:description>receive fifo overrun  0 = rxfifo has not experienced an overrun  1 = attempted data write to full rxfifo, causes an interrupt request</spirit:description>
+<spirit:bitOffset>20</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RFL</spirit:name>
+<spirit:description>receive fifo level  this field is the number of entries minus one in rxfifo. when the value 0x1f is read, the rxfifo is either empty or full, and software should read the &lt;receive fifo not empty&gt; field.</spirit:description>
+<spirit:bitOffset>15</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RNE</spirit:name>
+<spirit:description>receive fifo not empty  0 = rxfifo is empty  1 = rxfifo is not empty</spirit:description>
+<spirit:bitOffset>14</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RFS</spirit:name>
+<spirit:description>receive fifo service request  0 = rxfifo level is at or below rft threshold (rft) or sspx port is disabled  1 = rxfifo level exceeds rft threshold (rft), causes an interrupt request</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TUR</spirit:name>
+<spirit:description>transmit fifo underrun  0 = the txfifo has not experienced an underrun  1 = a read from the txfifo was attempted when the txfifo was empty, causes an interrupt if it is enabled (&lt;transmit fifo underrun interrupt mask&gt; in the ssp int en register  is 0)</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SSP0_TFL106</spirit:name>
+<spirit:description>transmit fifo level  this field is the number of entries in txfifo.when the value 0x0 is read, the txfifo is either empty or full, and software should read the &lt;transmit fifo not full&gt; field.</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TNF</spirit:name>
+<spirit:description>transmit fifo not full  0 = txfifo is full  1 = txfifo is not full</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TFS</spirit:name>
+<spirit:description>transmit fifo service request  0 = tx fifo level exceeds the tft threshold (tft + 1) or sspx port disabled  1 = txfifo level is at or below tft threshold (tft + 1), causes an interrupt request</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SSP0_EOC109</spirit:name>
+<spirit:description>end of chain  0 = dma has not signaled an end of chain condition  1 = dma has signaled an end of chain condition</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TINT</spirit:name>
+<spirit:description>receiver time-out interrupt  0 = no receiver time-out is pending  1 = receiver time-out pending, causes an interrupt request</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>PINT</spirit:name>
+<spirit:description>peripheral trailing byte interrupt  0 = no peripheral trailing byte interrupt is pending  1 = peripheral trailing byte interrupt is pending</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CSS</spirit:name>
+<spirit:description>clock synchronization status  0 = the sspx port is ready for slave clock operations  1 = the sspx port is currently busy synchronizing slave mode signals</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>BSY</spirit:name>
+<spirit:description>ssp busy  0 = sspx port is idle or disabled  1 = sspx port is currently transmitting or receiving framed data</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_PSP_CTRL</spirit:name>
+<spirit:description>SSP Programmable Serial Protocol Control Register</spirit:description>
+<spirit:addressOffset>0X18</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>EDMYSTOP</spirit:name>
+<spirit:description>extended dummy stop  most-significant bits of the dummy stop delay.do not use in psp network mode.</spirit:description>
+<spirit:bitOffset>27</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DMYSTOP</spirit:name>
+<spirit:description>dummy stop  least-significant bits of the dummy stop delay  programmed value of &lt;extended dummy stop&gt; + this field specifies the number (0-31) of active clocks (sspsclkx) that follow the end of the transmitted data.do not use in psp network mode.</spirit:description>
+<spirit:bitOffset>25</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>EDMYSTRT</spirit:name>
+<spirit:description>extended dummy start  most-significant bits of the dummy start delay.do not use in psp network mode.</spirit:description>
+<spirit:bitOffset>23</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DMYSTRT</spirit:name>
+<spirit:description>dummy start  least-significant bits of the dummy start delay  programmed value of this field specifies the number (0-15) of active clocks (sspsclks) between the end of start delay and when the most-significant bit of transmit/receive data is driven. do not use in psp network mode.</spirit:description>
+<spirit:bitOffset>21</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>STRTDLY</spirit:name>
+<spirit:description>start delay  programmed value specifies the number (0-7) of non-active clocks (sspsclkx) that define the duration of idle time. do not use in psp network mode.</spirit:description>
+<spirit:bitOffset>18</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SFRMWDTH</spirit:name>
+<spirit:description>serial frame width  least-significant bits of the serial frame width  programmed value of this field specifies the frame width from 0x00 (one sspsclkx cycle) to 0x3f (63 sspsclkx cycles).</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SFRMDLY</spirit:name>
+<spirit:description>serial frame delay  programmed value specifies the number (0 -127) of active one-half clocks (sspsclkx) asserted from the most-significant bit of txdx (output) or rxd (input) being driven to sspsfrmx.do not use in psp network mode.</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>7</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SFRMP</spirit:name>
+<spirit:description>serial frame polarity  0 = sspsfrmx is active low (0x0)  1 = sspsfrmx is active high (0x1)</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FSRT</spirit:name>
+<spirit:description>frame sync relative timing bit  0 = next frame is asserted after the end of the dmtstop timing  1 = next frame is asserted with the lsb of the previous frame</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>ETDS</spirit:name>
+<spirit:description>end of transfer data state  0 = low  1 = last value &lt;bit 0&gt;</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SCMODE</spirit:name>
+<spirit:description>serial bit-rate clock mode  0x0 = data driven (falling), data sampled (rising), idle state (low)  0x1 = data driven (rising), data sampled (falling), idle state (low)  10 = data driven (rising), data sampled (falling), idle state (high)  0x3 = data driven (falling), data sampled (rising), idle state (high)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_NET_WORK_CTRL</spirit:name>
+<spirit:description>SSP Net Work Control Register</spirit:description>
+<spirit:addressOffset>0X1C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RTSA</spirit:name>
+<spirit:description>rx time slot active, only used in network mode   0 = sspx port does not receive data in this time slot  1 = sspx port receives data in this time slot.</spirit:description>
+<spirit:bitOffset>12</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TTSA</spirit:name>
+<spirit:description>tx time slot active, only used in network mode  0 = sspx port does not transmit data in this time slot  1 = sspx port does transmit data in this time slot</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>8</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FRDC</spirit:name>
+<spirit:description>frame rate divider control  value of 0x0-0x7 specifies the number of time slots per frame when in network mode (the actual number of time slots is this field +1, so 1 to 8 time slots can be specified).</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>NET_WORK_MOD</spirit:name>
+<spirit:description>mode  0 = normal ssp mode  1 = network mode. when set this bit to 1, must make sure at same time ssp_top_ctrl[frf]=0x3</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_NET_WORK_STATUS</spirit:name>
+<spirit:description>SSP Net Work Status Register</spirit:description>
+<spirit:addressOffset>0X20</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>NMBSY</spirit:name>
+<spirit:description>network mode busy  0 = sspx port is in network mode and no frame is currently active  1 = sspx port is in network mode and a frame is currently active</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>TSS</spirit:name>
+<spirit:description>time slot status  value indicates which time slot is currently active. because of synchronization between the sspx port's sspsclkx domain and an internal bus clock domain, the value in this field becomes stable between the beginning and end of the currently active time slot.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_RWOT_CTRL</spirit:name>
+<spirit:description>SSP RWOT Control Register</spirit:description>
+<spirit:addressOffset>0X24</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MASK_RWOT_LAST_SAMPLE</spirit:name>
+<spirit:description>mask last_sample_flag in rwot mode  1= mask  0 = unmask</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CLR_RWOT_CYCLE</spirit:name>
+<spirit:description>clear ssp internal rwot_counter  this field clears the rwot_counter to 0. this field is self cleared by ssp after sse = 1.  1 = clear rwot_counter</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SET_RWOT_CYCLE</spirit:name>
+<spirit:description>set rwot cycle  this field is used to set the value of the ssp_rwot_ccm register to the ssp internal rwot_counter. this field is self-cleared by ssp after sse = 1.  1 = set rwot_counter</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>CYCLE_RWOT_EN</spirit:name>
+<spirit:description>enable ssp rwot cycle counter mode  1 = enable</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RWOT</spirit:name>
+<spirit:description>receive without transmit  0 = transmit/receive mode  1 = receive without transmit mode</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_RWOT_CCM</spirit:name>
+<spirit:description>SSP RWOT Counter Cycles Match Register</spirit:description>
+<spirit:addressOffset>0X28</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SSPRWOTCCM</spirit:name>
+<spirit:description>it's just total ssp_sclk_gpio cycles  the value of this register defines the total number of ssp_sclk_gpio cycles when ssp works in master and rwot mode. when the rwot_counter matches this value, ssp returns to idle state and does not output ssp_sclk_gpio anymore.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SSP_RWOT_CVWRn</spirit:name>
+<spirit:description>SSP RWOT Counter Value Write for Read Request Register</spirit:description>
+<spirit:addressOffset>0X2C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>SSPRWOTCVWR</spirit:name>
+<spirit:description>ssprwotcvwr  this register prevents the risk of instability on rwot_counter value reading, it's only valid after ssp has been enabled  write 0 = no effect  write 1 = capture value of rwot_counter  read: returns the captured value of rwot_counter</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>

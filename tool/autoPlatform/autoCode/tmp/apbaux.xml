@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<spirit:component xmlns:kactus2="http://funbase.cs.tut.fi/" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd">
+		<spirit:vendor>org.example</spirit:vendor>
+		<spirit:library>example_lib</spirit:library>
+		<spirit:name>apbaux</spirit:name>
+		<spirit:version>example_version</spirit:version>
+<spirit:memoryMaps>
+<spirit:memoryMap>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>RDL Example Registers</spirit:displayName>
+<spirit:addressBlock>
+<spirit:name>some_register_map</spirit:name>
+<spirit:displayName>ASR Module Registers</spirit:displayName>
+<spirit:description>This address map contains some example registers to show how RDL can be utilized in various situations.</spirit:description>
+<spirit:baseAddress>0xD0270000</spirit:baseAddress>
+<spirit:range>0x2000</spirit:range>
+<spirit:width>32</spirit:width>
+<spirit:usage> </spirit:usage>
+<spirit:volatile>true</spirit:volatile>
+<spirit:register>
+<spirit:name>COEL_APB_MSA_BOOT</spirit:name>
+<spirit:description>MSA Boot Address Register</spirit:description>
+<spirit:addressOffset>0X00000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>MSA_BOOT</spirit:name>
+<spirit:description>msa boot address (ddr)</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>32</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>APB_RF_CONT_MUX</spirit:name>
+<spirit:description>Continuity Multiplexer Register</spirit:description>
+<spirit:addressOffset>0X00008</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_9</spirit:name>
+<spirit:description>rf_cont_mux_9  0 = rf_cont 11  1 = gpoa 9</spirit:description>
+<spirit:bitOffset>9</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_8</spirit:name>
+<spirit:description>rf_cont_mux_8  0 = rf_cont 10  1 = gpoa 8</spirit:description>
+<spirit:bitOffset>8</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_7</spirit:name>
+<spirit:description>rf_cont_mux_7  0 = rf_cont 9  1 = gpoa 7</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_6</spirit:name>
+<spirit:description>rf_cont_mux_6  0 = rf_cont 8  1 = gpoa 6</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_5</spirit:name>
+<spirit:description>rf_cont_mux_5  0 = rf_cont 7  1 = gpoa 5</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_4</spirit:name>
+<spirit:description>rf_cont_mux_4  0 = rf_cont 6  1 = gpoa 4</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_3</spirit:name>
+<spirit:description>rf_cont_mux_3  0 = rf_cont 5  1 = gpoa 3</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_2</spirit:name>
+<spirit:description>rf_cont_mux_2  0 = rf_cont 4  1 = gpoa 2</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_1</spirit:name>
+<spirit:description>rf_cont_mux_1  0 = rf_cont 3  1 = gpoa 1</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>RF_CONT_MUX_0</spirit:name>
+<spirit:description>rf_cont_mux_0  0 = rf_cont 2  1 = gpoa 0</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_APB_CLK_GATE</spirit:name>
+<spirit:description>Clock Gate Register</spirit:description>
+<spirit:addressOffset>0X0000C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>DTC_SW_RESET</spirit:name>
+<spirit:description>dtc software reset</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>DTC_GATE</spirit:name>
+<spirit:description>dtc clock gating control</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_APB_GSM_WB_CHOOSE</spirit:name>
+<spirit:description>Select Active Sleep Timer Register</spirit:description>
+<spirit:addressOffset>0X00010</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>GSM_WB_CHOOSE</spirit:name>
+<spirit:description>gsm_wb_choose  this field selects the active sleep timer.  0 = selects the gsm modem slow clock  1 = selects the wb modem sleep timer</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_APB_RTU_CLKEN</spirit:name>
+<spirit:description>RTU Clock Enable Register</spirit:description>
+<spirit:addressOffset>0X00014</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>RTU_CLK_EN</spirit:name>
+<spirit:description>rtu clock enable  0 = disable rtu clock  1 = enable rtu clock</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_APB_SPARE1</spirit:name>
+<spirit:description>APB Spare Register 1</spirit:description>
+<spirit:addressOffset>0X00018</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>CG_SW_EN</spirit:name>
+<spirit:description>software clock gating enable for memory clocks</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SHUTDOWN_CLK_AROUND_RST_PARAM</spirit:name>
+<spirit:description>shutdown_clk_around_rst_param</spirit:description>
+<spirit:bitOffset>7</spirit:bitOffset>
+<spirit:bitWidth>3</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>SHUTDOWN_CLK_AROUND_RST_BYPASS_CTRL</spirit:name>
+<spirit:description>shutdown_clk_around_rst_bypass_ctrl</spirit:description>
+<spirit:bitOffset>6</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APB_GB_L2_CTRL_SEL</spirit:name>
+<spirit:description>selection for gb l2 sram control  0 = aib_gb_l2_*   1 = apb_gb_l2_*</spirit:description>
+<spirit:bitOffset>5</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APB_GB_L2_RATIO</spirit:name>
+<spirit:description>apb gb l2 sram ratio</spirit:description>
+<spirit:bitOffset>4</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>APB_GB_L2_LATENCY</spirit:name>
+<spirit:description>apb gb l2 sram latency</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>4</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_APB_SPARE2</spirit:name>
+<spirit:description>APB Spare Register 2</spirit:description>
+<spirit:addressOffset>0X0001C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>FB_WAKEUP_STICKY_CLR</spirit:name>
+<spirit:description>clear fb_wakeup_sticky_clr interrupt  1 = clear interrupt</spirit:description>
+<spirit:bitOffset>13</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>FB_WAKEUP_MASK</spirit:name>
+<spirit:description>fb_wakeup_mask  1 = mask</spirit:description>
+<spirit:bitOffset>11</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>D2_WAKEUP_MASK</spirit:name>
+<spirit:description>d2_wakeup_mask  1 = mask</spirit:description>
+<spirit:bitOffset>10</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GB_GATER_DELAY</spirit:name>
+<spirit:description>&lt;var subsystem: msa&gt; async bridge port clock idle off delay</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>6</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GB_GATER_SW_CTRL</spirit:name>
+<spirit:description>&lt;var subsystem: msa&gt; async bridge port clock gating software control  0x1 =  hardware control  0x0 = always on  0x2 = always on  0x3 = always on</spirit:description>
+<spirit:bitOffset>1</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>GBM_GATER_SW_CTRL</spirit:name>
+<spirit:description>&lt;var subsystem: msa&gt; async bridge master port clock gating software enable</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>COEL_APB_CONTROL</spirit:name>
+<spirit:description>APB Control Register</spirit:description>
+<spirit:addressOffset>0X00020</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>APB_EXT_CYCLE_NUM</spirit:name>
+<spirit:description>apb_ext_cycle_num  this field sets the number of cycles for an external apb clock cycle.</spirit:description>
+<spirit:bitOffset>3</spirit:bitOffset>
+<spirit:bitWidth>5</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>COEL_APB_EXT_IF2</spirit:name>
+<spirit:description>coel_apb_ext_if[2]  chicken bit for external clock</spirit:description>
+<spirit:bitOffset>2</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+<spirit:field>
+<spirit:name>COEL_APB_EXT_IF1</spirit:name>
+<spirit:description>coel_apb_ext_if[1]  0x1 = monitor  0x3 = ext r/w</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>2</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>GSRAM_CP_AP_SEL</spirit:name>
+<spirit:description>GSRAM Shared Memory Control Register</spirit:description>
+<spirit:addressOffset>0X20000</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>GSRAM_CNTL</spirit:name>
+<spirit:description>gsram_cntl  this field determines if gsram shared 64k memory (sram 2) will be controlled by  1 = comm (default)  0 = app</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+<spirit:register>
+<spirit:name>SENSOR_V18_OUT_REG</spirit:name>
+<spirit:description>V18 Sensor Output Register</spirit:description>
+<spirit:addressOffset>0X2000C</spirit:addressOffset>
+<spirit:size>32</spirit:size>
+<spirit:volatile>true</spirit:volatile>
+<spirit:access>read-write</spirit:access>
+<spirit:reset>
+<spirit:value>0</spirit:value>
+<spirit:mask>0xffffffff</spirit:mask>
+</spirit:reset>
+<spirit:field>
+<spirit:name>V18_OUT_SENSOR_CNT</spirit:name>
+<spirit:description>read enable for the sensor pads v18en output value  this field is the vcc i/o nand sensor pad v18 en output value.</spirit:description>
+<spirit:bitOffset>0</spirit:bitOffset>
+<spirit:bitWidth>1</spirit:bitWidth>
+<spirit:access>read-write</spirit:access>
+</spirit:field>
+</spirit:register>
+</spirit:addressBlock>
+</spirit:memoryMap>
+</spirit:memoryMaps>
+</spirit:component>
