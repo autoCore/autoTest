@@ -1,0 +1,46 @@
+JTAG.SHIFTTMS 1 1 1 1 1                                                         ; soft reset of the JTAG interface, goto Test-Logic Reset state
+
+; ir-chain detect
+JTAG.SHIFTTMS 0 1 1 0 0                                                         ; goto Shift-IR state
+JTAG.SHIFTREG 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1   ; 32 bits
+print.FORMAT.BINary(32,JTAG.SHIFT())
+JTAG.SHIFTTMS 1 0 0
+
+
+JTAG.SHIFTTMS 0 1 1 0 0                                                         ; goto Shift-IR state
+JTAG.SHIFTREG 0 0 0 1 1 0 0 1 0                                                 ; ir(9)=0x98
+;print.FORMAT.BINary(16,JTAG.SHIFT())
+JTAG.SHIFTTMS 1 0 0
+
+JTAG.SHIFTTMS 0 1 0 0                                                           ; goto Shift-DR state
+JTAG.SHIFTREG 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0                                   ; DR(16) = 0x0a
+;print.FORMAT.BINary(16,JTAG.SHIFT())
+Jtag.shifttms 1 0 0
+
+
+; ir-chain detect
+JTAG.SHIFTTMS 0 1 1 0 0                                                         ; goto Shift-IR state
+JTAG.SHIFTREG 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1   ; 32 bits
+print.FORMAT.BINary(32,JTAG.SHIFT())
+Jtag.shifttms 1 0 0
+
+; ir-chain detect
+JTAG.SHIFTTMS 0 1 1 0 0                                                         ; goto Shift-IR state
+JTAG.SHIFTREG 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1   ; 32 bits
+print.FORMAT.BINary(32,JTAG.SHIFT())
+Jtag.shifttms 1 0 0
+
+
+
+;step 3, read connected TAP id
+JTAG.SHIFTTMS 0 1 1 0 0                                                       ; goto Shift-IR state
+JTAG.SHIFTREG 1 0 1 1 1 1 1 1 1 1 1 1 1 1                                     ; shift in IR of IDCODE  (1)+ (DAP ID,4bit, 0xE) + (1 1 1 1 1 1 1 1 1)
+print.FORMAT.BINary(16,JTAG.SHIFT())
+JTAG.SHIFTTMS 1 0 0
+
+JTAG.SHIFTTMS 0 1 0 0
+JTAG.SHIFTREG 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0   ; shift in (1) + (DR length of connected DAP) + (1) dummy bits to get the DR of IDCODE
+print JTAG.SHIFT()
+JTAG.SHIFTTMS 1 0 0 1                                                            ;select dr-status
+;end
+enddo

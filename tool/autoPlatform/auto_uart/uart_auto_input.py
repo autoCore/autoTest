@@ -217,12 +217,7 @@ if __name__ == "__main__":
 			for cmd,timeout in cmd_set:
 				uart.input(cmd.strip())
 				time.sleep(eval(timeout))
-		# for i in xrange(60*60*48):
-		# 	uart.input('cnt:%d'%i)
-		# 	uart.input('reboot 1')
-		# 	time.sleep(2)
-		# 	uart.expect('ctest#',5)
-			# time.sleep(3)
+
 		WAIT_ALL_THREAD_END()
 	except Exception,e:
 		stop_flag.set()

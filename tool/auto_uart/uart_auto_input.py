@@ -65,7 +65,8 @@ class Uart(threading.Thread):
 		timing = 0
 		pattern = re.compile(text)
 		for i in xrange(cnt):
-			if self.last_log and pattern.search(self.last_log): return uart_timeout*i
+			# if self.last_log and pattern.search(self.last_log): return uart_timeout*i
+			if self.last_log and text in self.last_log: return uart_timeout*i
 			time.sleep(uart_timeout)
 			if int(uart_timeout*i) != timing:
 				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
@@ -216,6 +217,11 @@ if __name__ == "__main__":
 			for cmd,timeout in cmd_set:
 				uart.input(cmd.strip())
 				time.sleep(eval(timeout))
+		for i in xrange(60*60*48):
+			uart.input('cnt:%d'%i)
+			uart.input('reboot 0')
+			time.sleep(2)
+			uart.expect('ctest#',5)
 		WAIT_ALL_THREAD_END()
 	except Exception,e:
 		stop_flag.set()

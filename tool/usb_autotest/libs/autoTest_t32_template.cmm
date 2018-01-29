@@ -1,0 +1,64 @@
+;;/*using system etb 32kB*/
+system.option enreset off
+system.option trst off
+system.config slave on
+
+
+system.config DAPIRPRE 1.
+system.config DAPIRPOST 9.
+TERM.RESet
+TERM.METHOD SingleE 0xC0700000 0xC0700004
+TERM.SIZE 80 2000
+TERM.MODE VT100
+TERM.SCROLL ON
+TERM.view
+SCREEN.ALways
+TERM.WRITE E:0xC0700000 c:\autoTest.log
+
+system.config DAPDRPRE 1.
+system.config DAPDRPOST 1.
+
+
+;;don't support variable for the normal style
+SYStem.CONFIG CoreNumber 1
+
+CORE.ASSIGN 1
+
+system.cpu CORTEXA53
+SYStem.CONFIG CoreNumber 1
+
+system.config MEMORYACCESSPORT 0
+system.config AXIACCESSPORT   0
+system.config DEBUGACCESSPORT 1
+
+SYStem.MemAccess DAP
+SYStem.CpuAccess Enable
+
+sys.config corebase 0xD5410000
+SYS.CONFIG.CTIBase  0xD5420000
+
+;;for simulator
+system.up
+
+data.load.elf \\fileserver\public-share\sw_cv\tmp\aquila_fpga_example_test.axf
+
+go
+wait 1s
+TERM.Out E:0xC0700004 " " 10.
+wait 0.3s
+TERM.Out E:0xC0700004 "help" 10.
+
+wait 1s
+
+TERM.Out E:0xC0700004 "fault_cmd" 10.
+
+;;go, Test timeout value
+wait 1.123s
+
+break
+
+wait 1s
+TERM.close
+SCREEN.ON
+
+;;enddo

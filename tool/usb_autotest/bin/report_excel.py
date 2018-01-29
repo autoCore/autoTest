@@ -84,12 +84,5 @@ def report_excel(autoTest_object_list,fname):
 			sheet_obj.write(i,col_num,report_text[col_num],excel_style_config(sheet_obj,i,col_num,False,180))
 
 	excel_obj.save(fname)
-	if 'vmin' == module_name:
-		dvc_parse_test_report(fname)
-if __name__ == '__main__':
-	if 2 == len(sys.argv):
-		fname = sys.argv[1]
-	else:
-		fname = './tool/tmp/test_report.xls'
-	dvc_parse_test_report(fname)
+
 

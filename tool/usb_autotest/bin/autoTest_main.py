@@ -9,6 +9,8 @@ import copy,os,sys,time,datetime
 from auto_test_uart import *
 from jtag_t32 import *
 import ConfigParser
+from autotest import *
+from create_autoTest_cmm import *
 
 sys.path.append("./tool/")
 from autobuild_all import do_autoBuild
@@ -44,6 +46,7 @@ class AutoTest(object):
 		self.build_result = None
 		self.test_log_dir = None
 		self.test_result = []
+		self.cmm_fn = ''
 
 	def to_object(self, id = None, module_name = '', binary = '',cmd_list = [],timeout_list = [], log_dir = '',build_result = 'Success'):
 		self.ID = id
@@ -53,6 +56,9 @@ class AutoTest(object):
 		self.test_timeout_list = timeout_list[:]
 		self.build_result = build_result
 		self.test_log_dir = log_dir
+
+	def set_cmm_fn(self, _file_name):
+		self.cmm_fn = _file_name
 
 	def clear(self):
 		self.__init__()
@@ -202,7 +208,7 @@ class AutoTestParse(object):
 			if case.test_result:
 				print 'module name:',case.module_name
 				print 'test result:',case.test_result
-				print 'case test done!\n' 
+				print 'case test done!\n'
 				continue
 			self.uart.reset_log_file(case.test_log_dir)
 			case.download_binary()
@@ -233,6 +239,120 @@ class AutoTestParse(object):
 		os.system('find ./tool -name *.pyc -exec rm {} \;')
 		print 'output:'+test_module_dir
 		print 'clear done'
+
+class Jtag_AutoTestParse(AutoTestParse):
+	def __init__(self, project_name,report_name = 'all_modules'):
+		super(Jtag_AutoTestParse, self).__init__(project_name,report_name)
+		self.t32api = None
+		self.reset_cmm = None
+		self.use_uart = 1
+
+	def prepare_test(self,is_build = False):
+		config_init()
+		self.t32api = connect_jtag()
+		assert self.t32api,'connect_jtag fail!'
+		self.reset_cmm = './tool/usb_autotest/libs/'
+
+		self.uart = Uart()
+		self.uart.createPort()
+		self.uart.start()
+
+		do_autoBuild(argv.project_name,argv.module_name) if is_build else None
+		conf = ConfigParser.ConfigParser()
+		conf.read('./tool/usb_autotest/autotest.cfg')
+		for sec in conf.sections():
+			self.config_options[sec] = {k:v for k,v in conf.items(sec)}
+		# print self.config_options
+
+		autotest_tmp = self.config_options.get('basic_config',{}).get('autotest_tmp')
+		autotest_tmp =  autotest_tmp if autotest_tmp else './tool/tmp'
+		os.mkdir(autotest_tmp) if not os.path.exists(autotest_tmp) else None
+
+		log_dir = self.config_options.get('basic_config',{}).get('log_dir')
+		self.log_dir =  log_dir if log_dir else './tool/tmp/log'
+		os.system(r'rm -rf %s'%self.log_dir) if os.path.exists(self.log_dir) else None
+		os.mkdir(self.log_dir)
+		os.system(r'chmod 777 %s'%self.log_dir)
+
+		os.system(r'rm -rf ./tool/tmp/cmm') if os.path.exists('./tool/tmp/cmm') else None
+		os.mkdir('./tool/tmp/cmm')
+		os.system(r'chmod 777 ./tool/tmp/cmm')
+
+		build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
+		self.build_res_fname =  build_res_fname if build_res_fname else './tool/tmp/~build.result'
+
+	def get_case(self):
+		obj = AutoTest()
+		assert os.path.exists(self.build_res_fname),'No file:%s'%self.build_res_fname
+		with open(self.build_res_fname) as file_obj:
+			all_modules = '##'.join(file_obj.readlines())
+		all_modules = re.sub(r'\n| {3,}','',all_modules)
+		all_modules = re.sub(r'TIMEOUT_DEFAULT','30',all_modules)
+		all_modules = '#' + all_modules + '#'
+		auto_case_modules = re.findall(r'#([a-zA-Z_0-9]+):([^:]+):([^:]+):\[(Success)\]:AUTOTEST@([^:]+):(.*?)#',all_modules)
+		fail_modules = re.findall(r'#([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Fail\]#',all_modules)
+		no_auto_list = re.findall(r'#([a-zA-Z_0-9]+):[^:]+:[^:]+:\[Success\]#',all_modules)
+		no_auto_list = list(set(no_auto_list))
+		no_auto_list.sort()
+		no_auto_modules = []
+		for module in no_auto_list:
+			for case_info in auto_case_modules:
+				if module in case_info: break
+			else:
+				no_auto_modules.append(module)
+		# print all_modules
+		line_num = 0
+		for line_num, _str in enumerate(fail_modules):
+			obj.to_object(id = line_num, module_name = _str,build_result = 'Fail')
+			obj.set_test_result(['Build_Fail'])
+			self.case_list.append(copy.deepcopy(obj))
+			obj.clear()
+		for line_num, _str in enumerate(no_auto_modules,line_num+1):
+			obj.to_object(id = line_num, module_name = _str,build_result = 'Success')
+			obj.set_test_result(['No_Auto_Case'])
+			self.case_list.append(copy.deepcopy(obj))
+			obj.clear()
+		for line_num, case_info in enumerate(auto_case_modules,line_num+1):
+			case_info = (_str.strip() for _str in case_info)
+			module_name,build_cmd,axf_dir,build_result,test_cmd,time_out = case_info
+			test_cmd_list = test_cmd.split('@')
+			timeout_list = time_out.split('@')
+			for i,timeout in enumerate(timeout_list):
+				timeout = eval(timeout)
+				timeout_list[i] = str(timeout)
+			for i,value in enumerate(timeout_list):
+				if value == '':
+					timeout_list[i] = 30
+			log_file = os.path.join(self.log_dir,create_file_name(axf_dir, line_num,'.log'))
+			_t32_log_dir = os.path.join(cfg.t32_log_file_dir,create_file_name(axf_dir, line_num,'.log'))
+			axf_dir = os.path.join(cfg.share_ctest_root_dir,axf_dir)
+			obj.to_object(line_num, module_name, axf_dir, test_cmd_list, timeout_list, log_file, _t32_log_dir)
+			if self.use_uart:
+				obj.set_cmm_fn(create_autoTest_cmm_uart(obj, line_num,cfg.cmm_file_dir))
+			else:
+				obj.set_cmm_fn(create_autoTest_cmm(obj, line_num,cfg.cmm_file_dir))
+			self.case_list.append(copy.deepcopy(obj))
+			obj.clear()
+		self.case_cnt = len(self.case_list)
+		assert self.case_cnt, 'get case list fail'
+		# for case in self.case_list:
+		# 	print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in case.__dict__.items()])
+		# 	raw_input()
+
+	def auto_test(self):
+		for doing_num,case in enumerate(self.case_list):
+			print 'doing_num:%d total_cnt:%d'%(doing_num,self.case_cnt)
+			if case.test_result:
+				print 'module name:',case.module_name
+				print 'test result:',case.test_result
+				print 'case test done!\n' 
+				continue
+			if 1:
+				autoTest_uart(self.t32api,case,self.uart)
+			else:
+				autoTest(self.t32api,case)
+				get_test_result(case)
+
 
 class VminAutoTestParse(AutoTestParse):
 	def __init__(self, project_name,report_name = 'vmin'):
@@ -339,11 +459,14 @@ if __name__ == '__main__':
 	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
 	arg_parser.add_argument('-b','--build',action = 'store_false',help = 'if donot build modules,input -b')
 	arg_parser.add_argument('-v','--vmin',action = 'store_true',help = 'if vmin test,input -v')
+	arg_parser.add_argument('-j','--jtag',action = 'store_true',help = 'if use jtag,input -j')
 	argv = arg_parser.parse_args()
 	try:
 		if argv.vmin:
 			report_file = argv.module_name if argv.module_name else 'vmin'
 			autotest = VminAutoTestParse(argv.project_name,report_file)
+		elif argv.jtag:
+			autotest = Jtag_AutoTestParse(argv.project_name,argv.module_name)
 		else:
 			autotest = AutoTestParse(argv.project_name,argv.module_name)
 		autotest.prepare_test(argv.build)

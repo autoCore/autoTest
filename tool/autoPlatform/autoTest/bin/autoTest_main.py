@@ -340,6 +340,56 @@ class Jtag_AutoTestParse(AutoTestParse):
 		# for case in self.case_list:
 		# 	print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in case.__dict__.items()])
 		# 	raw_input()
+	def get_test_result(self,autoTest_obj):
+		test_log_dir = autoTest_obj.test_log_dir
+		test_cmd_list = autoTest_obj.test_cmd_list
+		print "get_test_result begin: log_DIR = ", test_log_dir
+
+		result_list = []
+		if os.path.exists(test_log_dir):
+			pass
+		else:
+			print 'log_DIR:',test_log_dir,'does not exist'
+			result_list.append('Cannot find result_log file')
+			return result_list
+
+		input_cmd_list = []
+		input_cmd_count = 0
+		output_log_count = 0
+
+		with open(test_log_dir) as test_result_obj:
+			for line_no,eachline in enumerate(test_result_obj):
+				if 'ctest#' in eachline[:7]:
+					input_cmd = eachline.split('#')[1].strip()
+					if input_cmd in test_cmd_list:
+						input_cmd_list.append(input_cmd)
+						input_cmd_count += 1
+					continue
+				if "Unknown command" in eachline and input_cmd_count:
+					output_log_count += 1
+					res = eachline.split('-')[0]
+					result_list.append(res.strip())
+					continue
+				if 'AUTOTEST@' in eachline and 'Result[' in eachline:
+					output_log_count += 1
+					if output_log_count == input_cmd_count:
+						pass
+					elif output_log_count < input_cmd_count:
+						for i in range(input_cmd_count - output_log_count):
+							result_list.append('No_result_log')
+							output_log_count += 1
+					ll = eachline.split('Result[')[1]
+					res = ll.split(']')[0]
+					if res == 'ERR':
+						retcode = ll.split('RetCode')[-1].strip()
+						res += retcode
+					result_list.append(res)
+
+		test_cmd_count = len(test_cmd_list)
+		if output_log_count < test_cmd_count:
+			for i in range(test_cmd_count - output_log_count):
+				result_list.append('No_result_log')
+		autoTest_obj.set_test_result(result_list)
 
 	def auto_test(self):
 		for doing_num,case in enumerate(self.case_list):
@@ -353,7 +403,7 @@ class Jtag_AutoTestParse(AutoTestParse):
 				autoTest_uart(self.t32api,case,self.uart)
 			else:
 				autoTest(self.t32api,case)
-				get_test_result(case)
+				self.get_test_result(case)
 
 
 class VminAutoTestParse(AutoTestParse):
