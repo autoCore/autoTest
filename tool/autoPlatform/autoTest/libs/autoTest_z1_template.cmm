@@ -12,19 +12,60 @@ print "do cpu and ddr init"
 LOCAL &scriptpath
 &scriptpath=".\tool\autoTest_script"
 path &scriptpath
-do main.cmm
+do ca53_z1.cmm
 
 print "running ddr init code......"
-#data.load.elf &scriptpath"/aquila_evb_ddr_training_ok-78M_test.axf"
-#go
-wait 5.s
+
+data.load.elf &scriptpath"/spl.elf"
+
+go
+wait 25.s
 break
 
-system.jtagclock 10Mhz
 
 print "end of ddr init "
 print "load test code......"
 data.load.elf test.axf
+
+
+print "write log file......"
+TERM.RESet
+TERM.METHOD SingleE EAXI:0xd4282a48 EAXI:0xd4282a50
+TERM.SIZE 60 200
+TERM.MODE VT100
+TERM.SCROLL ON
+TERM.view
+SCREEN.ALways
+TERM.WRITE EAXI:0xd4282a48 c:\autoTest.log
+
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+print "running c code......"
+go
+wait 160s
+
+TERM.Out EAXI:0xd4282a50 " " 10.
+wait 0.3s
+
+TERM.Out EAXI:0xd4282a50 "ls" 10.
+wait 10s
+
+TERM.Out EAXI:0xd4282a50 "fault_cmd" 10.
+
+wait 5s
+break
+print "End of running ctest "
+
+TERM.close
+SCREEN.ON
+print "End of TERM.close"
+wait 1s
+
+print "waiting reset trace32......"
+wait 1
+stop
+enddo
 
 print "write log file......"
 TERM.RESet
@@ -41,13 +82,13 @@ SYStem.CpuAccess Enable
 
 print "running c code......"
 go
-wait 0.3s
+wait 10s
 
 TERM.Out EAXI:0xC0700004 " " 10.
-wait 0.3s
+wait 1s
 
 TERM.Out EAXI:0xC0800004 "ls" 10.
-wait 1s
+wait 20s
 
 TERM.Out EAXI:0xC0700004 "fault_cmd" 10.
 

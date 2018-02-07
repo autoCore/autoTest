@@ -6,7 +6,7 @@ sys.path.append("./tool/autoPlatform/t32_api")
 from jtag_t32 import *
 
 def autoTest_uart(t32api,autoTest_obj,uart):
-	fname = os.path.join(cfg.share_ctest_root_dir, autoTest_obj.cmm_fn)
+	fname = autoTest_obj.cmm_fn
 	uart.reset_log_file(autoTest_obj.test_log_dir)
 	jtag_stop_it(t32api)
 	wait_time = do_t32command_do_cmm(t32api, fname)
@@ -50,7 +50,7 @@ def autoTest_uart(t32api,autoTest_obj,uart):
 
 def autoTest(t32api,autoTest_obj):
 	docmm_timeout = 10
-	fname = os.path.join(cfg.share_ctest_root_dir, autoTest_obj.cmm_fn)
+	fname = autoTest_obj.cmm_fn
 	jtag_stop_it(t32api)
 	wait_time = do_t32command_do_cmm(t32api, fname)
 	wait_time += docmm_timeout

@@ -141,7 +141,8 @@ def jtag_cmd(t32api, line):
 
 def do_t32rem(t32api, t32_cmd):
 	jtat_disconnect(t32api)
-	cmd = cfg.t32_bin_dir + 't32rem'
+	# cmd = cfg.t32_bin_dir + 't32rem'
+	cmd = 't32rem'
 	cmd = ' '.join([cmd, conf.get('jtag_config','t32_IP'), conf.get('jtag_config','t32_PORT'), conf.get('jtag_config','t32_PACKLEN'), ' "%s"'%t32_cmd])
 	print 'cmd: ', cmd
 	if 0 != os.system(cmd):
@@ -149,20 +150,19 @@ def do_t32rem(t32api, t32_cmd):
 	t32api = jtat_connect()
 
 def do_t32command_do_cmm(t32api, fname):
-	s = 0.1
-	with open(fname, 'r') as file:
-		for line in file:
-			line=line.rstrip()
-			if 'wait' in line[:5]:
-				ll = line.split('wait')
-				ll = ll[1].lstrip().split('s')
-				s += float(ll[0])
+	# s = 0.1
+	# with open(fname, 'r') as file:
+	# 	for line in file:
+	# 		line=line.rstrip()
+	# 		if 'wait' in line[:5]:
+	# 			ll = line.split('wait')
+	# 			ll = ll[1].lstrip().split('s')
+	# 			s += float(ll[0])
 	cmd = 'do ' + fname
 	print 'cmd: ', cmd
 	# print 'cmd: ', "END"
 	jtag_cmd(t32api, "END")
 	jtag_cmd(t32api, cmd)
-	return s
 
 def send_commands(file, t32api, verbose):
 	line = create_string_buffer(800)

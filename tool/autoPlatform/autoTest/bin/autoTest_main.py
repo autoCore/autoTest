@@ -49,6 +49,7 @@ class AutoTest(object):
 		self.test_log_dir = None
 		self.test_result = []
 		self.cmm_fn = ''
+		self.local_cmm_fn = ''
 
 	def to_object(self, id = None, module_name = '', binary = '',cmd_list = [],timeout_list = [], log_dir = '',build_result = 'Success'):
 		self.ID = id
@@ -59,8 +60,9 @@ class AutoTest(object):
 		self.build_result = build_result
 		self.test_log_dir = log_dir
 
-	def set_cmm_fn(self, _file_name):
-		self.cmm_fn = _file_name
+	def set_cmm_fn(self, _cmm_fn,_local_cmm_fn):
+		self.cmm_fn = _cmm_fn
+		self.local_cmm_fn = _local_cmm_fn
 
 	def clear(self):
 		self.__init__()
@@ -255,9 +257,10 @@ class Jtag_AutoTestParse(AutoTestParse):
 		assert self.t32api,'connect_jtag fail!'
 		self.reset_cmm = './tool/usb_autotest/libs/'
 
-		self.uart = Uart()
-		self.uart.createPort()
-		self.uart.start()
+		if self.use_uart:
+			self.uart = Uart()
+			self.uart.createPort()
+			self.uart.start()
 
 		do_autoBuild(argv.project_name,argv.module_name) if is_build else None
 		conf = ConfigParser.ConfigParser()
@@ -330,9 +333,9 @@ class Jtag_AutoTestParse(AutoTestParse):
 			axf_dir = os.path.join(cfg.share_ctest_root_dir,axf_dir)
 			obj.to_object(line_num, module_name, axf_dir, test_cmd_list, timeout_list, log_file, _t32_log_dir)
 			if self.use_uart:
-				obj.set_cmm_fn(create_autoTest_cmm_uart(obj, line_num,cfg.cmm_file_dir))
+				obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir, create_autoTest_cmm_uart(obj, line_num,cfg.cmm_file_dir)))
 			else:
-				obj.set_cmm_fn(create_autoTest_cmm(obj, line_num,cfg.cmm_file_dir))
+				obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir,create_autoTest_cmm(obj, line_num,cfg.cmm_file_dir)))
 			self.case_list.append(copy.deepcopy(obj))
 			obj.clear()
 		self.case_cnt = len(self.case_list)
@@ -399,7 +402,7 @@ class Jtag_AutoTestParse(AutoTestParse):
 				print 'test result:',case.test_result
 				print 'case test done!\n' 
 				continue
-			if 1:
+			if self.use_uart:
 				autoTest_uart(self.t32api,case,self.uart)
 			else:
 				autoTest(self.t32api,case)
@@ -503,7 +506,43 @@ class VminAutoTestParse(AutoTestParse):
 
 
 #pls change to ctest root directory , #./tool/autoTest/autoTest_main.py
+def autoTest_main():
+	signal.signal(signal.SIGINT, signal_handler)
+	signal.signal(signal.SIGTERM, signal_handler)
+	arg_parser = argparse.ArgumentParser()
+	arg_parser.add_argument('project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
+	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
+	arg_parser.add_argument('-b','--build',action = 'store_false',help = 'if donot build modules,input -b')
+	arg_parser.add_argument('-v','--vmin',action = 'store_true',help = 'if vmin test,input -v')
+	arg_parser.add_argument('-j','--jtag',action = 'store_true',help = 'if use jtag,input -j')
+	argv = arg_parser.parse_args()
+	try:
+		if argv.vmin:
+			report_file = argv.module_name if argv.module_name else 'vmin'
+			autotest = VminAutoTestParse(argv.project_name,report_file)
+		elif argv.jtag:
+			autotest = Jtag_AutoTestParse(argv.project_name,argv.module_name)
+		else:
+			autotest = AutoTestParse(argv.project_name,argv.module_name)
+		autotest.prepare_test(argv.build)
+		autotest.get_case()
+		autotest.auto_test()
+		raise TestEndException
+	except (MyException,AssertionError),e:
+		stop_flag.set()
+		print 'ERROR:',e
+	except TestEndException:
+		stop_flag.set()
+		autotest.create_report()
+		autotest.clear_result(autotest.report_name)
+	except Exception,e:
+		stop_flag.set()
+		print 'ERROR:',e
+		autotest.create_report()
+		autotest.clear_result(autotest.report_name)
+
 if __name__ == '__main__':
+	autoTest_main()
 	signal.signal(signal.SIGINT, signal_handler)
 	signal.signal(signal.SIGTERM, signal_handler)
 	arg_parser = argparse.ArgumentParser()

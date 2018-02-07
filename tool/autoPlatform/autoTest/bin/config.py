@@ -31,9 +31,9 @@ class config:
 
 cfg = config()
 test_platform = {
-	"aquila_evb":b"10.1.50.99",\
+	"aquila_evb":b"10.1.51.13",\
 	"aquilac_fpga":b"10.1.50.76",\
-	"aquilac_evb":b"10.1.50.99"
+	"aquilac_evb":b"10.1.51.13"
 }
 
 t32_platform_d = {

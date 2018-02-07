@@ -190,6 +190,7 @@ def WAIT_ALL_THREAD_END():
 		if not alive: break
 
 if __name__ == "__main__":
+
 	signal.signal(signal.SIGINT, signal_handler)
 	signal.signal(signal.SIGTERM, signal_handler)
 
@@ -217,11 +218,11 @@ if __name__ == "__main__":
 			for cmd,timeout in cmd_set:
 				uart.input(cmd.strip())
 				time.sleep(eval(timeout))
-		for i in xrange(60*60*48):
-			uart.input('cnt:%d'%i)
-			uart.input('reboot 0')
-			time.sleep(2)
-			uart.expect('ctest#',5)
+		# for i in xrange(60*60*48):
+		# 	uart.input('cnt:%d'%i)
+		# 	uart.input('reboot 0')
+		# 	time.sleep(2)
+		# 	uart.expect('ctest#',5)
 		WAIT_ALL_THREAD_END()
 	except Exception,e:
 		stop_flag.set()
