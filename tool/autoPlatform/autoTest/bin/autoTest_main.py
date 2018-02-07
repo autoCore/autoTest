@@ -323,7 +323,7 @@ class Jtag_AutoTestParse(AutoTestParse):
 			test_cmd_list = test_cmd.split('@')
 			timeout_list = time_out.split('@')
 			for i,timeout in enumerate(timeout_list):
-				timeout = eval(timeout)*10
+				timeout = eval(timeout)
 				timeout_list[i] = str(timeout)
 			for i,value in enumerate(timeout_list):
 				if value == '':

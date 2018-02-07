@@ -49,7 +49,7 @@ def autoTest_uart(t32api,autoTest_obj,uart):
 	print 'case test done!\n'
 
 def autoTest(t32api,autoTest_obj):
-	docmm_timeout = 200
+	docmm_timeout = 10
 	fname = autoTest_obj.cmm_fn
 	jtag_stop_it(t32api)
 	do_t32command_do_cmm(t32api, fname)
