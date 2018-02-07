@@ -49,9 +49,9 @@ class AutoTest(object):
 		self.test_log_dir = None
 		self.test_result = []
 		self.cmm_fn = ''
-		self.local_cmm_fn = ''
+		self.t32_test_log_dir = ''
 
-	def to_object(self, id = None, module_name = '', binary = '',cmd_list = [],timeout_list = [], log_dir = '',build_result = 'Success'):
+	def to_object(self, id = None, module_name = '', binary = '',cmd_list = [],timeout_list = [], log_dir = '',t32_log_dir = '',build_result = 'Success'):
 		self.ID = id
 		self.module_name = module_name
 		self.binary = binary
@@ -59,10 +59,10 @@ class AutoTest(object):
 		self.test_timeout_list = timeout_list[:]
 		self.build_result = build_result
 		self.test_log_dir = log_dir
+		self.t32_test_log_dir = t32_log_dir
 
-	def set_cmm_fn(self, _cmm_fn,_local_cmm_fn):
-		self.cmm_fn = _cmm_fn
-		self.local_cmm_fn = _local_cmm_fn
+	def set_cmm_fn(self, _file_name):
+		self.cmm_fn = _file_name
 
 	def clear(self):
 		self.__init__()
@@ -249,7 +249,7 @@ class Jtag_AutoTestParse(AutoTestParse):
 		super(Jtag_AutoTestParse, self).__init__(project_name,report_name)
 		self.t32api = None
 		self.reset_cmm = None
-		self.use_uart = 1
+		self.use_uart = 0
 
 	def prepare_test(self,is_build = False):
 		config_init()
@@ -323,7 +323,7 @@ class Jtag_AutoTestParse(AutoTestParse):
 			test_cmd_list = test_cmd.split('@')
 			timeout_list = time_out.split('@')
 			for i,timeout in enumerate(timeout_list):
-				timeout = eval(timeout)
+				timeout = eval(timeout)*10
 				timeout_list[i] = str(timeout)
 			for i,value in enumerate(timeout_list):
 				if value == '':
@@ -407,6 +407,9 @@ class Jtag_AutoTestParse(AutoTestParse):
 			else:
 				autoTest(self.t32api,case)
 				self.get_test_result(case)
+				print 'input cmd:',case.test_cmd_list
+				print 'test result:',case.test_result
+				print 'case test done!\n'
 
 
 class VminAutoTestParse(AutoTestParse):
@@ -506,43 +509,7 @@ class VminAutoTestParse(AutoTestParse):
 
 
 #pls change to ctest root directory , #./tool/autoTest/autoTest_main.py
-def autoTest_main():
-	signal.signal(signal.SIGINT, signal_handler)
-	signal.signal(signal.SIGTERM, signal_handler)
-	arg_parser = argparse.ArgumentParser()
-	arg_parser.add_argument('project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
-	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
-	arg_parser.add_argument('-b','--build',action = 'store_false',help = 'if donot build modules,input -b')
-	arg_parser.add_argument('-v','--vmin',action = 'store_true',help = 'if vmin test,input -v')
-	arg_parser.add_argument('-j','--jtag',action = 'store_true',help = 'if use jtag,input -j')
-	argv = arg_parser.parse_args()
-	try:
-		if argv.vmin:
-			report_file = argv.module_name if argv.module_name else 'vmin'
-			autotest = VminAutoTestParse(argv.project_name,report_file)
-		elif argv.jtag:
-			autotest = Jtag_AutoTestParse(argv.project_name,argv.module_name)
-		else:
-			autotest = AutoTestParse(argv.project_name,argv.module_name)
-		autotest.prepare_test(argv.build)
-		autotest.get_case()
-		autotest.auto_test()
-		raise TestEndException
-	except (MyException,AssertionError),e:
-		stop_flag.set()
-		print 'ERROR:',e
-	except TestEndException:
-		stop_flag.set()
-		autotest.create_report()
-		autotest.clear_result(autotest.report_name)
-	except Exception,e:
-		stop_flag.set()
-		print 'ERROR:',e
-		autotest.create_report()
-		autotest.clear_result(autotest.report_name)
-
 if __name__ == '__main__':
-	autoTest_main()
 	signal.signal(signal.SIGINT, signal_handler)
 	signal.signal(signal.SIGTERM, signal_handler)
 	arg_parser = argparse.ArgumentParser()

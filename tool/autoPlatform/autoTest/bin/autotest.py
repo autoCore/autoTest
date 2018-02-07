@@ -49,11 +49,11 @@ def autoTest_uart(t32api,autoTest_obj,uart):
 	print 'case test done!\n'
 
 def autoTest(t32api,autoTest_obj):
-	docmm_timeout = 10
+	docmm_timeout = 200
 	fname = autoTest_obj.cmm_fn
 	jtag_stop_it(t32api)
-	wait_time = do_t32command_do_cmm(t32api, fname)
-	wait_time += docmm_timeout
+	do_t32command_do_cmm(t32api, fname)
+	wait_time = docmm_timeout + eval('+'.join(autoTest_obj.test_timeout_list))
 	print "wait script stop running"
 	print "wait time: %.1fs"%wait_time
 	msgtype=c_ulonglong(0)
