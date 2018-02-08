@@ -1,6 +1,5 @@
 #!/usr/bin/python
-
-from basic_api import *
+from config import *
 
 #internal get the file name part from axf name
 def create_file_name(dir_string, line_num,suffix_name):
@@ -8,6 +7,48 @@ def create_file_name(dir_string, line_num,suffix_name):
 	(fname,_suffix) = os.path.splitext(fname)
 	this_log_name = str(line_num)+ '_' + fname  + suffix_name
 	return this_log_name
+
+def create_autoTest_current_cmm(obj, line_num,cmm_dir):
+	cmm_fn = create_file_name(obj.binary,line_num,".cmm")
+	cmm_fn = os.path.join(cmm_dir,cmm_fn)
+	# print cmm_fn
+	with open(cfg.autoTest_template,'rU') as autoTest_template_obj,open(cmm_fn, 'w') as autoTest_obj:
+		for eachline in autoTest_template_obj:
+			if '&scriptpath=' in eachline[:12]:
+				eachline = "&scriptpath=" + '"' + cfg.autoTest_script + '"' + '\n'
+			if 'autoTest.log' in  eachline:
+				eachline = eachline.replace(r'c:\autoTest.log',obj.t32_test_log_dir)
+
+			if 'data.load.Binary' in eachline:
+				if obj.binary[-3:] == 'axf':
+					eachline = "data.load.Binary " + 'spl_456.pak' + ' 0xc0800000'+'\n'
+					eachline += 'r.s pc 0xc0801000' +'\n'
+					eachline += 'go' +'\n'
+					eachline += 'wait 3s' +'\n'
+
+				else:
+					eachline = "data.load.Binary " + obj.binary + ' 0xc0800000'+'\n'
+					eachline += 'r.s pc 0xc0801000' +'\n'
+					eachline += 'go' +'\n'
+					eachline += 'wait 20s' +'\n'
+
+			if 'data.load.elf test.axf' in eachline:
+				if obj.binary[-3:] == 'axf':
+					eachline = "data.load.elf " + obj.binary + '\n'
+					eachline += 'go' +'\n'
+					eachline += 'wait 30s' +'\n'
+				else:
+					eachline = '\n'
+
+			if 'fault_cmd' in eachline:
+				for cmd_string,timeout in zip(obj.test_cmd_list,obj.test_timeout_list):
+					eachline_tmp = eachline.replace('fault_cmd', cmd_string)
+					autoTest_obj.write(eachline_tmp)
+					eachline_tmp = 'wait ' + timeout + 's\n'
+					autoTest_obj.write(eachline_tmp)
+				eachline = '\n'
+			autoTest_obj.write(eachline)
+	return cmm_fn
 
 def create_autoTest_cmm(obj, line_num,cmm_dir):
 	cmm_fn = create_file_name(obj.binary,line_num,".cmm")

@@ -1,0 +1,43 @@
+ON ERROR CONTinue
+area
+system.config slave off
+system.reset
+system.RESetTarget
+
+wait 2s
+sys.reset
+system.jtagclock 2Mhz
+print "do cpu and ddr init"
+
+LOCAL &scriptpath
+&scriptpath=".\tool\autoTest_script"
+path &scriptpath
+do CA53_ETB_Trace_aquilac.cmm
+
+print "running ddr init code......"
+
+data.load.Binary  spl.pak 0xc0700000
+
+
+
+
+print "end of ddr init "
+print "load test code......"
+
+
+data.load.elf test.axf
+
+
+
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+
+wait 5s
+break
+print "End of running ctest "
+
+print "waiting reset trace32......"
+
+stop
+enddo

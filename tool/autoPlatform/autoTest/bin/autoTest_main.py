@@ -332,10 +332,14 @@ class Jtag_AutoTestParse(AutoTestParse):
 			_t32_log_dir = os.path.join(cfg.t32_log_file_dir,create_file_name(axf_dir, line_num,'.log'))
 			axf_dir = os.path.join(cfg.share_ctest_root_dir,axf_dir)
 			obj.to_object(line_num, module_name, axf_dir, test_cmd_list, timeout_list, log_file, _t32_log_dir)
-			if self.use_uart:
-				obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir, create_autoTest_cmm_uart(obj, line_num,cfg.cmm_file_dir)))
+			if argv.current:
+				cfg.autoTest_template = "./tool/autoPlatform/autoTest/libs/aquilac_evb_current_template.cmm"
+				obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir, create_autoTest_current_cmm(obj, line_num,cfg.cmm_file_dir)))
 			else:
-				obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir,create_autoTest_cmm(obj, line_num,cfg.cmm_file_dir)))
+				if self.use_uart:
+					obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir, create_autoTest_cmm_uart(obj, line_num,cfg.cmm_file_dir)))
+				else:
+					obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir,create_autoTest_cmm(obj, line_num,cfg.cmm_file_dir)))
 			self.case_list.append(copy.deepcopy(obj))
 			obj.clear()
 		self.case_cnt = len(self.case_list)
@@ -518,9 +522,14 @@ if __name__ == '__main__':
 	arg_parser.add_argument('-b','--build',action = 'store_false',help = 'if donot build modules,input -b')
 	arg_parser.add_argument('-v','--vmin',action = 'store_true',help = 'if vmin test,input -v')
 	arg_parser.add_argument('-j','--jtag',action = 'store_true',help = 'if use jtag,input -j')
+	arg_parser.add_argument('-c','--current',action = 'store_true',help = 'if test current,input -c')
 	argv = arg_parser.parse_args()
+
+	if argv.current:
+		argv.build = False
 	try:
 		if argv.vmin:
+			argv.build = False
 			report_file = argv.module_name if argv.module_name else 'vmin'
 			autotest = VminAutoTestParse(argv.project_name,report_file)
 		elif argv.jtag:
