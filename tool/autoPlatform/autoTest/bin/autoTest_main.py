@@ -5,11 +5,13 @@ from report_excel import report_excel,vmin_report
 import argparse
 import signal
 import commands
-import copy,os,sys,time,datetime
+import copy,os,sys,time,datetime,re
 from auto_test_uart import *
 import ConfigParser
 from autotest import *
 from create_autoTest_cmm import *
+
+import pexpect,getpass
 
 sys.path.append("./tool/autoPlatform/autobuild")
 from autobuild import do_autoBuild
@@ -70,48 +72,6 @@ class AutoTest(object):
 	def set_test_result(self, _test_result):
 		self.test_result = _test_result[:]
 
-	def download_binary(self):
-		print 'download binary...'
-		(system_run_ret,_log) = commands.getstatusoutput('sudo ./tool/evb/aquilac/download.sh %s'%self.binary)
-		if system_run_ret:
-			raise MyException('download fail')
-		print 'download end'
-
-	def wait_case_done(self,uart,timeout):
-		return uart.expect('ctest#|BOOTROM: SPL0',timeout)
-
-	def run_test(self,uart):
-		print 'start ctest ...'
-		print 'module_name: %s'%self.module_name
-		if not uart.expect('ctest#',2):
-			print 'system error not into ctest'
-		test_result = []
-		for cmd_string,timeout in zip(self.test_cmd_list,self.test_timeout_list):
-			timeout = get_timeout(timeout)
-			uart.input('reboot %d'%timeout)
-			self.wait_case_done(uart,1)
-			if timeout:
-				print "wait time:%d"%timeout
-			else:
-				print 'timeout overrange reboot max time\n'
-				self.set_test_result(['timeout overrange reboot max time'])
-				return
-			uart.input(cmd_string)
-			timming = uart.expect('BOOTROM: SPL0',timeout+2) if self.module_name in ['ipc','tl4'] else self.wait_case_done(uart,timeout+2)
-			if timming:
-				test_result.extend(uart.result_log) if uart.result_log else test_result.append('No_result_log')
-				uart.input('reboot 0')
-				self.wait_case_done(uart,1)
-			else:
-				test_result.extend(uart.result_log) if uart.result_log else test_result.append('No_result_log')
-				self.set_test_result(test_result)
-				raise MyException('No reboot after timeout')
-		self.set_test_result(test_result)
-		print 'wait total time: %ds'%timming
-		print 'input cmd:',self.test_cmd_list
-		print 'test result:',test_result
-		print 'case test done!\n'
-
 
 class AutoTestParse(object):
 	"""docstring for ClassName"""
@@ -124,15 +84,16 @@ class AutoTestParse(object):
 		self.config_options = {}
 		self.log_dir = None
 		self.build_res_fname = None
+		self.sudo_password = None
 
 	def prepare_test(self,is_build = False):
 		self.uart = Uart()
 		self.uart.createPort()
 		self.uart.start()
 
-		do_autoBuild(argv.project_name,argv.module_name) if is_build else None
-		ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
-		if ch == 'n': raise MyException('exit')
+		# do_autoBuild(argv.project_name,argv.module_name) if is_build else None
+		# ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
+		# if ch == 'n': raise MyException('exit')
 
 		conf = ConfigParser.ConfigParser()
 		conf.read('./tool/usb_autotest/autotest.cfg')
@@ -206,7 +167,70 @@ class AutoTestParse(object):
 		# 	print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in case.__dict__.items()])
 		# 	raw_input()
 
-	def auto_test(self):
+	def __myspawn(self, fout, command):
+		proc = pexpect.spawn(command)
+		proc.logfile_read = fout
+		# proc.logfile_read = sys.stdout
+		return proc
+
+	def __close_proc(self, proc):
+		if proc != None:
+			proc.close(force=True)
+			proc = None
+
+	def download_binary(self,binary,expected_ptn, timeout = 10):
+		print 'download binary...'
+		download_bin_cmd = 'sudo ./tool/evb/aquilac/download.sh %s'%binary
+		proc = self.__myspawn(open('./tool/tmp/~download_res.log','w'), download_bin_cmd)
+		index = proc.expect([r'\[sudo\] password', pexpect.EOF, pexpect.TIMEOUT], timeout=2)
+		if index == 0:
+			self.sudo_password = self.sudo_password if self.sudo_password else getpass.getpass("input sudo password:")
+			proc.sendline(self.sudo_password)
+		index = proc.expect([expected_ptn, pexpect.EOF, pexpect.TIMEOUT], timeout=timeout)
+		if index == 0:
+			print "download successfully %s"%binary
+			self.__close_proc(proc)
+		else:
+			print "Error: failed to download %s"%binary
+			self.__close_proc(proc)
+			raise MyException("Error: failed to download %s"%binary)
+
+	def __wait_case_done(self,timeout):
+		return self.uart.expect('ctest#|BOOTROM: SPL0',timeout)
+
+	def run_test(self,case):
+		print 'start ctest ...'
+		print 'module_name: %s'%case.module_name
+		if not self.uart.expect('ctest#',2):
+			print 'system error not into ctest'
+		test_result = []
+		for cmd_string,timeout in zip(case.test_cmd_list,case.test_timeout_list):
+			timeout = get_timeout(timeout)
+			self.uart.input('reboot %d'%timeout)
+			self.__wait_case_done(1)
+			if timeout:
+				print "wait time:%d"%timeout
+			else:
+				print 'timeout overrange reboot max time\n'
+				self.set_test_result(['timeout overrange reboot max time'])
+				return
+			self.uart.input(cmd_string)
+			timming = self.uart.expect('BOOTROM: SPL0',timeout+2) if case.module_name in ['ipc','tl4'] else self.__wait_case_done(timeout+2)
+			if timming:
+				test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
+				self.uart.input('reboot 0')
+				self.__wait_case_done(1)
+			else:
+				test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
+				case.set_test_result(test_result)
+				raise MyException('No reboot after timeout')
+		case.set_test_result(test_result)
+		print 'wait total time: %ds'%timming
+		print 'input cmd:',case.test_cmd_list
+		print 'test result:',test_result
+		print 'case test done!\n'
+
+	def start_test(self):
 		for doing_num,case in enumerate(self.case_list):
 			print 'doing_num:%d total_cnt:%d'%(doing_num,self.case_cnt)
 			if case.test_result:
@@ -215,8 +239,8 @@ class AutoTestParse(object):
 				print 'case test done!\n' 
 				continue
 			self.uart.reset_log_file(case.test_log_dir)
-			case.download_binary()
-			case.run_test(self.uart)
+			self.download_binary(case.binary,r'image %s downloaded!'%case.binary)
+			self.run_test(case)
 			self.uart.save_log_file()
 
 	def create_report(self):
@@ -398,7 +422,7 @@ class Jtag_AutoTestParse(AutoTestParse):
 				result_list.append('No_result_log')
 		autoTest_obj.set_test_result(result_list)
 
-	def auto_test(self):
+	def start_test(self):
 		for doing_num,case in enumerate(self.case_list):
 			print 'doing_num:%d total_cnt:%d'%(doing_num,self.case_cnt)
 			if case.test_result:
@@ -433,8 +457,8 @@ class VminAutoTestParse(AutoTestParse):
 		self.uart.createPort()
 		self.uart.start()
 
-		ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
-		if ch == 'n': raise MyException('exit')
+		# ch = raw_input('Pls make sure reset your board,if reset ener y else n:')
+		# if ch == 'n': raise MyException('exit')
 
 		conf = ConfigParser.ConfigParser()
 		conf.read('./tool/usb_autotest/autotest.cfg')
@@ -491,7 +515,7 @@ class VminAutoTestParse(AutoTestParse):
 			line_string = '\n'.join(line_list)
 			file_obj.write(line_string+'\n')
 
-	def auto_test(self):
+	def start_test(self):
 		for doing_num,case in enumerate(self.case_list):
 			if doing_num%self.jump_cnt == 0:
 				fail_cnt = jump_flag = 0
@@ -499,8 +523,8 @@ class VminAutoTestParse(AutoTestParse):
 				continue
 			print 'sdl:%s doing_num:%d total_cnt:%d'%(self.sdl_binary ,doing_num,self.case_cnt)
 			self.uart.reset_log_file(case.test_log_dir)
-			case.download_binary()
-			case.run_test(self.uart)
+			self.download_binary(case.binary,r'image %s downloaded!'%case.binary)
+			self.run_test(case)
 			self.uart.save_log_file()
 			if re.findall('No_result_log|Cannot find result_log file|ERR',''.join(case.test_result)):
 				fail_cnt += 1
@@ -538,7 +562,7 @@ if __name__ == '__main__':
 			autotest = AutoTestParse(argv.project_name,argv.module_name)
 		autotest.prepare_test(argv.build)
 		autotest.get_case()
-		autotest.auto_test()
+		autotest.start_test()
 		raise TestEndException
 	except (MyException,AssertionError),e:
 		stop_flag.set()

@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import commands
+import pexpect
 
 if __name__ == '__main__':
 	ret = 0
@@ -12,13 +13,16 @@ if __name__ == '__main__':
 		fail_build_module_set = set()
 		print "date:",time.ctime()
 		print "git pull"
-		cmd_status, get_pull_log = commands.getstatusoutput("git pull")
-		if "Already up-to-date" in get_pull_log:
+		time_out = 20
+		proc = pexpect.spawn("git pull",timeout = time_out)
+		index = proc.expect(["Already up-to-date", pexpect.EOF, pexpect.TIMEOUT], timeout=time_out)
+		# cmd_status, get_pull_log = commands.getstatusoutput("git pull")
+		if index == 0:
 			print 'No update'
-			pass
-		elif cmd_status:
+		elif index == 1:
 			print 'git pull issue'
-			pass
+		elif index == 2:
+			print 'git pull timeout'
 		else:
 			print "build module......"
 			build_res_log = commands.getoutput("python ./tool/autobuild_all.py aquilac_fpga")
@@ -41,7 +45,7 @@ if __name__ == '__main__':
 					os.system("python ./tool/auto_run/send_email.py %s fixed"%(module_name))
 			fail_build_module_buf -= _set
 		os.system('find ./tool -name *.pyc -exec rm {} \;')
-		time.sleep(600)
+		time.sleep(60)
 
 	if ret == 0:
 		exit(0)
