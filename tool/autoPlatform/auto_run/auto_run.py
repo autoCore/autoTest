@@ -45,7 +45,7 @@ if __name__ == '__main__':
 					os.system("python ./tool/auto_run/send_email.py %s fixed"%(module_name))
 			fail_build_module_buf -= _set
 		os.system('find ./tool -name *.pyc -exec rm {} \;')
-		time.sleep(60)
+		time.sleep(600)
 
 	if ret == 0:
 		exit(0)

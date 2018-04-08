@@ -48,6 +48,13 @@ class BuildModule(threading.Thread):
 				cmd = "./make/%s/mkall.sh %s"%(self.module_name,self.project_name)
 		#end of exceptions
 		(system_run_ret,res_log) = commands.getstatusoutput(cmd) #if success ,return 0  Linking C executable example_case0.elf
+		os.mkdir('./tool/tmp/build_log') if not os.path.exists('./tool/tmp/build_log') else None
+		res_file = "_".join([self.project_name,self.module_name,"build_res.log"])
+		res_file = './tool/tmp/build_log/' + res_file
+		res_file = open(res_file,"w")
+		res_file.write(res_log)
+		res_file.flush()
+		res_file.close()
 		self.build_cmd = cmd
 		#after this, check the binary file
 		m = FileFilt()
@@ -108,7 +115,7 @@ class BuildModuleParser(object):
 			os.mkdir(self.res_dir)
 			os.system(r'chmod +w %s'%self.res_dir)
 		os.system("rm build/ -rf")
-
+		os.system("rm ./tool/tmp/build_log -rf") if os.path.exists('./tool/tmp/build_log') else None
 		print "Collecting autoTestlist ..."
 		find_all_file_text(self.auto_test_fn, "./modules","TEST_AUTO_CASE_DEFINE")
 		print "Collected!"

@@ -461,7 +461,7 @@ class VminAutoTestParse(AutoTestParse):
 		# if ch == 'n': raise MyException('exit')
 
 		conf = ConfigParser.ConfigParser()
-		conf.read('./tool/usb_autotest/autotest.cfg')
+		conf.read('./tool/autoPlatform/autoPlatform.cfg')
 		for sec in conf.sections():
 			self.config_options[sec] = {k:v for k,v in conf.items(sec)}
 		# print self.config_options
@@ -489,8 +489,8 @@ class VminAutoTestParse(AutoTestParse):
 		timeout = self.config_options.get('vmin_config',{}).get('timeout')
 		self.jump_cnt = voltage_grade
 		self.sdl_binary = sdl_binary
-		test_binary = os.path.join('./tool/usb_autotest/vmin',test_binary)
-		sdl_binary = os.path.join('./tool/usb_autotest/vmin',sdl_binary)
+		test_binary = os.path.join('./tool/autoPlatform/autoTest/vmin',test_binary)
+		sdl_binary = os.path.join('./tool/autoPlatform/autoTest/vmin',sdl_binary)
 		os.system('cp %s ./tool/evb/aquilac/sdl.pak'%sdl_binary)
 
 		vol_list = [(float(vol_high)-0.0125*i) for i in range(int(voltage_grade))]

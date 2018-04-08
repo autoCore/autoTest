@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 #coding:utf-8
-import sys
+import sys,os
 import smtplib
 import traceback
-from email.mime.text import MIMEText
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+from email.MIMEBase import MIMEBase
+# from email.mime.text import MIMEText
 from email.header import Header
 from email.utils import formataddr
 from module_owner import *
 
-def send_mail(to_addr,subjct = "aquilac_fpga autobuild",message_text = "	Your module build fail,please check!"):
+def send_mail(to_addr,subjct = "aquilac_evb autobuild",message_text = "	Your module build fail,please check!",att_file = ""):
 	ret = 0
 	from_addr = "srv-sw_cv_test@asrmicro.com"
 	password = "AAbbcc123"
@@ -19,12 +22,22 @@ def send_mail(to_addr,subjct = "aquilac_fpga autobuild",message_text = "	Your mo
 	Cc_str = ','.join(Cc_list)
 
 	try:
+		msg = MIMEMultipart()
 		message_text = "Hi %s, \n"%to_addr.split("@")[0] + message_text
-		msg = MIMEText(message_text,'plain','utf-8')
+		msg.attach(MIMEText(message_text,'plain','utf-8'))
 		msg['From'] = formataddr([from_addr.split("@")[0],from_addr])
 		msg['To'] = to_addr
 		msg['Cc'] = Cc_str
 		msg['Subject'] = subjct
+
+		if att_file:
+			with open(att_file, 'rb') as f:
+				mime = MIMEBase('txt', 'log', filename = os.path.basename(att_file))
+				mime.add_header('Content-Disposition', 'attachment', filename = os.path.basename(att_file))
+				mime.add_header('Content-ID', '<0>')
+				mime.add_header('X-Attachment-Id', '0')
+				mime.set_payload(f.read())
+				msg.attach(mime)
 		server = smtplib.SMTP(MAIL_SERVER, MAIL_PORT)
 		# server.set_debuglevel(1)
 		server.starttls()
@@ -55,8 +68,11 @@ if __name__ == '__main__':
 		address = get_owner(module_name)
 	# address = "binwu@asrmicro.com"
 	ret = 0
+	log_dir = './tool/tmp/build_log/'
+	log_file = [os.path.join(log_dir,file) for file in os.listdir(log_dir) if module_name in file]
+	log_file = log_file[0] if log_file else None
 	if address:
-		ret = send_mail(address,subjct = "aquilac_fpga %s autobuild result"%module_name,message_text = msg)
+		ret = send_mail(address,subjct = "aquilac_evb %s autobuild result"%module_name,message_text = msg,att_file = log_file)
 	else:
 		print module_name,"not in owner_list"
 		sys.exit(1)

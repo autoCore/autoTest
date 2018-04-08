@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*-encoding: utf-8 -*-
 
 import os,wx,sys,time,datetime
 import subprocess
@@ -135,7 +134,9 @@ class autoframe(wx.Frame):
 			proc.expect(pexpect.EOF)
 			proc.close(force=True)
 			proc = None
-		thread.start_new_thread (do_autoBuild,())
+		t = threading.Thread(target=do_autoBuild)
+		t.start()
+		# thread.start_new_thread (do_autoBuild,())
 
 	def __save(self,event):
 		now = datetime.datetime.today()
@@ -176,7 +177,9 @@ class autoframe(wx.Frame):
 					proc.close(force=True)
 					break
 			proc = None
-		thread.start_new_thread(do_autotest, ())
+		t = threading.Thread(target=do_autotest)
+		t.start()
+		# thread.start_new_thread(do_autotest, ())
 	def __clear(self,event):
 		self.contents.Clear()
 

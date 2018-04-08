@@ -39,9 +39,9 @@ t32_platform_d = {
 }
 
 autoTest_template_dt = {
-	"aquila_evb":"./tool/usb_autotest/libs/autoTest_evb_template.cmm",\
-	"aquilac_fpga":"./tool/usb_autotest/libs/autoTest_fpga_template.cmm",\
-	"simulator":"./tool/usb_autotest/libs/autoTest_t32_template.cmm",\
+	"aquila_evb":"./tool/autoPlatform/autoTest/libs/autoTest_evb_template.cmm",\
+	"aquilac_fpga":"./tool/autoPlatform/autoTest/libs/autoTest_fpga_template.cmm",\
+	"simulator":"./tool/autoPlatform/autoTest/libs/autoTest_t32_template.cmm",\
 	"aquilac_evb":"./tool/autoPlatform/autoTest/libs/autoTest_aquilac_evb_template.cmm",\
 	"aquilac_z1":"./tool/autoPlatform/autoTest/libs/autoTest_z1_template.cmm"
 }
