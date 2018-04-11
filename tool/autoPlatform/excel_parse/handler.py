@@ -1,6 +1,6 @@
 #! /usr/bin/env python
-import re
-import copy
+import re,copy
+
 
 class Handler:
 	def callback(self, prefix, name, *args):
@@ -9,7 +9,6 @@ class Handler:
 	def do(self,name,*args):
 		self.callback('do_',name,*args)
 
-register_list = []
 class RegisterRenderer(Handler):
 	"""docstring for RegisterRenderer"""
 	def do_capbase(self,block,register,regfield):
@@ -22,6 +21,7 @@ class RegisterRenderer(Handler):
 				module_name = module_name if 'BASE' in module_name else module_name + '_BASE'
 				base_addr = '0x' + match.group(2).strip().replace('_','')
 				register.addBase(module_name, base_addr)
+				# print module_name,base_addr
 
 	def do_capregister(self,block,register,regfield):
 		try:
@@ -29,18 +29,18 @@ class RegisterRenderer(Handler):
 			if len(block) == 3:
 				short_desc = block[0][0].strip()
 				reg_name = block[1][0].strip()
-				off_set_str = block[2][0].upper()
 			elif len(block) == 4:
 				short_desc = block[0][0].strip()
 				reg_name = block[1][0].strip()
-				off_set_str = block[3][0].upper()
 			elif len(block) == 2:
 				short_desc = ''
 				reg_name = block[0][0].strip()
-				off_set_str = block[1][0].upper()
+			elif len(block) == 5:
+				reg_name = block[2][0].strip()
+				short_desc = block[3][0].strip()
 			else:
-				reg_name = block[1][0].strip()
-				off_set_str = block[-1][0].upper()
+				raise Exception,"File type Error"
+			off_set_str = block[-1][0].upper()
 			off_set = off_set_str.split('T:')#Offset:0x0 OR Offset:0x0-0x4 OR Offset:0x0 - 0x4
 			off_set = off_set[1].strip()
 			off_set_l = off_set.split('-')
@@ -48,12 +48,13 @@ class RegisterRenderer(Handler):
 			if '-' in off_set:
 				off_set_l = range(off_set_l[0],off_set_l[1]+1,4)
 			off_set_l = [str(hex(l)) for l in off_set_l]
-			# print llll
 			register.fillInfo(reg_name, short_desc, short_desc)
 			for offset in off_set_l:
 				register.addOffset(offset)
 		except Exception,e:
 			pass
+			# print "Error:",e
+			# print block
 
 	def do_capregfield(self,block,register,regfield):
 		keys = [_str.strip() for _str in block[0]]
@@ -61,11 +62,10 @@ class RegisterRenderer(Handler):
 			field_d = {key.replace(" ",""):value for key,value in zip(keys,row)}
 			try:
 				regfield.update(field_d)
-			except:
-				print field_d
-				raw_input()
+			except Exception,e:
+				print e
+				# print field_d
+				# raw_input()
 			register.addRegField(copy.deepcopy(regfield))
-		register_list.append(copy.deepcopy(register))
-		register.clear()
 
 

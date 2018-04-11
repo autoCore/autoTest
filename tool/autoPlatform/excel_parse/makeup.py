@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys,re,os
+import sys,re,os,copy
 from handler import *
 from util import *
 from rules import *
@@ -89,6 +89,8 @@ class Parse:
 				for rule in self.rules:
 					if rule.condition(block):
 						if rule.action(block,handler,register,regfield): break
+				register_list.append(copy.deepcopy(register))
+				register.clear()
 		return register_list
 
 class BasicTextParse(Parse):
@@ -104,6 +106,8 @@ if __name__ == '__main__':
 
 	os.system('rm ./tmp -rf')
 	os.mkdir("./tmp")
+	register_list = []
+
 	fname_excel = "./excel/AquilaC_Registers.xls"
 	workbook = xlrd.open_workbook(fname_excel)
 	register_list = parser.parse(workbook.sheets())
@@ -114,7 +118,6 @@ if __name__ == '__main__':
 	base_file.write('\n'.join(reg_base_string))
 	base_file.flush()
 	base_file.close()
-	fname = ''
 	register_define_list = []
 	bits_field_list = []
 

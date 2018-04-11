@@ -17,7 +17,7 @@ class BaseRule(Rule):
 
 	def action(self,block,handler,register,regfield):
 		handler.do(self.type,block,register,regfield)
-		return False
+		return True
 
 
 class RegisterRule(Rule):
