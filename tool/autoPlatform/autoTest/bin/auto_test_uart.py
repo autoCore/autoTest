@@ -5,6 +5,7 @@ from serial import Serial
 import threading 
 import platform
 import sys,re,time,os
+import Queue
 
 stop_flag = threading.Event()
 class Uart(threading.Thread):
@@ -17,6 +18,7 @@ class Uart(threading.Thread):
 		self.case_end_flag = False
 		self.result_log = []
 		self.timeout = 0.01
+		self.fifo = Queue.Queue(100)
 
 	def input(self,msg):
 		if self.comport:
@@ -30,12 +32,14 @@ class Uart(threading.Thread):
 			return 0
 
 	def expect(self,text,timeout):
-		uart_timeout = 0.001
+		uart_timeout = self.timeout
 		cnt = int((timeout+uart_timeout)/uart_timeout)
 		timing = 0
 		pattern = re.compile(text)
 		for i in xrange(cnt):
-			if self.last_log and pattern.search(self.last_log): return uart_timeout*i
+			while not self.fifo.empty():
+				data = self.fifo.get()
+				if data and pattern.search(data): return uart_timeout*i
 			time.sleep(uart_timeout)
 			if int(uart_timeout*i) != timing:
 				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
@@ -93,6 +97,8 @@ class Uart(threading.Thread):
 				line = self.comport.readline().strip()
 				if line and self.send_obj: self.send_obj.send_msg(line)
 				# if line.strip(): print line
+				self.fifo.get() if self.fifo.full() else None
+				self.fifo.put(line) if line else None
 				if self.log and line:
 					print >>self.log,line
 					self.log.flush()
