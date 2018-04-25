@@ -32,12 +32,14 @@ class Uart(threading.Thread):
 		self.last_log_bak = ''
 		self.timeout = 0.01
 		self.fifo = Queue.Queue(100)
+		self.metux = threading.Lock()
 
 	def input(self,msg):
 		if self.comport:
 			self.case_end_flag = False
 			self.last_log = None
 			self.result_log = []
+			self.fifo.queue.clear()
 			self.comport.write(msg+'\n')
 			return 1
 		else:
@@ -59,22 +61,36 @@ class Uart(threading.Thread):
 		else:
 			print 'No log file'
 
-	def expect(self,text,timeout):
-		uart_timeout = self.timeout
+	def expect(self,pattern_list,timeout):
+		uart_timeout = 0.1
 		cnt = int((timeout+uart_timeout)/uart_timeout)
 		timing = 0
-		pattern = re.compile(text)
+		try:
+			pattern_list + []
+		except:
+			print "Error: expect need a list in arg pattern"
+			return
+		pattern = re.compile("|".join(pattern_list))
 		for i in xrange(cnt):
-			while not self.fifo.empty():
+			self.metux.acquire()
+			while 1:
+				if self.fifo.empty(): break
 				data = self.fifo.get()
-				if data and pattern.search(data): return uart_timeout*i
-				# if data and text in data: return uart_timeout*i
+				tgt = pattern.search(data)
+				if data and tgt:
+					for j, ptn in enumerate(pattern_list):
+						if ptn in tgt.group(0):
+							self.fifo.queue.clear()
+							self.metux.release()
+							return j,uart_timeout*i
+			self.metux.release()
 			time.sleep(uart_timeout)
 			if int(uart_timeout*i) != timing:
 				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
 				sys.stdout.flush()
 				timing = int(uart_timeout*i)
-		return False
+		self.fifo.queue.clear()
+		return (None,False)
 
 	def createPort(self, port = None, baud = 115200, time_out = 0.1):
 		if port:
@@ -84,7 +100,7 @@ class Uart(threading.Thread):
 			port_list = comports()
 			if "Linux" in platform_type:
 				port_list = [port[0] for port in port_list]
-				port_list = [port for port in port_list if "ttyUSB" in port]
+				port_list = [port for port in port_list if "ttyUSB" in port or "ttyACM" in port]
 			elif "Windows" in platform_type:
 				port_list = [list(port) for port in port_list]
 				port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
@@ -116,22 +132,27 @@ class Uart(threading.Thread):
 				if stop_flag.is_set(): break
 				line = self.comport.readline().strip()
 				self.last_log = line
+				self.metux.acquire()
 				self.fifo.get() if self.fifo.full() else None
-				self.fifo.put(line) if line else None
+				self.fifo.put(line.lstrip()) if line.lstrip() else None
+				self.metux.release()
 				if line == 'ctest#':
 					if line == self.last_log_bak:
-						sys.stdout.write('\n'+line+' ')
+						sys.stdout.write('\n\r')
+						sys.stdout.write(line)
 						sys.stdout.flush()
 					else:
+						sys.stdout.write('          \r')
 						sys.stdout.write(line+' ')
 						sys.stdout.flush()
 				elif line and self.is_print:
 					print line
+					pass
 				self.last_log_bak = line
 				if self.log and line:
 					print >>self.log,line
 					self.log.flush()
-				if line:
+				if line.lstrip():
 					self.last_log = line
 					if 'AUTOTEST@' in self.last_log:
 						match = re.search(r'AUTOTEST@.*?Result\[(.*?)\]:RetCode(\[.*?\])',self.last_log)
@@ -222,11 +243,7 @@ if __name__ == "__main__":
 			for cmd,timeout in cmd_set:
 				uart.input(cmd.strip())
 				time.sleep(eval(timeout))
-		# for i in xrange(60*60*48):
-		# 	uart.input('cnt:%d'%i)
-		# 	uart.input('reboot 0')
-		# 	time.sleep(2)
-		# 	uart.expect('ctest#',5)
+
 		WAIT_ALL_THREAD_END()
 	except Exception,e:
 		stop_flag.set()
