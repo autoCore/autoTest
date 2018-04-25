@@ -15,17 +15,15 @@ if __name__ == '__main__':
 		print "git pull"
 		time_out = 20
 		proc = pexpect.spawn("git pull",timeout = time_out)
-		index = proc.expect(["Already up-to-date", pexpect.EOF, pexpect.TIMEOUT], timeout=time_out)
+		index = proc.expect(["Already up-to-date", "files changed", pexpect.EOF, pexpect.TIMEOUT], timeout=time_out)
 		# cmd_status, get_pull_log = commands.getstatusoutput("git pull")
 		if index == 0:
 			print 'No update'
-		elif index == 1:
-			print 'git pull issue'
-		elif index == 2:
+		elif index == 3:
 			print 'git pull timeout'
-		else:
+		elif index == 1:
 			print "build module......"
-			build_res_log = commands.getoutput("python ./tool/autobuild_all.py aquilac_fpga")
+			build_res_log = commands.getoutput("python ./tool/autobuild_all.py aquilac_evb")
 			print "build module end"
 			build_res = build_res_log.split("\n")
 			for eachline in build_res:
