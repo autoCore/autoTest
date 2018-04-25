@@ -1,9 +1,8 @@
 #!/usr/bin/python
-
 from auto_test_uart import *
 
-sys.path.append("./tool/autoPlatform/t32_api")
-from jtag_t32 import *
+sys.path.append("./tool/autoPlatform/jtag_api")
+from jtag_api import *
 
 def autoTest_uart(t32api,autoTest_obj,uart):
 	fname = autoTest_obj.cmm_fn
@@ -29,18 +28,11 @@ def autoTest_uart(t32api,autoTest_obj,uart):
 	print 'script has stoped'
 	for cmd_string,timeout in zip(autoTest_obj.test_cmd_list,autoTest_obj.test_timeout_list):
 		uart.input(cmd_string)
-		while 1:
-			if uart.case_end_flag:
-				test_result.extend(uart.result_log) if uart.result_log else None
-				break
-			timming += 1
-			sys.stdout.write("timing: %ds\r" %int(timming))
-			sys.stdout.flush()
-			time.sleep(1)
-			if int(timeout) + wait_time< timming:
-				test_result.extend(uart.result_log) if uart.result_log else None
-				break
-		test_result.append('No_result_log') if not test_result else None
+		index,spend_time = uart.expect(["ctest#"],int(timeout) + wait_time)
+		if uart.result_log:
+			test_result.extend(uart.result_log)
+		else:
+			test_result.append('No_result_log')
 	autoTest_obj.set_test_result(test_result)
 	uart.save_log_file()
 	print 'wait total time: %ds'%timming

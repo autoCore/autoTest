@@ -6,7 +6,27 @@ import threading
 import platform
 import sys,re,time,os
 import Queue
+import pexpect,getpass
 
+def get_sudo_password():
+	proc = pexpect.spawn("sudo ls")
+	while 1:
+		index = proc.expect([r'\[sudo\] password for',r'Sorry, try again',"sudo: 3 incorrect password attempts", \
+								pexpect.EOF, pexpect.TIMEOUT], timeout=1)
+		if index == 0:
+			password = getpass.getpass("input sudo password:")
+			proc.sendline(password)
+		if index == 1:
+			print "Sorry, try again."
+		if index == 2:
+			print 'sudo: 3 incorrect password attempts'
+			proc.close(force=True)
+			sys.exit(1)
+		if index == 3:
+			proc.close(force=True)
+			return password
+
+SUDO_PASSWORD = get_sudo_password()
 stop_flag = threading.Event()
 class Uart(threading.Thread):
 	def __init__(self, log_file = None, send = None):
@@ -19,6 +39,7 @@ class Uart(threading.Thread):
 		self.result_log = []
 		self.timeout = 0.01
 		self.fifo = Queue.Queue(100)
+		self.metux = threading.Lock()
 
 	def input(self,msg):
 		if self.comport:
@@ -31,21 +52,35 @@ class Uart(threading.Thread):
 			print 'Pls create port'
 			return 0
 
-	def expect(self,text,timeout):
-		uart_timeout = self.timeout
+	def expect(self,pattern_list,timeout):
+		uart_timeout = 0.1
 		cnt = int((timeout+uart_timeout)/uart_timeout)
 		timing = 0
-		pattern = re.compile(text)
+		try:
+			pattern_list + []
+		except:
+			print "Error: expect need a list in arg pattern"
+			return
+		pattern = re.compile("|".join(pattern_list))
 		for i in xrange(cnt):
-			while not self.fifo.empty():
+			self.metux.acquire()
+			while 1:
+				if self.fifo.empty(): break
 				data = self.fifo.get()
-				if data and pattern.search(data): return uart_timeout*i
+				tgt = pattern.search(data)
+				if data and tgt:
+					for j, ptn in enumerate(pattern_list):
+						if ptn in tgt.group(0):
+							self.fifo.queue.clear()
+							self.metux.release()
+							return j,uart_timeout*i
+			self.metux.release()
 			time.sleep(uart_timeout)
 			if int(uart_timeout*i) != timing:
 				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
 				sys.stdout.flush()
 				timing = int(uart_timeout*i)
-		return False
+		return (None,False)
 
 	def reset_log_file(self,file):
 		if self.log:
@@ -70,13 +105,18 @@ class Uart(threading.Thread):
 			port_list = comports()
 			if "Linux" in platform_type:
 				port_list = [port[0] for port in port_list]
-				port_list = [port for port in port_list if "ttyUSB" in port]
+				port_list = [port for port in port_list if "ttyUSB" in port or "ttyACM" in port]
 			elif "Windows" in platform_type:
 				port_list = [list(port) for port in port_list]
 				port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
 			if port_list:
 				port = port_list[0]
-				os.system('sudo chmod 777 %s'%port)
+				proc = pexpect.spawn('sudo chmod 777 %s'%port)
+				index = proc.expect([r'\[sudo\] password for',pexpect.EOF, pexpect.TIMEOUT], timeout=1)
+				if index == 0:
+					password = SUDO_PASSWORD if SUDO_PASSWORD else get_sudo_password()
+					proc.sendline(password)
+				# os.system('sudo chmod 777 %s'%port)
 				print port
 			else:
 				print "No port"
@@ -97,8 +137,10 @@ class Uart(threading.Thread):
 				line = self.comport.readline().strip()
 				if line and self.send_obj: self.send_obj.send_msg(line)
 				# if line.strip(): print line
+				self.metux.acquire()
 				self.fifo.get() if self.fifo.full() else None
-				self.fifo.put(line) if line else None
+				self.fifo.put(line.lstrip()) if line.lstrip() else None
+				self.metux.release()
 				if self.log and line:
 					print >>self.log,line
 					self.log.flush()

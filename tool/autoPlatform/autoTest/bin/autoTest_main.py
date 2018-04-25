@@ -84,7 +84,7 @@ class AutoTestParse(object):
 		self.config_options = {}
 		self.log_dir = None
 		self.build_res_fname = None
-		self.sudo_password = None
+		self.sudo_password = SUDO_PASSWORD
 
 	def prepare_test(self,is_build = False):
 		self.uart = Uart()
@@ -196,12 +196,13 @@ class AutoTestParse(object):
 			raise MyException("Error: failed to download %s"%binary)
 
 	def __wait_case_done(self,timeout):
-		return self.uart.expect('ctest#|BOOTROM: SPL0',timeout)
+		return self.uart.expect(['ctest#','BOOTROM: SPL0'],timeout)
 
 	def run_test(self,case):
 		print 'start ctest ...'
 		print 'module_name: %s'%case.module_name
-		if not self.uart.expect('ctest#',2):
+		index,spend_time = self.uart.expect(['ctest#'],2)
+		if not spend_time:
 			print 'system error not into ctest'
 		test_result = []
 		for cmd_string,timeout in zip(case.test_cmd_list,case.test_timeout_list):
@@ -214,20 +215,22 @@ class AutoTestParse(object):
 				print 'timeout overrange reboot max time\n'
 				self.set_test_result(['timeout overrange reboot max time'])
 				return
+			print 'input cmd:',cmd_string
 			self.uart.input(cmd_string)
-			timming = self.uart.expect('BOOTROM: SPL0',timeout+2) if case.module_name in ['ipc','tl4'] else self.__wait_case_done(timeout+2)
+			if case.module_name in ['ipc','tl4',"ddr_vmin","core_vmin"]:
+				index,timming = self.uart.expect(['BOOTROM: SPL0'],timeout+2)
+			else:
+				index,timming = self.uart.expect(['ctest#','BOOTROM: SPL0'],timeout+2)
+			test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
 			if timming:
-				test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
 				self.uart.input('reboot 0')
 				self.__wait_case_done(1)
 			else:
-				test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
 				case.set_test_result(test_result)
 				raise MyException('No reboot after timeout')
+			print 'wait total time: %ds'%timming
+			print 'test result:',test_result
 		case.set_test_result(test_result)
-		print 'wait total time: %ds'%timming
-		print 'input cmd:',case.test_cmd_list
-		print 'test result:',test_result
 		print 'case test done!\n'
 
 	def start_test(self):

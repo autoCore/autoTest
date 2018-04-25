@@ -32,7 +32,7 @@ class BuildModule(threading.Thread):
 		if not binary_list:
 			self.binary_list = ['No_target_binary']
 			return
-		file_list = [s for s in os.listdir(self.axf_dir) if os.path.isfile(os.path.join(self.axf_dir,s)) and '.elf' in os.path.join(self.axf_dir,s)]
+		file_list = [s for s in os.listdir(self.axf_dir) if s.endswith('.elf')]
 		self.binary_list = [b for b in binary_list if b in file_list]
 
 	def run(self):
