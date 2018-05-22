@@ -7,6 +7,7 @@ import threading
 import commands
 import argparse
 import fileinput
+import pexpect
 
 class BuildModule(threading.Thread):
 	"""docstring for ClassName"""
@@ -47,25 +48,26 @@ class BuildModule(threading.Thread):
 			if self.module_name in mkall_list:
 				cmd = "./make/%s/mkall.sh %s"%(self.module_name,self.project_name)
 		#end of exceptions
-		(system_run_ret,res_log) = commands.getstatusoutput(cmd) #if success ,return 0  Linking C executable example_case0.elf
 		os.mkdir('./tool/tmp/build_log') if not os.path.exists('./tool/tmp/build_log') else None
 		res_file = "_".join([self.project_name,self.module_name,"build_res.log"])
 		res_file = './tool/tmp/build_log/' + res_file
-		res_file = open(res_file,"w")
-		res_file.write(res_log)
-		res_file.flush()
-		res_file.close()
+		proc = pexpect.spawn(cmd)
+		proc.logfile_read = open(res_file,"wb")
+		index = proc.expect([r'\[100%\] Built target', pexpect.EOF, pexpect.TIMEOUT], timeout=30)
+		proc.close(force=True)
+		proc = None
 		self.build_cmd = cmd
+		res_log = "".join(open(res_file).readlines())
 		#after this, check the binary file
 		m = FileFilt()
-		if not system_run_ret:
+		if index != 2:
 			if self.build_type == "make":
 				m.FindFile(dirr = self.axf_dir, find_file = '.axf')
 				self.binary_list = m.fileList[:]
 			elif self.build_type == "cmake":
 				self.__get_target_binary(res_log)
 
-		self.result = 1 if any([system_run_ret,not self.binary_list]) else 0  # if fail 1 else 0
+		self.result = 1 if any([index == 2,not self.binary_list]) else 0  # if fail 1 else 0
 		mutex.acquire()
 		if self.result:
 			print "module: %-30s fail!"%self.module_name
@@ -84,9 +86,9 @@ class BuildModuleParser(object):
 		self.module_name  = module
 		self.build_list = []
 		self.auto_cases = {}
-		self.build_result_fn = './tool/tmp/~build.result'
-		self.auto_test_fn = './tool/tmp/~autotest_list'
-		self.res_dir = './tool/tmp'
+		self.build_result_fn = os.sep.join([os.curdir,"tool","tmp","~build.result"])
+		self.auto_test_fn = os.sep.join([os.curdir,"tool","tmp","~autotest_list"])
+		self.res_dir = os.sep.join([os.curdir,"tool","tmp"])
 
 	def __get_auto_cases(self):
 		assert os.path.exists(self.auto_test_fn),'file:%s not exists'%self.auto_test_fn

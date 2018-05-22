@@ -5,18 +5,25 @@ from report_excel import report_excel,vmin_report
 import argparse
 import signal
 import commands
-import copy,os,sys,time,datetime,re
+import copy,os,sys,time,datetime,re,shutil
 from auto_test_uart import *
 import ConfigParser
 from autotest import *
 from create_autoTest_cmm import *
 
-import pexpect,getpass
+import getpass
 
-sys.path.append("./tool/autoPlatform/autobuild")
+if os.name == 'nt': #sys.platform == 'win32':
+	import winpexpect as myexpect
+	from winpexpect import winspawn as myspawn
+elif os.name == 'posix':
+	import pexpect as myexpect
+	from pexpect import spawn as myspawn
+
+sys.path.append(os.sep.join([os.curdir,"tool","autoPlatform","autobuild"]))
 from autobuild import do_autoBuild
 
-sys.path.append("./tool/autoPlatform/t32_api")
+sys.path.append(os.sep.join([os.curdir,"tool","autoPlatform","t32_api"]))
 from jtag_t32 import *
 
 class MyException(Exception): pass
@@ -85,6 +92,7 @@ class AutoTestParse(object):
 		self.log_dir = None
 		self.build_res_fname = None
 		self.sudo_password = SUDO_PASSWORD
+		self.autotest_tmp = os.sep.join([os.curdir,"tool","tmp"])
 
 	def prepare_test(self,is_build = False):
 		self.uart = Uart()
@@ -96,23 +104,23 @@ class AutoTestParse(object):
 		# if ch == 'n': raise MyException('exit')
 
 		conf = ConfigParser.ConfigParser()
-		conf.read('./tool/usb_autotest/autotest.cfg')
+		conf.read(os.sep.join([os.curdir,"tool","autoPlatform","autoPlatform.cfg"]))
 		for sec in conf.sections():
 			self.config_options[sec] = {k:v for k,v in conf.items(sec)}
 		# print self.config_options
 
 		autotest_tmp = self.config_options.get('basic_config',{}).get('autotest_tmp')
-		autotest_tmp =  autotest_tmp if autotest_tmp else './tool/tmp'
-		os.mkdir(autotest_tmp) if not os.path.exists(autotest_tmp) else None
+		self.autotest_tmp =  autotest_tmp if autotest_tmp else os.sep.join([os.curdir,"tool","tmp"])
+		os.mkdir(self.autotest_tmp) if not os.path.exists(self.autotest_tmp) else None
 
 		log_dir = self.config_options.get('basic_config',{}).get('log_dir')
-		self.log_dir =  log_dir if log_dir else './tool/tmp/log'
-		os.system(r'rm -rf %s'%self.log_dir) if os.path.exists(self.log_dir) else None
+		self.log_dir =  log_dir if log_dir else os.sep.join([self.autotest_tmp,"log"])
+		shutil.rmtree(self.log_dir) if os.path.exists(self.log_dir) else None
 		os.mkdir(self.log_dir)
-		os.system(r'chmod 777 %s'%self.log_dir)
+		os.chmod(self.log_dir,0o777)
 
 		build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
-		self.build_res_fname =  build_res_fname if build_res_fname else './tool/tmp/~build.result'
+		self.build_res_fname =  build_res_fname if build_res_fname else os.sep.join([self.autotest_tmp,"~build.result"])
 
 	def get_case(self):
 		obj = AutoTest()
@@ -168,7 +176,7 @@ class AutoTestParse(object):
 		# 	raw_input()
 
 	def __myspawn(self, fout, command):
-		proc = pexpect.spawn(command)
+		proc = myspawn(command)
 		proc.logfile_read = fout
 		# proc.logfile_read = sys.stdout
 		return proc
@@ -182,16 +190,15 @@ class AutoTestParse(object):
 		print 'download binary...'
 		download_bin_cmd = 'sudo ./tool/evb/aquilac/download.sh %s'%binary
 		proc = self.__myspawn(open('./tool/tmp/~download_res.log','w'), download_bin_cmd)
-		index = proc.expect([r'\[sudo\] password', pexpect.EOF, pexpect.TIMEOUT], timeout=2)
+		index = proc.expect([r'\[sudo\] password', myexpect.EOF, myexpect.TIMEOUT], timeout=5)
 		if index == 0:
 			self.sudo_password = self.sudo_password if self.sudo_password else getpass.getpass("input sudo password:")
 			proc.sendline(self.sudo_password)
-		index = proc.expect([expected_ptn, pexpect.EOF, pexpect.TIMEOUT], timeout=timeout)
+		index = proc.expect([expected_ptn, myexpect.EOF, myexpect.TIMEOUT], timeout=timeout)
 		if index == 0:
 			print "download successfully %s"%binary
 			self.__close_proc(proc)
 		else:
-			print "Error: failed to download %s"%binary
 			self.__close_proc(proc)
 			raise MyException("Error: failed to download %s"%binary)
 
@@ -205,16 +212,19 @@ class AutoTestParse(object):
 		if not spend_time:
 			print 'system error not into ctest'
 		test_result = []
+
+		timeout = eval("+".join(case.test_timeout_list))
+		timeout = get_timeout(timeout)
+		self.uart.input('reboot %d'%timeout)
+		self.__wait_case_done(1)
+		if timeout:
+			print "wait time:%d"%timeout
+		else:
+			print 'timeout overrange reboot max time\n'
+			self.set_test_result(['timeout overrange reboot max time'])
+			return
+
 		for cmd_string,timeout in zip(case.test_cmd_list,case.test_timeout_list):
-			timeout = get_timeout(timeout)
-			self.uart.input('reboot %d'%timeout)
-			self.__wait_case_done(1)
-			if timeout:
-				print "wait time:%d"%timeout
-			else:
-				print 'timeout overrange reboot max time\n'
-				self.set_test_result(['timeout overrange reboot max time'])
-				return
 			print 'input cmd:',cmd_string
 			self.uart.input(cmd_string)
 			if case.module_name in ['ipc','tl4',"ddr_vmin","core_vmin"]:
@@ -222,14 +232,15 @@ class AutoTestParse(object):
 			else:
 				index,timming = self.uart.expect(['ctest#','BOOTROM: SPL0'],timeout+2)
 			test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
-			if timming:
-				self.uart.input('reboot 0')
-				self.__wait_case_done(1)
-			else:
+			if not timming:
 				case.set_test_result(test_result)
 				raise MyException('No reboot after timeout')
 			print 'wait total time: %ds'%timming
 			print 'test result:',test_result
+		else:
+			self.uart.input('reboot 0')
+			self.__wait_case_done(1)
+
 		case.set_test_result(test_result)
 		print 'case test done!\n'
 
@@ -254,17 +265,18 @@ class AutoTestParse(object):
 	def clear_result(self,test_module = ''):
 		now = datetime.datetime.today()
 		date = now.strftime("%d_%h_%H-%M-%S")
-		test_module_dir = './tool/tmp/%s_log_%s'%(test_module,date)
+		test_module_dir = '%s_log_%s'%(test_module,date)
+		test_module_dir = os.sep.join([self.autotest_tmp,test_module_dir])
 		os.mkdir(test_module_dir)
-		os.system('chmod 777 ' + test_module_dir)
-		os.system('cp ./tool/tmp/log %s -rf'%test_module_dir)
+		os.chmod(test_module_dir,0o777)
+		shutil.copytree(self.log_dir,test_module_dir)
 		find_name = [self.report_name+'*','test_report*']
 		for _name in find_name:
 			cmd = 'find ./tool/tmp -maxdepth 1 -name %s -type f -exec mv {} %s \;'%(_name,test_module_dir)
 			os.system(cmd)
 		cmd = 'find ./tool/tmp -maxdepth 1 -name ~* -exec cp {} %s \;'%(test_module_dir)
 		os.system(cmd)
-		axf_dir = './build/%s/img/%s'%(self.project_name,test_module)
+		axf_dir = os.sep.join([os.curdir,"build",self.project_name,"img",test_module])
 		cmd = 'find %s -name *.axf -exec cp {} %s \;'%(axf_dir,test_module_dir)
 		os.system(cmd) if test_module else None
 		os.system('find ./tool -name *.pyc -exec rm {} \;')
@@ -277,12 +289,13 @@ class Jtag_AutoTestParse(AutoTestParse):
 		self.t32api = None
 		self.reset_cmm = None
 		self.use_uart = 0
+		self.cmm_dir = ""
 
 	def prepare_test(self,is_build = False):
 		config_init()
 		self.t32api = connect_jtag()
 		assert self.t32api,'connect_jtag fail!'
-		self.reset_cmm = './tool/usb_autotest/libs/'
+		self.reset_cmm = os.sep.join([os.curdir,"tool","autoPlatform","libs"])
 
 		if self.use_uart:
 			self.uart = Uart()
@@ -291,27 +304,28 @@ class Jtag_AutoTestParse(AutoTestParse):
 
 		do_autoBuild(argv.project_name,argv.module_name) if is_build else None
 		conf = ConfigParser.ConfigParser()
-		conf.read('./tool/usb_autotest/autotest.cfg')
+		conf.read(os.sep.join([os.curdir,"tool","autoPlatform","autoPlatform.cfg"]))
 		for sec in conf.sections():
 			self.config_options[sec] = {k:v for k,v in conf.items(sec)}
 		# print self.config_options
 
 		autotest_tmp = self.config_options.get('basic_config',{}).get('autotest_tmp')
-		autotest_tmp =  autotest_tmp if autotest_tmp else './tool/tmp'
-		os.mkdir(autotest_tmp) if not os.path.exists(autotest_tmp) else None
+		self.autotest_tmp =  autotest_tmp if autotest_tmp else os.sep.join([os.curdir,"tool","tmp"])
+		os.mkdir(self.autotest_tmp) if not os.path.exists(self.autotest_tmp) else None
 
 		log_dir = self.config_options.get('basic_config',{}).get('log_dir')
-		self.log_dir =  log_dir if log_dir else './tool/tmp/log'
-		os.system(r'rm -rf %s'%self.log_dir) if os.path.exists(self.log_dir) else None
+		self.log_dir =  log_dir if log_dir else os.sep.join([self.autotest_tmp,"log"])
+		shutil.rmtree(self.log_dir) if os.path.exists(self.log_dir) else None
 		os.mkdir(self.log_dir)
-		os.system(r'chmod 777 %s'%self.log_dir)
+		os.chmod(self.log_dir,0o777)
 
-		os.system(r'rm -rf ./tool/tmp/cmm') if os.path.exists('./tool/tmp/cmm') else None
-		os.mkdir('./tool/tmp/cmm')
-		os.system(r'chmod 777 ./tool/tmp/cmm')
+		self.cmm_dir = os.sep.join([self.autotest_tmp,"cmm"])
+		shutil.rmtree(self.cmm_dir) if os.path.exists(self.cmm_dir) else None
+		os.mkdir(self.cmm_dir)
+		os.chmod(self.cmm_dir,0o777)
 
 		build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
-		self.build_res_fname =  build_res_fname if build_res_fname else './tool/tmp/~build.result'
+		self.build_res_fname =  build_res_fname if build_res_fname else os.sep.join([self.autotest_tmp,"~build.result"])
 
 	def get_case(self):
 		obj = AutoTest()
@@ -360,7 +374,7 @@ class Jtag_AutoTestParse(AutoTestParse):
 			axf_dir = os.path.join(cfg.share_ctest_root_dir,axf_dir)
 			obj.to_object(line_num, module_name, axf_dir, test_cmd_list, timeout_list, log_file, _t32_log_dir)
 			if argv.current:
-				cfg.autoTest_template = "./tool/autoPlatform/autoTest/libs/aquilac_evb_current_template.cmm"
+				cfg.autoTest_template = os.sep.join([os.curdir,"tool","autoPlatform","autoTest","libs","aquilac_evb_current_template.cmm"])
 				obj.set_cmm_fn(os.path.join(cfg.share_ctest_root_dir, create_autoTest_current_cmm(obj, line_num,cfg.cmm_file_dir)))
 			else:
 				if self.use_uart:
@@ -464,23 +478,23 @@ class VminAutoTestParse(AutoTestParse):
 		# if ch == 'n': raise MyException('exit')
 
 		conf = ConfigParser.ConfigParser()
-		conf.read('./tool/autoPlatform/autoPlatform.cfg')
+		conf.read(os.sep.join([os.curdir,"tool","autoPlatform","autoPlatform.cfg"]))
 		for sec in conf.sections():
 			self.config_options[sec] = {k:v for k,v in conf.items(sec)}
 		# print self.config_options
 
 		autotest_tmp = self.config_options.get('basic_config',{}).get('autotest_tmp')
-		autotest_tmp =  autotest_tmp if autotest_tmp else './tool/tmp'
+		autotest_tmp =  autotest_tmp if autotest_tmp else os.sep.join([os.curdir,"tool","tmp"])
 		os.mkdir(autotest_tmp) if not os.path.exists(autotest_tmp) else None
 
 		log_dir = self.config_options.get('basic_config',{}).get('log_dir')
-		self.log_dir =  log_dir if log_dir else './tool/tmp/log'
-		os.system(r'rm -rf %s'%self.log_dir) if os.path.exists(self.log_dir) else None
+		self.log_dir =  log_dir if log_dir else os.sep.join([os.curdir,"tool","tmp","log"])
+		shutil.rmtree(self.log_dir) if os.path.exists(self.log_dir) else None
 		os.mkdir(self.log_dir)
-		os.system(r'chmod 777 %s'%self.log_dir)
+		os.chmod(self.log_dir,0o777)
 
 		build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
-		self.build_res_fname =  build_res_fname if build_res_fname else './tool/tmp/~build.result'
+		self.build_res_fname =  build_res_fname if build_res_fname else os.sep.join([os.curdir,"tool","tmp","~build.result"])
 
 		module_name = self.config_options.get('vmin_config',{}).get('module_name')
 		test_binary = self.config_options.get('vmin_config',{}).get('test_binary')
@@ -492,9 +506,10 @@ class VminAutoTestParse(AutoTestParse):
 		timeout = self.config_options.get('vmin_config',{}).get('timeout')
 		self.jump_cnt = voltage_grade
 		self.sdl_binary = sdl_binary
-		test_binary = os.path.join('./tool/autoPlatform/autoTest/vmin',test_binary)
-		sdl_binary = os.path.join('./tool/autoPlatform/autoTest/vmin',sdl_binary)
-		os.system('cp %s ./tool/evb/aquilac/sdl.pak'%sdl_binary)
+		test_binary = os.sep.join([os.curdir,"tool","autoPlatform","autoTest","vmin",test_binary])
+		sdl_binary = os.sep.join([os.curdir,"tool","autoPlatform","autoTest","vmin",sdl_binary])
+		dst_file = os.sep.join([os.curdir,"tool","evb","aquilac","sdl.pak"])
+		shutil.copyfile(sdl_binary,dst_file)
 
 		vol_list = [(float(vol_high)-0.0125*i) for i in range(int(voltage_grade))]
 		vol_list = ['%.4f'%vol for vol in vol_list]

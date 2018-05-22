@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from auto_test_uart import *
 
-sys.path.append("./tool/autoPlatform/jtag_api")
+sys.path.append(os.sep.join([os.curdir,"tool","autoPlatform","jtag_api"]))
 from jtag_api import *
 
 def autoTest_uart(t32api,autoTest_obj,uart):
@@ -14,14 +14,12 @@ def autoTest_uart(t32api,autoTest_obj,uart):
 	case_timeout = eval('+'.join(autoTest_obj.test_timeout_list))
 	print "wait time: %.1fs"%(wait_time+float(case_timeout))
 	msgtype=c_ulonglong(0)
-	timming = 0
 	test_result = []
-	while timming < wait_time:
+	for timming in xrange(int(wait_time)):
 		t32api.T32_GetPracticeState(byref(msgtype))
 		if msgtype.value == 0:
 			break
 		else:
-			timming += 1
 			sys.stdout.write("timing: %ds\r" %int(timming))
 			sys.stdout.flush()
 			time.sleep(1)
@@ -49,13 +47,11 @@ def autoTest(t32api,autoTest_obj):
 	print "wait script stop running"
 	print "wait time: %.1fs"%wait_time
 	msgtype=c_ulonglong(0)
-	timming = 0
-	while timming < wait_time:
+	for timming in xrange(int(wait_time)):
 		t32api.T32_GetPracticeState(byref(msgtype))
 		if msgtype.value == 0:
 			break
 		else:
-			timming += 1
 			sys.stdout.write("timing: %ds\r" %int(timming))
 			sys.stdout.flush()
 			time.sleep(1)
