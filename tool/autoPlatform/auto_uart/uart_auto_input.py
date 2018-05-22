@@ -240,9 +240,16 @@ if __name__ == "__main__":
 				file_text = '|'.join(file_obj.readlines())
 				file_text = '|' + re.sub('\n','',file_text)
 			cmd_set = re.findall('\|AUTOTEST@\((.*?),(.*?)\)',file_text)
-			for cmd,timeout in cmd_set:
-				uart.input(cmd.strip())
-				time.sleep(eval(timeout))
+			cnt = re.findall('\|CNT@\((.*?)\)',file_text)
+			for i in range(int(cnt[0])):
+				print "\n**********************************"
+				print "running cnt: %s"%i
+				print "**********************************"
+				time.sleep(2)
+				uart.log.write("running cnt: %s\n"%i)
+				for cmd,timeout in cmd_set:
+					uart.input(cmd.strip())
+					time.sleep(eval(timeout))
 
 		WAIT_ALL_THREAD_END()
 	except Exception,e:
