@@ -132,15 +132,13 @@ if __name__ == '__main__':
 							data.getAttr('DDR_port_3_write_bytes'),data.getAttr('ts_for_delay'),data.getAttr('DDR_port_bandwidth_ratio'),
 							data.getAttr('DDR_port_bandwidth'),data.getAttr('axi_port3_max_read_latency'),data.getAttr('axi_port3_max_write_latency')]):
 						break
-					data_list.remove(data)
-					if not data_list: break
 				last_info.append(data.getAttr('file_name'))
 			last_info.append('total_time:' + data.getAttr('total_time'))
 			target_info = [data.getAttr('DDR_port_0_read_bytes'),data.getAttr('DDR_port_0_write_bytes'),data.getAttr('DDR_port_3_read_bytes'),
 						data.getAttr('DDR_port_3_write_bytes'),data.getAttr('ts_for_delay'),data.getAttr('DDR_port_bandwidth_ratio'),
 						data.getAttr('DDR_port_bandwidth'),data.getAttr('axi_port3_max_read_latency'),data.getAttr('axi_port3_max_write_latency'),
 						'| '.join(last_info)]
-			# print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in data.__dict__.items()])
+			# print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in data.__dict__.items()]) 
 			# print target_info
 			# raw_input()
 			for j, info in enumerate(target_info):
