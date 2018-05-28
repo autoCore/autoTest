@@ -192,7 +192,7 @@ class BenchmarkParse(object):
 			self.create_report()
 			self.clear_result(case_group)
 	def create_report(self):
-		cmd = "python ./tool/cap_log_info/capture_log.py ./tool/tmp/log"
+		cmd = "python ./tool/autoPlatform/cap_log_info/capture_log.py ./tool/tmp/log"
 		proc = self.__myspawn(cmd)
 		index = proc.expect([r'capture log done', pexpect.EOF, pexpect.TIMEOUT], timeout=2)
 
@@ -209,7 +209,7 @@ class BenchmarkParse(object):
 		for _name in find_name:
 			cmd = 'find ./tool/tmp -maxdepth 1 -name %s -type f -exec mv {} %s \;'%(_name,test_module_dir)
 			os.system(cmd)
-		cmd = 'mv ./tool/cap_log_info/perfinfo.xls %s'%(test_module_dir)
+		cmd = 'mv ./tool/autoPlatform/cap_log_info/perfinfo.xls %s'%(test_module_dir)
 		os.system(cmd)
 		cmd = 'find ./tool/tmp -maxdepth 1 -name ~* -exec cp {} %s \;'%(test_module_dir)
 		os.system(cmd)
