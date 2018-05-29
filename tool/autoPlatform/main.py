@@ -183,23 +183,53 @@ class autoframe(wx.Frame):
 	def __clear(self,event):
 		self.contents.Clear()
 
+def command_parse(cmd):
+	if "build" in cmd:
+		if argv.module_name:
+			return "python ./tool/autoPlatform/autobuild/autobuild.py %s -m %s"%(argv.project_name,argv.module_name)
+		else:
+			return "python ./tool/autoPlatform/autobuild/autobuild.py %s"%(argv.project_name)
+
+	if 'uart' in cmd:
+		return "python ./tool/autoPlatform/auto_uart/uart_auto_input.py"
+
+	if cmd in 'autotest':
+		return "python ./tool/autoPlatform/autoTest/bin/autoTest_main.py %s -b"%(argv.project_name)
+
+	if 'autotest_' in cmd:
+		cmd_str, arg = cmd.split("_")
+		return "python ./tool/autoPlatform/autoTest/bin/autoTest_main.py %s %s -%s -b"%(argv.project_name,cmd_str,arg)
+
+	if 'ddr_current' in cmd:
+		return "python ./tool/autoPlatform/autoTest/bin/autoTest_main.py %s -c"%(argv.project_name)
 
 if __name__ == '__main__':
 	arg_parser = argparse.ArgumentParser()
 	arg_parser.add_argument('project_name',choices = ["aquila_evb","aquila_fpga","aquilac_evb","aquilac_fpga"],help = 'input project name ')
-	arg_parser.add_argument('-m','--module_name',default = 'all_modules',help = 'if you test single module, input module name')
+	arg_parser.add_argument('-m','--module_name',default = '',help = 'if you test single module, input module name')
+	arg_parser.add_argument('-g','--gui',action = 'store_true',help = 'if you use gui, input -g')
+	arg_parser.add_argument('-c','--command',default = '',help = 'please input command, example,build autotest_j,autotest_u,autotest_v,ddr_current,uart')
 	argv = arg_parser.parse_args()
-	try:
-		app = wx.App()
-		frm = autoframe(700,900)
+	if argv.gui:
+		try:
+			app = wx.App()
+			frm = autoframe(700,900)
 
-		# print_res = PrintRes(frm)
-		# print_res.start()
+			# print_res = PrintRes(frm)
+			# print_res.start()
 
-		frm.Show()
-		app.MainLoop()
-		wx.GetApp().ExitMainLoop()
-	except Exception,e:
-		print e
-		wx.GetApp().ExitMainLoop()
+			frm.Show()
+			app.MainLoop()
+			wx.GetApp().ExitMainLoop()
+		except Exception,e:
+			print e
+			wx.GetApp().ExitMainLoop()
+
+	if argv.command:
+		print command_parse(argv.command)
+		# proc = pexpect.spawn(command_parse(argv.command))
+		# index = proc.expect([r'over', myexpect.EOF, myexpect.TIMEOUT],timeout = 600)
+		os.system(command_parse(argv.command))
+	else:
+		print "please input command, example,build autotest"
 

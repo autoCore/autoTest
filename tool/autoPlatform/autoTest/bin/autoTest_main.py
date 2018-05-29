@@ -224,7 +224,7 @@ class AutoTestParse(object):
 			self.set_test_result(['timeout overrange reboot max time'])
 			return
 
-		for cmd_string,timeout in zip(case.test_cmd_list,case.test_timeout_list):
+		for cmd_string,time_out in zip(case.test_cmd_list,case.test_timeout_list):
 			print 'input cmd:',cmd_string
 			self.uart.input(cmd_string)
 			if case.module_name in ['ipc','tl4',"ddr_vmin","core_vmin"]:
@@ -267,8 +267,6 @@ class AutoTestParse(object):
 		date = now.strftime("%d_%h_%H-%M-%S")
 		test_module_dir = '%s_log_%s'%(test_module,date)
 		test_module_dir = os.sep.join([self.autotest_tmp,test_module_dir])
-		os.mkdir(test_module_dir)
-		os.chmod(test_module_dir,0o777)
 		shutil.copytree(self.log_dir,test_module_dir)
 		find_name = [self.report_name+'*','test_report*']
 		for _name in find_name:
