@@ -198,10 +198,13 @@ def command_parse(cmd):
 
 	if 'autotest_' in cmd:
 		cmd_str, arg = cmd.split("_")
-		return "python ./tool/autoPlatform/autoTest/bin/autoTest_main.py %s %s -%s -b"%(argv.project_name,cmd_str,arg)
+		return "python ./tool/autoPlatform/autoTest/bin/autoTest_main.py %s -%s -b"%(argv.project_name,arg)
 
 	if 'ddr_current' in cmd:
 		return "python ./tool/autoPlatform/autoTest/bin/autoTest_main.py %s -c"%(argv.project_name)
+
+	if 'benchmark' in cmd:
+		return "python ./tool/autoPlatform/benchmark_test/test_main.py %s"%(argv.project_name)
 
 if __name__ == '__main__':
 	arg_parser = argparse.ArgumentParser()
@@ -226,10 +229,14 @@ if __name__ == '__main__':
 			wx.GetApp().ExitMainLoop()
 
 	if argv.command:
-		print command_parse(argv.command)
-		# proc = pexpect.spawn(command_parse(argv.command))
-		# index = proc.expect([r'over', myexpect.EOF, myexpect.TIMEOUT],timeout = 600)
-		os.system(command_parse(argv.command))
+		cmd = command_parse(argv.command)
+		if cmd:
+			print command_parse(argv.command)
+			# proc = pexpect.spawn(command_parse(argv.command))
+			# index = proc.expect([r'over', myexpect.EOF, myexpect.TIMEOUT],timeout = 600)
+			os.system(command_parse(argv.command))
+		else:
+			print "please check your input"
 	else:
 		print "please input command, example,build autotest"
 

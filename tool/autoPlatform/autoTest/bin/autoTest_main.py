@@ -118,8 +118,10 @@ class AutoTestParse(object):
 		shutil.rmtree(self.log_dir) if os.path.exists(self.log_dir) else None
 		os.mkdir(self.log_dir)
 		os.chmod(self.log_dir,0o777)
-
-		build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
+		if argv.current:
+			build_res_fname = os.sep.join([os.curdir,"tool","autoPlatform","aquilac_ddr_current","~build.result"])
+		else:
+			build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
 		self.build_res_fname =  build_res_fname if build_res_fname else os.sep.join([self.autotest_tmp,"~build.result"])
 
 	def get_case(self):
@@ -227,7 +229,7 @@ class AutoTestParse(object):
 		for cmd_string,time_out in zip(case.test_cmd_list,case.test_timeout_list):
 			print 'input cmd:',cmd_string
 			self.uart.input(cmd_string)
-			if case.module_name in ['ipc','tl4',"ddr_vmin","core_vmin"]:
+			if case.module_name in ['ipc','tl4',"ddr_vmin","core_vmin","ddr_current"]:
 				index,timming = self.uart.expect(['BOOTROM: SPL0'],timeout+2)
 			else:
 				index,timming = self.uart.expect(['ctest#','BOOTROM: SPL0'],timeout+2)

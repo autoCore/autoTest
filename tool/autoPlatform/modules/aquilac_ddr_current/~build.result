@@ -1,0 +1,62 @@
+aquila_evb's testCode building result!
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 0 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 0 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 0 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 0 4 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 2 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 2 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 2 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 2 4 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 6 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 6 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 6 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 6 4 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 7 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 7 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 7 4 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 7 4 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 0 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 0 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 0 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 0 5 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 2 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 2 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 2 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 2 5 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 6 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 6 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 6 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 6 5 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 7 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 7 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 7 5 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 7 5 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 0 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 0 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 0 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 0 6 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 2 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 2 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 2 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 2 6 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 6 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 6 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 6 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 6 6 1:16
+
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.85 7 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.9 7 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 0.95 7 6 1:16
+ddr_current:test:./tool/autoPlatform/aquilac_ddr_current/ddr_current.bin         :[Success]:AUTOTEST@ddr_current 1.0 7 6 1:16
+Total Failed number = 0!
+Total autoTest number = 1!
