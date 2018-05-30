@@ -119,7 +119,7 @@ class AutoTestParse(object):
 		os.mkdir(self.log_dir)
 		os.chmod(self.log_dir,0o777)
 		if argv.current:
-			build_res_fname = os.sep.join([os.curdir,"tool","autoPlatform","aquilac_ddr_current","~build.result"])
+			build_res_fname = os.sep.join([os.curdir,"tool","autoPlatform","modules","aquilac_ddr_current","~build.result"])
 		else:
 			build_res_fname = self.config_options.get('basic_config',{}).get('build_res_fname')
 		self.build_res_fname =  build_res_fname if build_res_fname else os.sep.join([self.autotest_tmp,"~build.result"])
