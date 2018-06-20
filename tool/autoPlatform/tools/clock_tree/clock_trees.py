@@ -4,7 +4,7 @@ import commands
 import xlrd,xlwt
 import re
 import argparse
-sys.path.append("./tool/autoPlatform/t32_api")
+sys.path.append("./tool/autoPlatform/jtag_api")
 from jtag_t32 import *
 
 from ddr_perf_report_excel import excel_cell_config
@@ -47,7 +47,7 @@ class clk_tree:
 		self.div_offset = arg_d['div_offset']
 		self.id = arg_d['id']
 		self.freq_val = arg_d.get('freq_val',0)
-		
+
 		self.gate_reg_val = 0
 		self.parents = {}
 		self.fact_reg_val = 0

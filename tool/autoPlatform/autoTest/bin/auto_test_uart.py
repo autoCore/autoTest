@@ -42,15 +42,16 @@ class Uart(threading.Thread):
 		self.metux = threading.Lock()
 
 	def input(self,msg):
+		self.metux.acquire()
 		if self.comport:
 			self.case_end_flag = False
 			self.last_log = None
 			self.result_log = []
-			self.comport.write(msg+'\n')
-			return 1
+			self.comport.write('\n'+msg+'\n')
 		else:
 			print 'Pls create port'
-			return 0
+		self.metux.release()
+
 
 	def expect(self,pattern_list,timeout):
 		uart_timeout = 0.1
@@ -140,10 +141,10 @@ class Uart(threading.Thread):
 				self.metux.acquire()
 				self.fifo.get() if self.fifo.full() else None
 				self.fifo.put(line.lstrip()) if line.lstrip() else None
-				self.metux.release()
 				if self.log and line:
 					print >>self.log,line
 					self.log.flush()
+				self.metux.release()
 				if line:
 					self.last_log = line
 					if 'AUTOTEST@' in self.last_log:

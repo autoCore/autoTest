@@ -7,7 +7,6 @@ import threading
 import commands
 import argparse
 import fileinput
-import pexpect
 
 class BuildModule(threading.Thread):
 	"""docstring for ClassName"""
@@ -33,7 +32,7 @@ class BuildModule(threading.Thread):
 		if not binary_list:
 			self.binary_list = ['No_target_binary']
 			return
-		file_list = [s for s in os.listdir(self.axf_dir) if s.endswith('.elf')]
+		file_list = [s for s in os.listdir(self.axf_dir) if os.path.isfile(os.path.join(self.axf_dir,s)) and '.elf' in os.path.join(self.axf_dir,s)]
 		self.binary_list = [b for b in binary_list if b in file_list]
 
 	def run(self):
@@ -48,26 +47,26 @@ class BuildModule(threading.Thread):
 			if self.module_name in mkall_list:
 				cmd = "./make/%s/mkall.sh %s"%(self.module_name,self.project_name)
 		#end of exceptions
-		os.mkdir('./tool/tmp/build_log') if not os.path.exists('./tool/tmp/build_log') else None
+		(system_run_ret,res_log) = commands.getstatusoutput(cmd) #if success ,return 0  Linking C executable example_case0.elf
+		biuld_log_dir = os.sep.join([os.curdir,"tool","tmp","build_log"])
+		os.mkdir(biuld_log_dir) if not os.path.exists(biuld_log_dir) else None
 		res_file = "_".join([self.project_name,self.module_name,"build_res.log"])
-		res_file = './tool/tmp/build_log/' + res_file
-		proc = pexpect.spawn(cmd)
-		proc.logfile_read = open(res_file,"wb")
-		index = proc.expect([r'\[100%\] Built target', pexpect.EOF, pexpect.TIMEOUT], timeout=30)
-		proc.close(force=True)
-		proc = None
+		res_file = os.sep.join([biuld_log_dir,res_file])
+		res_file = open(res_file,"w")
+		res_file.write(res_log)
+		res_file.flush()
+		res_file.close()
 		self.build_cmd = cmd
-		res_log = "".join(open(res_file).readlines())
 		#after this, check the binary file
 		m = FileFilt()
-		if index != 2:
+		if not system_run_ret:
 			if self.build_type == "make":
 				m.FindFile(dirr = self.axf_dir, find_file = '.axf')
 				self.binary_list = m.fileList[:]
 			elif self.build_type == "cmake":
 				self.__get_target_binary(res_log)
 
-		self.result = 1 if any([index == 2,not self.binary_list]) else 0  # if fail 1 else 0
+		self.result = 1 if any([system_run_ret,not self.binary_list]) else 0  # if fail 1 else 0
 		mutex.acquire()
 		if self.result:
 			print "module: %-30s fail!"%self.module_name

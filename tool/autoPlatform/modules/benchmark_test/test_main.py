@@ -72,7 +72,7 @@ class BenchmarkParse(object):
 		self.uart.createPort()
 		self.uart.start()
 
-		cfgfile = os.sep.join([os.curdir,"tool","autoPlatform","benchmark_test","autocmd.cfg"])
+		cfgfile = os.sep.join([os.curdir,"tool","autoPlatform","modules","benchmark_test","autocmd.cfg"])
 		self.cmd_create = CreateCmd()
 		self.cmd_create.get_config(cfgfile)
 
@@ -95,7 +95,7 @@ class BenchmarkParse(object):
 			binary = self.cmd_create.config_options.get(group,{}).get('binary')
 			timeout = self.cmd_create.config_options.get(group,{}).get('timeout')
 			# print "binary:",binary
-			binary = os.sep.join([os.curdir,"tool","autoPlatform","benchmark_test","test_bin",binary])
+			binary = os.sep.join([os.curdir,"tool","autoPlatform","modules","benchmark_test","test_bin",binary])
 			assert binary and os.path.exists(binary), "Error:Test Binary No Exists!"
 			test_cmd_list = self.cmd_create.cmd_dict[group]
 			# print test_cmd_list

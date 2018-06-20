@@ -92,6 +92,7 @@ class AutoTestParse(object):
 		self.log_dir = None
 		self.build_res_fname = None
 		self.sudo_password = SUDO_PASSWORD
+		self.use_queue = True
 		self.autotest_tmp = os.sep.join([os.curdir,"tool","tmp"])
 
 	def prepare_test(self,is_build = False):
@@ -176,7 +177,24 @@ class AutoTestParse(object):
 		# for case in self.case_list:
 		# 	print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in case.__dict__.items()])
 		# 	raw_input()
-
+		if self.use_queue:
+			case_bak = None
+			case_list = []
+			for case in self.case_list:
+				if not case_bak:
+					case_list.append(case)
+					case_bak = case
+					continue
+				if case_bak.binary in case.binary:
+					case_list[-1].test_cmd_list += case.test_cmd_list
+					case_list[-1].test_timeout_list += case.test_timeout_list
+				else:
+					case_list.append(case)
+				case_bak = case
+		self.case_list = case_list
+		# for case in case_list:
+		# 	print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in case.__dict__.items()])
+		# 	raw_input()
 	def __myspawn(self, fout, command):
 		proc = myspawn(command)
 		proc.logfile_read = fout
@@ -215,33 +233,58 @@ class AutoTestParse(object):
 			print 'system error not into ctest'
 		test_result = []
 
-		timeout = eval("+".join(case.test_timeout_list))
-		timeout = get_timeout(timeout)
-		self.uart.input('reboot %d'%timeout)
-		self.__wait_case_done(1)
-		if timeout:
-			print "wait time:%d"%timeout
-		else:
-			print 'timeout overrange reboot max time\n'
-			self.set_test_result(['timeout overrange reboot max time'])
-			return
-
-		for cmd_string,time_out in zip(case.test_cmd_list,case.test_timeout_list):
-			print 'input cmd:',cmd_string
-			self.uart.input(cmd_string)
-			if case.module_name in ['ipc','tl4',"ddr_vmin","core_vmin","ddr_current"]:
+		if self.use_queue:
+				timeout = max(case.test_timeout_list)
+				timeout = get_timeout(timeout)
+				self.uart.input('reboot %d'%timeout)
+				self.__wait_case_done(1)
+				if timeout:
+					print "wait time:%d"%timeout
+				else:
+					print 'timeout overrange reboot max time\n'
+					self.set_test_result(['timeout overrange reboot max time'])
+					return
+				self.uart.input("queue on")
+				index,timming = self.uart.expect(['queue on ok'],1)
+				print 'input cmd:',case.test_cmd_list
+				for cmd_string,time_out in zip(case.test_cmd_list,case.test_timeout_list):
+					self.uart.input(cmd_string)
 				index,timming = self.uart.expect(['BOOTROM: SPL0'],timeout+2)
-			else:
-				index,timming = self.uart.expect(['ctest#','BOOTROM: SPL0'],timeout+2)
-			test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
-			if not timming:
-				case.set_test_result(test_result)
-				raise MyException('No reboot after timeout')
-			print 'wait total time: %ds'%timming
-			print 'test result:',test_result
+				test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
+				if not timming:
+					case.set_test_result(test_result)
+					raise MyException('No reboot after timeout')
+				print 'wait total time: %ds'%timming
+				print 'test result:',test_result
 		else:
-			self.uart.input('reboot 0')
+			self.uart.input("queue off")
+			index,timming = self.uart.expect(['queue off ok'],1)
+			timeout = eval("+".join(case.test_timeout_list))
+			timeout = get_timeout(timeout)
+			self.uart.input('reboot %d'%timeout)
 			self.__wait_case_done(1)
+			if timeout:
+				print "wait time:%d"%timeout
+			else:
+				print 'timeout overrange reboot max time\n'
+				self.set_test_result(['timeout overrange reboot max time'])
+				return
+			for cmd_string,time_out in zip(case.test_cmd_list,case.test_timeout_list):
+				print 'input cmd:',cmd_string
+				self.uart.input(cmd_string)
+				if case.module_name in ['ipc','tl4',"ddr_vmin","core_vmin","ddr_current"]:
+					index,timming = self.uart.expect(['BOOTROM: SPL0'],timeout+2)
+				else:
+					index,timming = self.uart.expect(['ctest#','BOOTROM: SPL0'],timeout+2)
+				test_result.extend(self.uart.result_log) if self.uart.result_log else test_result.append('No_result_log')
+				if not timming:
+					case.set_test_result(test_result)
+					raise MyException('No reboot after timeout')
+				print 'wait total time: %ds'%timming
+				print 'test result:',test_result
+			else:
+				self.uart.input('reboot 0')
+				self.__wait_case_done(1)
 
 		case.set_test_result(test_result)
 		print 'case test done!\n'
