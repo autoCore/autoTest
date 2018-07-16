@@ -15,7 +15,9 @@ path &scriptpath
 do CA53_ETB_Trace_aquilac.cmm
 
 print "running ddr init code......"
-data.load.elf &scriptpath"/ddr_init.elf"
+data.load.elf &scriptpath"/spl.elf"
+;data.load.Binary spl.pak 0xc0800000
+;r.s pc 0xc0801000
 go
 wait 5.s
 break

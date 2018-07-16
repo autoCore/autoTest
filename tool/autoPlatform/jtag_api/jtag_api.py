@@ -4,6 +4,12 @@ import platform,os,sys,time,shutil
 from ctypes import *
 import ctypes
 
+
+T32_OK = 0
+EXIT_SUCCESS=0
+EXIT_FAILURE=1
+
+
 def get_config():
 	import ConfigParser
 	abs_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,14 +62,14 @@ def jtat_connect():
 		t32api.T32_Config(b"PORT=",conf.get('jtag_port'))
 		t32api.T32_Config(b"PACKLEN=",conf.get('jtag_packlen'))
 
-		if not t32api.T32_Init():
+		if t32api.T32_Init():
 			print "T32_Init() return err\n\r"
 			return False
-		if not t32api.T32_Attach(1):
+		if t32api.T32_Attach(1):
 			print "attach return err"
 			return False
 
-		if not t32api.T32_Ping():
+		if t32api.T32_Ping():
 			print "please check the connection\n\r"
 			return False
 
@@ -123,3 +129,56 @@ def cvd_do_cmm(cvdapi,cmm_file,timeout = 10):
 			res = -1
 	os.remove(local_cmm)
 	return res
+
+def jtag_stop_it(t32api):
+	error = t32api.T32_Stop()
+	error = t32api.T32_Break()
+	return 0
+
+def jtag_cmd(t32api, line):
+	msgstring=create_string_buffer(50)
+	msgtype=c_ulonglong(0)
+
+	t32api.T32_Stop()
+	time.sleep(0.2)
+	if ';' in line:
+		M = line.split(';')
+		line = M[0]
+
+	error = t32api.T32_Cmd(line.encode('latin-1'))
+	if t32api.T32_Cmd(line.encode('latin-1'))== T32_OK:
+		if 0:
+			if t32api.T32_GetMessage(byref(msgstring), byref(msgtype))==T32_OK:
+				if msgtype.value < (WIN_MESSAGEMODETEMPINFO << 1):
+					if msgtype.value != WIN_MESSAGEMODENONE and not((len(msgstring.value) == 0) and (msgtype.value & (WIN_MESSAGEMODETEMPINFO | WIN_MESSAGEMODETEMP))):
+						if msgtype.value & WIN_MESSAGEMODEINFO:
+							print('info message:', msgstring.value)
+						if msgtype.value & WIN_MESSAGEMODESTATE:
+							print('status message:', msgstring.value)
+						if msgtype.value & WIN_MESSAGEMODEWARNINFO:
+							print('warning message:', msgstring.value)
+						if (msgtype.value & WIN_MESSAGEMODEERRORINFO) or (msgtype.value & WIN_MESSAGEMODEERROR):
+							print('error message:', msgstring.value)
+						if (msgtype.value & WIN_MESSAGEMODETEMPINFO) or (msgtype.value & WIN_MESSAGEMODETEMP):
+							print('miscellaneous message: %s' %msgstring.value)
+					else:
+						print('Successfully executed user command %s' %line)
+				else:
+					print('Failed to determine the type of the return message.')
+	else:
+		print('Failed to query return message.')
+
+def do_t32command_do_cmm(t32api, fname):
+	# s = 0.1
+	# with open(fname, 'r') as file:
+	# 	for line in file:
+	# 		line=line.rstrip()
+	# 		if 'wait' in line[:5]:
+	# 			ll = line.split('wait')
+	# 			ll = ll[1].lstrip().split('s')
+	# 			s += float(ll[0])
+	cmd = 'do ' + fname
+	print 'cmd: ', cmd
+	# print 'cmd: ', "END"
+	jtag_cmd(t32api, "END")
+	jtag_cmd(t32api, cmd)

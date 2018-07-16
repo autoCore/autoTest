@@ -23,8 +23,8 @@ elif os.name == 'posix':
 sys.path.append(os.sep.join([os.curdir,"tool","autoPlatform","autobuild"]))
 from autobuild import do_autoBuild
 
-sys.path.append(os.sep.join([os.curdir,"tool","autoPlatform","t32_api"]))
-from jtag_t32 import *
+sys.path.append(os.sep.join([os.curdir,"tool","autoPlatform","jtag_api"]))
+from jtag_api import *
 
 class MyException(Exception): pass
 class TestEndException(Exception): pass
@@ -59,6 +59,7 @@ class AutoTest(object):
 		self.test_result = []
 		self.cmm_fn = ''
 		self.t32_test_log_dir = ''
+		self.queue_flag = False
 
 	def to_object(self, id = None, module_name = '', binary = '',cmd_list = [],timeout_list = [], log_dir = '',t32_log_dir = '',build_result = 'Success'):
 		self.ID = id
@@ -185,7 +186,7 @@ class AutoTestParse(object):
 					case_list.append(case)
 					case_bak = case
 					continue
-				if case_bak.binary in case.binary:
+				if case_bak.binary and case_bak.binary in case.binary:
 					case_list[-1].test_cmd_list += case.test_cmd_list
 					case_list[-1].test_timeout_list += case.test_timeout_list
 				else:

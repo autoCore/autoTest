@@ -23,7 +23,7 @@ uart: connect board uart like minicom
 
 Notes:
 
-share_ctest_root_dir: is your shared ctest director. example: \\10.1.51.34\share\work\baremetal-test\ctest
+share_ctest_root_dir: shared ctest director. example: \\10.1.51.34\share\work\baremetal-test\ctest
 you must start the autoTest_main.py in this root director.
 
 autotest_platform: you want to use evb or fpga. example: aquilac_FPGA, aquila_evb

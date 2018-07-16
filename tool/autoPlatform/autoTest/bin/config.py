@@ -14,7 +14,7 @@ class config:
 		self.res_tmp_dir = os.sep.join([os.curdir,"tool","tmp","~res_tmp.log"])
 		self.t32_log_file_dir = os.sep.join([os.curdir,"tool","tmp","log"])
 		self.log_file_dir = os.sep.join([os.curdir,"tool","tmp","log"])
-		self.autoTest_script = os.sep.join([os.curdir,"autoPlatform","autoTest","script","aquilac"])
+		self.autoTest_script = os.sep.join([os.curdir,"tool","autoPlatform","autoTest","script","aquilac"])
 
 	def update(self,t32_platform,root_dir,template):
 		self.t32_platform = t32_platform
