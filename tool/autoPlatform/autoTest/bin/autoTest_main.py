@@ -192,7 +192,7 @@ class AutoTestParse(object):
 				else:
 					case_list.append(case)
 				case_bak = case
-		self.case_list = case_list
+			self.case_list = case_list[:]
 		# for case in case_list:
 		# 	print '\n'.join(['{}:{}'.format(item[0],item[1]) for item in case.__dict__.items()])
 		# 	raw_input()
@@ -507,6 +507,8 @@ class VminAutoTestParse(AutoTestParse):
 		self.jump_cnt = 0
 		self.sdl_binary = ''
 		self.vmin_list = []
+		self.use_queue = False
+
 	def create_report(self):
 		report_result(self.case_list, './tool/tmp/' + self.report_name + '.pdf')
 		report_excel(self.case_list, './tool/tmp/' + self.report_name + '.xls')
