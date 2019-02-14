@@ -1,0 +1,107 @@
+ON ERROR CONTinue
+area
+system.config slave off
+system.reset
+system.RESetTarget
+
+wait 2s
+sys.reset
+system.jtagclock 2Mhz
+print "do cpu and ddr init"
+
+LOCAL &scriptpath
+&scriptpath=".\tool\autoTest_script"
+path &scriptpath
+do ca53_z1.cmm
+
+print "running ddr init code......"
+
+data.load.elf &scriptpath"/spl.elf"
+
+go
+wait 25.s
+break
+
+
+print "end of ddr init "
+print "load test code......"
+data.load.elf test.axf
+
+
+print "write log file......"
+TERM.RESet
+TERM.METHOD SingleE EAXI:0xd4282a48 EAXI:0xd4282a50
+TERM.SIZE 60 200
+TERM.MODE VT100
+TERM.SCROLL ON
+TERM.view
+SCREEN.ALways
+TERM.WRITE EAXI:0xd4282a48 c:\autoTest.log
+
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+print "running c code......"
+go
+wait 160s
+
+TERM.Out EAXI:0xd4282a50 " " 10.
+wait 0.3s
+
+TERM.Out EAXI:0xd4282a50 "ls" 10.
+wait 10s
+
+TERM.Out EAXI:0xd4282a50 "fault_cmd" 10.
+
+wait 5s
+break
+print "End of running ctest "
+
+TERM.close
+SCREEN.ON
+print "End of TERM.close"
+wait 1s
+
+print "waiting reset trace32......"
+wait 1
+stop
+enddo
+
+print "write log file......"
+TERM.RESet
+TERM.METHOD SingleE EAXI:0xC0700000 EAXI:0xC0700004
+TERM.SIZE 60 200
+TERM.MODE VT100
+TERM.SCROLL ON
+TERM.view
+SCREEN.ALways
+TERM.WRITE EAXI:0xC0700000 c:\autoTest.log
+
+sys.MemAccess dap
+SYStem.CpuAccess Enable
+
+print "running c code......"
+go
+wait 10s
+
+TERM.Out EAXI:0xC0700004 " " 10.
+wait 1s
+
+TERM.Out EAXI:0xC0800004 "ls" 10.
+wait 20s
+
+TERM.Out EAXI:0xC0700004 "fault_cmd" 10.
+
+wait 5s
+break
+print "End of running ctest "
+
+TERM.close
+SCREEN.ON
+print "End of TERM.close"
+wait 1s
+
+print "waiting reset trace32......"
+
+stop
+enddo
