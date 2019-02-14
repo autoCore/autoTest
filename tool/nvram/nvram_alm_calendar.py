@@ -3,37 +3,27 @@ from nvram_cfg import *
 from nvram_util import *
 
 class AlarmInfo(InfoObject):
-	"""docstring for SmsInfo"""
 	def __init__(self):
-		super(SmsInfo, self).__init__('<8BHB')
-		self.Hour = None
-		self.Min = None
-		self.State = None
-		self.Freq = None
-		self.Snooze = None
-		self.Days = None
-		self.Volume = None
-		self.AudioOption = None
-		self.AudioOptionValue = None
-		self.SnoozeInterval = None
+		super(AlarmInfo, self).__init__('<14B5sBB36s')
+		self.addAttr('ONTIME')
+		self.addAttr('before_alarm')
+		self.addAttr('ACTIVATION')
+		self.addAttr('REPEATS')
+		self.addAttr('ALM_TIME_H')
+		self.addAttr('ALM_TIME_MIN')
+		self.addAttr('WEEKLY')
+		self.addAttr('TYPE')
+		self.addAttr('TONE_ID')
+		self.addAttr('VOL')
+		self.addAttr('SNOOZE_DUR')
+		self.addAttr('SNOOZE_REP')
+		self.addAttr('AUTO_POWERRUP')
+		self.addAttr('REG_ALARM')
+		self.addAttr('REMINDER_PREQUENCY')
+		self.addAttr('TYPE_REPEAT')
+		self.addAttr('SNOOZE_MAX')
+		self.addAttr('ALARM_NAME')
 
-	def GetInfo(self,data):
-		(self.Hour, self.Min, self.State, self.Freq, self.Snooze, \
-		self.Days, self.Volume, self.AudioOption, \
-		self.AudioOptionValue, self.SnoozeInterval) = struct.unpack(self.struct_fmt,data)
-
-	def print_info(self):
-		# print 'size:',self.size
-		print "Hour:",self.Hour
-		print 'Min:',self.Min
-		print 'State:',self.State
-		print 'Freq:',self.Freq
-		print 'Snooze:',self.Snooze
-		print 'Days:',self.Days
-		print 'Volume:',self.Volume
-		print 'AudioOption:',self.AudioOption
-		print 'AudioOptionValue:',self.AudioOptionValue
-		print 'SnoozeInterval:',self.SnoozeInterval
 
 '''
 Format 	C Type 				Python type 		Standard size

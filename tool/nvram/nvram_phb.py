@@ -5,64 +5,37 @@ from nvram_util import *
 class PhoneBookNumberStruct(InfoObject):
 	def __init__(self):
 		super(PhoneBookNumberStruct, self).__init__('<B%ds'%(40*2))
-		self.type = 0
-		self.number = None
-
-	def GetInfo(self,data):
-		(self.type,self.number) = struct.unpack(self.struct_fmt,data)
+		self.addAttr('type')
+		self.addAttr('number')
 
 	def print_info(self):
 		# print 'size:',self.size
-		print "number type:",hex(self.type)
-		print 'number:',self.number.split('\x00')[0]
+		print("number type: "+hex(self.type))
+		print('number: '+self.number.split('\x00')[0])
 
 class PhoneBookInfo(InfoObject):
 	"""docstring for PhoneBookInfo"""
 	def __init__(self):
 		super(PhoneBookInfo, self).__init__('<H%ds%ds'%(NameStruct().size,NumBcdStruct().size))
-		self.nAppIndex = 0
-		self.alpha_id = NameStruct()
-		self.alpha_id_data = None
-		self.tel = NumBcdStruct()
-		self.tel_data = None
+		self.addAttr('nAppIndex')
+		self.addAttr('alpha_id',NameStruct())
+		self.addAttr('tel',NumBcdStruct())
 		self.next_nFieldID = NVRAM_EF_PHB_SOMEFIELDS_LID
 
-	def GetInfo(self,data):
-		(self.nAppIndex,self.alpha_id_data,self.tel_data ) = struct.unpack(self.struct_fmt,data)
-		self.alpha_id.GetInfo(self.alpha_id_data)
-		self.tel.GetInfo(self.tel_data)
-
-	def print_info(self):
-		print "nAppIndex:",self.nAppIndex
-		self.alpha_id.print_info()
-		self.tel.print_info()
 
 class PhoneBookOptionalField(InfoObject):
 	"""docstring for PhoneBookOptionalField"""
 	def __init__(self):
-		super(PhoneBookOptionalField, self).__init__('<BB%ds1sHHH'%(PhoneBookNumberStruct().size*MAX_PB_NUMBER_CNT))
-		self.defNum = None
-		self.shareContact = None
-		self.phoneNum_list = [PhoneBookNumberStruct() for i in range(MAX_PB_NUMBER_CNT)]
-		self.phoneNum_data = None
-		self.reserved = None # c code 2 Bytes alignment,total 252 Bytes
-		self.picId = None
-		self.ringId = None
-		self.groupId = None
+		super(PhoneBookOptionalField, self).__init__('<BB'+('%ds'%PhoneBookNumberStruct().size)*MAX_PB_NUMBER_CNT+'1sHHH')
+		self.addAttr('defNum')
+		self.addAttr('shareContact')
+		for i in range(MAX_PB_NUMBER_CNT):
+			self.addAttr('phoneNum_%d'%i, PhoneBookNumberStruct())
+		self.addAttr('reserved')
+		self.addAttr('picId')
+		self.addAttr('ringId')
+		self.addAttr('groupId')
 
-	def GetInfo(self,data):
-		(self.defNum,self.shareContact,self.phoneNum_data,self.reserved,self.picId,self.ringId,self.groupId) = struct.unpack(self.struct_fmt,data)
-		for i,phone_num in enumerate(self.phoneNum_list):
-			phone_num.GetInfo(self.phoneNum_data[i*phone_num.size:(i+1)*phone_num.size])
-
-	def print_info(self):
-		print "defNum:",self.defNum
-		print 'shareContact:',self.shareContact
-		for i,phone_num in enumerate(self.phoneNum_list):
-			phone_num.print_info()
-		print 'picId:',hex(self.picId)
-		print 'ringId:',hex(self.ringId)
-		print 'groupId:',hex(self.groupId)
 
 
 def NVRAM_PhoneInfoAppIndex_Is_VALID(aAppIndex):
@@ -73,14 +46,14 @@ def NVRAM_PhoneInfoAppIndex_Is_VALID(aAppIndex):
 
 def PrintPhoneBookInfo(nvram,n = 1):
 	'''print PhoneBookInfo'''
-	print 'PhoneBookInfo:'
+	print('PhoneBookInfo:')
 	nFieldID,nRecordID = NVRAM_UNIT[0] ## 0 - PhoneBookInfo
 	for i, data in enumerate(nvram.DatabaseFormat[nFieldID]):
-		print "****************" 
+		print("*"*18)
 		data.print_info()
 		if NVRAM_PhoneInfoAppIndex_Is_VALID(data.nAppIndex):
 			data = nvram.DatabaseFormat[data.next_nFieldID][data.nAppIndex - 1]
-			print "****************" 
+			print("*"*18)
 			data.print_info()
 		if i == n - 1: break
 

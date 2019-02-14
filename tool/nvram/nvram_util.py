@@ -1,60 +1,63 @@
 #! /usr/bin/env python
-import struct,copy
+import struct,copy,re,traceback
 from nvram_cfg import *
-
 
 class InfoObject(object):
 	"""basic info class"""
-	def __init__(self,struct_fmt):
+	def __init__(self,struct_fmt = '<I'):
 		self.struct_fmt = struct_fmt
+		self.attr_list = []
+
+	def addAttr(self,attr,value = None):
+		self.attr_list.append(attr)
+		setattr(self,attr,value)
 
 	@property
 	def size(self):
 		return struct.calcsize(self.struct_fmt)
 
+	def GetInfo(self,data):
+		attr_value = struct.unpack(self.struct_fmt,data)
+		for attr,value in zip(self.attr_list,attr_value):
+			attr_obj = getattr(self, attr, None)
+			if isinstance(attr_obj,InfoObject):
+				attr_obj.GetInfo(value)
+			else:
+				setattr(self,attr,value)
+
+	def print_info(self):
+		print('size: '+str(self.size))
+		for attr in self.attr_list:
+			attr_obj = getattr(self, attr, None)
+			if isinstance(attr_obj,InfoObject):
+				attr_obj.print_info()
+			else:
+				try:
+					print(attr+": "+hex(attr_obj))
+				except:
+					print(attr+": "+attr_obj)
+
+
 class ResultStruct(InfoObject):
 	def __init__(self):
 		super(ResultStruct, self).__init__('@BH')#'BH' 1+2 bytes c code 2 Bytes alignment,total 4 Bytes
-		self.flag = None
-		self.cause = None
+		self.addAttr('flag')
+		self.addAttr('cause')
 
-	def GetInfo(self,data):
-		(self.flag,self.cause) = struct.unpack(self.struct_fmt,data)
-
-	def print_info(self):
-		# print 'size:',self.size
-		print "result flag:",hex(self.flag)
-		print "result cause:",hex(self.cause)
 
 class LocalParaHDR(InfoObject):
 	def __init__(self):
 		super(LocalParaHDR, self).__init__('@BH')#'BH' 1+2 bytes c code 2 Bytes alignment,total 4 Bytes
-		self.ref_count = None
-		self.msg_len = None
+		self.addAttr('ref_count')
+		self.addAttr('msg_len')
 
-	def GetInfo(self,data):
-		(self.ref_count,self.msg_len) = struct.unpack(self.struct_fmt,data)
-
-	def print_info(self):
-		# print 'size:',self.size
-		print "ref_count:",hex(self.ref_count)
-		print "msg_len:",hex(self.msg_len)
 
 class NumberStruct(InfoObject):
 	def __init__(self):
 		super(NumberStruct, self).__init__('<2B41s')
-		self.type = None
-		self.length = None
-		self.number = None
-
-	def GetInfo(self,data):
-		(self.type,self.length,self.number) = struct.unpack(self.struct_fmt,data)
-
-	def print_info(self):
-		# print 'size:',self.size
-		print "number type:",hex(self.type)
-		print "number length:",self.length
-		print "number:",self.number
+		self.addAttr('type')
+		self.addAttr('length')
+		self.addAttr('number')
 
 class NumBcdStruct(InfoObject):
 	def __init__(self):
@@ -86,40 +89,35 @@ class NumBcdStruct(InfoObject):
 
 	def print_info(self):
 		# print 'size:',self.size
-		print "tel_type:",hex(self.tel_type)
-		print "tel_length:",hex(self.tel_length)
-		print 'tel:',self.tel_str
+		print("tel_type: "+hex(self.tel_type))
+		print("tel_length: "+hex(self.tel_length))
+		print('tel: '+self.tel_str)
 
 class NameStruct(InfoObject):
 	def __init__(self):
 		super(NameStruct, self).__init__('<BB32s')
-		self.name_length = None
-		self.name_dcs = None
-		self.name = None
+		self.addAttr('name_length')
+		self.addAttr('name_dcs')
+		self.addAttr('name')
 
-	def GetInfo(self,data):
-		(self.name_length,self.name_dcs,self.name) = struct.unpack(self.struct_fmt,data)
 
 	def print_info(self):
 		# print 'size:',self.size
-		print "name_length:",self.name_length
-		print "name_dcs:",hex(self.name_dcs)
-		# print 'name:',self.name[:self.name_length].decode("utf8","ignore")
-		print 'name:',self.name[:self.name_length]
+		print("name_length: "+str(self.name_length))
+		print("name_dcs: "+hex(self.name_dcs))
+		# print('name: '+self.name[:self.name_length].decode("utf8","ignore"))
+		print('name: '+str(self.name[:self.name_length]))
 
 class RtcTimeStruct(InfoObject):
 	def __init__(self):
-		super(RtcTimeStruct, self).__init__('<BBBBBBB')
-		self.rtc_sec = None
-		self.rtc_min = None
-		self.rtc_hour = None
-		self.rtc_day = None
-		self.rtc_mon = None
-		self.rtc_wday = None
-		self.rtc_year = None
-
-	def GetInfo(self,data):
-		(self.rtc_sec,self.rtc_min,self.rtc_hour,self.rtc_day,self.rtc_mon,self.rtc_wday,self.rtc_year) = struct.unpack(self.struct_fmt,data)
+		super(RtcTimeStruct, self).__init__('<7B')
+		self.addAttr('rtc_sec')
+		self.addAttr('rtc_min')
+		self.addAttr('rtc_hour')
+		self.addAttr('rtc_day')
+		self.addAttr('rtc_mon')
+		self.addAttr('rtc_wday')
+		self.addAttr('rtc_year')
 
 	@staticmethod
 	def GetWeekday(wday):
@@ -128,112 +126,67 @@ class RtcTimeStruct(InfoObject):
 	def print_info(self):
 		# print 'size:',self.size
 		wday = int(self.rtc_wday)
-		print "time: %d-%d-%d %d:%d:%d [%s]"\
-		%(self.rtc_year,self.rtc_mon,self.rtc_day,self.rtc_hour,self.rtc_min,self.rtc_sec,self.GetWeekday(wday))
+		print("time: %d-%d-%d %d:%d:%d [%s]"\
+		%(self.rtc_year,self.rtc_mon,self.rtc_day,self.rtc_hour,self.rtc_min,self.rtc_sec,self.GetWeekday(wday)))
 
 class NvramRecordCtr(InfoObject):
 	def __init__(self):
 		super(NvramRecordCtr, self).__init__('<4I')
-		self.iStatus = NVRAM_STATUS_FREE
-		self.iId = NVRAM_FREE_ID   
-		self.iInd = NVRAM_INVALID_IND
-		self.iCrc = NVRAM_INVALID_CRC
-
-	def GetInfo(self,data):
-		(self.iStatus,self.iId,self.iInd,self.iCrc) = struct.unpack(self.struct_fmt,data)
-
-	def print_info(self):
-		print "iStatus:",hex(self.iStatus)
-		print 'iId:',hex(self.iId)
-		print 'iInd:',hex(self.iInd)
-		print 'iCrc:',hex(self.iCrc)
+		self.addAttr('iStatus',NVRAM_STATUS_FREE)
+		self.addAttr('iId',NVRAM_FREE_ID)
+		self.addAttr('iInd',NVRAM_INVALID_IND)
+		self.addAttr('iCrc',NVRAM_INVALID_CRC)
 
 
 class NvramRecordInfo(InfoObject):
 	"""docstring for NvramRecordInfo"""
 	def __init__(self):
 		super(NvramRecordInfo, self).__init__('<%ds%ds'%(NvramRecordCtr().size,NVRAM_DATA_SIZE))
-		self.sCtr = NvramRecordCtr()
-		self.sCtr_data = None
-		self.pData = None
-
-	def GetInfo(self,data):
-		(self.sCtr_data,self.pData) = struct.unpack(self.struct_fmt, data)
-		self.sCtr.GetInfo(self.sCtr_data)
+		self.addAttr('sCtr',NvramRecordCtr())
+		self.addAttr('pData')
 
 	def print_info(self):
-		print "iStatus:",hex(self.iStatus)
-		print 'iId:',hex(self.iId)
-		print 'iInd:',hex(self.iInd)
-		print 'iCrc:',hex(self.iCrc)
-		print "pData:", ' '.join([hex(ord(_str)) for _str in self.pData])
+		self.sCtr.print_info()
+		print("pData: "+' '.join([hex(ord(_str)) for _str in self.pData]))
+
 
 class NvramNodeInfo(InfoObject):
 	"""docstring for NvramNodeInfo"""
 	def __init__(self):
 		super(NvramNodeInfo, self).__init__('<2I')
-		self.iId = None
-		self.iSize = None
+		self.addAttr('iId')
+		self.addAttr('iSize')
 
-	def GetInfo(self,data):
-		(self.iId,self.iSize) = struct.unpack(self.struct_fmt, data)
-
-	def print_info(self):
-		print "iId:",hex(self.iId)
-		print 'iSize:',hex(self.iSize)
 
 class NvramHeaderInfo(InfoObject):
 	"""docstring for NvramHeaderInfo"""
 	def __init__(self):
 		super(NvramHeaderInfo, self).__init__('<11I20s')
-		self.iMagic = NVRAM_MAGIC
-		self.iVer = NVRAM_VERSION   
-		self.iDevSize = None
-		self.iHOffs = NVRAM_H_BASE_ADDR
-		self.iHSize = None
-		self.iNDOffs = NVRAM_NDT_BASE_ADDR
-		self.iNDSize = NVRAM_NDT_SIZE
-		self.iROffs = NVRAM_R_BASE_ADDR
-		self.iRSize = NVRAM_R_SIZE
-		self.iRCount = None
-		self.iCrc = None
-		self.szServed = None
-
-	def GetInfo(self,data):
-		(self.iMagic,self.iVer, self.iDevSize,self.iHOffs,self.iHSize,\
-		self.iNDOffs,self.iNDSize,self.iROffs,self.iRSize,self.iRCount,\
-		self.iCrc,self.szServed) = struct.unpack(self.struct_fmt, data)
-
-	def print_info(self):
-		print "iMagic:",hex(self.iMagic)
-		print 'iVer:',hex(self.iVer)
-		print 'iDevSize:',hex(self.iDevSize)
-		print 'iHOffs:',hex(self.iHOffs)
-		print 'iHSize:',hex(self.iHSize)
-		print 'iNDOffs:',hex(self.iNDOffs)
-		print 'iNDSize:',hex(self.iNDSize)
-		print 'iROffs:',hex(self.iROffs)
-		print 'iRSize:',hex(self.iRSize)
-		print 'iRCount:',self.iRCount
-		print 'iCrc:',hex(self.iCrc)
-		# print "szServed:", ' '.join([hex(ord(_str)) for _str in self.szServed])
+		self.addAttr('iMagic',NVRAM_MAGIC)
+		self.addAttr('iVer',NVRAM_VERSION)
+		self.addAttr('iDevSize')
+		self.addAttr('iHOffs',NVRAM_H_BASE_ADDR)
+		self.addAttr('iHSize')
+		self.addAttr('iNDOffs',NVRAM_NDT_BASE_ADDR)
+		self.addAttr('iNDSize',NVRAM_NDT_SIZE)
+		self.addAttr('iROffs',NVRAM_R_BASE_ADDR)
+		self.addAttr('iRSize',NVRAM_R_SIZE)
+		self.addAttr('iRCount')
+		self.addAttr('iCrc')
+		self.addAttr('szServed')
 
 
 
-class StructParse(InfoObject):
-	"""docstring for StructParse"""
-	def __init__(self):
-		super(StructParse, self).__init__()
-
-	def ReadInfo(self,struct_fmt,file_name,offset):
+class StructParse(object):
+	def ReadInfo(self,file_name,struct_fmt,offset):
 		try:
 			file_obj = open(file_name,'rb')
 			file_obj.seek(offset,0)
 			data_buffer = file_obj.read(struct.calcsize(struct_fmt))
 			file_obj.close()
 			return struct.unpack(struct_fmt,data_buffer)
-		except Exception,e:
-			print e
+		except:
+			traceback.print_exc()
 
 	def WriteInfo(self,file_name,struct_fmt,offset,*value):
 		try:
@@ -245,9 +198,8 @@ class StructParse(InfoObject):
 			file_obj.write(data_buffer)
 			file_obj.flush()
 			file_obj.close()
-		except Exception,e:
-			print e
-
+		except:
+			traceback.print_exc()
 '''
 Format 	C Type 				Python type 		Standard size
 x 		pad byte 			no value 	  	 

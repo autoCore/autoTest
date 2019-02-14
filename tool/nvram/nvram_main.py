@@ -4,9 +4,6 @@
 import sys,os,argparse
 from gui_main import gui_main
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 from nvram_util import *
 from nvram_phb import *
 from nvram_call_log import *
@@ -18,7 +15,8 @@ NVRAM_FORMAT = { \
 	NVRAM_PHB_NVRAM_LID:PhoneBookInfo(),\
 	NVRAM_EF_PHB_SOMEFIELDS_LID:PhoneBookOptionalField(),\
 	NVRAM_SMSPROFNE_NVRAM_LID:SmsInfo(),\
-	NVRAM_DIALEDCALL_NVRAM_LID:CallLogInfo()\
+	NVRAM_DIALEDCALL_NVRAM_LID:CallLogInfo(),\
+	NVRAM_CFGALM_ALARM_DATA:AlarmInfo()
 }
 
 class NvramGlobalVal(object):
@@ -57,16 +55,16 @@ class NvramGlobalVal(object):
 			data_buffer = Nvram_file.read(self.Head.iRCount*NVRAM_R_SIZE)
 			data_len = len(data_buffer)
 			if data_len < self.Head.iRCount*NVRAM_R_SIZE:
-				print 'ERROR:NVRAM_R_TOTAL_SIZE < Head.iRCount*NVRAM_R_SIZE'
-				print 'NVRAM_R_TOTAL_SIZE:',len(data_buffer)
-				print 'Head.iRCount*NVRAM_R_SIZE:',self.Head.iRCount*NVRAM_R_SIZE
+				print('ERROR:NVRAM_R_TOTAL_SIZE < Head.iRCount*NVRAM_R_SIZE')
+				print('NVRAM_R_TOTAL_SIZE:',len(data_buffer))
+				print('Head.iRCount*NVRAM_R_SIZE:',self.Head.iRCount*NVRAM_R_SIZE)
 		for i in range(self.Head.iRCount):
 			record = NvramRecordInfo()
 			data = data_buffer[i*record.size:(i+1)*record.size]
 			try:
 				record.GetInfo(data)
 			except:
-				pass
+				traceback.print_exc()
 			self.Record.append(copy.deepcopy(record))
 
 	def GetNodeInfo(self,nFieldID,nRecordID):
@@ -123,9 +121,9 @@ if __name__ == '__main__':
 	nvram.UpdateRecordInfo()
 	nvram.UpdateDatabaseFormat()
 	''' print head info'''
-	print "****************"
+	print("*"*18)
 	nvram.Head.print_info()
-	print "****************"
+	print("*"*18)
 
 	PrintPhoneBookInfo(nvram,1)
 	PrintCallLogInfo(nvram,1)
