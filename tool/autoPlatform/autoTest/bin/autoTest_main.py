@@ -80,7 +80,6 @@ class AutoTest(object):
 	def set_test_result(self, _test_result):
 		self.test_result = _test_result[:]
 
-
 class AutoTestParse(object):
 	"""docstring for ClassName"""
 	def __init__(self,project_name,report_name = 'all_modules'):
@@ -93,7 +92,7 @@ class AutoTestParse(object):
 		self.log_dir = None
 		self.build_res_fname = None
 		self.sudo_password = SUDO_PASSWORD
-		self.use_queue = True
+		self.use_queue = False
 		self.autotest_tmp = os.sep.join([os.curdir,"tool","tmp"])
 
 	def prepare_test(self,is_build = False):
@@ -243,7 +242,7 @@ class AutoTestParse(object):
 					print "wait time:%d"%timeout
 				else:
 					print 'timeout overrange reboot max time\n'
-					self.set_test_result(['timeout overrange reboot max time'])
+					case.set_test_result(['timeout overrange reboot max time'])
 					return
 				self.uart.input("queue on")
 				index,timming = self.uart.expect(['queue on ok'],1)
@@ -268,7 +267,7 @@ class AutoTestParse(object):
 				print "wait time:%d"%timeout
 			else:
 				print 'timeout overrange reboot max time\n'
-				self.set_test_result(['timeout overrange reboot max time'])
+				case.set_test_result(['timeout overrange reboot max time'])
 				return
 			for cmd_string,time_out in zip(case.test_cmd_list,case.test_timeout_list):
 				print 'input cmd:',cmd_string
@@ -293,6 +292,7 @@ class AutoTestParse(object):
 	def start_test(self):
 		for doing_num,case in enumerate(self.case_list):
 			print 'doing_num:%d total_cnt:%d'%(doing_num,self.case_cnt)
+			if case.module_name == 'lowpower': continue
 			if case.test_result:
 				print 'module name:',case.module_name
 				print 'test result:',case.test_result
