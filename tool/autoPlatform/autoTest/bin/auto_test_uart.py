@@ -44,10 +44,11 @@ class Uart(threading.Thread):
 	def input(self,msg):
 		self.metux.acquire()
 		if self.comport:
+			self.fifo.queue.clear()
 			self.case_end_flag = False
 			self.last_log = None
 			self.result_log = []
-			self.comport.write('\n'+msg+'\n')
+			self.comport.write(msg+'\n')
 		else:
 			print 'Pls create port'
 		self.metux.release()
