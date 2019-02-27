@@ -242,13 +242,20 @@ def processing_cmd_file(cmd_file):
 			uart.input(cmd.strip())
 			time.sleep(eval(timeout))
 
+def WAIT_ALL_THREAD_END():
+	while 1:
+		alive = False
+		for th in threading.enumerate():
+			if th.getName() is 'MainThread': continue
+			alive = alive or th.isAlive()
+		if not alive: break
+
 if __name__ == "__main__":
 
 	signal.signal(signal.SIGINT, signal_handler)
 
 	arg_parser = argparse.ArgumentParser()
 	arg_parser.add_argument('-f','--log_file',default = 'test_log',help='log path or log_file -- example: ./test_log')
-	arg_parser.add_argument('-d','--output_dir',default = './',help='output file dir -- example: ./')
 	arg_parser.add_argument('-c','--cmd_file',default = '',help = 'if need autocmd.cfg ,input -c ./tool/auto_uart/autocmd.cfg')
 	argv = arg_parser.parse_args()
 
@@ -262,9 +269,10 @@ if __name__ == "__main__":
 	try:
 		if argv.cmd_file:
 			processing_cmd_file(argv.cmd_file)
-		uart.join()
-		uart_manager.join()
+		WAIT_ALL_THREAD_END()
 	except Exception,e:
-		stop_flag.set()
 		print e
+	finally:
+		stop_flag.set()
+		print 'test done'
 		sys.exit(1)
