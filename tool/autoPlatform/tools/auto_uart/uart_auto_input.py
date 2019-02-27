@@ -206,18 +206,45 @@ class UartController(threading.Thread):
 			print e,'Pls check serial port'
 			self.exit_serial()
 
-def WAIT_ALL_THREAD_END():
-	while 1:
-		alive = False
-		for th in threading.enumerate():
-			if th.getName() is 'MainThread': continue
-			alive = alive or th.isAlive()
-		if not alive: break
+def mkdir_if_no_exists(path):
+	import os
+	if not os.path.exists(path):
+		os.mkdir(path)
+
+def get_abs_dir():
+	import os
+	return os.path.dirname(os.path.abspath(__file__))
+
+def make_log_file(file_name):
+	abs_dir = get_abs_dir()
+	log_dir = os.path.join(abs_dir,'log')
+	mkdir_if_no_exists(log_dir)
+
+	now = datetime.datetime.today()
+	date = now.strftime("%d_%h_%H-%M-%S")
+	return os.path.join(log_dir,'%s_%s.log'%(file_name,date))
+
+
+def processing_cmd_file(cmd_file):
+	assert os.path.exists(cmd_file)
+	with open(cmd_file) as file_obj:
+		file_text = '|'.join(file_obj.readlines())
+		file_text = '|' + re.sub('\n','',file_text)
+	cmd_set = re.findall('\|AUTOTEST@\((.*?),(.*?)\)',file_text)
+	cnt = re.findall('\|CNT@\((.*?)\)',file_text)
+	for i in range(int(cnt[0])):
+		print "\n**********************************"
+		print "running cnt: %s"%i
+		print "**********************************"
+		time.sleep(2)
+		uart.log.write("running cnt: %s\n"%i)
+		for cmd,timeout in cmd_set:
+			uart.input(cmd.strip())
+			time.sleep(eval(timeout))
 
 if __name__ == "__main__":
 
 	signal.signal(signal.SIGINT, signal_handler)
-	signal.signal(signal.SIGTERM, signal_handler)
 
 	arg_parser = argparse.ArgumentParser()
 	arg_parser.add_argument('-f','--log_file',default = 'test_log',help='log path or log_file -- example: ./test_log')
@@ -225,33 +252,18 @@ if __name__ == "__main__":
 	arg_parser.add_argument('-c','--cmd_file',default = '',help = 'if need autocmd.cfg ,input -c ./tool/auto_uart/autocmd.cfg')
 	argv = arg_parser.parse_args()
 
-	now = datetime.datetime.today()
-	date = now.strftime("%d_%h_%H-%M-%S")
-	log_file = '%s_%s.log'%(argv.log_file,date)
+	log_file = make_log_file(argv.log_file)
 	uart = Uart(log_file)
 	uart.createPort()
+	uart.start()
 	uart_manager = UartController(uart)
 	uart_manager.start()
 
 	try:
 		if argv.cmd_file:
-			assert os.path.exists(argv.cmd_file)
-			with open(argv.cmd_file) as file_obj:
-				file_text = '|'.join(file_obj.readlines())
-				file_text = '|' + re.sub('\n','',file_text)
-			cmd_set = re.findall('\|AUTOTEST@\((.*?),(.*?)\)',file_text)
-			cnt = re.findall('\|CNT@\((.*?)\)',file_text)
-			for i in range(int(cnt[0])):
-				print "\n**********************************"
-				print "running cnt: %s"%i
-				print "**********************************"
-				time.sleep(2)
-				uart.log.write("running cnt: %s\n"%i)
-				for cmd,timeout in cmd_set:
-					uart.input(cmd.strip())
-					time.sleep(eval(timeout))
-
-		WAIT_ALL_THREAD_END()
+			processing_cmd_file(argv.cmd_file)
+		uart.join()
+		uart_manager.join()
 	except Exception,e:
 		stop_flag.set()
 		print e
