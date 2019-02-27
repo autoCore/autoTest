@@ -9,7 +9,7 @@ import time,datetime
 import argparse
 import signal
 import Queue
-import commands
+import multiprocessing as mp
 
 stop_flag = threading.Event()
 def signal_handler(signum, frame):
@@ -17,7 +17,7 @@ def signal_handler(signum, frame):
     stop_flag.set()
     sys.exit(0)
 
-class Uart(threading.Thread):
+class Uart(mp.Process):
 	def __init__(self, log_file = None, is_print = True):
 		super(Uart,self).__init__()
 		if log_file:
@@ -168,7 +168,9 @@ class Uart(threading.Thread):
 			except Exception,e:
 				print e,'Serial Exception.Pls check serial'
 				stop_flag.set()
-				break
+				self.cancel()
+
+	def cancel(self):
 		self.comport.close()
 		if self.log:
 			self.log.flush()
@@ -180,31 +182,29 @@ class UartController(threading.Thread):
 		super(UartController,self).__init__()
 		self.uart = uart
 
-	def exit_serial(self):
-		stop_flag.set()
-		sys.exit(0)
-
-	def parse_input(self,text):
+	def __parse_input(self,text):
 		if 'exit' in text: 
-			self.exit_serial()
+			stop_flag.set()
+			sys.exit(0)
+
 		if 'is_print' in text:
 			value = text.split('=')[1].strip()
 			if eval(value):
 				self.uart.is_print = True
 			else:
 				self.uart.is_print = False
+		else:
+			self.uart.input(text)
 
 	def run(self):
 		try:
-			self.uart.start() if not self.uart.is_alive() else None
 			while 1:
 				msg = raw_input('')
-				self.parse_input(msg)
-				if stop_flag.is_set(): self.exit_serial()
-				self.uart.input(msg) if 'is_print' not in msg else None
+				if stop_flag.is_set(): break
+				self.__parse_input(msg)
 		except Exception,e:
 			print e,'Pls check serial port'
-			self.exit_serial()
+
 
 def mkdir_if_no_exists(path):
 	import os
@@ -225,7 +225,7 @@ def make_log_file(file_name):
 	return os.path.join(log_dir,'%s_%s.log'%(file_name,date))
 
 
-def processing_cmd_file(cmd_file):
+def processing_cmd_file(cmd_file,uart):
 	assert os.path.exists(cmd_file)
 	with open(cmd_file) as file_obj:
 		file_text = '|'.join(file_obj.readlines())
@@ -242,16 +242,7 @@ def processing_cmd_file(cmd_file):
 			uart.input(cmd.strip())
 			time.sleep(eval(timeout))
 
-def WAIT_ALL_THREAD_END():
-	while 1:
-		alive = False
-		for th in threading.enumerate():
-			if th.getName() is 'MainThread': continue
-			alive = alive or th.isAlive()
-		if not alive: break
-
 if __name__ == "__main__":
-
 	signal.signal(signal.SIGINT, signal_handler)
 
 	arg_parser = argparse.ArgumentParser()
@@ -267,12 +258,11 @@ if __name__ == "__main__":
 	uart_manager.start()
 
 	try:
-		if argv.cmd_file:
-			processing_cmd_file(argv.cmd_file)
-		WAIT_ALL_THREAD_END()
+		processing_cmd_file(argv.cmd_file,uart) if argv.cmd_file else None
+		uart.join()
 	except Exception,e:
 		print e
 	finally:
 		stop_flag.set()
+		uart.cancel()
 		print 'test done'
-		sys.exit(1)
