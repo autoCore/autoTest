@@ -11,10 +11,7 @@ import signal
 import Queue
 import multiprocessing as mp
 
-stop_flag = threading.Event()
 def signal_handler(signum, frame):
-    print 'ctrl_c exit.' 
-    stop_flag.set()
     sys.exit(0)
 
 class Uart(mp.Process):
@@ -31,20 +28,20 @@ class Uart(mp.Process):
 		self.is_print = is_print
 		self.last_log_bak = ''
 		self.timeout = 0.01
-		self.fifo = Queue.Queue(100)
-		self.metux = threading.Lock()
+		self.fifo = mp.Queue(100)
+		self.metux = mp.Lock()
+		self.fifo_event = mp.Event()
 
 	def input(self,msg):
-		if self.comport:
+		try:
+			self.metux.acquire()
 			self.case_end_flag = False
-			self.last_log = None
 			self.result_log = []
-			self.fifo.queue.clear()
 			self.comport.write(msg+'\n')
-			return 1
-		else:
-			print 'Pls create port'
-			return 0
+		except Exception,e:
+			print e
+		finally:
+			self.metux.release()
 
 	def reset_log_file(self,file):
 		if self.log:
@@ -62,35 +59,37 @@ class Uart(mp.Process):
 			print 'No log file'
 
 	def expect(self,pattern_list,timeout):
+		self.fifo_event.set()
 		uart_timeout = 0.1
 		cnt = int((timeout+uart_timeout)/uart_timeout)
 		timing = 0
 		try:
 			pattern_list + []
 		except:
-			print "Error: expect need a list in arg pattern"
-			return
+			print("Error: expect need a list in arg pattern")
+			return (None,False)
 		pattern = re.compile("|".join(pattern_list))
-		for i in xrange(cnt):
-			self.metux.acquire()
-			while 1:
-				if self.fifo.empty(): break
-				data = self.fifo.get()
-				tgt = pattern.search(data)
-				if data and tgt:
-					for j, ptn in enumerate(pattern_list):
-						if ptn in tgt.group(0):
-							self.fifo.queue.clear()
-							self.metux.release()
-							return j,uart_timeout*i
-			self.metux.release()
-			time.sleep(uart_timeout)
-			if int(uart_timeout*i) != timing:
-				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
-				sys.stdout.flush()
-				timing = int(uart_timeout*i)
-		self.fifo.queue.clear()
-		return (None,False)
+		try:
+			for i in xrange(cnt):
+				while not self.fifo.empty():
+					data = self.fifo.get()
+					if not data.strip(): continue
+					tgt = pattern.search(data)
+					if tgt:
+						for j, ptn in enumerate(pattern_list):
+							if ptn in tgt.group(0):
+								return j,uart_timeout*i
+				time.sleep(uart_timeout)
+				if int(uart_timeout*i) != timing:
+					sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
+					sys.stdout.flush()
+					timing = int(uart_timeout*i)
+			return (None,False)
+		except Exception,e:
+			print e
+		finally:
+			self.fifo_event.clear()
+			while not self.fifo.empty(): self.fifo.get()
 
 	def createPort(self, port = None, baud = 115200, time_out = 0.1):
 		if port:
@@ -127,14 +126,14 @@ class Uart(mp.Process):
 			sys.exit(1)
 
 	def run(self):
-		while 1:
-			try:
-				if stop_flag.is_set(): break
+		try:
+			while 1:
 				line = self.comport.readline().strip()
+				if not line: continue
 				self.last_log = line
 				self.metux.acquire()
-				self.fifo.get() if self.fifo.full() else None
-				self.fifo.put(line.lstrip()) if line.lstrip() else None
+				if self.fifo_event.is_set():
+					self.fifo.put(line)
 				self.metux.release()
 				if line == 'ctest#':
 					if line == self.last_log_bak:
@@ -145,30 +144,26 @@ class Uart(mp.Process):
 						sys.stdout.write('          \r')
 						sys.stdout.write(line+' ')
 						sys.stdout.flush()
-				elif line and self.is_print:
-					print line
-					pass
+				if self.is_print: print line
 				self.last_log_bak = line
-				if self.log and line:
-					print >>self.log,line
+				if self.log:
+					self.log.write(line)
 					self.log.flush()
-				if line.lstrip():
-					self.last_log = line
-					if 'AUTOTEST@' in self.last_log:
-						match = re.search(r'AUTOTEST@.*?Result\[(.*?)\]:RetCode(\[.*?\])',self.last_log)
-						if match:
-							if match.group(1) == 'OK':
-								self.result_log.append(match.group(1))
-							else:
-								self.result_log.append(match.group(1)+match.group(2))
-					if 'Unknown command' in self.last_log:
-						self.result_log.append(self.last_log.split('-')[0].strip())
-					if 'ctest#' == line.strip():
-						self.case_end_flag = True if self.result_log else False
-			except Exception,e:
-				print e,'Serial Exception.Pls check serial'
-				stop_flag.set()
-				self.cancel()
+				if 'AUTOTEST@' in line:
+					match = re.search(r'AUTOTEST@.*?Result\[(.*?)\]:RetCode(\[.*?\])',line)
+					if match:
+						if match.group(1) == 'OK':
+							self.result_log.append(match.group(1))
+						else:
+							self.result_log.append(match.group(1)+match.group(2))
+				if 'Unknown command' in line:
+					self.result_log.append(line.split('-')[0].strip())
+				if 'ctest#' == line:
+					self.case_end_flag = True if self.result_log else False
+		except Exception,e:
+			print e,'Serial Exception.Pls check serial'
+		finally:
+			self.cancel()
 
 	def cancel(self):
 		self.comport.close()
@@ -176,35 +171,29 @@ class Uart(mp.Process):
 			self.log.flush()
 			self.log.close()
 
+	def setDaemon(self,BOOL = False):
+		self.daemon = BOOL
 
 class UartController(threading.Thread):
 	def __init__(self,uart):
 		super(UartController,self).__init__()
 		self.uart = uart
 
-	def __parse_input(self,text):
-		if 'exit' in text: 
-			stop_flag.set()
-			sys.exit(0)
-
-		if 'is_print' in text:
-			value = text.split('=')[1].strip()
-			if eval(value):
-				self.uart.is_print = True
-			else:
-				self.uart.is_print = False
-		else:
-			self.uart.input(text)
-
 	def run(self):
 		try:
+			self.uart.start() if not self.uart.is_alive() else None
 			while 1:
 				msg = raw_input('')
-				if stop_flag.is_set(): break
-				self.__parse_input(msg)
+				if 'exit' in msg:
+					break
+				elif 'is_print' in msg:
+					value = msg.split('=')[1].strip()
+					self.uart.is_print = True if eval(value) else False
+				else : self.uart.input(msg)
 		except Exception,e:
-			print e,'Pls check serial port'
-
+			print e,'Error:[UartController],Pls check serial port'
+		finally:
+			print 'UartController done'
 
 def mkdir_if_no_exists(path):
 	import os
@@ -253,8 +242,10 @@ if __name__ == "__main__":
 	log_file = make_log_file(argv.log_file)
 	uart = Uart(log_file)
 	uart.createPort()
+	uart.setDaemon(True)
 	uart.start()
 	uart_manager = UartController(uart)
+	uart_manager.setDaemon(True)
 	uart_manager.start()
 
 	try:
@@ -263,6 +254,5 @@ if __name__ == "__main__":
 	except Exception,e:
 		print e
 	finally:
-		stop_flag.set()
 		uart.cancel()
-		print 'test done'
+		print 'exit'
