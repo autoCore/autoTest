@@ -17,10 +17,7 @@ def signal_handler(signum, frame):
 class Uart(mp.Process):
 	def __init__(self, log_file = None, is_print = True):
 		super(Uart,self).__init__()
-		if log_file:
-			self.log = open(log_file,'w')
-		else:
-			self.log = open('test_log.log','w')
+		self.log = open(log_file,'w') if log_file else open('test_log.log','w')
 		self.comport = None
 		self.last_log = None
 		self.case_end_flag = False
@@ -44,19 +41,20 @@ class Uart(mp.Process):
 			self.metux.release()
 
 	def reset_log_file(self,file):
-		if self.log:
+		try:
 			self.log.flush()
 			self.log.close()
-			self.log = None
-		self.log = open(file,'w')
+			self.log = open(file,'w')
+		except Exception,e:
+			print e
 
 	def save_log_file(self):
-		if self.log:
+		try:
 			self.log.flush()
 			self.log.close()
 			self.log = None
-		else:
-			print 'No log file'
+		except Exception,e:
+			print e
 
 	def expect(self,pattern_list,timeout):
 		self.fifo_event.set()
@@ -70,6 +68,7 @@ class Uart(mp.Process):
 			return (None,False)
 		pattern = re.compile("|".join(pattern_list))
 		try:
+			self.metux.acquire()
 			for i in xrange(cnt):
 				while not self.fifo.empty():
 					data = self.fifo.get()
@@ -89,7 +88,9 @@ class Uart(mp.Process):
 			print e
 		finally:
 			self.fifo_event.clear()
+			self.metux.release()
 			while not self.fifo.empty(): self.fifo.get()
+
 
 	def createPort(self, port = None, baud = 115200, time_out = 0.1):
 		if port:
@@ -131,10 +132,8 @@ class Uart(mp.Process):
 				line = self.comport.readline().strip()
 				if not line: continue
 				self.last_log = line
-				self.metux.acquire()
 				if self.fifo_event.is_set():
 					self.fifo.put(line)
-				self.metux.release()
 				if line == 'ctest#':
 					if line == self.last_log_bak:
 						sys.stdout.write('\n\r')
