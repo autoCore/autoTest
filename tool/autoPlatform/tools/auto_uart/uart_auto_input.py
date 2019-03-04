@@ -9,10 +9,29 @@ import time,datetime
 import argparse
 import signal
 import Queue
+import pexpect,getpass
 import multiprocessing as mp
 
 def signal_handler(signum, frame):
     sys.exit(0)
+
+def get_sudo_password():
+	proc = pexpect.spawn("sudo ls")
+	while 1:
+		index = proc.expect([r'\[sudo\] password for',r'Sorry, try again',"sudo: 3 incorrect password attempts", \
+								pexpect.EOF, pexpect.TIMEOUT], timeout=2)
+		if index == 0:
+			password = getpass.getpass("[sudo] password input: ")
+			proc.sendline(password)
+		if index == 1:
+			print "Sorry, try again."
+		if index == 2:
+			print 'sudo: 3 incorrect password attempts'
+			proc.close(force=True)
+			sys.exit(1)
+		if index == 3:
+			proc.close(force=True)
+			return password
 
 class Uart(mp.Process):
 	def __init__(self, log_file = None, is_print = True):
@@ -28,6 +47,7 @@ class Uart(mp.Process):
 		self.fifo = mp.Queue(100)
 		self.metux = mp.Lock()
 		self.fifo_event = mp.Event()
+		self.sodo_password = get_sudo_password()
 
 	def input(self,msg):
 		try:
@@ -40,13 +60,14 @@ class Uart(mp.Process):
 		finally:
 			self.metux.release()
 
-	def reset_log_file(self,file):
+	def reset_log_file(self,file_name):
 		try:
 			self.log.flush()
 			self.log.close()
-			self.log = open(file,'w')
-		except Exception,e:
-			print e
+		except :
+			pass
+		finally:
+			self.log = open(file_name,'w')
 
 	def save_log_file(self):
 		try:
@@ -105,7 +126,11 @@ class Uart(mp.Process):
 				port_list = [list(port) for port in port_list]
 				port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
 			print 'port:',port_list
-			map(os.system,['sudo chmod 777 %s'%p for p in port_list])
+			for p in port_list:
+				proc = pexpect.spawn('sudo chmod 777 %s'%p)
+				index = proc.expect([r'\[sudo\] password for',pexpect.EOF, pexpect.TIMEOUT], timeout=1)
+				if index == 0:
+					proc.sendline(self.sodo_password)
 			if port_list:
 				if len(port_list) == 1:
 					port = port_list[0]
