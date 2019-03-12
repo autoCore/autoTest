@@ -2,326 +2,356 @@
 from serial.tools.list_ports import comports
 import serial
 from serial import Serial
-import threading 
 import platform
 import sys,os,re
 import time,datetime
 import argparse
 import signal
-import Queue
 import random
 import traceback
-
-stop_flag = threading.Event()
-metux = threading.Lock()
+from util import *
 
 def signal_handler(signum, frame):
-	stop_flag.set()
-	print('ctrl_c exit.') 
-	sys.exit(0)
+    raise TestEndException
 
 class TestEndException(Exception): pass
 
-class Uart(threading.Thread):
-	def __init__(self, log_file = None, is_print = True):
-		super(Uart,self).__init__()
-		self.log = open(log_file,'w') if log_file else open('test_log.log','w')
-		self.comport = None
-		self.is_print = is_print
-		self.timeout = 0.01
-		self.fifo = Queue.Queue(100)
-		self.metux = metux
-		self.stop_flag = stop_flag
-		self.open_flag = False
+class Uart(object):
+    def __init__(self, log_file = None, is_print = True):
+        super(Uart,self).__init__()
+        self.log = open(log_file,'a') if log_file else open('test_log.log','a')
+        self.comport = None
+        self.is_print = mp.Event()
 
-	def input(self,msg):
-		if self.comport:
-			self.metux.acquire()
-			self.fifo.queue.clear()
-			self.comport.write(msg)
-			self.metux.release()
-			return 1
-		else:
-			print('Pls create port')
-			return 0
+        self.expect_match = mp.Event()
+        self.busy_flag = mp.Event()
+        self.input_fifo = mp.Queue(1)
 
-	def open_key_test(self):
-		self.comport.write("**\n")
-		self.open_flag = True
-		time.sleep(0.5)
+        self.log_lock = mp.Lock()
+        self.log_flag = mp.Event()
 
-	def close_key_test(self):
-		self.comport.write("##\n")
-		self.open_flag = False
-		time.sleep(0.5)
+        self.open_flag = False
+        self.sodo_password = get_sudo_password()
 
-	def simulate_key_input(self,key_value,key_down_time = 0.3):
-		self.open_key_test() if not self.open_flag else None
-		self.metux.acquire()
-		self.comport.write(key_value + '0')
-		time.sleep(key_down_time)
-		self.comport.write(key_value + '1')
-		self.metux.release()
-		self.log.write('[pylog]:'+key_value+'\n')
-		self.log.flush()
-
-	def reset_log_file(self,file):
-		if self.log:
-			self.log.flush()
-			self.log.close()
-			self.log = None
-		self.log = open(file,'w')
-
-	def save_log_file(self):
-		if self.log:
-			self.log.flush()
-			self.log.close()
-			self.log = None
-		else:
-			print('No log file')
-
-	def expect(self,pattern_list,timeout):
-		uart_timeout = 0.1
-		cnt = int((timeout+uart_timeout)/uart_timeout)
-		timing = 0                                      
-		try:
-			pattern_list + []
-		except:
-			print("Error: expect need a list in arg pattern")
-			return (None,False)
-		pattern = re.compile("|".join(pattern_list))
-		self.metux.acquire()
-		for i in xrange(cnt):
-			if stop_flag.is_set(): break
-			while 1:
-				if self.fifo.empty(): break
-				data = self.fifo.get()
-				tgt = pattern.search(data)
-				if data and tgt:
-					for j, ptn in enumerate(pattern_list):
-						if ptn in tgt.group(0):
-							self.fifo.queue.clear()
-							self.metux.release()
-							return j,uart_timeout*i
-			time.sleep(uart_timeout)
-			if int(uart_timeout*i) != timing:
-				sys.stdout.write("timing: %ds\r" %(int(uart_timeout*i)))
-				sys.stdout.flush()
-				timing = int(uart_timeout*i)
-		self.metux.release()
-		self.fifo.queue.clear()
-		return (None,False)
-
-	def createPort(self, port = None, baud = 115200, time_out = 0.1):
-		if not port:
-			platform_type = platform.platform()
-			port_list = comports()
-			if "Linux" in platform_type:
-				port_list = [port[0] for port in port_list]
-				port_list = [port for port in port_list if "ttyUSB" in port or "ttyACM" in port]
-			elif "Windows" in platform_type:
-				port_list = [list(port) for port in port_list]
-				port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
-			print 'port:',port_list
-			map(os.system,['sudo chmod 777 %s'%p for p in port_list])
-			if port_list:
-				if len(port_list) == 1:
-					port = port_list[0]
-				else:
-					while 1:
-						port = raw_input('Pls input port:')
-						if port in port_list: break
-						else:  print('No device')
-			else:
-				print("No port")
-				sys.exit(0)
-		print 'current port name:',port
-		self.comport = Serial(port, baud, timeout=time_out)
-		self.timeout = time_out
-		if self.comport.isOpen():
-			return 1
-		else:
-			print("create port fail")
-			sys.exit(1)
-
-	def run(self):
-		try:
-			while 1:
-				if self.stop_flag.is_set(): raise TestEndException
-				line = self.comport.readline().strip()
-				self.fifo.get() if self.fifo.full() else None
-				if line:
-					self.fifo.put(line)
-					if self.log:
-						print >>self.log,line
-						self.log.flush()
-					if self.is_print: print(line)
-		except TestEndException:
-			self.__cancel()
-		except Exception,e:
-			print e,'Serial Exception.Pls check serial'
-			self.__cancel()
-
-	def __cancel(self):
-		self.metux.acquire()
-		if self.log:
-			self.log.flush()
-			self.log.close()
-		self.comport.close()
-		self.stop_flag.set()
-		self.metux.release()
+        self.log_flag.set()
+        self.is_print.set()
 
 
-class UartController(threading.Thread):
-	def __init__(self,uart):
-		super(UartController,self).__init__()
-		self.uart = uart
+    def input(self,msg,pattern_str = '',timeout = 1,simulate_key = None):
+        self.input_fifo.put((msg,pattern_str,simulate_key))
+        if pattern_str:
+            return self.expect(pattern_str,timeout,input_flag = True)
+        return True
 
-	def exit_serial(self):
-		stop_flag.set()
-		sys.exit(0)
+    def expect(self,pattern_str,timeout,input_flag = False):
+        if not input_flag:
+            self.input_fifo.put(('',pattern_str,None))
+        self.busy_flag.wait(timeout) #wait uart input cmd and begin to search the pattern
+        time_ = time.time()
+        self.expect_match.wait(timeout) #wait uart match the pattern until timeout
+        self.busy_flag.clear()
+        res = self.expect_match.is_set() #if match the pattern res is True else False
+        self.expect_match.clear()
+        # print_log(' '*150 + '< %.3fs >'%(time.time()-time_))
+        return res
 
-	def __parse_input(self,text):
-		if 'exit' in text: 
-			self.exit_serial()
-		elif 'is_print' in text:
-			value = text.split('=')[1].strip()
-			if eval(value):
-				self.uart.is_print = True
-			else:
-				self.uart.is_print = False
-		elif text:
-			self.uart.input(text+'\n')
+    def check_status(self):
+        return self.input("\nCMD+STATUS\n",'STATUS OK',2)
 
-	def run(self):
-		try:
-			self.uart.start() if not self.uart.is_alive() else None
-			while 1:
-				if stop_flag.is_set(): break
-				msg = raw_input('')
-				self.__parse_input(msg)
-		except Exception,e:
-			print e,'Pls check serial port'
-			self.exit_serial()
+    def unlock(self):
+        self.simulate_key_input('[')
 
-class MyTimer(object):
-	"""docstring for MyTimer"""
-	def __init__(self, delay_time,callback,*args,**kwargs):
-		super(MyTimer, self).__init__()
-		self.__timer = None
-		self.__delay_time = delay_time
-		self.__callback = callback
-		self.__args = args
-		self.__kwargs = kwargs
+    def open_wachdog(self):
+        return self.input("\nCMD+WDGE\n",'WDGE OK',2)
 
-	def exce_callback(self):
-		if stop_flag.is_set(): 
-			self.cancel()
-			return
-		self.__callback(*self.__args,**self.__kwargs)
-		self.__timer = threading.Timer(self.__delay_time,self.exce_callback)
-		self.__timer.start()
+    def open_key_test(self):
+        self.input("**\n")
+        self.open_flag = True
+        time.sleep(0.2)
 
-	def start(self,start_time = 0):
-		self.__timer = 	threading.Timer(start_time,self.exce_callback)
-		self.__timer.start()
+    def close_key_test(self):
+        self.input("##\n")
+        self.open_flag = False
+        time.sleep(0.2)
 
-	def cancel(self):
-		self.__timer.cancel()
-		self.__timer = None
+    def write_log(self,msg):
+        with self.log_lock:
+            self.log.write(msg+'\n')
+            self.log.flush()
+
+    def simulate_key_input(self,key_value):
+        if not self.open_flag:
+            self.open_key_test()
+        self.input(key_value,simulate_key = True)
+        self.write_log('[pylog]:'+key_value)
+
+    def reset_log_file(self,file_name):
+        with self.log_lock:
+            self.log.flush()
+            self.log.close()
+            self.log = open(file_name,'a')
+
+    def save_log_file(self):
+        with self.log_lock:
+            self.log.flush()
+            self.log.close()
+            self.log = None
+
+    def createPort(self, port = None, baud = 115200, time_out = 0.1):
+        if not port:
+            platform_type = platform.platform()
+            port_list = comports()
+            if "Linux" in platform_type:
+                port_list = [port[0] for port in port_list]
+                port_list = [port for port in port_list if "ttyUSB" in port or "ttyACM" in port]
+            elif "Windows" in platform_type:
+                port_list = [list(port) for port in port_list]
+                port_list = [port for port in port_list if "USB to UART Bridge" in port[1]]
+            print 'port:',port_list
+            for p in port_list:
+                proc = pexpect.spawn('sudo chmod 777 %s'%p)
+                index = proc.expect([r'\[sudo\] password for',pexpect.EOF, pexpect.TIMEOUT], timeout=1)
+                if index == 0:
+                    proc.sendline(self.sodo_password)
+            if port_list:
+                if len(port_list) == 1:
+                    port = port_list[0]
+                else:
+                    while 1:
+                        port = raw_input('Pls input port:')
+                        if port in port_list: break
+                        else:  print('No device')
+            else:
+                print("No port")
+                sys.exit(0)
+        print 'current port name:',port
+        self.comport = Serial(port, baud, timeout=time_out)
+        self.timeout = time_out
+        if self.comport.isOpen():
+            return 1
+        else:
+            print("create port fail")
+            sys.exit(1)
+
+    def close(self):
+        self.log.flush()
+        self.log.close()
+        self.comport.close()
 
 
-def check_crane_status(uart):
-	print('\n++++++ check crane status      +++++\n')
-	if uart:
-		uart.input('\n')
-		uart.input('check_status\n')
-		res,timeout = uart.expect(['check_status'],2)
-		if not timeout:
-			print('\n++++++ check crane status fail +++++\n')
-			stop_flag.set()
-		else:
-			print ('\n++++++ check crane status pass +++++\n')
+class UartMonitor(ProcBase):
+    def __init__(self):
+        super(UartMonitor, self).__init__()
+
+    def run(self,uart):
+        try:
+            while self._running.is_set():
+                time_ = time.time()
+                if not uart.input_fifo.empty() and not uart.busy_flag.is_set():
+                    msg,pattern_str,simulate_key = uart.input_fifo.get()
+                    if simulate_key:
+                        uart.comport.write(msg+'0') # key down
+                        time.sleep(0.05)
+                        uart.comport.write(msg+'1')# key up
+                    else:
+                        uart.comport.write(msg)
+                    if pattern_str:
+                        pattern = re.compile(pattern_str)
+                        uart.busy_flag.set()
+                line = uart.comport.readline().strip()
+                if not line: continue
+                if uart.busy_flag.is_set() and pattern.search(line):
+                    uart.busy_flag.clear()
+                    uart.expect_match.set()
+                if uart.log_flag.is_set(): uart.write_log(line)
+                if uart.is_print.is_set(): print(line)
+                # if debug.is_set(): print ' '*150+'[ %.6fs ]'%(time.time()-time_)
+        except Exception,e:
+            print e
+        finally:
+            self._running.clear()
+            uart.busy_flag.set()
+            uart.expect_match.set()
+            stop_flag.set()
+            print 'UartMonitor done'
+
+class UartInput(ThreadBase):
+    def __init__(self):
+        super(UartInput, self).__init__()
+
+    def run(self,uart):
+        try:
+            while self._running:
+                msg = raw_input('')
+                if 'exit' in msg:
+                    break
+                elif 'print' in msg:
+                    value_l = msg.split('=')
+                    if len(value_l) == 2:
+                        value = value_l[1]
+                    else:
+                        print_log(' '*150+'Pls checkl your input')
+                        continue
+                    uart.is_print.set() if eval(value) else uart.is_print.clear()
+                elif 'debug' in msg:
+                    value_l = msg.split('=')
+                    if len(value_l) == 2:
+                        value = value_l[1]
+                    else:
+                        print_log(' '*150+'Pls checkl your input')
+                        continue
+                    debug.set() if eval(value) else debug.clear()
+                else:
+                    uart.input(msg+'\n')
+        except Exception,e:
+            print e,'Error:[UartInput],Pls check serial port'
+        finally:
+            stop_flag.set()
 
 
-def WAIT_ALL_THREAD_END():
-	while 1:
-		alive = False
-		for th in threading.enumerate():
-			if th.getName() is 'MainThread': continue
-			alive = alive or th.isAlive()
-		if not alive: return
+class MyTimer(ThreadBase):
+    """docstring for MyTimer"""
+    def __init__(self,delay_time):
+        super(MyTimer, self).__init__()
+        self.__delay_time = delay_time
+        self.block = threading.Event()
+        self._stop_flag = False
 
+    def run(self,uart):
+        try:
+            while self._running:
+                self.block.wait(self.__delay_time)
+                if not self._running: break
+                # print_log(' '*150+'check status   ')
+                if uart.check_status():
+                    pass
+                    # print_log(' '*150+'check status pass')
+                else:
+                    print_log(' '*150+'check status fail')
+                    stop_flag.set()
+                    break
+        except Exception,e:
+            print e,'Error:[UartController],Pls check serial port'
+        finally:
+            self._stop_flag = True
+
+    def terminate(self):
+        if not self._proc: return
+        self._running = False
+        self.block.set()
+        while not self._stop_flag:  pass
+        self._stop_flag = False
+        self.block.clear()
+        self._proc = None
+        print ' '*150+'MyTimer terminate done'
+
+class monkeyTestTask(ThreadBase):
+    """docstring for ClassName"""
+    def __init__(self, monkey_log,cfg_file = None):
+        super(monkeyTestTask,self).__init__()
+        self.monkey_log_fname = monkey_log
+        self.monkey_log = open(monkey_log,'a')
+        self.cfg_file = cfg_file
+        self.key_value = ['P','^','V','<','>','M','S','1','2','3','4','5','6','7','8','9','0','*','#','[',']']
+        self.count = 1
+        self.cmd_set = None
+        self._stop_flag = False
+
+    def reset_log_file(self,file_name):
+        try:
+            self.monkey_log.flush()
+            self.monkey_log.close()
+        except:
+            pass
+        finally:
+            self.monkey_log_fname = file_name
+            self.monkey_log = open(file_name,'a')
+
+    def save_log_file(self):
+        try:
+            self.monkey_log.flush()
+            self.monkey_log.close()
+            self.monkey_log = None
+        except Exception,e:
+            print e
+
+    def run(self,uart):
+        try:
+            uart.open_key_test()
+            uart.unlock() # ui unlock
+            uart.open_wachdog()
+            while self._running:
+                    send_c,timeout = random.choice(self.key_value),'0.6'
+                    uart.simulate_key_input(send_c)
+                    print_log(' '*150+'*** intput key: %s ***'%send_c)
+                    self.monkey_log.write(send_c)
+                    self.monkey_log.flush()
+                    time.sleep(eval(timeout))
+        except Exception,e:
+            print e,'< monkeyTestTask >'
+        finally:
+            self.monkey_log.flush()
+            self.monkey_log.close()
+            self.report(self.monkey_log_fname)
+            self._stop_flag = True
+
+    def terminate(self):
+        if not self._proc: return
+        self._running = False
+        while not self._stop_flag:  pass
+        self._stop_flag = False
+        self._proc = None
+        print ' '*150+'monkeyTestTask terminate done'
+
+    def report(self,file_name):
+        pass
+
+def print_log(msg):
+    if debug.is_set():
+        print msg
+
+stop_flag = mp.Event()
+debug = mp.Event()
+debug.set()
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('-f','--log_file',default = 'test_log',help='log path or log_file -- example: ./test_log')
+    arg_parser.add_argument('-c','--cmd_file',default = '',help = 'if need autocmd.cfg ,input -c ./tool/auto_uart/autocmd.cfg')
+    argv = arg_parser.parse_args()
 
-	signal.signal(signal.SIGINT, signal_handler)
-	signal.signal(signal.SIGTERM, signal_handler)
-	abs_dir = os.path.dirname(os.path.abspath(__file__))
-	logfile_dir = os.path.join(abs_dir,'log')
-	arg_parser = argparse.ArgumentParser()
-	arg_parser.add_argument('-f','--log_file',default = 'test_log',help='log path or log_file -- example: ./test_log')
-	arg_parser.add_argument('-c','--cmd_file',default = '',help = 'if need autocmd.cfg ,input -c ./tool/auto_uart/autocmd.cfg')
-	argv = arg_parser.parse_args()
+    try:
+        uart = Uart(make_log_file(argv.log_file))
+        uart.createPort()
+        uart_input = UartInput()
+        uart_input.start(uart)
+        uart_monitor = UartMonitor()
+        uart_monitor.start(uart)
+        test_task = monkeyTestTask(make_log_file('monkey_test'),argv.cmd_file)
+        timer = MyTimer(3)
+        timer.start(uart)
+        print ' '*150+'***monkey test start***'
+        test_task.start(uart)
+        while 1:
+            stop_flag.wait()
+            test_task.terminate()
+            timer.terminate()
+            uart.input('\nCMD+RST\n') # reset system
+            uart.reset_log_file(make_log_file(argv.log_file))
+            test_task.reset_log_file(make_log_file('monkey_test'))
+            uart_monitor.restart(uart)
+            time.sleep(60+8) # wait for system into desktop
+            if not uart.check_status(): #timeout not into desktop
+                time.sleep(262+40) # wait for system PMIC WDG timeout
+            test_task.start(uart)
+            timer.start(uart)
+            stop_flag.clear()
+    except Exception,e:
+        print e
+    finally:
+        test_task.terminate()
+        timer.terminate()
+        uart_input.terminate()
+        uart_monitor.terminate()
+        print 'test done'
 
-	os.mkdir(logfile_dir) if not os.path.exists(logfile_dir) else None
-	now = datetime.datetime.today()
-	date = now.strftime("%d_%h_%H-%M-%S")
-	log_file = os.path.join(logfile_dir,argv.log_file+"-"+date+'.log')
-	uart = Uart(log_file)
-	uart.createPort()
-	uart_manager = UartController(uart)
-	uart_manager.start()
-
-	timer = MyTimer(3,check_crane_status,uart)
-
-	key_value = ['P','^','V','<','>','M','S','1','2','3','4','5','6','7','8','9','0','*','#','[',']']
-	try:
-		timer.start(1)
-		uart.open_key_test()
-		if argv.cmd_file:
-			assert os.path.exists(argv.cmd_file)
-			with open(argv.cmd_file) as file_obj:
-				file_text = '|'.join(file_obj.readlines())
-				file_text = '|' + re.sub('\n','',file_text)
-			cmd_set = re.findall('\|AUTOTEST_KEY@\((.*?),(.*?)\)',file_text)
-			cnt = re.findall('\|CNT@\((.*?)\)',file_text)
-			count = int(cnt[0]) if cnt else 1
-			for i in range(count):
-				print "\n","*"*50 
-				print "running cnt: %s"%i
-				print "*"*50
-				uart.log.write("running cnt: %s\n"%i)
-				for cmd,timeout in cmd_set:
-					if stop_flag.is_set(): raise TestEndException
-					if 'CMD-' in cmd:
-						uart.input(cmd.replace('CMD-','')+'\n')
-						time.sleep(eval(timeout))
-						print '\n***intput cmd:',cmd.replace('CMD-','')
-						continue
-					for send_c in cmd.replace(' ',''):
-						uart.simulate_key_input(send_c)
-						print '\n***intput key: %s\n'%send_c
-						time.sleep(eval(timeout))
-			else:
-				uart.close_key_test()
-		else:
-			monkey_cmd_log = os.path.join(logfile_dir,'monkey_cmd-%s.log'%(date))
-			monkey_cmd_log = open(monkey_cmd_log,'w')
-			while 1:
-				if stop_flag.is_set(): raise TestEndException
-				send_c = random.choice(key_value)
-				uart.simulate_key_input(send_c)
-				print '\n***intput key: %s\n'%send_c
-				monkey_cmd_log.write(send_c)
-				monkey_cmd_log.flush()
-				time.sleep(0.5)
-		WAIT_ALL_THREAD_END()
-	except TestEndException,e:
-		stop_flag.set()
-		print e
-		sys.exit(1)
-	except Exception,e:
-		stop_flag.set()
-		print e
-		sys.exit(1)
- 
