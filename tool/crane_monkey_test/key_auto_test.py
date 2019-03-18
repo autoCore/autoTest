@@ -56,13 +56,16 @@ class Uart(object):
         return res
 
     def check_status(self):
-        return self.input("\nCMD+STATUS\n",'STATUS OK',2)
+        return self.input("CMD+STATUS\n",'STATUS OK',3)
 
     def unlock(self):
         self.simulate_key_input('[')
 
     def open_wachdog(self):
-        return self.input("\nCMD+WDGE\n",'WDGE OK',2)
+        return self.input("CMD+WDGE\n",'WDGE OK',3)
+
+    def close_wachdog(self):
+        return self.input("CMD+WDGD\n",'WDGD OK',3)
 
     def open_key_test(self):
         self.input("**\n")
@@ -96,6 +99,10 @@ class Uart(object):
             self.log.flush()
             self.log.close()
             self.log = None
+
+    def open_usk(self):
+        self.input("usk enable\n")
+        time.sleep(0.2)
 
     def createPort(self, port = None, baud = 115200, time_out = 0.1):
         if not port:
@@ -142,6 +149,7 @@ class Uart(object):
 class UartMonitor(ProcBase):
     def __init__(self):
         super(UartMonitor, self).__init__()
+        self._simulate_key_Interval = 0.05
 
     def run(self,uart):
         try:
@@ -150,9 +158,9 @@ class UartMonitor(ProcBase):
                 if not uart.input_fifo.empty() and not uart.busy_flag.is_set():
                     msg,pattern_str,simulate_key = uart.input_fifo.get()
                     if simulate_key:
-                        uart.comport.write(msg+'0') # key down
-                        time.sleep(0.05)
-                        uart.comport.write(msg+'1')# key up
+                        uart.comport.write(msg+'0\n') # key down
+                        time.sleep(self._simulate_key_Interval)
+                        uart.comport.write(msg+'1\n')# key up
                     else:
                         uart.comport.write(msg)
                     if pattern_str:
@@ -222,12 +230,15 @@ class MyTimer(ThreadBase):
             while self._running:
                 self.block.wait(self.__delay_time)
                 if not self._running: break
-                # print_log(' '*150+'check status   ')
+                print_log(' '*150+'check status   ')
+                uart.write_log('[pylog]:check status')
                 if uart.check_status():
                     pass
-                    # print_log(' '*150+'check status pass')
+                    print_log(' '*150+'check status pass')
+                    uart.write_log('[pylog]:check status pass')
                 else:
                     print_log(' '*150+'check status fail')
+                    uart.write_log('[pylog]:check status fail')
                     stop_flag.set()
                     break
         except Exception,e:
@@ -275,18 +286,63 @@ class monkeyTestTask(ThreadBase):
         except Exception,e:
             print e
 
-    def run(self,uart):
-        try:
-            uart.open_key_test()
-            uart.unlock() # ui unlock
-            uart.open_wachdog()
-            while self._running:
-                    send_c,timeout = random.choice(self.key_value),'0.6'
+    def cfg_test(self):
+        with open(self.cfg_file) as file_obj:
+            file_text = [line_ for line_ in file_obj if not line_.strip().startswith('#')]
+            file_text = '|'.join(file_text)
+            file_text = '|' + re.sub('\n','',file_text)
+        cmd_set = re.findall('\|AUTOTEST_KEY@\((.*?),(.*?)\)',file_text)
+        cnt = re.findall('\|CNT@\((.*?)\)',file_text)
+        cnt = int(cnt[0]) if cnt else 1
+        uart.open_key_test()
+        uart.unlock() # ui unlock
+        uart.open_wachdog()
+        for i in range(cnt):
+            print_log(' '*150+'*'*20)
+            print_log(' '*150+"running cnt: %s"%i)
+            print_log(' '*150+'*'*20)
+            uart.log.write("running cnt: %s\n"%i)
+            for cmd,timeout in cmd_set:
+                if not self._running: return
+                if stop_flag.is_set(): raise TestEndException
+                if 'CMD-' in cmd:
+                    uart.input(cmd.replace('CMD-','')+'\n')
+                    time.sleep(eval(timeout))
+                    print_log(' '*150+'*** intput key: %s ***'%cmd.replace('CMD-',''))
+                    continue
+                for send_c in cmd.replace(' ',''):
+                    if not self._running: return
                     uart.simulate_key_input(send_c)
                     print_log(' '*150+'*** intput key: %s ***'%send_c)
                     self.monkey_log.write(send_c)
                     self.monkey_log.flush()
                     time.sleep(eval(timeout))
+        else:
+            uart.close_key_test()
+            uart.close_wachdog()
+
+    def monkey_test(self):
+        uart.open_usk()
+        uart.open_key_test()
+        uart.unlock() # ui unlock
+        uart.open_wachdog()
+        key_value_item = key_value_d.items()
+        while self._running:
+            # send_c,timeout = random.choice(self.key_value),'0.6'
+            send_c_name,send_c = random.choice(key_value_item)
+            timeout = '1'
+            uart.simulate_key_input(send_c)
+            print_log(' '*150+'*** intput key: %s ***'%send_c_name)
+            self.monkey_log.write(send_c)
+            self.monkey_log.flush()
+            time.sleep(eval(timeout))
+
+    def run(self,uart):
+        try:
+            if self.cfg_file:
+                self.cfg_test()
+            else:
+                self.monkey_test()
         except Exception,e:
             print e,'< monkeyTestTask >'
         finally:
@@ -336,6 +392,7 @@ if __name__ == "__main__":
             stop_flag.wait()
             test_task.terminate()
             timer.terminate()
+            # while 1: pass
             uart.input('\nCMD+RST\n') # reset system
             uart.reset_log_file(make_log_file(argv.log_file))
             test_task.reset_log_file(make_log_file('monkey_test'))
