@@ -32,7 +32,6 @@ class Uart(object):
 
         self.open_flag = False
         self.sodo_password = get_sudo_password()
-
         self.log_flag.set()
         self.is_print.set()
 
@@ -56,7 +55,7 @@ class Uart(object):
         return res
 
     def check_status(self):
-        return self.input("CMD+STATUS\n",'STATUS OK',3)
+        return self.input("CMD+STATUS\n",'STATUS OK',5)
 
     def unlock(self):
         self.simulate_key_input('[')
@@ -286,7 +285,7 @@ class monkeyTestTask(ThreadBase):
         except Exception,e:
             print e
 
-    def cfg_test(self):
+    def cfg_test(self,uart):
         with open(self.cfg_file) as file_obj:
             file_text = [line_ for line_ in file_obj if not line_.strip().startswith('#')]
             file_text = '|'.join(file_text)
@@ -294,13 +293,8 @@ class monkeyTestTask(ThreadBase):
         cmd_set = re.findall('\|AUTOTEST_KEY@\((.*?),(.*?)\)',file_text)
         cnt = re.findall('\|CNT@\((.*?)\)',file_text)
         cnt = int(cnt[0]) if cnt else 1
-        uart.open_key_test()
-        uart.unlock() # ui unlock
-        uart.open_wachdog()
         for i in range(cnt):
-            print_log(' '*150+'*'*20)
-            print_log(' '*150+"running cnt: %s"%i)
-            print_log(' '*150+'*'*20)
+            print_log('\n'.join([' '*150+'*'*20, ' '*150+"running cnt: %s"%i, ' '*150+'*'*20]))
             uart.log.write("running cnt: %s\n"%i)
             for cmd,timeout in cmd_set:
                 if not self._running: return
@@ -318,19 +312,15 @@ class monkeyTestTask(ThreadBase):
                     self.monkey_log.flush()
                     time.sleep(eval(timeout))
         else:
-            uart.close_key_test()
             uart.close_wachdog()
+            uart.close_key_test()
 
-    def monkey_test(self):
-        uart.open_usk()
-        uart.open_key_test()
-        uart.unlock() # ui unlock
-        uart.open_wachdog()
+    def monkey_test(self,uart):
         key_value_item = key_value_d.items()
         while self._running:
             # send_c,timeout = random.choice(self.key_value),'0.6'
             send_c_name,send_c = random.choice(key_value_item)
-            timeout = '1'
+            timeout = SIMULATE_KEY_INPUT_INTERVAL
             uart.simulate_key_input(send_c)
             print_log(' '*150+'*** intput key: %s ***'%send_c_name)
             self.monkey_log.write(send_c)
@@ -338,11 +328,15 @@ class monkeyTestTask(ThreadBase):
             time.sleep(eval(timeout))
 
     def run(self,uart):
+        uart.open_key_test()
+        uart.unlock() # ui unlock
+        uart.open_wachdog()
+        uart.open_usk()
         try:
             if self.cfg_file:
-                self.cfg_test()
+                self.cfg_test(uart)
             else:
-                self.monkey_test()
+                self.monkey_test(uart)
         except Exception,e:
             print e,'< monkeyTestTask >'
         finally:
@@ -369,6 +363,9 @@ def print_log(msg):
 stop_flag = mp.Event()
 debug = mp.Event()
 debug.set()
+
+SIMULATE_KEY_INPUT_INTERVAL = '1'
+
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     arg_parser = argparse.ArgumentParser()

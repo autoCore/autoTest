@@ -97,3 +97,36 @@ def make_log_file(file_name):
     now = datetime.datetime.today()
     date = now.strftime("%d_%h_%H-%M-%S")
     return os.path.join(log_dir,'%s_%s.log'%(file_name,date))
+
+key_value_d = {
+    'F_LEFT':'[',
+    'UP':'^',
+    'F_RIGHT':']',
+    'LEFT':'<',
+    'OK':'M',
+    'RIGHT':'>',
+    'CALL':'S',
+    'DOWN':'V',
+    'RING_OFF':'P',
+    '1':'1',
+    '2':'2',
+    '3':'3',
+    '4':'4',
+    '5':'5',
+    '6':'6',
+    '7':'7',
+    '8':'8',
+    '9':'9',
+    '*':'*',
+    '0':'0',
+    '#':'#'
+}
+
+
+#   [   ^   ]
+#    <  M  >
+#   S   V   P
+#   1   2   3
+#   4   5   6
+#   7   8   9
+#   *   0   #
