@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys,os,re
-import time,datetime
+import time
 import pexpect,getpass
 import threading 
 import multiprocessing as mp
@@ -22,6 +22,12 @@ def get_sudo_password():
         if index == 3:
             proc.close(force=True)
             return password
+
+def timing(timeout):
+    for i in range(timeout):
+        sys.stdout.write("timing: %ds\r" %i)
+        sys.stdout.flush()
+        time.sleep(1)
 
 class ProcBase(object):
     """docstring for ProcBase"""
@@ -94,8 +100,7 @@ def make_log_file(file_name):
     log_dir = os.path.join(abs_dir,'log')
     mkdir_if_no_exists(log_dir)
 
-    now = datetime.datetime.today()
-    date = now.strftime("%d_%h_%H-%M-%S")
+    date = time.strftime("%d_%h_%H-%M-%S")
     return os.path.join(log_dir,'%s_%s.log'%(file_name,date))
 
 key_value_d = {

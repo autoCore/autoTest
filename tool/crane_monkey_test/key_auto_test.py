@@ -4,7 +4,6 @@ import serial
 from serial import Serial
 import platform
 import sys,os,re
-import time,datetime
 import argparse
 import signal
 import random
@@ -354,11 +353,11 @@ class monkeyTestTask(ThreadBase):
             time.sleep(eval(timeout))
 
     def run(self,uart):
-        uart.open_usk()
-        uart.open_key_test()
-        uart.unlock() # ui unlock
-        uart.open_wachdog()
         try:
+            uart.open_usk()
+            uart.open_key_test()
+            uart.unlock() # ui unlock
+            uart.open_wachdog()
             if self.cfg_file:
                 self.cfg_test(uart)
             else:
@@ -394,7 +393,7 @@ SIMULATE_KEY_INPUT_INTERVAL = '1'
 SPACES_CNT = 130
 CHECK_INTERVAL = 8
 RESET_SYSTEM_WAIT_TIME = 60
-PMIC_WGD_TIMEOUT = 262
+PMIC_WGD_TIMEOUT = 256
 
 
 if __name__ == "__main__":
@@ -426,10 +425,12 @@ if __name__ == "__main__":
             uart.reset_log_file(make_log_file(argv.log_file))
             test_task.reset_log_file(make_log_file(argv.log_file+'_monkey_key'))
             uart_monitor.restart(uart)
-            time.sleep(RESET_SYSTEM_WAIT_TIME) # wait for system into desktop
+            timing(RESET_SYSTEM_WAIT_TIME) # wait for system into desktop
             if not uart.check_status(): #timeout not into desktop
                 print_log(' '*SPACES_CNT+'***wait for system PMIC WDG timeout***')
-                time.sleep(PMIC_WGD_TIMEOUT+RESET_SYSTEM_WAIT_TIME) # wait for system PMIC WDG timeout
+                timing(PMIC_WGD_TIMEOUT) # wait for system PMIC WDG timeout
+            if not uart.check_status(): #timeout not into desktop
+                raise Exception('not reset after PMIC WDG timeout')
             test_task.start(uart)
             timer.start(uart)
             stop_flag.clear()
