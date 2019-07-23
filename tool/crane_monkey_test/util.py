@@ -1,13 +1,75 @@
 #!/usr/bin/env python
-import sys
+# -*- coding:utf-8 -*-
+import logging
 import os
-import re
+import sys
 import time
 import pexpect
 import getpass
 import threading
 import multiprocessing as mp
 
+
+class myLogger(object):
+    def __init__(self, name = '', level = logging.DEBUG):
+        self._logger = logging.getLogger(name)
+        self._file_name = None
+        self._file_handler = None
+        self._formate = logging.Formatter('%(name)s: [%(asctime)s] [%(levelname)-5s] %(message)s')
+        self._stream_handler = logging.StreamHandler()
+        self._stream_handler.setFormatter(self._formate)
+        self._logger.setLevel(level)
+
+    def addHandler(self,handler):
+        if self._logger:
+            self._logger.addHandler(handler)
+
+    def setLevel(self,level):
+        if self._logger:
+            self._logger.setLevel(level)
+
+    def resetLogFile(self, file_name, fmt = ''):
+        if self._file_handler:
+            self._logger.removeHandler(self._file_handler)
+        self._file_name = file_name
+        self._file_handler = logging.FileHandler(file_name, mode='w')
+        if fmt:
+            _fmt = logging.Formatter(fmt)
+            self._file_handler.setFormatter(_fmt)
+        else:
+            self._file_handler.setFormatter(self._formate)
+        self._logger.addHandler(self._file_handler)
+
+    def debug(self,message):
+        self._logger.debug('*** %s ***'%message)
+
+    def info(self,message):
+        self._logger.info(message)
+
+    def warning(self,message):
+        self._logger.warning(message)
+
+    def error(self,message):
+        self._logger.error('### %s ###'%message)
+
+    def critical(self,message):
+        self._logger.critical(message)
+
+    def enablePrint(self):
+        self._logger.addHandler(self._stream_handler)
+
+    def getLogFile(self):
+        return self._file_name
+
+    def write(self,message):
+        self._logger.info(message)
+
+
+def timing(timeout):
+    for i in range(int(float(timeout))):
+        sys.stdout.write("timing: %ds\r" % i)
+        sys.stdout.flush()
+        time.sleep(1)
 
 def get_sudo_password():
     proc = pexpect.spawn("sudo ls")
@@ -26,13 +88,6 @@ def get_sudo_password():
         if index == 3:
             proc.close(force=True)
             return password
-
-
-def timing(timeout):
-    for i in range(timeout):
-        sys.stdout.write("timing: %ds\r" % i)
-        sys.stdout.flush()
-        time.sleep(1)
 
 
 class ProcBase(object):
@@ -120,4 +175,37 @@ def make_log_file(file_name):
     mkdir_if_no_exists(log_dir)
 
     date = time.strftime("%d_%h_%H-%M-%S")
-    return os.path.join(log_dir, '%s_%s.log' % (file_name, date))
+    return os.path.join(log_dir, '%s_%s.txt' % (file_name, date))
+
+class config:
+    def __init__(self):
+        self.SIMULATE_KEY_INPUT_INTERVAL = None
+        self.CHECK_INTERVAL = None
+        self.RESET_SYSTEM_WAIT_TIME = None
+        self.KEY_DOWN_UP_INTERVAL = None
+
+    def update(self,cfg_file):
+        import ConfigParser
+        conf = ConfigParser.ConfigParser()
+        if os.path.exists(cfg_file):
+            conf.read(cfg_file)
+        else:
+            assert('No config file')
+        for sec in conf.sections():
+            if str(sec) in 'config':
+                value = conf.getfloat('config','SIMULATE_KEY_INPUT_INTERVAL')
+                self.SIMULATE_KEY_INPUT_INTERVAL = value if value else 1
+                value = conf.getint('config','CHECK_INTERVAL')
+                self.CHECK_INTERVAL = value if value else 3
+                value = conf.getint('config','RESET_SYSTEM_WAIT_TIME')
+                self.RESET_SYSTEM_WAIT_TIME = value if value else 30
+                value = conf.getfloat('config','KEY_DOWN_UP_INTERVAL')
+                self.KEY_DOWN_UP_INTERVAL = value if value else 30
+            else:
+                setattr(self,sec,conf.items(sec))
+    def __repr__(self):
+        return "config(SIMULATE_KEY_INPUT_INTERVAL=%r,CHECK_INTERVAL=%r,RESET_SYSTEM_WAIT_TIME=%r,KEY_DOWN_UP_INTERVAL=%r)"\
+                %(self.SIMULATE_KEY_INPUT_INTERVAL,\
+                self.CHECK_INTERVAL,\
+                self.RESET_SYSTEM_WAIT_TIME,\
+                self.KEY_DOWN_UP_INTERVAL)

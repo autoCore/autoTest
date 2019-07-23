@@ -1,20 +1,22 @@
 #!/usr/bin/env python
-from serial.tools.list_ports import comports
-import serial
-from serial import Serial
 import platform
 import argparse
 import signal
 import random
 import re
 import traceback
-import util
+import time
+import os
+import sys
 import pexpect
 import threading
-import time
-import crane_cfg as cfg
+import serial
+import ConfigParser
 import multiprocessing as mp
-import pysnooper
+from serial import Serial
+from serial.tools.list_ports import comports
+from  util import myLogger, ProcBase, ThreadBase, make_log_file, get_sudo_password, timing, config
+# import pysnooper
 
 def signal_handler(signum, frame):
     raise TestEndException
@@ -23,12 +25,10 @@ def signal_handler(signum, frame):
 class TestEndException(Exception):
     pass
 
-
 class Uart(object):
-    def __init__(self, log_file=None, is_print=True):
+    def __init__(self, logger = None, is_print = True):
         super(Uart, self).__init__()
-        self.log = open(log_file, 'a') if log_file else open(
-            'test_log.log', 'a')
+        self.logger = logger
         self.comport = None
         self.is_print = mp.Event()
 
@@ -36,13 +36,9 @@ class Uart(object):
         self.busy_flag = mp.Event()
         self.input_fifo = mp.Queue(1)
 
-        self.log_lock = mp.Lock()
-        self.log_flag = mp.Event()
-
         self.open_flag = False
         self.open_wachdog_flag = False
-        self.sodo_password = util.get_sudo_password()
-        self.log_flag.set()
+        self.sodo_password = get_sudo_password()
         self.is_print.set()
 
     def isOpen(self):
@@ -53,6 +49,11 @@ class Uart(object):
         if pattern_str:
             return self.expect(pattern_str, timeout, input_flag=True)
         return True
+
+    def clear_input_fifo(self):
+        while not self.input_fifo.empty():
+            self.input_fifo.get()
+        self.comport.flushOutput()
 
     def expect(self, pattern_str, timeout, input_flag=False):
         if not input_flag:
@@ -65,30 +66,29 @@ class Uart(object):
         self.busy_flag.clear()
         res = self.expect_match.is_set()  # if match the pattern res is True else False
         self.expect_match.clear()
-        # print_log(' '*cfg.SPACES_CNT + '< %.3fs >'%(time.time()-time_))
+        # self.logger.debug('< %.3fs >'%(time.time()-time_))
         return res
 
     def reset_system(self, timeout=3):
         self.open_flag = False
         self.open_wachdog_flag = False
-        return self.input("CMD+RST\n", 'RST', timeout)
+        while not self.input_fifo.empty():
+            self.input_fifo.get()
+        return self.input("CMD+RST\n")
 
     def back_destop(self):
         self.simulate_key_input('0')
         self.simulate_key_input('P')
 
-    def check_status(self, timeout=3):
-        if self.input("KEY#\n", 'Unknown command', 1):
-            self.open_key_test()
+    def check_status(self, timeout=5):
         return self.input("CMD+STATUS\n", 'STATUS', timeout)
 
     def open_wachdog(self, timeout=3):
         for __ in range(3):
+            self.open_wachdog_flag = self.input(
+                "CMD+WDGE\n", 'WDGE', timeout)
             if self.open_wachdog_flag:
                 break
-            else:
-                self.open_wachdog_flag = self.input(
-                    "CMD+WDGE\n", 'WDGE', timeout)
         return self.open_wachdog_flag
 
     def close_wachdog(self, timeout=3):
@@ -103,43 +103,32 @@ class Uart(object):
     def unlock(self):
         self.simulate_key_input('[')
 
-    def open_key_test(self):
-        self.input("KEY#**\n")
+    def open_key_test(self,timeout=3):
         self.open_flag = True
-        time.sleep(float(cfg.SIMULATE_KEY_INPUT_INTERVAL))
+        self.input("KEY#**\n", 'Input command', timeout)
 
-    def close_key_test(self):
-        self.input("KEY###\n")
+    def close_key_test(self,timeout=3):
         self.open_flag = False
-        time.sleep(float(cfg.SIMULATE_KEY_INPUT_INTERVAL))
+        self.input("KEY###\n", 'Input command', timeout)
 
     def simulate_key_input(self, key_value):
         if not self.open_flag:
             self.open_key_test()
         self.input(key_value, simulate_key=True)
-        self.write_log('[pylog]:'+key_value)
+        self.logger.debug('*** input fifo: %s ***'%key_value)
         time.sleep(float(cfg.SIMULATE_KEY_INPUT_INTERVAL))
 
-    def open_usk(self):
-        self.input("usk enable\n")
-        time.sleep(float(cfg.SIMULATE_KEY_INPUT_INTERVAL))
-
-    def write_log(self, msg):
-        with self.log_lock:
-            self.log.write(msg+'\n')
-            self.log.flush()
+    def open_usk(self,timeout = 3):
+        usk_flag = False
+        for __ in range(3):
+            usk_flag = self.input("usk enable\n","usk enable OK",timeout)
+            if usk_flag:
+                break
+        return usk_flag
 
     def reset_log_file(self, file_name):
-        with self.log_lock:
-            self.log.flush()
-            self.log.close()
-            self.log = open(file_name, 'a')
+        self.logger.resetLogFile(file_name)
 
-    def save_log_file(self):
-        with self.log_lock:
-            self.log.flush()
-            self.log.close()
-            self.log = None
 
     def createPort(self, port=None, baud=115200, time_out=0.1):
         if not port:
@@ -153,7 +142,7 @@ class Uart(object):
                 port_list = [list(port) for port in port_list]
                 port_list = [
                     port for port in port_list if "USB to UART Bridge" in port[1]]
-            print 'port:', port_list
+            logger.info('port: %r'%port_list)
             for p in port_list:
                 proc = pexpect.spawn('sudo chmod 777 %s' % p)
                 index = proc.expect(
@@ -169,18 +158,21 @@ class Uart(object):
                         if port in port_list:
                             break
                         else:
-                            print('No device')
+                            logger.error('*** No device ***')
             else:
-                print("No port")
+                logger.error("****No port****")
                 sys.exit(0)
-        print_log('current port name:'+port)
+        logger.info('current port name:'+port)
         self.comport = Serial(port, baud, timeout=time_out)
         self.timeout = time_out
         if self.comport.isOpen():
-            return 1
+            self.comport.flushInput()
+            self.comport.flushOutput()
+            return 0
         else:
-            print("create port fail")
-            sys.exit(1)
+            logger.error("*** create port fail ***")
+            return 1
+            # sys.exit(1)
 
     def close(self):
         self.log.flush()
@@ -188,13 +180,13 @@ class Uart(object):
         self.comport.close()
 
 
-class UartMonitor(util.ProcBase):
+class UartMonitor(ProcBase):
     def __init__(self):
         super(UartMonitor, self).__init__()
-        self._simulate_key_Interval = 0.2
+        self._simulate_key_Interval = cfg.KEY_DOWN_UP_INTERVAL
         self.pattern = None
 
-    def run(self, uart):
+    def run(self, uart, stop_flag):
         try:
             while self._running.is_set():
                 time_ = time.time()
@@ -208,8 +200,7 @@ class UartMonitor(util.ProcBase):
                         time.sleep(self._simulate_key_Interval)
                         uart.comport.write(msg)
                         time.sleep(self._simulate_key_Interval)
-                    print_log(' '*cfg.SPACES_CNT +
-                              '*** intput: [%s] ***' % msg.strip())
+                    uart.logger.debug('*** intput: [%s] ***' % msg.strip())
                     if pattern_str:
                         self.pattern = re.compile(pattern_str)
                         uart.busy_flag.set()
@@ -223,27 +214,28 @@ class UartMonitor(util.ProcBase):
                         uart.busy_flag.clear()
                         uart.expect_match.set()
                         self.pattern = None
-                if uart.log_flag.is_set():
-                    uart.write_log(line)
-                if uart.is_print.is_set():
-                    print(line)
-                # if debug.is_set(): print ' '*cfg.SPACES_CNT+'[ %.6fs ]'%(time.time()-time_)
+                if "CHIP_ID: 0x6731, REV_ID: 0xA0" in line:
+                    uart.logger.debug("*** MONKEY TEST CHIP RESET ***")
+                    stop_flag.set()
+                    system_reset_flag.set()
+                uart.logger.info(line)
+                # if debug.is_set(): uart.logger.debug('[ %.6fs ]'%(time.time()-time_))
         except (KeyboardInterrupt, TestEndException):
             pass
         except Exception, e:
-            print_log('Error!')
-            print e
+            uart.logger.error('*** Error! ***')
+            uart.logger.error(e)
         finally:
             uart.expect_match.set()
             stop_flag.set()
-            print_log('UartMonitor done')
+            uart.logger.info('UartMonitor done')
 
 
-class UartInput(util.ThreadBase):
+class UartInput(ThreadBase):
     def __init__(self):
         super(UartInput, self).__init__()
 
-    def run(self, uart):
+    def run(self, uart, stop_flag):
         try:
             while self._running:
                 msg = raw_input('')
@@ -254,7 +246,7 @@ class UartInput(util.ThreadBase):
                     if len(value_l) == 2:
                         value = value_l[1]
                     else:
-                        print_log(' '*cfg.SPACES_CNT+'Pls check your input')
+                        uart.logger.debug('*** Pls check your input ***')
                         continue
                     uart.is_print.set() if eval(value) else uart.is_print.clear()
                 elif 'debug' in msg:
@@ -262,21 +254,21 @@ class UartInput(util.ThreadBase):
                     if len(value_l) == 2:
                         value = value_l[1]
                     else:
-                        print_log(' '*cfg.SPACES_CNT+'Pls checkl your input')
+                        uart.logger.debug('*** Pls checkl your input ***')
                         continue
                     debug.set() if eval(value) else debug.clear()
                 else:
                     uart.input(msg+'\n')
         except Exception:
             traceback.print_exc()
-            print_log('Error:[UartInput],Pls check serial port')
+            uart.logger.error('*** Error:[UartInput],Pls check serial port ***')
         finally:
             self._running = False
-            print_log('UartInput done')
+            uart.logger.info('UartInput done')
             stop_flag.set()
 
 
-class MyTimer(util.ThreadBase):
+class MyTimer(ThreadBase):
     """docstring for MyTimer"""
 
     def __init__(self, delay_time):
@@ -284,25 +276,24 @@ class MyTimer(util.ThreadBase):
         self.__delay_time = delay_time
         self.block = threading.Event()
 
-    def run(self, uart):
+    def run(self, uart, stop_flag):
         try:
             while self._running:
                 self.block.wait(self.__delay_time)
                 if not self._running:
                     break
-                print_log(' '*cfg.SPACES_CNT+'check status   ')
-                uart.write_log('[pylog]:check status')
+                if stop_flag.is_set():
+                    break
+                uart.logger.debug('*** check status ***')
                 if uart.check_status(self.__delay_time):
-                    print_log(' '*cfg.SPACES_CNT+'check status pass')
-                    uart.write_log('[pylog]:check status pass')
+                    uart.logger.debug('*** check status pass ***')
                 else:
-                    print_log(' '*cfg.SPACES_CNT+'check status fail')
-                    uart.write_log('[pylog]:check status fail')
+                    uart.logger.debug('*** check status fail ***')
                     stop_flag.set()
                     break
         except Exception:
             traceback.print_exc()
-            print_log('Error:[UartController],Pls check serial port')
+            uart.logger.error('*** Error:[UartController],Pls check serial port ***')
         finally:
             self._running = False
 
@@ -311,39 +302,26 @@ class MyTimer(util.ThreadBase):
             return
         self._running = False
         self._proc = None
-        print_log('MyTimer done')
+        uart.logger.info('MyTimer done')
 
 
-class monkeyTestTask(util.ThreadBase):
+class monkeyTestTask(ThreadBase):
     """docstring for ClassName"""
 
     def __init__(self, monkey_log, cfg_file=None):
         super(monkeyTestTask, self).__init__()
-        self.monkey_log_fname = monkey_log
-        self.monkey_log = open(monkey_log, 'a')
+        self.monkey_log_fname = monkey_logger.getLogFile()
+        self.monkey_logger = monkey_logger
         self.cfg_file = cfg_file
         self.count = 1
         self.cmd_set = None
 
-    def reset_log_file(self, file_name):
-        try:
-            self.monkey_log.flush()
-            self.monkey_log.close()
-        except:
-            pass
-        finally:
-            self.monkey_log_fname = file_name
-            self.monkey_log = open(file_name, 'a')
+    def reset_log_file(self, file_name, fmt = ''):
+        if not fmt:
+            fmt = '%(message)s'
+        self.monkey_logger.resetLogFile(file_name,fmt)
 
-    def save_log_file(self):
-        try:
-            self.monkey_log.flush()
-            self.monkey_log.close()
-            self.monkey_log = None
-        except Exception:
-            traceback.print_exc()
-
-    def cfg_test(self, uart):
+    def cfg_test(self, uart, stop_flag):
         with open(self.cfg_file) as file_obj:
             file_text = [
                 line_ for line_ in file_obj if not line_.strip().startswith('#')]
@@ -353,39 +331,36 @@ class monkeyTestTask(util.ThreadBase):
         cnt = re.findall('\|CNT@\((.*?)\)', file_text)
         cnt = int(cnt[0]) if cnt else 1
         for i in range(cnt):
-            print_log('\n'.join(
-                [' '*cfg.SPACES_CNT+'*'*20, ' '*cfg.SPACES_CNT+"running cnt: %s" % i, ' '*cfg.SPACES_CNT+'*'*20]))
-            uart.log.write("running cnt: %s\n" % i)
+            uart.logger.debug('*' * 20 + " running cnt: %s " % i + '*' * 20)
             for cmd, timeout in cmd_set:
                 if not self._running:
                     return
                 if stop_flag.is_set():
                     raise TestEndException
                 if 'CMD-' in cmd:
-                    print_log(' '*cfg.SPACES_CNT+'*** intput: %s ***' %
-                              cmd.replace('CMD-', ''))
                     uart.input(cmd.replace('CMD-', '')+'\n')
+                    uart.logger.debug('*** intput: %s ***' %
+                              cmd.replace('CMD-', ''))
                     time.sleep(float(timeout))
                     continue
                 for send_c in cmd.replace(' ', ''):
                     if not self._running:
                         return
-                    print_log(' '*cfg.SPACES_CNT+'*** intput: %s ***' %
-                              cfg.key_value_d[send_c])
-                    uart.simulate_key_input(send_c)
-                    self.monkey_log.write(cfg.key_value_d[send_c]+' ')
-                    self.monkey_log.flush()
+                    # uart.logger.debug('*** intput: %s ***'%cfg.key_value_d.get(send_c,''))
+                    if send_c is not '-':
+                        uart.simulate_key_input(send_c)
+                        self.monkey_logger.write(cfg.key_value_d.get(send_c,'')+' ')
                     time.sleep(float(timeout))
             else:
-                time.sleep(10)
-                uart.back_destop()
+                time.sleep(1)
+                # uart.back_destop()
         else:
             # uart.close_wachdog()
             uart.close_key_test()
 
     # @pysnooper.snoop('./debug.log')
-    def monkey_test(self, uart):
-        key_value_item = cfg.key_value_d.items()
+    def monkey_test(self, uart, stop_flag):
+        key_value_item = cfg.key_value_map
         i = 0
         while self._running:
             send_c, send_c_name = random.choice(key_value_item)
@@ -395,30 +370,37 @@ class monkeyTestTask(util.ThreadBase):
                     continue
                 else:
                     i = 0
+            if stop_flag.is_set():
+                return
             timeout = cfg.SIMULATE_KEY_INPUT_INTERVAL
-            print_log(' '*cfg.SPACES_CNT+'*** intput: %s ***' % send_c_name)
+            # uart.logger.debug('*** intput: %s ***' % send_c_name)
             uart.simulate_key_input(send_c)
-            self.monkey_log.write(send_c)
-            self.monkey_log.flush()
+            self.monkey_logger.write(send_c)
             time.sleep(float(timeout))
 
-    def run(self, uart):
+    def run(self, uart, stop_flag):
         try:
-            uart.open_usk()
-            uart.open_key_test()
-            uart.unlock()  # ui unlock
+            if not uart.open_usk():
+                uart.logger.error('not open usk')
+                assert('not open usk')
             uart.open_wachdog()
+            uart.open_key_test()
+            # uart.unlock()  # ui unlock
             if self.cfg_file:
-                self.cfg_test(uart)
+                self.cfg_test(uart, stop_flag)
             else:
-                self.monkey_test(uart)
+                self.monkey_test(uart, stop_flag)
                 # self.contact_test(uart)
-        except Exception:
-            traceback.print_exc()
-            print_log('< monkeyTestTask >')
+        except TestEndException, e:
+            uart.logger.debug(repr(e))
+            sys.exit(0)
+        except Exception, e:
+            uart.logger.error(repr(e))
+            stop_flag.set()
+
         finally:
-            self.monkey_log.flush()
-            self.monkey_log.close()
+            # uart.close_wachdog()
+            uart.logger.debug('*** deal with monkey key log file ***')
             self.report(self.monkey_log_fname)
 
     def terminate(self):
@@ -426,19 +408,20 @@ class monkeyTestTask(util.ThreadBase):
             return
         self._running = False
         self._proc = None
-        print_log('monkeyTestTask done')
+        uart.logger.info('monkeyTestTask done')
 
     def report(self, file_name):
-        with open('./autocmd.cfg', 'a') as cfg_file:
-            monkey_log = open(file_name).read()
+        with open('./autocmd.cfg', 'a'),open(file_name) as cfg_file,monkey_log:
+            monkey_text = monkey_log.read()
+            monkey_text = monkey_text.replace('\n','')
             cfg_log = '# AUTOTEST_KEY@(%s,%s)' % (
-                monkey_log, cfg.SIMULATE_KEY_INPUT_INTERVAL)
+                monkey_text, cfg.SIMULATE_KEY_INPUT_INTERVAL)
             cfg_file.write(cfg_log+'\n')
 
-    def alarm_test(self, uart):
+    def alarm_test(self, uart, stop_flag):
         for key_ in ['M', 'V', 'V', 'M', 'M']:
             uart.simulate_key_input(key_)
-        key_value_item = cfg.alarm_key_value_d.items()
+        key_value_item = cfg.alarm_key_value_map
         cnt = 0
         while self._running:
             send_c, send_c_name = random.choice(key_value_item)
@@ -448,40 +431,36 @@ class monkeyTestTask(util.ThreadBase):
                     continue
                 else:
                     cnt = 0
+            if stop_flag.is_set():
+                return
             timeout = cfg.SIMULATE_KEY_INPUT_INTERVAL
-            print_log(' '*cfg.SPACES_CNT+'*** intput: %s ***' % send_c_name)
+            # uart.logger.debug('*** intput: %s ***' % send_c_name)
             uart.simulate_key_input(send_c)
-            self.monkey_log.write(send_c)
-            self.monkey_log.flush()
+            self.monkey_logger.write(send_c)
             time.sleep(float(timeout))
 
     # @pysnooper.snoop('./debug1.log')
-    def contact_test(self, uart):
+    def contact_test(self, uart, stop_flag):
         uart.simulate_key_input('V')
-        key_value_item = cfg.contact_key_value_d.items()
-        cnt = 0
+        key_value_item = cfg.contact_key_value_map
+        i = 0
         while self._running:
             send_c, send_c_name = random.choice(key_value_item)
-            if send_c_name is 'F_RIGHT':
-                cnt += 1
-                if cnt < 100:
+            if send_c.isdigit():
+                i += 1
+                if i < 10:
                     continue
                 else:
-                    cnt = 0
+                    i = 0
+            if stop_flag.is_set():
+                return
             timeout = cfg.SIMULATE_KEY_INPUT_INTERVAL
-            print_log(' '*cfg.SPACES_CNT+'*** intput: %s ***' % send_c_name)
+            # uart.logger.debug('*** intput: %s ***' % send_c_name)
             uart.simulate_key_input(send_c)
-            self.monkey_log.write(send_c)
-            self.monkey_log.flush()
+            self.monkey_logger.write(send_c)
             time.sleep(float(timeout))
 
-
-def print_log(msg):
-    if debug.is_set():
-        print msg
-
-
-stop_flag = mp.Event()
+system_reset_flag = mp.Event()
 debug = mp.Event()
 debug.set()
 
@@ -495,53 +474,87 @@ if __name__ == "__main__":
                             help='if need autocmd.cfg ,input -c ./tool/auto_uart/autocmd.cfg')
     argv = arg_parser.parse_args()
 
+    global cfg
+    cfg = config()
+    cfg.update('crane_cfg.conf')
+    uart = None
+    uart_input = None
+    test_task = None
+    timer = None
+    uart_monitor = None
+    stop_flag = mp.Event()
+    logger = myLogger("monkey_test")
+    logger.enablePrint()
     try:
-        uart = Uart(util.make_log_file(argv.log_file))
+        logger.resetLogFile(make_log_file(argv.log_file))
+        uart = Uart(logger)
         uart.createPort()
         uart_input = UartInput()
-        uart_input.start(uart)
+        logger.info(cfg)
+        uart_input.start(uart, stop_flag)
         uart_monitor = UartMonitor()
-        uart_monitor.start(uart)
-        test_task = monkeyTestTask(util.make_log_file(
-            argv.log_file+'_monkey_key'), argv.cmd_file)
+        uart_monitor.start(uart, stop_flag)
+        monkey_logger = myLogger("monkey_log")
+        test_task = monkeyTestTask(monkey_logger, argv.cmd_file)
+        test_task.reset_log_file(make_log_file(
+            argv.log_file+'_monkey_key'))
         timer = MyTimer(cfg.CHECK_INTERVAL)
-        print_log(' '*cfg.SPACES_CNT+'***monkey test start***')
-        test_task.start(uart)
-        timer.start(uart)
+        uart.logger.debug('*** monkey test start ***')
+        test_task.start(uart, stop_flag)
+        timer.start(uart, stop_flag)
         while 1:
+            # uart.logger.debug(stop_flag.is_set())
             stop_flag.wait()
+            # uart.logger.debug(stop_flag.is_set())
             test_task.terminate()
             timer.terminate()
-            # while 1: pass
-            uart.close_wachdog()
-            uart.reset_system()  # reset system
-            uart.reset_log_file(util.make_log_file(argv.log_file))
+            while test_task.isOpen() or timer.isOpen():
+                pass
+            stop_flag = mp.Event()
+            uart.logger.debug('*** monkey test terminate ***')
+            uart.logger.debug('========================================')
+            if not system_reset_flag.is_set():
+                uart.reset_system()  # reset system
+            system_reset_flag.wait()
+            while system_reset_flag.is_set():
+                system_reset_flag.clear()
+            uart.clear_input_fifo()
+            uart.reset_log_file(make_log_file(argv.log_file))
             test_task.reset_log_file(
-                util.make_log_file(argv.log_file+'_monkey_key'))
-            uart_monitor.restart(uart)
-            util.timing(cfg.RESET_SYSTEM_WAIT_TIME)  # wait for system into desktop
+                make_log_file(argv.log_file+'_monkey_key'))
+            uart_monitor.restart(uart, stop_flag)
+            uart.logger.debug('========================================')
+            uart.logger.debug('*** ready for next test ***')
+            timing(cfg.RESET_SYSTEM_WAIT_TIME)  # wait for system into desktop
             if not uart.isOpen():
-                uart.createPort()
-                print '======================='
+                while uart.createPort():
+                    uart.logger.debug('*** rebuild uart port ***')
+                    time.sleep(5)
             if not uart_monitor.isOpen():
-                uart_monitor.restart(uart)
-            if not uart.check_status():  # timeout not into desktop
-                print_log(' '*cfg.SPACES_CNT +
-                          '***wait for system PMIC WDG timeout***')
-                util.timing(cfg.PMIC_WGD_TIMEOUT)  # wait for system PMIC WDG timeout
-                print '+++++++++++++++++++++++++'
-            while not uart.check_status():  # timeout not into desktop
-                time.sleep(10)
-                print '+++++++++++++++++++++++++===================='
+                uart.logger.debug('*** restart uart_monitor ***')
+                uart_monitor.restart(uart, stop_flag)
+            while 1:
+                uart.clear_input_fifo()
+                if uart.check_status():  # timeout not into desktop
+                    break
+                else:
+                    uart.logger.debug('*** wait for system into desktop ***')
                 # raise Exception('not reset after PMIC WDG timeout')
-            test_task.restart(uart)
-            timer.restart(uart)
-            stop_flag.clear()
+            time.sleep(1)
+            uart.logger.debug('*** ready for next test done ***')
+            uart.logger.debug('========================================')
+            uart.logger.debug("*** monkey test restart ***")
+            uart.clear_input_fifo()
+            uart.input("CMD+WDGD\n") #close wdg
+            test_task.restart(uart, stop_flag)
+            timer.restart(uart, stop_flag)
+    except TestEndException:
+        pass
     except Exception, e:
-        print e
+        logger.error(repr(e))
     finally:
-        test_task.terminate()
-        timer.terminate()
-        uart_input.terminate()
-        uart_monitor.terminate()
-        print_log('test done')
+        test_task.terminate() if test_task else None
+        timer.terminate() if timer else None
+        uart_input.terminate() if uart_input else None
+        uart_monitor.terminate() if uart_monitor else None
+        logger.info('test done')
