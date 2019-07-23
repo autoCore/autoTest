@@ -65,12 +65,6 @@ class myLogger(object):
         self._logger.info(message)
 
 
-def timing(timeout):
-    for i in range(int(float(timeout))):
-        sys.stdout.write("timing: %ds\r" % i)
-        sys.stdout.flush()
-        time.sleep(1)
-
 def get_sudo_password():
     proc = pexpect.spawn("sudo ls")
     while 1:
@@ -101,7 +95,6 @@ class ProcBase(object):
         if self._proc:
             self._running.clear()
             self._proc.terminate()
-            self._proc = None
 
     def run(self, *args):
         while self._running.is_set():
@@ -122,7 +115,9 @@ class ProcBase(object):
             self._proc.daemon = BOOL
 
     def isOpen(self):
-        return self._proc is not None
+        if self._proc:
+            return self._proc.is_alive()
+        return False
 
 
 class ThreadBase(object):
@@ -135,7 +130,6 @@ class ThreadBase(object):
     def terminate(self):
         if self._proc:
             self._running = False
-            self._proc = None
 
     def run(self, *arg):
         while self._running:
@@ -157,25 +151,10 @@ class ThreadBase(object):
             self._proc.daemon = BOOL
 
     def isOpen(self):
-        return self._proc is not None
+        if self._proc:
+            return self._proc.is_alive()
+        return False
 
-
-def mkdir_if_no_exists(path):
-    if not os.path.exists(path):
-        os.mkdir(path)
-
-
-def get_abs_dir():
-    return os.path.dirname(os.path.abspath(__file__))
-
-
-def make_log_file(file_name):
-    abs_dir = get_abs_dir()
-    log_dir = os.path.join(abs_dir, 'log')
-    mkdir_if_no_exists(log_dir)
-
-    date = time.strftime("%d_%h_%H-%M-%S")
-    return os.path.join(log_dir, '%s_%s.txt' % (file_name, date))
 
 class config:
     def __init__(self):
