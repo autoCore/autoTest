@@ -416,11 +416,11 @@ def send_release_email(version_file, cp_version, dsp_version,customer_file = Non
     version = _match[0]
     # msg = email_msg%((version.upper(),cp_version,dsp_version,str(time.asctime()))+(version_fname,)*6)
     if customer_file:
-        # msg = email_msg_with_cus%((version.upper(), cp_version, dsp_version)+(version_fname,)*4+(customer_file,))
-        msg = email_msg_with_cus%((version.upper(), cp_version, " ")+(version_fname,)*4+(customer_file,))
+        msg = email_msg_with_cus%((version.upper(), cp_version, dsp_version)+(version_fname,)*4+(customer_file,))
+        # msg = email_msg_with_cus%((version.upper(), cp_version, " ")+(version_fname,)*4+(customer_file,))
     else:
-        # msg = email_msg%((version.upper(), cp_version, dsp_version)+(version_fname,)*4)
-        msg = email_msg%((version.upper(), cp_version, " ")+(version_fname,)*4)
+        msg = email_msg%((version.upper(), cp_version, dsp_version)+(version_fname,)*4)
+        # msg = email_msg%((version.upper(), cp_version, " ")+(version_fname,)*4)
     logger.info(subject)
     logger.info(msg)
     send_email_tool(to_address,subject,msg)
