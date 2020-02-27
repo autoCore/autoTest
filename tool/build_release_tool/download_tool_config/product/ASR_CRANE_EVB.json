@@ -1,0 +1,37 @@
+{
+  "name": "ASR_CRANE_EVB",
+  "version": "0.5",
+  "version-bootrom": "2019.01.15",
+  "template": "CRANE_EVB",
+  "flash": "QSPI_NOR_16MB_B64KB_S4KB_P256",
+  "partitions": "CRANE_EVB_GENERIC_LAYOUT",
+  "keyAlg": "rsa",
+  "hashAlg": "sha256",
+  "secureBoot": false,
+  "fota": [
+    "system"
+  ],
+  "variants": [
+    {
+      "name": "A0_08MB",
+      "flash": "QSPI_NOR_8MB_B64KB_S4KB_P256",
+      "partitions": [
+        {
+          "name": "nvm",
+          "size": "1MiB"
+        }
+      ]
+    },
+    {
+      "name": "A0_16MB"
+    },
+    {
+      "name": "A0_32MB",
+      "flash": "QSPI_NOR_32MB_B64KB_S4KB_P256"
+    },
+    {
+      "name": "CRANEG_16MB",
+      "version-bootrom": "2019.10.10"
+    }
+  ]
+}

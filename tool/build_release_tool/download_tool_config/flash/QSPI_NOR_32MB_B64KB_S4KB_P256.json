@@ -1,0 +1,37 @@
+{
+  "name": "QSPI_NOR_32MB_B64KB_S4KB_P256",
+  "type": "QSPI_NOR",
+  "minIoSize": 1,
+  "pageSize": 256,
+  "pebSize": "4KiB",
+  "sectorSize": "4KiB",
+  "blockSize": "64KiB",
+  "flashSize": "32MiB",
+  "erasedValue": "0xFF",
+  "devices": [
+    {
+      "name": "GD25LQ256C",
+      "manufacturer": "GigaDevice",
+      "vendorId": "0xC8",
+      "deviceId": "0x6019"
+    },
+    {
+      "name": "XM25QU256B",
+      "manufacturer": "XMC",
+      "vendorId": "0x20",
+      "deviceId": "0x7019"
+    },
+    {
+      "name": "W25Q256JW",
+      "manufacturer": "WinBond",
+      "vendorId": "0xEF",
+      "deviceId": "0x6019"
+    },
+    {
+      "name": "W25Q256JW-IM",
+      "manufacturer": "WinBond",
+      "vendorId": "0xEF",
+      "deviceId": "0x8019"
+    }
+  ]
+}

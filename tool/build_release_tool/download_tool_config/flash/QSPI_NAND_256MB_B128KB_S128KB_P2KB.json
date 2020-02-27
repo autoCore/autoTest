@@ -1,0 +1,25 @@
+{
+  "name": "QSPI_NAND_256MB_B128KB_S128KB_P2KB",
+  "type": "QSPI_NAND",
+  "minIoSize": "2KiB",
+  "pageSize": "2KiB",
+  "pebSize": "128KiB",
+  "sectorSize": "128KiB",
+  "blockSize": "128KiB",
+  "flashSize": "256MiB",
+  "erasedValue": "0xFF",
+  "devices": [
+    {
+      "name": "GD5F2GQ4R",
+      "manufacturer": "GigaDevice",
+      "vendorId": "0xC8",
+      "deviceId": "0xC2"
+    },
+    {
+      "name": "GD5F2GQ4U",
+      "manufacturer": "GigaDevice",
+      "vendorId": "0xC8",
+      "deviceId": "0xD2"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "name": "QSPI_NOR_16MB_B64KB_S4KB_P256",
+  "type": "QSPI_NOR",
+  "minIoSize": 1,
+  "pageSize": 256,
+  "pebSize": "4KiB",
+  "sectorSize": "4KiB",
+  "blockSize": "64KiB",
+  "flashSize": "16MiB",
+  "erasedValue": "0xFF",
+  "devices": [
+    {
+      "name": "GD25LQ128D",
+      "manufacturer": "GigaDevice",
+      "vendorId": "0xC8",
+      "deviceId": "0x6018"
+    },
+    {
+      "name": "DQ25Q128AL",
+      "manufacturer": "DouQiTech",
+      "vendorId": "0x54",
+      "deviceId": "0x6018"
+    },
+    {
+      "name": "FM25M4AA",
+      "manufacturer": "Dosilicon",
+      "vendorId": "0xF8",
+      "deviceId": "0x4218"
+    },
+    {
+      "name": "W25Q128JW-IQ",
+      "manufacturer": "Winbond",
+      "vendorId": "0xEF",
+      "deviceId": "0x6018"
+    },
+    {
+      "name": "W25Q128JW-IM",
+      "manufacturer": "Winbond",
+      "vendorId": "0xEF",
+      "deviceId": "0x8018"
+    },
+    {
+      "name": "MX25U12835F",
+      "manufacturer": "Macronix",
+      "vendorId": "0xC2",
+      "deviceId": "0x2538"
+    },
+    {
+      "name": "XM25QU128B",
+      "manufacturer": "XMC",
+      "vendorId": "0x20",
+      "deviceId": "0x5018"
+    },
+    {
+      "name": "P25Q128LE",
+      "manufacturer": "Puya",
+      "vendorId": "0x85",
+      "deviceId": "0x6018"
+    }
+  ]
+}
