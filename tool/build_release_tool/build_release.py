@@ -407,6 +407,13 @@ def copy_cp_file_to_release_dir(dist_dir, board = "crane_evb_z2",src_dir = None)
                 shutil.copy2(os.path.join(cfg.mdb_file_dir, _file),os.path.join(dist_dir, _file))
                 break
 
+def CHECK_DSP_VERSION(dsp_version):
+    '''CRANE_CAT1GSM_L1_1.053.001 , Feb 29 2020 03:40:50'''
+    match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",dsp_version)
+    if not match:
+        return "can not match dsp version"
+    return dsp_version
+
 def send_release_email(version_file, cp_version, dsp_version,customer_file = None):
     to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com,crane_sw_mmi_group@asrmicro.com"
     version_fname = os.path.basename(version_file)
@@ -414,7 +421,7 @@ def send_release_email(version_file, cp_version, dsp_version,customer_file = Non
     _match = re.findall("crane_git_r[0-9]+",version_fname)
     assert _match,"file name can not match"
     version = _match[0]
-    # msg = email_msg%((version.upper(),cp_version,dsp_version,str(time.asctime()))+(version_fname,)*6)
+    dsp_version = CHECK_DSP_VERSION(dsp_version)
     if customer_file:
         msg = email_msg_with_cus%((version.upper(), cp_version, dsp_version)+(version_fname,)*4+(customer_file,))
         # msg = email_msg_with_cus%((version.upper(), cp_version, " ")+(version_fname,)*4+(customer_file,))

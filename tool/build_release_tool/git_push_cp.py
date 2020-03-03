@@ -391,7 +391,12 @@ class gitPushDspDailyBuild():
             self.log.info("git commit...")
             # self.dsp_version = " ".join(self.dsp_version.split())
             # self.dsp_version = self.dsp_version.split(",")[-1]
-            commit_info = "update dsp dailybuild %s"%self.dsp_version
+            match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",self.dsp_version)
+            if match:
+                dsp_version = match[0]
+            else:
+                dsp_version =  str(time.asctime())
+            commit_info = "update dsp dailybuild %s"%dsp_version
             self.log.info("-m %s"%str(commit_info))
             self.git.commit("-m %s"%str(commit_info))
             self.log.info("git commit done")

@@ -12,14 +12,15 @@ import multiprocessing as mp
 
 
 class myLogger(object):
-    def __init__(self, name = '', level = logging.DEBUG):
+    def __init__(self, name = '', level = logging.INFO):
+        logging.root.setLevel(logging.NOTSET)
         self._logger = logging.getLogger(name)
         self._file_name = None
         self._file_handler = None
+        self._stream_handler = None
         self._formate = logging.Formatter('[%(asctime)s] %(message)s')
-        self._stream_handler = logging.StreamHandler()
-        self._stream_handler.setFormatter(self._formate)
-        self._logger.setLevel(level)
+        self.enablePrint(level)
+
 
     def addHandler(self,handler):
         if self._logger:
@@ -39,6 +40,7 @@ class myLogger(object):
             self._file_handler.setFormatter(_fmt)
         else:
             self._file_handler.setFormatter(self._formate)
+        self._file_handler.setLevel(logging.DEBUG)
         self._logger.addHandler(self._file_handler)
 
     def info(self,*message):
@@ -58,8 +60,17 @@ class myLogger(object):
     def critical(self,*message):
         self._logger.critical("%s "*len(message)%(message))
 
-    def enablePrint(self):
-        self._logger.addHandler(self._stream_handler)
+    def enablePrint(self,level = logging.INFO):
+        if not self._stream_handler:
+            self._stream_handler = logging.StreamHandler()
+            self._stream_handler.setLevel(level)
+            self._stream_handler.setFormatter(self._formate)
+            self._logger.addHandler(self._stream_handler)
+
+    def disablePrint(self):
+        if self._stream_handler:
+            self._stream_handler = None
+            self._logger.removeHandler(self._stream_handler)
 
     def getLogFile(self):
         return self._file_name
