@@ -25,13 +25,11 @@ DSP VERSION: %s
 
 NORMAL VERSION(SINGLE and DUAL SIM):
 binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\crane_evb_z2
-hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\crane_evb_z2\rel_lib
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\crane_evb_z2
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\crane_evb_z2\download_tool
 
 BIRD PHONE VERSION:
 binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone
-hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone\rel_lib
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\bird_phone
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone\download_tool
 
 """
 

@@ -64,7 +64,9 @@ hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone\rel_lib
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\bird_phone
 
 CUSTOMER RELEASE:
-release version: %s
+CP VERSION: %s
+DSP VERSION: %s
+RELEASE VERSION: %s
 """
 
 class buildController(object):
@@ -317,37 +319,33 @@ class myRepo(object):
         self.cp_version = CRANE_CUST_VER_INFO
         return CRANE_CUST_VER_INFO
 
-    def update_cp_version(self):
-        self.cp_version = self.get_cp_version(os.path.join(cfg.cur_crane,cfg.cp_version_file))
-        with open(cfg.cp_version_log,"w") as obj:
+    def update_cp_version(self,cp_version_file,cp_version_log_file):
+        self.cp_version = self.get_cp_version(cp_version_file)
+        with open(cp_version_log_file,"w") as obj:
             obj.write(self.cp_version)
 
-    def get_old_cp_version(self):
-        if not os.path.exists(cfg.cp_version_log):
+    def get_old_cp_version(self,cp_version_log_file):
+        if not os.path.exists(cp_version_log_file):
             return None
         else:
-            with open(cfg.cp_version_log) as obj:
+            with open(cp_version_log_file) as obj:
                 return obj.read()
 
-    def record_cp_version(self):
-        with open(cfg.cp_version_log,"w") as obj:
+    def record_cp_version(self,cp_version_log_file):
+        with open(cp_version_log_file,"w") as obj:
             obj.write(self.cp_version)
 
-    def get_dsp_version(self):
+    def get_dsp_version(self,dsp_bin,dsp_version_log_file):
         "!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
-        fobj = open(cfg.dsp_bin,"rb")
+        fobj = open(dsp_bin,"rb")
         text = fobj.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
         match = re.findall("(CRANE_.{43})",text)
         if match:
             version_info = match[0]
-            if "\x00" in version_info:
-                # logger.info(version_info.split(",")[-1])
-                # version_info = version_info.replace("\x00","")
-                version_info = version_info.split(",")[-1].strip()
             logger.debug(version_info)
             self.dsp_version = version_info
-            with open(cfg.dsp_version_log,"w") as obj:
+            with open(dsp_version_log_file,"w") as obj:
                 obj.write(self.dsp_version)
 
 def prepare_release_dir(version_file,release_version = False):
@@ -362,15 +360,13 @@ def prepare_release_dir(version_file,release_version = False):
         os.mkdir(os.path.join(version_file, board))
         if not release_version:
             os.mkdir(os.path.join(version_file, board, "download_tool"))
-        os.mkdir(os.path.join(version_file, board, "cp_images")) if not release_version else None
+        os.mkdir(os.path.join(version_file, board, "cp_images"))
 
 
 def copy_build_file_to_release_dir(dist_dir, src_dir = None):
     if not src_dir:
         src_dir = cfg.cur_crane
-        BUILD_IMAGES = cfg.BUILD_IMAGES[:]
-    else:
-        BUILD_IMAGES = cfg.BUILD_IMAGES[1:]
+    BUILD_IMAGES = cfg.BUILD_IMAGES[:]
     for _file in BUILD_IMAGES:
         src = os.path.join(src_dir,_file)
         dist = os.path.join(dist_dir, os.path.basename(_file))
@@ -411,23 +407,39 @@ def CHECK_DSP_VERSION(dsp_version):
     '''CRANE_CAT1GSM_L1_1.053.001 , Feb 29 2020 03:40:50'''
     match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",dsp_version)
     if not match:
-        return "can not match dsp version"
-    return dsp_version
+        return "can not match dsp version".upper()
+    return match[0]
 
-def send_release_email(version_file, cp_version, dsp_version,customer_file = None):
+def send_release_email(version_file, customer_file = None):
     to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com,crane_sw_mmi_group@asrmicro.com"
     version_fname = os.path.basename(version_file)
     subject = email_subject%version_fname.upper()
     _match = re.findall("crane_git_r[0-9]+",version_fname)
     assert _match,"file name can not match"
     version = _match[0]
+
+    cp_version_file = os.path.join(version_file,"version_info","cp_version.txt")
+    with open(cp_version_file) as obj:
+        cp_version = obj.read()
+    dsp_version_file = os.path.join(version_file,"version_info","dsp_version.txt")
+    with open(dsp_version_file) as obj:
+        dsp_version = obj.read()
+    logger.info(dsp_version)
     dsp_version = CHECK_DSP_VERSION(dsp_version)
+
+    cp_version_file = os.path.join(customer_file,"version_info","release_cp_version.txt")
+    with open(cp_version_file) as obj:
+        cp_version_cus = obj.read()
+
+    dsp_version_file = os.path.join(customer_file,"version_info","release_dsp_version.txt")
+    with open(dsp_version_file) as obj:
+        dsp_version_cus = obj.read()
+    logger.info(dsp_version_cus)
+    dsp_version_cus = CHECK_DSP_VERSION(dsp_version_cus)
     if customer_file:
-        msg = email_msg_with_cus%((version.upper(), cp_version, dsp_version)+(version_fname,)*4+(customer_file,))
-        # msg = email_msg_with_cus%((version.upper(), cp_version, " ")+(version_fname,)*4+(customer_file,))
+        msg = email_msg_with_cus%((version.upper(), cp_version, dsp_version)+(version_fname,)*4+(cp_version_cus,dsp_version_cus, customer_file))
     else:
         msg = email_msg%((version.upper(), cp_version, dsp_version)+(version_fname,)*4)
-        # msg = email_msg%((version.upper(), cp_version, " ")+(version_fname,)*4)
     logger.info(subject)
     logger.info(msg)
     send_email_tool(to_address,subject,msg)
@@ -476,7 +488,10 @@ def auto_dailybuild():
     if not repo.sync():
         time.sleep(10)
         return None
-    repo.update_cp_version()
+    dsp_bin = os.path.join(cfg.cur_crane,"cus","evb","images","dsp.bin")
+    repo.get_dsp_version(dsp_bin, cfg.dsp_version_log)
+    old_cp_version = repo.get_old_cp_version(cfg.cp_version_log)
+    repo.update_cp_version(os.path.join(cfg.cur_crane,cfg.cp_version_file),cfg.cp_version_log)
     commit_id, owner,date, commit_info = repo.get_revion_owner()
     logger.info("="*50)
     logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
@@ -510,7 +525,8 @@ def auto_dailybuild():
         if board in cfg.BOARD_LIST[0] and build_controller.build_res in "FAIL":
             return version_file
     build_controller.copy(version_file, dist)
-    if PUSH_CP_DONE.is_set() and (cp_sdk_cls.cp_sdk_version and repo.cp_version in cp_sdk_cls.cp_sdk_version):
+    logger.info("old_cp_version: %s, new_cp_version: %s"%(old_cp_version,repo.cp_version))
+    if repo.cp_version not in old_cp_version:
         RELEASE_EVENT.set()
         PUSH_CP_DONE.clear()
     return version_file
@@ -534,7 +550,6 @@ def auto_build_cus():
         return None
     curdir = cfg.cur_crane_cus
     build_root_dir = os.path.join(curdir,"evb","src")
-    repo_cus.get_cp_version(os.path.join(build_root_dir,cfg.cp_version_file))
     commit_id, owner,date, commit_info = repo_cus.get_revion_owner()
     logger.info("="*50)
     logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
@@ -555,7 +570,9 @@ def auto_build_cus():
     # shutil.copy2(xml_file,os.path.join(version_file,"version_info",os.path.basename(xml_file)))
     # shutil.copy2(cfg.cp_version_log,os.path.join(version_file,"version_info",os.path.basename(cfg.cp_version_log)))
     shutil.copy2(massage_file,os.path.join(version_file,"crane_evb_z2",os.path.basename(massage_file)))
-
+    dsp_bin = os.path.join(build_root_dir,"cus","evb","images","dsp.bin")
+    repo_cus.get_dsp_version(dsp_bin, os.path.join(version_file,"version_info",os.path.basename(cfg.release_dsp_version_log)))
+    repo_cus.update_cp_version(os.path.join(build_root_dir,cfg.cp_version_file),os.path.join(version_file,"version_info",os.path.basename(cfg.release_cp_version_log)))
 
     for board, build_cmd in [("crane_evb_z2","autobuild.bat")]:
         repo_cus.git_clean()
@@ -563,13 +580,13 @@ def auto_build_cus():
         build_controller.send_email(build_root_dir, owner,os.path.join(cfg.release_dist_dir,file_name),board)
 
         copy_build_file_to_release_dir(os.path.join(version_file,board),build_root_dir)
-        # copy_cp_file_to_release_dir(os.path.join(version_file,board,"cp_images"), board, build_root_dir)
+        copy_cp_file_to_release_dir(os.path.join(version_file,board,"cp_images"), "cus_evb", build_root_dir)
 
         if board in cfg.BOARD_LIST[0] and build_controller.build_res in "FAIL":
             return version_file
     release_cus_download_tool(version_file)
     build_controller.copy(version_file, dist)
-    # '''
+
     try:
         board = "crane_evb_z2"
         sdk_tool_abs_path = os.listdir(os.path.join(dist,"download_tool"))
@@ -589,23 +606,26 @@ def auto_build_cus():
         trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
     except Exception,e:
         logger.info(e)
-    # '''
     return version_file
 
-def release_cus_download_tool(version_file):
-    download_tool_dir = os.path.join(cfg.cur_crane_cus,'evb','tool')
-    download_tool_list = [_file for _file in os.listdir(download_tool_dir) if _file.startswith("ABOOT")]
-    download_tool_list.sort(key=lambda fn:os.path.getmtime(os.path.join(download_tool_dir,fn)))
-    download_tool_zip = download_tool_list[-1]
 
-    os.chdir(download_tool_dir)
-    cmd = "%s x %s -y"%(cfg.unzip_tool, download_tool_zip)
+def release_cus_download_tool(version_file):
+    download_tool_dir = os.path.join(cfg.cur_crane_cus,'evb','src','tool','downloadtool')
+    # download_tool_list = [_file for _file in os.listdir(download_tool_dir) if _file.startswith("ABOOT")]
+    # download_tool_list.sort(key=lambda fn:os.path.getmtime(os.path.join(download_tool_dir,fn)))
+    # download_tool_zip = download_tool_list[-1]
+
+    work_dir = os.path.join(version_file,"crane_evb_z2")
+    os.chdir(work_dir)
+    cmd = "%s x %s -o%s -y"%(cfg.unzip_tool, "ASR_CRANE_EVB_A0_16MB.zip","ASR_CRANE_EVB_A0_16MB")
     proc = subprocess.call(cmd, shell = True)
-    download_tool = os.path.splitext(download_tool_zip)[0]
-    download_tool_name = download_tool + "_" + time.strftime("%Y%m%d_%H%M%S")
-    os.rename(download_tool,download_tool_name)
+    src_bin_list = [os.path.join(work_dir,"ASR_CRANE_EVB_A0_16MB",_bin) for _bin in ["dsp.bin","rf.bin","ReliableData.bin"]]
+    download_tool_name = os.path.basename(version_file) + "_" + "download_tool" + "_" + time.strftime("%Y%m%d_%H%M%S")
+    download_tool_name = download_tool_name.upper()
+    # os.rename(download_tool,download_tool_name)
+    dist_bin_list = [os.path.join(download_tool_dir,dir,"images") for dir in os.listdir(download_tool_dir)]
     cp_bin_list = []
-    for root, dirs, files in os.walk(download_tool_name):
+    for root, dirs, files in os.walk(download_tool_dir):
         if "cp.bin" in files:
             cp_bin_list.append(os.path.join(root,"cp.bin"))
     logger.debug(cp_bin_list)
@@ -613,9 +633,18 @@ def release_cus_download_tool(version_file):
     for cp_bin_dist in cp_bin_list:
         logger.debug(cp_bin_dist)
         shutil.copy2(crane_evb_bin,cp_bin_dist)
+    for _bin in src_bin_list:
+        for cp_bin_dist in dist_bin_list:
+            shutil.copy2(_bin,cp_bin_dist)
+    cp_images = os.path.join(version_file,"crane_evb_z2","cp_images")
+    cp_images = [os.path.join(cp_images,_bin) for _bin in os.listdir(cp_images)]
+    for _bin in  cp_images:
+        for cp_bin_dist in dist_bin_list:
+            shutil.copy2(_bin,cp_bin_dist)
     download_tool_fname = download_tool_name+".zip"
     download_tool_dist = os.path.join(version_file,"download_tool",download_tool_fname)
-    logger.debug(download_tool_dist)
+    logger.info(download_tool_dist)
+    shutil.copytree(download_tool_dir,download_tool_name)
     cmd = "%s a %s %s -y"%(cfg.unzip_tool,download_tool_dist,download_tool_name)
     proc = subprocess.call(cmd, shell = True)
 
@@ -645,14 +674,10 @@ class autoRelease(ThreadBase):
             version_file = get_release_version(cfg.cur_crane,cfg.dist_dir)
             if not version_file:
                 continue
-            file_name = os.path.basename(version_file)
             logger.info(version_file)
             cp_version_file = os.path.join(version_file,"version_info", "cp_version.txt")
             with open(cp_version_file) as obj:
                 cp_version = obj.read()
-            dsp_version_file = os.path.join(version_file,"version_info", "dsp_version.txt")
-            with open(dsp_version_file) as obj:
-                dsp_version_file = obj.read()
             cp_sdk_class.update_download_tool()
             self.today_release_flag.set()
             for board in cfg.BOARD_LIST:
@@ -670,7 +695,7 @@ class autoRelease(ThreadBase):
 
             cus_version_file = get_release_version(cfg.cur_crane_cus,cfg.release_dist_dir,"crane_release_")
             cus_version_file = os.path.join(cfg.release_dist_dir,os.path.basename(cus_version_file))
-            send_release_email(file_name, cp_version, dsp_version_file,cus_version_file)
+            send_release_email(version_file, cus_version_file)
 
             # customer trigger test
             # try:
@@ -756,10 +781,9 @@ class autoCleanOverdueDir(ThreadBase):
                 if now.minute > 1 or now.hour != 2:
                     continue
                 clean_overdue_dir(r"E:\crane_dailybuild",5,target_dir = 'crane_git_')
-                clean_overdue_dir(cfg.external_dir,55,target_dir = 'crane_git_')
-                clean_overdue_dir(cfg.download_tool_dir,55,target_dir = 'MINIGUI_SDK_')
+                clean_overdue_dir(cfg.download_tool_dir,10,target_dir = 'MINIGUI_SDK_')
+                clean_overdue_dir(cfg.cp_sdk_dir,10,target_dir = 'ASR3601_MINIGUI_')
                 clean_overdue_dir("D:\crane_cus",30,target_dir = 'crane_release_')
-                clean_overdue_dir(cfg.release_dist_dir,55,target_dir = 'crane_release_')
                 time.sleep(10)
             except KeyboardInterrupt:
                 logger.info('clean_overdue_dir exit')
@@ -775,7 +799,6 @@ class autoBuild(ThreadBase):
         while self._running:
             try:
                 check_dsp_rf_rbd()
-                repo.get_dsp_version()
                 auto_dailybuild()
                 auto_build_cus()
             except KeyboardInterrupt:
@@ -814,27 +837,21 @@ PUSH_CP_DONE = threading.Event()
 cfg = config()
 
 if __name__ == "__main__":
+    root_dir = os.getcwd()
     logger = myLogger("build_release")
-    logger.enablePrint()
-
     prepare_system_start()
     now = datetime.datetime.today()
     log_file = os.path.join(cfg.log_dir,"log_%s.txt"%time.strftime("%Y%m%d_%H%M%S"))
 
     logger.resetLogFile(log_file)
-    logger.setLevel(logging.INFO)
-    # logger.setLevel(logging.DEBUG)
     logger.debug(cfg)
-
     repo = myRepo(cfg.version_log, cfg.cur_crane)
-    repo.update_cp_version()
-
+    repo.update_cp_version(os.path.join(cfg.cur_crane,cfg.cp_version_file),cfg.cp_version_log)
     repo_cus = myRepo(cfg.version_cus_log,cfg.cur_crane_cus,["."])
     build_controller = buildController(cfg)
     cp_sdk_cls = gitPushCpDailyBuild(cfg,logger)
     dsp_cls = gitPushDspDailyBuild(cfg,logger)
     release_tool = releaseZip(cfg)
-
     auto_release_task = autoRelease()
     auto_push_cp_task = autoPush()
     auto_build_task = autoBuild()
@@ -855,7 +872,7 @@ if __name__ == "__main__":
                 auto_release_task.today_release_flag.clear()
                 time.sleep(1)
 
-            if now.hour == 7 and now.minute == 20 and now.second == 0:
+            if now.hour == 7 and now.minute == 30 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():
                     RELEASE_EVENT.set()
                     time.sleep(1)
@@ -866,6 +883,8 @@ if __name__ == "__main__":
             auto_release_task.terminate()
             auto_push_cp_task.terminate()
             auto_build_task.terminate()
+            os.chdir(root_dir)
+            os.system("del *.pyc")
             sys.exit()
         except Exception,e:
             logger.error(e)

@@ -12,11 +12,12 @@ class gitPushCpDailyBuild():
         self.cp_sdk_version = None
         self.cfg = cfg
         self.cp_sdk = None
-        self.git = git.Repo(cfg.git_push_cp_dir).git
         self.download_tool = None
         self.release_download_tool_name = None
         self.log = logger
         self.download_tool_dict = {}
+        _repo = git.Repo(self.cfg.git_push_cp_dir)
+        self.git = _repo.git
 
     def find_new_cp_sdk(self):
         "ASR3601_MINIGUI_20191206_SDK.zip"
@@ -117,10 +118,18 @@ class gitPushCpDailyBuild():
     def git_push_cp_dailybuild(self):
         self.find_new_cp_sdk()
         if os.path.exists(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk)):
-            self.log.debug("%s already exists"%self.cp_sdk)
-            time.sleep(10)
-            return None
-
+            release_sdk_time = os.path.getmtime(os.path.join(self.cfg.cp_sdk_release_dir,self.cp_sdk))
+            local_sdk_time = os.path.getmtime(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk))
+            # self.log.info("release_sdk_time: %r"%(release_sdk_time))
+            # self.log.info("local_sdk_time: %r"%(local_sdk_time))
+            if long(release_sdk_time) <= long(local_sdk_time):
+                # self.log.info("%s already exists"%self.cp_sdk)
+                time.sleep(10)
+                return None
+            else:
+                self.log.info("release_sdk_time: %s"%time.asctime(time.localtime(release_sdk_time)))
+                self.log.info("local_sdk_time: %s"%time.asctime(time.localtime(local_sdk_time)))
+                os.remove(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk))
         self.log.info("wait for sdk copy...")
         time.sleep(60)
         self.copy_sdk()
@@ -154,7 +163,6 @@ class gitPushCpDailyBuild():
 
             self.log.info("="*50)
             self.log.info("git push cp...")
-
             self.clean_git_push_cp()
             self.log.info(self.cfg.cur_work_dir)
             os.chdir(self.cfg.cur_work_dir)
@@ -336,7 +344,7 @@ class gitPushDspDailyBuild():
         with open(self.cfg.local_dsp_bin,"rb") as obj:
             text = obj.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        match = re.findall("(CRANE_.{43})",text)
+        match = re.findall("(CRANE_.{48})",text)
         if match:
             self.log.debug(match[0])
             return match[0]
@@ -350,12 +358,6 @@ class gitPushDspDailyBuild():
             return None
         self.log.debug(dsp_version)
         self.dsp_version = dsp_version
-        if "\x00" in dsp_version:
-            # self.dsp_version = dsp_version.replace("\x00","")
-            # self.log.info(dsp_version)
-            self.dsp_version = dsp_version.split(",")[-1].strip()
-        else:
-            self.dsp_version = dsp_version
         with open(self.cfg.dsp_version_log,"w") as obj:
             obj.write(self.dsp_version)
         return self.dsp_version
