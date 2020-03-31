@@ -137,9 +137,10 @@ class ProcBase(object):
 class ThreadBase(object):
     """docstring for ProcBase"""
 
-    def __init__(self):
+    def __init__(self,name = None):
         self._running = False
         self._proc = None
+        self._name = name
 
     def terminate(self):
         if self._proc:
@@ -151,7 +152,7 @@ class ThreadBase(object):
 
     def start(self, *args):
         self._running = True
-        self._proc = threading.Thread(target=self.run, args=args)
+        self._proc = threading.Thread(target=self.run, name = self._name, args=args)
         self._proc.daemon = True
         self._proc.start()
 
