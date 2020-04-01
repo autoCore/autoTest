@@ -12,4 +12,4 @@ def kill_winproc(*proc_name):
                 cmd = "taskkill /F /IM %s"%pinfo['name']
                 print "target: ", pinfo
                 os.system(cmd)
-            print pinfo
+            # print pinfo

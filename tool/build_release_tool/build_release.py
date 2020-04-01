@@ -13,7 +13,7 @@ from release_zip import *
 from send_email import *
 from ftp import ftp_upload_file
 from TriggerTest import trigger_test
-
+from kill_winproc import kill_winproc
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 
@@ -783,7 +783,7 @@ class autoCleanOverdueDir(ThreadBase):
                 clean_overdue_dir(r"E:\crane_dailybuild",5,target_dir = 'crane_git_')
                 clean_overdue_dir(cfg.download_tool_dir,10,target_dir = 'MINIGUI_SDK_')
                 clean_overdue_dir(cfg.cp_sdk_dir,10,target_dir = 'ASR3601_MINIGUI_')
-                clean_overdue_dir("D:\crane_cus",30,target_dir = 'crane_release_')
+                clean_overdue_dir("D:\crane_cus",10,target_dir = 'crane_release_')
                 time.sleep(10)
             except KeyboardInterrupt:
                 logger.info('clean_overdue_dir exit')
@@ -885,9 +885,11 @@ if __name__ == "__main__":
             auto_build_task.terminate()
             os.chdir(root_dir)
             os.system("del *.pyc")
+            kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
             sys.exit()
         except Exception,e:
             logger.error(e)
+            kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
             auto_clean_overdue_dir_task.terminate()
             auto_release_task.terminate()
             auto_push_cp_task.terminate()

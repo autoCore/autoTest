@@ -51,7 +51,7 @@ def send_email_tool(to_address,subject,msg,att_file = None):
     MAIL_SERVER = '10.1.24.123'
     MAIL_PORT = 25
 
-    cc_list = ["zhenbozhan@asrmicro.com",'binwu@asrmicro.com']
+    cc_list = ["zhenbozhan@asrmicro.com",'binwu@asrmicro.com','yuanzhizheng@asrmicro.com']
     # cc_list = ['binwu@asrmicro.com']
 
     server = my_email(MAIL_SERVER, MAIL_PORT)
