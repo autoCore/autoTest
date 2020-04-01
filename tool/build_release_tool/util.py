@@ -8,6 +8,8 @@ import time
 import pexpect
 import getpass
 import threading
+import subprocess
+import shutil
 import multiprocessing as mp
 
 
@@ -204,6 +206,29 @@ class config:
             _list.append("%s=%s"%item)
         return "\n".join(_list)
 
+
+class zipTool(object):
+    def __init__(self):
+        work_dir = os.path.dirname(os.path.abspath(__file__))
+        self._external_tool = os.path.join(work_dir,"unzip_tool","7z.exe")
+
+    def make_archive(self, base_name, format, root_dir):
+        shutil.make_archive(base_name, format, root_dir)
+
+    def make_archive_e(self, base_name, format, root_dir):
+        file_name = ".".join([base_name,format])
+        pack_cmd = "%s a %s %s -y"%(self._external_tool, file_name, root_dir)
+        subprocess.call(pack_cmd,shell = True)
+
+    def unpack_archive(self,filename, extract_dir = None):
+        if extract_dir:
+            unpack_cmd = "%s x %s -o%s -y"%(self._external_tool, filename,extract_dir)
+        elif os.path.dirname(filename):
+            unpack_cmd = "%s x %s -o%s -y"%(self._external_tool, filename,os.path.dirname(filename))
+        else:
+            unpack_cmd = "%s x %s -o. -y"%(self._external_tool, filename)
+        # print unpack_cmd
+        subprocess.call(unpack_cmd,shell = True)
 
 
 
