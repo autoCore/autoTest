@@ -221,6 +221,7 @@ class zipTool(object):
         subprocess.call(pack_cmd,shell = True)
 
     def unpack_archive(self,filename, extract_dir = None):
+        assert os.path.exists(filename),"can not find %r"%filename
         if extract_dir:
             unpack_cmd = "%s x %s -o%s -y"%(self._external_tool, filename,extract_dir)
         elif os.path.dirname(filename):
@@ -230,5 +231,47 @@ class zipTool(object):
         # print unpack_cmd
         subprocess.call(unpack_cmd,shell = True)
 
+
+    def unpack_files_from_archive(self, archive_file, dist_dir, *fname):
+        archive_file = os.path.realpath(archive_file)
+        assert os.path.exists(archive_file),"can not find %r"%archive_file
+        root_dir_name,_ = os.path.split(archive_file)
+        dir_name, _ = os.path.splitext(archive_file)
+        if not os.path.exists(dist_dir):
+            os.mkdir(dist_dir)
+        self.unpack_archive(archive_file,dir_name)
+        for _obj in fname:
+            _file = os.path.realpath(os.path.join(dir_name, _obj))
+            if os.path.exists(_file):
+                # try:
+                    # shutil.move(_file, dist_dir)
+                # except Exception, e:
+                    # print "Error",e
+                if os.path.isfile(_file):
+                    shutil.copy2(_file,dist_dir)
+                elif os.path.isdir(_file):
+                    shutil.copytree(_file,dist_dir)
+                else:
+                    print _file,"Error!"
+            else:
+                print "%r not exists"%_file
+        shutil.rmtree(dir_name)
+
+    def pack_files_to_archive(self,base_name, format, *fname):
+        root_dir, _ = os.path.splitext(base_name)
+        os.mkdir(root_dir)
+        for _obj in fname:
+            if os.path.exists(_obj):
+                if os.path.isfile(_obj):
+                    shutil.copy2(_obj,root_dir)
+                elif os.path.isdir(_obj):
+                    shutil.copytree(_obj,root_dir)
+                else:
+                    print _obj,"Error!"
+            else:
+                print "%r not exists"%_obj
+        self.make_archive(base_name, format, root_dir)
+        # self.make_archive_e(base_name, format, root_dir)
+        shutil.rmtree(root_dir)
 
 
