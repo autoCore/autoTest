@@ -6,17 +6,111 @@ import shutil
 import time
 import re
 from send_email import *
-from util import zipTool
+from util import *
 
-class gitPushCpDailyBuild():
+class downloadToolController(object):
+    def __init__(self,cfg, logger):
+        super(downloadToolController,self).__init__()
+        self.download_tool = None
+        self.cfg = cfg
+        self.log = logger
+        self.download_tool_dict = {}
+        self.release_download_tool_name = None
+        self.zip_tool = zipTool()
+
+    def unzip_download_tool(self, zip_file):
+        self.zip_tool.unpack_archive(os.path.join((self.cfg.download_tool_dir, zip_file)))
+
+    def update_download_tool(self):
+        tools_list = [_file for _file in os.listdir(self.cfg.download_tool_release_dir) if self.cfg.win_type in _file and "aboot-tools" in _file and _file.endswith(".exe")]
+        tools_list.sort(key=lambda fn:os.path.getmtime(self.cfg.download_tool_release_dir+'\\'+fn))
+        self.log.debug(tools_list)
+        if self.cfg.download_tool_file_name:
+            file_name = self.cfg.download_tool_file_name
+        else:
+            file_name = tools_list[-1]
+        self.log.info(file_name)
+        file_name_l = [file_name,file_name.replace("x64","x86")]
+        self.download_tool = []
+        for file_name in file_name_l:
+            zip_file = os.path.join(self.cfg.download_tool_dir,file_name)
+            download_tool_fname = zip_file.replace(".exe","")
+            if not os.path.exists(zip_file):
+                shutil.copy2(os.path.join(self.cfg.download_tool_release_dir,file_name),self.cfg.download_tool_dir)
+                self.unzip_download_tool(zip_file)
+            elif not os.path.exists(download_tool_fname):
+                self.unzip_download_tool(zip_file)
+            self.download_tool.append(download_tool_fname)
+        self.log.info("\n".join(self.download_tool))
+
+
+    def prepare_download_tool(self, images, borad = "crane_evb_z2"):
+        "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
+        self.log.debug("\n".join(images))
+        self.log.debug("\n".join(self.download_tool))
+        for download_tool_dir in self.download_tool:
+            if not os.path.exists(download_tool_dir):
+                self.log.warning("%s not exists"%download_tool_dir)
+                continue
+            dist_dir = os.path.join(download_tool_dir,"images")
+            dist_bin_l = [os.path.join(dist_dir, os.path.basename(_file)) for _file in images]
+            for src_bin,dist_bin in zip(images,dist_bin_l):
+                if os.path.exists(src_bin):
+                    if os.path.exists(dist_bin):
+                        os.remove(dist_bin)
+                    shutil.copy2(src_bin,dist_bin)
+                else:
+                    self.log.warning("%s not exists"%src_bin)
+            if os.path.isdir(self.cfg.partition_config):
+                for _file in os.listdir(self.cfg.partition_config):
+                    shutil.copy2(os.path.join(self.cfg.partition_config, _file),os.path.join(download_tool_dir,"config","partition",_file))
+            elif os.path.isfile(self.cfg.partition_config):
+                shutil.copy2(self.cfg.partition_config,os.path.join(download_tool_dir,"config","partition",os.path.basename(self.cfg.partition_config)))
+            else:
+                self.log.error("self.cfg.partition_config:%s error"%self.cfg.partition_config)
+
+            if os.path.isdir(self.cfg.template_config):
+                for _file in os.listdir(self.cfg.template_config):
+                    shutil.copy2(os.path.join(self.cfg.template_config, _file),os.path.join(download_tool_dir,"config","template",_file))
+            elif os.path.isfile(self.cfg.template_config):
+                shutil.copy2(self.cfg.template_config,os.path.join(download_tool_dir,"config","template",os.path.basename(self.cfg.template_config)))
+            else:
+                self.log.error("self.cfg.template_config:%s error"%self.cfg.template_config)
+
+
+    def release_download_tool(self, release_name, borad = "crane_evb_z2", dist_dir = None):
+        import time
+        "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
+        date = time.strftime("%Y%m%d_%H%M%S")
+        release_file_name = "%s_%s_DOWNLOAD_TOOL_%s"%(release_name.upper(),borad.upper(),date)
+        release_dir = os.path.join(self.cfg.download_tool_dir,release_file_name)
+        os.mkdir(release_dir) if not os.path.exists(release_dir) else None
+        self.log.info(release_file_name)
+        self.log.info(release_dir)
+        for _tool in self.download_tool:
+            dist_file = os.path.join(release_dir,os.path.basename(_tool))
+            self.log.info(dist_file)
+            if not os.path.exists(dist_file):
+                shutil.copytree(_tool,dist_file)
+
+        if dist_dir:
+            dist = os.path.join(dist_dir,release_file_name)
+        else:
+            dist = os.path.join(self.cfg.dist_dir,"download_tool", borad, release_file_name)
+        self.zip_tool.make_archive_e(dist,"zip",release_dir)
+        self.release_download_tool_name = dist+".zip"
+        self.download_tool_dict[borad] = self.release_download_tool_name
+        self.log.info(self.download_tool_dict)
+        return self.release_download_tool_name
+
+
+class gitPushCpDailyBuild(object):
     def __init__(self,cfg, logger):
         self.cp_sdk_version = None
         self.cfg = cfg
         self.cp_sdk = None
         self.download_tool = None
-        self.release_download_tool_name = None
         self.log = logger
-        self.download_tool_dict = {}
         _repo = git.Repo(self.cfg.git_push_cp_dir)
         self.git = _repo.git
         self.zip_tool = zipTool()
@@ -67,9 +161,6 @@ class gitPushCpDailyBuild():
 
     def unzip_sdk(self):
         self.zip_tool.unpack_archive(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk))
-
-    def unzip_download_tool(self, zip_file):
-        self.zip_tool.unpack_archive(os.path.join((self.cfg.download_tool_dir, zip_file)))
 
     def delete_gui_lib(self,path_dir):
         if not os.path.exists(path_dir):
@@ -173,144 +264,11 @@ class gitPushCpDailyBuild():
             self.log.error("git push error")
             return None
 
-    def update_download_tool(self):
-        tools_list = [_file for _file in os.listdir(self.cfg.download_tool_release_dir) if self.cfg.win_type in _file and "aboot-tools" in _file and _file.endswith(".exe")]
-        tools_list.sort(key=lambda fn:os.path.getmtime(self.cfg.download_tool_release_dir+'\\'+fn))
-        self.log.debug(tools_list)
-        if self.cfg.download_tool_file_name:
-            file_name = self.cfg.download_tool_file_name
-        else:
-            file_name = tools_list[-1]
-        self.log.info(file_name)
-        file_name_l = [file_name,file_name.replace("x64","x86")]
-        self.download_tool = []
-        for file_name in file_name_l:
-            zip_file = os.path.join(self.cfg.download_tool_dir,file_name)
-            download_tool_fname = zip_file.replace(".exe","")
-            if not os.path.exists(zip_file):
-                shutil.copy2(os.path.join(self.cfg.download_tool_release_dir,file_name),self.cfg.download_tool_dir)
-                self.unzip_download_tool(zip_file)
-            elif not os.path.exists(download_tool_fname):
-                self.unzip_download_tool(zip_file)
-            self.download_tool.append(download_tool_fname)
-        self._check_dsp_rf_rbd()
-        self.log.info(self.download_tool)
-        # self.download_tool_name = os.path.basename(self.download_tool)
 
-    def _check_dsp_rf_rbd(self):
-        dsp_release_bin_l = []
-        release_dir_list = [os.path.join(self.cfg.dsp_release_bin,_dir) for _dir in os.listdir(self.cfg.dsp_release_bin)\
-                                if os.path.isdir(os.path.join(self.cfg.dsp_release_bin,_dir))]
-        release_dir_list.sort(key=lambda fn:os.path.getmtime(fn))
-        # self.log.debug(len(release_dir_list))
-        # self.log.debug(release_dir_list[-30:])
-        for release_dir in release_dir_list[-30:]:
-            self.log.debug(release_dir)
-            for root, dirs, files in os.walk(release_dir, topdown=False):
-                tgt_file = "crane_compress_a0.bin"
-                if "crane_compress_a0.bin" in files:
-                    rf = os.path.join(root,"PM813","rf.bin")
-                    if os.path.exists(rf):
-                        dsp_release_bin_l.append(os.path.join(root,tgt_file))
-        dsp_release_bin_l.sort(key=lambda fn:os.path.getmtime(fn))
-        # self.log.debug("\n".join(dsp_release_bin_l))
-        dsp_release_bin = dsp_release_bin_l[-1]
-        self.log.info(dsp_release_bin)
-        root_dir = os.path.dirname(dsp_release_bin)
-        rf_release_bin = os.path.join(root_dir,"PM813","rf.bin")
-        release_bin_l = [dsp_release_bin, rf_release_bin, self.cfg.rbd_release_bin]
-        # release_bin_l = [self.cfg.dsp_release_bin,self.cfg.rf_release_bin,self.cfg.rbd_release_bin]
-        local_bin_l = [self.cfg.dsp_bin,self.cfg.rf_bin,self.cfg.rbd_bin]
-        for release_bin,local_bin in zip(release_bin_l,local_bin_l):
-            if os.path.exists(release_bin):
-                if os.path.exists(local_bin):
-                    os.remove(local_bin)
-                shutil.copy2(release_bin,local_bin)
-
-    # def prepare_download_tool(self, borad = "crane_evb_z2"):
-        # "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
-        # src_bin_l = [self.cfg.apn_bin, self.cfg.boot33_bin, self.cfg.cp_bin, self.cfg.logo_bin, self.cfg.updater_bin]
-        # print "\n".join(src_bin_l)
-        # print "\n".join(self.download_tool)
-        # for download_tool_dir in self.download_tool:
-            # if not os.path.exists(download_tool_dir):
-                # print "not exists"
-                # continue
-            # dist_dir = os.path.join(download_tool_dir,"images")
-            # dist_bin_l = [os.path.join(dist_dir,_file) for _file in ["apn.bin","boot33.bin","cp.bin","logo.bin","updater.bin"]]
-            # for src_bin,dist_bin in zip(src_bin_l,dist_bin_l):
-                # if os.path.exists(src_bin):
-                    # shutil.copy2(src_bin,dist_bin)
-                # else:
-                    # print "%s not exists"%src_bin
-            # shutil.copy2(self.cfg.dsp_bin,os.path.join(dist_dir,"dsp.bin"))
-            # shutil.copy2(self.cfg.rf_bin,os.path.join(dist_dir,"rf.bin"))
-            # shutil.copy2(self.cfg.rbd_bin,os.path.join(dist_dir,"ReliableData.bin"))
-
-            # shutil.copy2(self.cfg.partition_config,os.path.join(download_tool_dir,"config","partition","CRANE_EVB_GENERIC_LAYOUT.json"))
-            # shutil.copy2(self.cfg.template_config,os.path.join(download_tool_dir,"config","template","CRANE_EVB.json"))
-
-    def prepare_download_tool(self, images, borad = "crane_evb_z2"):
-        "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
-        self.log.info("\n".join(images))
-        self.log.info("\n".join(self.download_tool))
-        for download_tool_dir in self.download_tool:
-            if not os.path.exists(download_tool_dir):
-                self.log.warning("%s not exists"%download_tool_dir)
-                continue
-            dist_dir = os.path.join(download_tool_dir,"images")
-            dist_bin_l = [os.path.join(dist_dir, os.path.basename(_file)) for _file in images]
-            for src_bin,dist_bin in zip(images,dist_bin_l):
-                if os.path.exists(src_bin):
-                    if os.path.exists(dist_bin):
-                        os.remove(dist_bin)
-                    shutil.copy2(src_bin,dist_bin)
-                else:
-                    self.log.warning("%s not exists"%src_bin)
-            if os.path.isdir(self.cfg.partition_config):
-                for _file in os.listdir(self.cfg.partition_config):
-                    shutil.copy2(os.path.join(self.cfg.partition_config, _file),os.path.join(download_tool_dir,"config","partition",_file))
-            elif os.path.isfile(self.cfg.partition_config):
-                shutil.copy2(self.cfg.partition_config,os.path.join(download_tool_dir,"config","partition",os.path.basename(self.cfg.partition_config)))
-            else:
-                self.log.error("self.cfg.partition_config:%s error"%self.cfg.partition_config)
-
-            if os.path.isdir(self.cfg.template_config):
-                for _file in os.listdir(self.cfg.template_config):
-                    shutil.copy2(os.path.join(self.cfg.template_config, _file),os.path.join(download_tool_dir,"config","template",_file))
-            elif os.path.isfile(self.cfg.template_config):
-                shutil.copy2(self.cfg.template_config,os.path.join(download_tool_dir,"config","template",os.path.basename(self.cfg.template_config)))
-            else:
-                self.log.error("self.cfg.template_config:%s error"%self.cfg.template_config)
-
-
-    def release_download_tool(self, sdk_version, gui_version, borad = "crane_evb_z2", dist_dir = None):
-        import time
-        "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
-        date = time.strftime("%Y%m%d_%H%M%S")
-        release_file_name = "%s_%s_%s_DOWNLOAD_TOOL_%s"%(sdk_version.upper(),gui_version.upper(),borad.upper(),date)
-        release_dir = os.path.join(self.cfg.download_tool_dir,release_file_name)
-        os.mkdir(release_dir) if not os.path.exists(release_dir) else None
-        self.log.info(release_file_name)
-        self.log.info(release_dir)
-        for _tool in self.download_tool:
-            dist_file = os.path.join(release_dir,os.path.basename(_tool))
-            self.log.info(dist_file)
-            if not os.path.exists(dist_file):
-                shutil.copytree(_tool,dist_file)
-        self.release_download_tool_name = release_file_name+".zip"
-        if dist_dir:
-            dist = os.path.join(dist_dir,release_file_name)
-        else:
-            dist = os.path.join(self.cfg.dist_dir,"download_tool", borad, release_file_name)
-        self.zip_tool.make_archive_e(dist,"zip",release_dir)
-        self.download_tool_dict[borad] = dist+".zip"
-        self.log.info(self.download_tool_dict)
-
-    def send_release_download_tool_email(self,borad = "crane_evb_z2"):
+    def send_release_download_tool_email(self,release_download_tool_name, borad = "crane_evb_z2"):
         to_address = "SW_CV@asrmicro.com"
         subject = "New SDK and Download Tool Release"
-        external_file = os.path.join(self.cfg.external_dir,"download_tool",borad,self.release_download_tool_name)
+        external_file = os.path.join(self.cfg.external_dir,"download_tool",borad,release_download_tool_name)
         msg = r"""
 CP VERSION: %s
 DOWNLOAD_TOOL: %s"""%(self.cp_sdk_version,external_file)
