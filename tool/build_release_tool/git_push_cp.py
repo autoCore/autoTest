@@ -6,6 +6,7 @@ import shutil
 import time
 import re
 from send_email import *
+from util import zipTool
 
 class gitPushCpDailyBuild():
     def __init__(self,cfg, logger):
@@ -18,6 +19,7 @@ class gitPushCpDailyBuild():
         self.download_tool_dict = {}
         _repo = git.Repo(self.cfg.git_push_cp_dir)
         self.git = _repo.git
+        self.zip_tool = zipTool()
 
     def find_new_cp_sdk(self):
         "ASR3601_MINIGUI_20191206_SDK.zip"
@@ -63,26 +65,11 @@ class gitPushCpDailyBuild():
             raise Exception,"copy_sdk_to_git_push_cp error"
 
 
-    def zip_tool(self, zip_file, format, in_file):
-        assert os.path.exists(in_file)
-        zip_file = ".".join([zip_file,format])
-        zip_cmd = "%s a %s %s -y"%(self.cfg.unzip_tool, zip_file, in_file)
-        self.log.debug(zip_cmd)
-        os.system(zip_cmd)
-
-    def unzip_tool(self,work_dir, zip_file,out_file = None):
-        os.chdir(work_dir)
-        if out_file:
-            unzip_cmd = "%s x %s -o%s -y"%(self.cfg.unzip_tool, zip_file,out_file)
-        else:
-            unzip_cmd = "%s x %s -y"%(self.cfg.unzip_tool, zip_file)
-        os.system(unzip_cmd)
-
     def unzip_sdk(self):
-        self.unzip_tool(self.cfg.cp_sdk_dir, self.cp_sdk)
+        self.zip_tool.unpack_archive(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk))
 
     def unzip_download_tool(self, zip_file):
-        self.unzip_tool(self.cfg.download_tool_dir, zip_file)
+        self.zip_tool.unpack_archive(os.path.join((self.cfg.download_tool_dir, zip_file)))
 
     def delete_gui_lib(self,path_dir):
         if not os.path.exists(path_dir):
@@ -316,7 +303,7 @@ class gitPushCpDailyBuild():
             dist = os.path.join(dist_dir,release_file_name)
         else:
             dist = os.path.join(self.cfg.dist_dir,"download_tool", borad, release_file_name)
-        self.zip_tool(dist,"zip",release_dir)
+        self.zip_tool.make_archive_e(dist,"zip",release_dir)
         self.download_tool_dict[borad] = dist+".zip"
         self.log.info(self.download_tool_dict)
 
