@@ -631,30 +631,10 @@ class autoRelease(ThreadBase):
 
             cus_version_file = get_release_version(cfg.cur_crane_cus,cfg.release_dist_dir,"crane_release_")
             cus_version_file = os.path.join(cfg.release_dist_dir,os.path.basename(cus_version_file))
+
             send_release_email(version_file, cus_version_file)
 
-            # customer trigger test
-            # try:
-                # board = "crane_evb_z2"
-                # dist = cus_version_file
-                # sdk_tool_abs_path = os.listdir(os.path.join(dist,"download_tool"))
-                # if sdk_tool_abs_path:
-                    # sdk_tool_abs_path = os.path.join(dist,"download_tool",sdk_tool_abs_path[0])
-                # else:
-                    # sdk_tool_abs_path = None
-                # mdb_txt_file_dir = os.path.join(dist,board)
-                # logger.info(mdb_txt_file_dir)
-                # for _file in os.listdir(mdb_txt_file_dir):
-                    # if "MDB.TXT" in _file.upper():
-                        # mdb_txt_file_abs_path = os.path.join(mdb_txt_file_dir,_file)
-                        # break
-                # else:
-                    # mdb_txt_file_abs_path = None
-                # logger.info(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
-                # trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
-            # except Exception,e:
-                # logger.info(e)
-
+            # customer trigger dailybuild test
             try:
                 board = "crane_evb_z2"
                 sdk_tool_abs_path = download_controller.download_tool_dict.get(board)
@@ -670,6 +650,29 @@ class autoRelease(ThreadBase):
             except Exception,e:
                 logger.info(e)
 
+            root_dir = os.path.join(cus_version_file, "crane_evb_z2", "cp_images")
+            images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
+            download_controller.prepare_download_tool(images)
+            download_controller.release_download_tool(os.path.basename(cus_version_file), "crane_evb_z2", dist_dir = os.path.join(cus_version_file,"download_tool"))
+
+            #trigger customer test
+            try:
+                board = "crane_evb_z2"
+                dist = cus_version_file
+                sdk_tool_abs_path = download_controller.download_tool_dict.get(board)
+                mdb_txt_file_dir = os.path.join(dist,board)
+                logger.info(mdb_txt_file_dir)
+                for _file in os.listdir(mdb_txt_file_dir):
+                    if "MDB.TXT" in _file.upper():
+                        mdb_txt_file_abs_path = os.path.join(mdb_txt_file_dir,_file)
+                        break
+                else:
+                    mdb_txt_file_abs_path = None
+                logger.info(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
+                trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
+            except Exception,e:
+                logger.info(e)
+
             try:
                 lib_src = os.path.join(version_file,"crane_evb_z2","rel_lib")
                 logger.info(lib_src,os.path.basename(version_file))
@@ -678,7 +681,7 @@ class autoRelease(ThreadBase):
             except Exception,e:
                 logger.info(e)
 
-            time.sleep(1)
+
 
 class autoPush(ThreadBase):
     def __init__(self):
@@ -787,7 +790,7 @@ if __name__ == "__main__":
 
     build_controller = buildController(cfg)
     download_controller = downloadToolController(cfg, logger)
-    download_controller.update_download_tool()
+    # download_controller.update_download_tool()
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg,logger)
     dsp_cls = gitPushDspDailyBuild(cfg,logger)
