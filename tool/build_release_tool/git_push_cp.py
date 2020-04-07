@@ -12,31 +12,39 @@ class downloadToolController(object):
     def __init__(self,cfg, logger):
         super(downloadToolController,self).__init__()
         self.download_tool = None
-        self.cfg = cfg
+
+        self.download_tool_dir = cfg.download_tool_dir
+        self.download_tool_release_dir = cfg.download_tool_release_dir
+        self.download_tool_file_name = cfg.download_tool_file_name
+        self.partition_config = cfg.partition_config
+        self.template_config = cfg.template_config
+        self.default_dist_dir = cfg.dist_dir
+        self.win_type = cfg.win_type
+
         self.log = logger
         self.download_tool_dict = {}
         self.release_download_tool_name = None
         self.zip_tool = zipTool()
 
     def unzip_download_tool(self, zip_file):
-        self.zip_tool.unpack_archive(os.path.join((self.cfg.download_tool_dir, zip_file)))
+        self.zip_tool.unpack_archive(os.path.join((self.download_tool_dir, zip_file)))
 
     def update_download_tool(self):
-        tools_list = [_file for _file in os.listdir(self.cfg.download_tool_release_dir) if self.cfg.win_type in _file and "aboot-tools" in _file and _file.endswith(".exe")]
-        tools_list.sort(key=lambda fn:os.path.getmtime(self.cfg.download_tool_release_dir+'\\'+fn))
+        tools_list = [_file for _file in os.listdir(self.download_tool_release_dir) if self.win_type in _file and "aboot-tools" in _file and _file.endswith(".exe")]
+        tools_list.sort(key=lambda fn:os.path.getmtime(self.download_tool_release_dir+'\\'+fn))
         self.log.debug(tools_list)
-        if self.cfg.download_tool_file_name:
-            file_name = self.cfg.download_tool_file_name
+        if self.download_tool_file_name:
+            file_name = self.download_tool_file_name
         else:
             file_name = tools_list[-1]
         self.log.info(file_name)
         file_name_l = [file_name,file_name.replace("x64","x86")]
         self.download_tool = []
         for file_name in file_name_l:
-            zip_file = os.path.join(self.cfg.download_tool_dir,file_name)
+            zip_file = os.path.join(self.download_tool_dir,file_name)
             download_tool_fname = zip_file.replace(".exe","")
             if not os.path.exists(zip_file):
-                shutil.copy2(os.path.join(self.cfg.download_tool_release_dir,file_name),self.cfg.download_tool_dir)
+                shutil.copy2(os.path.join(self.download_tool_release_dir,file_name),self.download_tool_dir)
                 self.unzip_download_tool(zip_file)
             elif not os.path.exists(download_tool_fname):
                 self.unzip_download_tool(zip_file)
@@ -61,21 +69,21 @@ class downloadToolController(object):
                     shutil.copy2(src_bin,dist_bin)
                 else:
                     self.log.warning("%s not exists"%src_bin)
-            if os.path.isdir(self.cfg.partition_config):
-                for _file in os.listdir(self.cfg.partition_config):
-                    shutil.copy2(os.path.join(self.cfg.partition_config, _file),os.path.join(download_tool_dir,"config","partition",_file))
-            elif os.path.isfile(self.cfg.partition_config):
-                shutil.copy2(self.cfg.partition_config,os.path.join(download_tool_dir,"config","partition",os.path.basename(self.cfg.partition_config)))
+            if os.path.isdir(self.partition_config):
+                for _file in os.listdir(self.partition_config):
+                    shutil.copy2(os.path.join(self.partition_config, _file),os.path.join(download_tool_dir,"config","partition",_file))
+            elif os.path.isfile(self.partition_config):
+                shutil.copy2(self.partition_config,os.path.join(download_tool_dir,"config","partition",os.path.basename(self.partition_config)))
             else:
-                self.log.error("self.cfg.partition_config:%s error"%self.cfg.partition_config)
+                self.log.error("self.partition_config:%s error"%self.partition_config)
 
-            if os.path.isdir(self.cfg.template_config):
-                for _file in os.listdir(self.cfg.template_config):
-                    shutil.copy2(os.path.join(self.cfg.template_config, _file),os.path.join(download_tool_dir,"config","template",_file))
-            elif os.path.isfile(self.cfg.template_config):
-                shutil.copy2(self.cfg.template_config,os.path.join(download_tool_dir,"config","template",os.path.basename(self.cfg.template_config)))
+            if os.path.isdir(self.template_config):
+                for _file in os.listdir(self.template_config):
+                    shutil.copy2(os.path.join(self.template_config, _file),os.path.join(download_tool_dir,"config","template",_file))
+            elif os.path.isfile(self.template_config):
+                shutil.copy2(self.template_config,os.path.join(download_tool_dir,"config","template",os.path.basename(self.template_config)))
             else:
-                self.log.error("self.cfg.template_config:%s error"%self.cfg.template_config)
+                self.log.error("self.template_config:%s error"%self.template_config)
 
 
     def release_download_tool(self, release_name, borad = "crane_evb_z2", dist_dir = None):
@@ -83,7 +91,7 @@ class downloadToolController(object):
         "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
         date = time.strftime("%Y%m%d_%H%M%S")
         release_file_name = "%s_%s_DOWNLOAD_TOOL_%s"%(release_name.upper(),borad.upper(),date)
-        release_dir = os.path.join(self.cfg.download_tool_dir,release_file_name)
+        release_dir = os.path.join(self.download_tool_dir,release_file_name)
         os.mkdir(release_dir) if not os.path.exists(release_dir) else None
         self.log.info(release_file_name)
         self.log.info(release_dir)
@@ -96,7 +104,7 @@ class downloadToolController(object):
         if dist_dir:
             dist = os.path.join(dist_dir,release_file_name)
         else:
-            dist = os.path.join(self.cfg.dist_dir,"download_tool", borad, release_file_name)
+            dist = os.path.join(self.default_dist_dir,"download_tool", borad, release_file_name)
         self.zip_tool.make_archive_e(dist,"zip",release_dir)
         self.release_download_tool_name = dist+".zip"
         self.download_tool_dict[borad] = self.release_download_tool_name
@@ -107,18 +115,23 @@ class downloadToolController(object):
 class gitPushCpDailyBuild(object):
     def __init__(self,cfg, logger):
         self.cp_sdk_version = None
-        self.cfg = cfg
         self.cp_sdk = None
         self.download_tool = None
         self.log = logger
-        _repo = git.Repo(self.cfg.git_push_cp_dir)
+        self.cp_sdk_release_dir = cfg.cp_sdk_release_dir
+        self.git_push_cp_dir = cfg.git_push_cp_dir
+        self.cp_sdk_dir = cfg.cp_sdk_dir
+
+        self.cp_version_file = os.path.join(cfg.cur_crane, cfg.cp_version_file)
+
+        _repo = git.Repo(self.git_push_cp_dir)
         self.git = _repo.git
         self.zip_tool = zipTool()
 
     def find_new_cp_sdk(self):
         "ASR3601_MINIGUI_20191206_SDK.zip"
-        cp_sdk_list = [_file for _file in os.listdir(self.cfg.cp_sdk_release_dir) if _file.endswith("SDK.zip") and "ASR3601_MINIGUI_" in _file]
-        cp_sdk_list.sort(key=lambda fn:os.path.getmtime(os.path.join(self.cfg.cp_sdk_release_dir,fn)))
+        cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if _file.endswith("SDK.zip") and "ASR3601_MINIGUI_" in _file]
+        cp_sdk_list.sort(key=lambda fn:os.path.getmtime(os.path.join(self.cp_sdk_release_dir,fn)))
         assert cp_sdk_list,"can not find sdk"
         self.cp_sdk = cp_sdk_list[-1]
         self.log.debug("newest adk: %s"%self.cp_sdk)
@@ -126,10 +139,10 @@ class gitPushCpDailyBuild(object):
 
     def clean_git_push_cp(self):
         self.git.pull()
-        for _file in os.listdir(self.cfg.git_push_cp_dir):
+        for _file in os.listdir(self.git_push_cp_dir):
             if "X.bat" in _file or ".git" in _file:
                 continue
-            _file = os.path.join(self.cfg.git_push_cp_dir,_file)
+            _file = os.path.join(self.git_push_cp_dir,_file)
             if os.path.isfile(_file):
                 os.remove(_file)
             else:
@@ -138,18 +151,18 @@ class gitPushCpDailyBuild(object):
 
     def copy_sdk(self):
         self.log.info("copy %s..."%self.cp_sdk)
-        shutil.copy2(os.path.join(self.cfg.cp_sdk_release_dir,self.cp_sdk),self.cfg.cp_sdk_dir)
+        shutil.copy2(os.path.join(self.cp_sdk_release_dir,self.cp_sdk),self.cp_sdk_dir)
         self.log.info("copy done.")
 
     def copy_sdk_to_git_push_cp(self,cp_sdk):
         try:
-            root_dir = os.path.join(self.cfg.cp_sdk_dir,cp_sdk)
+            root_dir = os.path.join(self.cp_sdk_dir,cp_sdk)
             for _file in os.listdir(root_dir):
                 fname = os.path.join(root_dir,_file)
                 if os.path.isfile(fname):
-                    shutil.copyfile(fname,os.path.join(self.cfg.git_push_cp_dir,_file))
+                    shutil.copyfile(fname,os.path.join(self.git_push_cp_dir,_file))
                 elif os.path.isdir(fname):
-                    shutil.copytree(fname,os.path.join(self.cfg.git_push_cp_dir,_file))
+                    shutil.copytree(fname,os.path.join(self.git_push_cp_dir,_file))
                 else:
                     self.log.warning("%s"%fname)
             self.log.info("copy_sdk_to_git_push_cp done.")
@@ -160,7 +173,7 @@ class gitPushCpDailyBuild(object):
 
 
     def unzip_sdk(self):
-        self.zip_tool.unpack_archive(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk))
+        self.zip_tool.unpack_archive(os.path.join(self.cp_sdk_dir,self.cp_sdk))
 
     def delete_gui_lib(self,path_dir):
         if not os.path.exists(path_dir):
@@ -193,11 +206,11 @@ class gitPushCpDailyBuild(object):
         self.log.debug(CRANE_CUST_VER_INFO)
         return CRANE_CUST_VER_INFO
 
-    def git_push_cp_dailybuild(self):
+    def git_push(self):
         self.find_new_cp_sdk()
-        if os.path.exists(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk)):
-            release_sdk_time = os.path.getmtime(os.path.join(self.cfg.cp_sdk_release_dir,self.cp_sdk))
-            local_sdk_time = os.path.getmtime(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk))
+        if os.path.exists(os.path.join(self.cp_sdk_dir,self.cp_sdk)):
+            release_sdk_time = os.path.getmtime(os.path.join(self.cp_sdk_release_dir,self.cp_sdk))
+            local_sdk_time = os.path.getmtime(os.path.join(self.cp_sdk_dir,self.cp_sdk))
             # self.log.info("release_sdk_time: %r"%(release_sdk_time))
             # self.log.info("local_sdk_time: %r"%(local_sdk_time))
             if long(release_sdk_time) <= long(local_sdk_time):
@@ -207,12 +220,12 @@ class gitPushCpDailyBuild(object):
             else:
                 self.log.info("release_sdk_time: %s"%time.asctime(time.localtime(release_sdk_time)))
                 self.log.info("local_sdk_time: %s"%time.asctime(time.localtime(local_sdk_time)))
-                os.remove(os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk))
+                os.remove(os.path.join(self.cp_sdk_dir,self.cp_sdk))
         self.log.info("wait for sdk copy...")
         time.sleep(60)
         self.copy_sdk()
         self.unzip_sdk()
-        cp_sdk = os.path.join(self.cfg.cp_sdk_dir,self.cp_sdk.replace(".zip",""))
+        cp_sdk = os.path.join(self.cp_sdk_dir,self.cp_sdk.replace(".zip",""))
         self.log.info(cp_sdk)
         cnt = 0
         while not os.path.exists(cp_sdk):
@@ -223,7 +236,7 @@ class gitPushCpDailyBuild(object):
             if cnt == 10:
                 return None
 
-        sdk_verion_file = [os.path.join(cp_sdk,"tavor","env","inc","sys_version.h"),os.path.join(self.cfg.cur_crane,self.cfg.cp_version_file)]
+        sdk_verion_file = [os.path.join(cp_sdk,"tavor","env","inc","sys_version.h"),self.cp_version_file]
         for version_file in sdk_verion_file:
             if not os.path.exists(version_file):
                 self.log.error("can not file: %s"%version_file)
@@ -242,9 +255,7 @@ class gitPushCpDailyBuild(object):
             self.log.info("="*50)
             self.log.info("git push cp...")
             self.clean_git_push_cp()
-            self.log.info(self.cfg.cur_work_dir)
-            os.chdir(self.cfg.cur_work_dir)
-            gui_lib = os.path.join(self.cfg.cp_sdk_dir,cp_sdk,"tavor","Arbel","lib")
+            gui_lib = os.path.join(self.cp_sdk_dir,cp_sdk,"tavor","Arbel","lib")
             self.delete_gui_lib(gui_lib)
             self.copy_sdk_to_git_push_cp(cp_sdk)
             self.log.info("git add...")
@@ -265,28 +276,22 @@ class gitPushCpDailyBuild(object):
             return None
 
 
-    def send_release_download_tool_email(self,release_download_tool_name, borad = "crane_evb_z2"):
-        to_address = "SW_CV@asrmicro.com"
-        subject = "New SDK and Download Tool Release"
-        external_file = os.path.join(self.cfg.external_dir,"download_tool",borad,release_download_tool_name)
-        msg = r"""
-CP VERSION: %s
-DOWNLOAD_TOOL: %s"""%(self.cp_sdk_version,external_file)
-        self.log.info(subject)
-        self.log.info(msg)
-        send_email_tool(to_address,subject,msg)
-
-
 class gitPushDspDailyBuild():
     def __init__(self,cfg, logger):
         self.dsp_version = None
-        self.cfg = cfg
+
+        self.dsp_version_log = cfg.dsp_version_log
+        self.dsp_release_bin = cfg.dsp_release_bin
+
+        self.local_dsp_bin = cfg.local_dsp_bin
+        self.local_rf_bin = cfg.local_rf_bin
+
         self.git = git.Repo(cfg.git_push_dsp_dir).git
         self.log = logger
 
     def get_local_dsp_version(self):
         "CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
-        with open(self.cfg.local_dsp_bin,"rb") as obj:
+        with open(self.local_dsp_bin,"rb") as obj:
             text = obj.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
         match = re.findall("(CRANE_.{48})",text)
@@ -303,12 +308,12 @@ class gitPushDspDailyBuild():
             return None
         self.log.debug(dsp_version)
         self.dsp_version = dsp_version
-        with open(self.cfg.dsp_version_log,"w") as obj:
+        with open(self.dsp_version_log,"w") as obj:
             obj.write(self.dsp_version)
         return self.dsp_version
 
 
-    def git_push_dsp_dailybuild(self):
+    def git_push(self):
         try:
             self.git.clean("-xdf")
             self.git.reset("--hard","HEAD")
@@ -333,7 +338,7 @@ class gitPushDspDailyBuild():
         self.log.info("git push dsp...")
         try:
             self.log.info("git add...")
-            self.git.add(self.cfg.local_dsp_bin,self.cfg.local_rf_bin)
+            self.git.add(self.local_dsp_bin, self.local_rf_bin)
             self.log.info("git add done")
             self.log.info("git commit...")
             # self.dsp_version = " ".join(self.dsp_version.split())
@@ -358,13 +363,13 @@ class gitPushDspDailyBuild():
 
     def check_dsp_rf(self):
         dsp_release_bin_l = []
-        release_dir_list = [os.path.join(self.cfg.dsp_release_bin,_dir) for _dir in os.listdir(self.cfg.dsp_release_bin)\
-                                if os.path.isdir(os.path.join(self.cfg.dsp_release_bin,_dir))]
+        release_dir_list = [os.path.join(self.dsp_release_bin,_dir) for _dir in os.listdir(self.dsp_release_bin)\
+                                if os.path.isdir(os.path.join(self.dsp_release_bin,_dir))]
         release_dir_list.sort(key=lambda fn:os.path.getmtime(fn))
-        # self.log.debug(len(release_dir_list))
-        # self.log.debug(release_dir_list[-30:])
-        for release_dir in release_dir_list[-30:]:
-            # self.log.debug(release_dir)
+        self.log.debug("release_dir_list len:",len(release_dir_list))
+        self.log.debug(release_dir_list[-10:])
+        for release_dir in release_dir_list[-10:]:
+            self.log.debug(release_dir)
             for root, dirs, files in os.walk(release_dir, topdown=False):
                 tgt_file = "crane_compress_a0.bin"
                 if "crane_compress_a0.bin" in files:
@@ -378,7 +383,7 @@ class gitPushDspDailyBuild():
         root_dir = os.path.dirname(dsp_release_bin)
         rf_release_bin = os.path.join(root_dir,"PM813","rf.bin")
         release_bin_l = [dsp_release_bin, rf_release_bin]
-        local_bin_l = [self.cfg.local_dsp_bin,self.cfg.local_rf_bin]
+        local_bin_l = [self.local_dsp_bin, self.local_rf_bin]
         for release_bin,local_bin in zip(release_bin_l,local_bin_l):
             if os.path.exists(release_bin):
                 if os.path.exists(local_bin):

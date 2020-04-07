@@ -689,8 +689,8 @@ class autoPush(ThreadBase):
 
     def run(self, cp_sdk_class,dsp_class,push_done):
         while self._running:
-            dsp_class.git_push_dsp_dailybuild()
-            if cp_sdk_class.git_push_cp_dailybuild():
+            dsp_class.git_push()
+            if cp_sdk_class.git_push():
                 push_done.set()
 
 
@@ -800,7 +800,7 @@ if __name__ == "__main__":
     auto_build_task = autoBuild()
     auto_clean_overdue_dir_task = autoCleanOverdueDir()
 
-    cp_sdk_cls.git_push_cp_dailybuild()
+    cp_sdk_cls.git_push()
 
     auto_clean_overdue_dir_task.start(logger)
     auto_release_task.start(cfg, cp_sdk_cls,RELEASE_EVENT)
