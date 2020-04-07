@@ -599,7 +599,6 @@ def auto_build_cus():
     commit_id, owner,date, commit_info = repo_cus.get_revion_owner()
     logger.info("="*50)
     logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
-    _r = repo_cus.record_version()
     date = time.strftime("%Y%m%d_%H%M%S")
     file_name = "crane_release_%s"%date
     logger.info("version: "+file_name)
@@ -612,9 +611,6 @@ def auto_build_cus():
     release_note = find_newest_notes()
     if release_note:
         shutil.copy2(release_note,os.path.join(version_file,"crane_evb_z2",os.path.basename(release_note)))
-    shutil.copy2(repo_cus.version_log,os.path.join(version_file,"version_info",os.path.basename(repo_cus.version_log)))
-    # shutil.copy2(xml_file,os.path.join(version_file,"version_info",os.path.basename(xml_file)))
-    # shutil.copy2(cfg.cp_version_log,os.path.join(version_file,"version_info",os.path.basename(cfg.cp_version_log)))
     shutil.copy2(massage_file,os.path.join(version_file,"crane_evb_z2",os.path.basename(massage_file)))
     dsp_bin = os.path.join(build_root_dir,"cus","evb","images","dsp.bin")
     repo_cus.get_dsp_version(dsp_bin, os.path.join(version_file,"version_info",os.path.basename(cfg.release_dsp_version_log)))
@@ -872,7 +868,7 @@ if __name__ == "__main__":
     download_controller = downloadToolController(cfg, logger)
     # download_controller.update_download_tool()
 
-    auto_daily_build_cls = dailyBuild(cfg)
+    auto_daily_build_cls = dailyBuild(cfg, repo)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg,logger)
     dsp_cls = gitPushDspDailyBuild(cfg,logger)
