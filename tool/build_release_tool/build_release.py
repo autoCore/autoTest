@@ -72,8 +72,10 @@ RELEASE VERSION: %s
 class buildController(object):
     def __init__(self,cfg):
         self.build_res = None
-        self.cfg = cfg
-        self.version_file = None
+
+        self.compile_log_dir = cfg.compile_log_dir
+
+        self.git_version_dir = None
 
         self.gui_build_log = os.path.join(".",'build','crane_evb_z2',r'gui_build.log')
         self.hal_build_log = os.path.join(".",'build','crane_evb_z2',r'hal_build.log')
@@ -88,9 +90,9 @@ class buildController(object):
         if not cmd:
             cmd = "autobuild.bat"
         if compile_log:
-            self.compile_log = os.path.join(self.cfg.compile_log_dir,compile_log)
+            self.compile_log = os.path.join(self.compile_log_dir,compile_log)
         else:
-            self.compile_log = os.path.join(self.cfg.compile_log_dir,os.path.basename(self.version_file)+".log")
+            self.compile_log = os.path.join(self.compile_log_dir,os.path.basename(self.git_version_dir)+".log")
         if not os.path.exists(self.compile_log):
             fobj = open(self.compile_log,'w')
             fobj.close()
@@ -445,58 +447,135 @@ def send_release_email(version_file, customer_file = None):
     logger.info(msg)
     send_email_tool(to_address,subject,msg)
 
+class dailyBuild(object):
+    def __init__(self, cfg, repo):
+        self.repo = repo
+        self.cur_crane = cfg.cur_crane
+        self.external_dir = cfg.external_dir
 
-def auto_dailybuild():
-    if not repo.sync():
-        time.sleep(10)
-        return None
-    dsp_bin = os.path.join(cfg.cur_crane,"cus","evb","images","dsp.bin")
-    repo.get_dsp_version(dsp_bin, cfg.dsp_version_log)
-    old_cp_version = repo.get_old_cp_version(cfg.cp_version_log)
-    repo.update_cp_version(os.path.join(cfg.cur_crane,cfg.cp_version_file),cfg.cp_version_log)
-    commit_id, owner,date, commit_info = repo.get_revion_owner()
-    logger.info("="*50)
-    logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
-    _r = repo.record_version()
-    date = time.strftime("%Y%m%d_%H%M%S")
-    file_name = "%s_%s"%(_r,date)
-    logger.info("version: "+file_name)
-    dist = os.path.join(cfg.dist_dir,file_name)
-    massage_file = repo.get_commit_massages()
-    curdir = cfg.cur_crane
-    xml_file = _r + ".xml"
-    xml_file = os.path.join(cfg.manisest_xml_dir,xml_file)
-    repo.get_manifest_xml(xml_file)
+        self.board_list = cfg.BOARD_LIST[:]
+        self.borad_build_cmd = cfg.BOARD_BUILD_CMD[:]
 
-    version_file = os.path.join(os.path.dirname(cfg.cur_crane),file_name)
-    build_controller.version_file = version_file
-    prepare_release_dir(version_file)
-    shutil.copy2(repo.version_log,os.path.join(version_file,"version_info",os.path.basename(repo.version_log)))
-    shutil.copy2(xml_file,os.path.join(version_file,"version_info",os.path.basename(xml_file)))
-    shutil.copy2(cfg.cp_version_log,os.path.join(version_file,"version_info",os.path.basename(cfg.cp_version_log)))
-    shutil.copy2(cfg.dsp_version_log,os.path.join(version_file,"version_info",os.path.basename(cfg.dsp_version_log)))
-    shutil.copy2(massage_file,os.path.join(version_file,"crane_evb_z2",os.path.basename(massage_file)))
-    for board, build_cmd in zip(cfg.BOARD_LIST, cfg.BOARD_BUILD_CMD):
-        repo.git_clean()
-        build_controller.build(curdir, cmd = build_cmd)
-        build_controller.send_email(curdir, owner,os.path.join(cfg.external_dir,file_name),board)
+        self.build_images = cfg.BUILD_IMAGES[:]
 
-        copy_build_file_to_release_dir(os.path.join(version_file,board))
-        copy_cp_file_to_release_dir(os.path.join(version_file,board,"cp_images"), board)
-        archive_file = os.path.join(version_file,board, "ASR_CRANE_EVB_A0_16MB.zip")
-        dist_dir = os.path.join(version_file,board,"cp_images")
-        zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
+        self.version_log = cfg.version_log
 
-        kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
+        self.mdb_file_dir = cfg.mdb_file_dir
+        self.sdk_files_dict = cfg.BOARD_CP_RELEASE_BIN_DICT
 
-        if board in cfg.BOARD_LIST[0] and build_controller.build_res in "FAIL":
-            return version_file
-    build_controller.copy(version_file, dist)
-    logger.info("old_cp_version: %s, new_cp_version: %s"%(old_cp_version,repo.cp_version))
-    if repo.cp_version not in old_cp_version:
-        RELEASE_EVENT.set()
-        PUSH_CP_DONE.clear()
-    return version_file
+        self.dsp_bin = os.path.join(cfg.cur_crane,"cus","evb","images","dsp.bin")
+        self.dsp_version_log = cfg.dsp_version_log
+
+        self.cp_version_file = os.path.join(cfg.cur_crane,cfg.cp_version_file)
+        self.cp_version_log = cfg.cp_version_log
+
+        self.dist_dir = cfg.dist_dir
+
+        self.manisest_xml_dir = cfg.manisest_xml_dir
+
+        self.xml_file = None
+        self.git_version_dir = None
+        self.massage_file = None
+
+    def prepare_release_dir(self):
+        assert self.git_version_dir,"version_file: %s is None"
+        os.mkdir(self.git_version_dir)
+        os.mkdir(os.path.join(self.git_version_dir,"version_info"))
+
+        for board in self.board_list:
+            os.mkdir(os.path.join(self.git_version_dir, board))
+            os.mkdir(os.path.join(self.git_version_dir, board, "cp_images"))
+
+    def copy_version_file_to_release_dir(self):
+        for _file in [self.xml_file, self.cp_version_log, self.dsp_version_log, self.massage_file]:
+            if os.path.exists(_file):
+                shutil.copy2(_file,os.path.join(self.git_version_dir,"version_info",os.path.basename(_file)))
+
+    def copy_build_file_to_release_dir(self, dist_dir):
+        src_dir = self.cur_crane
+        for _file in self.build_images:
+            src = os.path.join(src_dir,_file)
+            dist = os.path.join(dist_dir, os.path.basename(_file))
+            if os.path.exists(src):
+                if os.path.isfile(src):
+                    shutil.copy2(src, dist)
+                elif os.path.isdir(src):
+                    shutil.copytree(src, dist)
+            else:
+                logger.warning("%s file not exists"%src)
+
+
+    def copy_sdk_files_to_release_dir(self, dist_dir, board = "crane_evb_z2"):
+        src_dir = self.cur_crane
+        src_bin_l = self.sdk_files_dict.get(board,[])
+        src_bin_l = [os.path.join(src_dir,_file) for _file in src_bin_l]
+        for src_bin in src_bin_l:
+            if os.path.exists(src_bin):
+                shutil.copy2(src_bin,dist_dir)
+            else:
+                logger.warning("%s not exists"%src_bin)
+
+        if os.path.exists(self.mdb_file_dir):
+            for _file in os.listdir(self.mdb_file_dir):
+                if "MDB.TXT" in _file.upper():
+                    shutil.copy2(os.path.join(self.mdb_file_dir, _file),os.path.join(dist_dir, _file))
+                    break
+
+
+    def condition(self):
+        time.sleep(3)
+        return self.repo.sync()
+
+    def build(self):
+        if not self.condition():
+            return
+        self.repo.get_dsp_version(self.dsp_bin, self.dsp_version_log)
+        old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
+        self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+        commit_id, owner,date, commit_info = self.repo.get_revion_owner()
+        logger.info("="*50)
+        logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
+        _r = self.repo.record_version()
+        date = time.strftime("%Y%m%d_%H%M%S")
+        file_name = "%s_%s"%(_r,date)
+        logger.info("version: "+file_name)
+        self.xml_file = _r + ".xml"
+        self.xml_file = os.path.join(self.manisest_xml_dir,self.xml_file)
+        self.repo.get_manifest_xml(self.xml_file)
+        self.massage_file = self.repo.get_commit_massages()
+
+        self.git_version_dir = os.path.join(os.path.dirname(self.cur_crane),file_name)
+
+        build_controller.git_version_dir = self.git_version_dir
+
+        self.prepare_release_dir()
+        self.copy_version_file_to_release_dir()
+
+        for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
+            self.repo.git_clean()
+            build_controller.build(self.cur_crane, cmd = build_cmd)
+            build_controller.send_email(self.cur_crane, owner,os.path.join(self.external_dir,file_name),board)
+
+            self.copy_build_file_to_release_dir(os.path.join(self.git_version_dir,board))
+            self.copy_sdk_files_to_release_dir(os.path.join(self.git_version_dir,board,"cp_images"), board)
+
+            archive_file = os.path.join(self.git_version_dir,board, "ASR_CRANE_EVB_A0_16MB.zip")
+            dist_dir = os.path.join(self.git_version_dir,board,"cp_images")
+            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
+
+            kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
+
+            if board in self.board_list[0] and build_controller.build_res in "FAIL":
+                return self.git_version_dir
+
+        dist = os.path.join(self.dist_dir,file_name)
+        build_controller.copy(self.git_version_dir, dist)
+
+        logger.info("old_cp_version: %s, new_cp_version: %s"%(old_cp_version,self.repo.cp_version))
+        if self.repo.cp_version not in old_cp_version:
+            RELEASE_EVENT.set()
+            PUSH_CP_DONE.clear()
+        return self.git_version_dir
 
 
 def find_newest_notes():
@@ -528,7 +607,7 @@ def auto_build_cus():
     massage_file = repo_cus.get_commit_massages()
 
     version_file = os.path.join(os.path.dirname(curdir),file_name)
-    build_controller.version_file = version_file
+    build_controller.git_version_dir = version_file
     prepare_release_dir(version_file,True)
     release_note = find_newest_notes()
     if release_note:
@@ -737,7 +816,8 @@ class autoBuild(ThreadBase):
     def run(self,repo, logger):
         while self._running:
             try:
-                auto_dailybuild()
+                # auto_dailybuild()
+                auto_daily_build_cls.build()
                 auto_build_cus()
             except KeyboardInterrupt:
                 logger.info('autoBuild exit')
@@ -791,6 +871,8 @@ if __name__ == "__main__":
     build_controller = buildController(cfg)
     download_controller = downloadToolController(cfg, logger)
     # download_controller.update_download_tool()
+
+    auto_daily_build_cls = dailyBuild(cfg)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg,logger)
     dsp_cls = gitPushDspDailyBuild(cfg,logger)
