@@ -462,6 +462,7 @@ class dailyBuild(object):
 
         self.mdb_file_dir = cfg.mdb_file_dir
         self.sdk_files_dict = cfg.BOARD_CP_RELEASE_BIN_DICT
+        self.sdk_images = cfg.IMAGES[:]
 
         self.dsp_bin = os.path.join(cfg.cur_crane,"cus","evb","images","dsp.bin")
         self.dsp_version_log = cfg.dsp_version_log
@@ -509,9 +510,10 @@ class dailyBuild(object):
         src_dir = self.cur_crane
         src_bin_l = self.sdk_files_dict.get(board,[])
         src_bin_l = [os.path.join(src_dir,_file) for _file in src_bin_l]
-        for src_bin in src_bin_l:
+        dist_bin_l = [os.path.join(dist_dir,_file) for _file in self.sdk_images]
+        for src_bin,dist_bin in zip(src_bin_l,dist_bin_l):
             if os.path.exists(src_bin):
-                shutil.copy2(src_bin,dist_dir)
+                shutil.copy2(src_bin,dist_bin)
             else:
                 logger.warning("%s not exists"%src_bin)
 
@@ -630,6 +632,8 @@ def auto_build_cus():
 
         if board in cfg.BOARD_LIST[0] and build_controller.build_res in "FAIL":
             return version_file
+
+    dist = os.path.join(cfg.release_dist_dir,os.path.basename(version_file))
     root_dir = os.path.join(version_file, "crane_evb_z2", "cp_images")
     images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
     download_controller.update_download_tool()
@@ -762,12 +766,11 @@ class autoPush(ThreadBase):
     def __init__(self):
         super(autoPush,self).__init__()
 
-    def run(self, cp_sdk_class,dsp_class,push_done):
+    def run(self, cp_sdk_class,dsp_class,cus_sdk_class):
         while self._running:
             dsp_class.git_push()
-            if cp_sdk_class.git_push():
-                push_done.set()
-
+            cp_sdk_class.git_push()
+            cus_sdk_class.git_push()
 
 def clean_overdue_dir(dir,del_time,target_dir = '',isdir = True):
     os.chdir(dir)
@@ -872,6 +875,9 @@ if __name__ == "__main__":
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg,logger)
     dsp_cls = gitPushDspDailyBuild(cfg,logger)
+
+    cus_sdk_cls = gitPushCusSDK(cfg,logger)
+
     release_tool = releaseZip(cfg)
     auto_release_task = autoRelease()
     auto_push_cp_task = autoPush()
@@ -882,7 +888,7 @@ if __name__ == "__main__":
 
     auto_clean_overdue_dir_task.start(logger)
     auto_release_task.start(cfg, cp_sdk_cls,RELEASE_EVENT)
-    auto_push_cp_task.start(cp_sdk_cls, dsp_cls, PUSH_CP_DONE)
+    auto_push_cp_task.start(cp_sdk_cls, dsp_cls, cus_sdk_cls)
     auto_build_task.start(repo, logger)
     logger.info("**********************start**********************")
     while 1:

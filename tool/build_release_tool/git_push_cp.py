@@ -27,7 +27,7 @@ class downloadToolController(object):
         self.zip_tool = zipTool()
 
     def unzip_download_tool(self, zip_file):
-        self.zip_tool.unpack_archive(os.path.join((self.download_tool_dir, zip_file)))
+        self.zip_tool.unpack_archive(os.path.join(self.download_tool_dir, zip_file))
 
     def update_download_tool(self):
         tools_list = [_file for _file in os.listdir(self.download_tool_release_dir) if self.win_type in _file and "aboot-tools" in _file and _file.endswith(".exe")]
@@ -42,6 +42,7 @@ class downloadToolController(object):
         self.download_tool = []
         for file_name in file_name_l:
             zip_file = os.path.join(self.download_tool_dir,file_name)
+            self.log.info(zip_file)
             download_tool_fname = zip_file.replace(".exe","")
             if not os.path.exists(zip_file):
                 shutil.copy2(os.path.join(self.download_tool_release_dir,file_name),self.download_tool_dir)
@@ -116,10 +117,17 @@ class gitPushCpDailyBuild(object):
     def __init__(self,cfg, logger):
         self.cp_sdk_version = None
         self.cp_sdk = None
+
+        self.cp_sdk_root_dir = None
+        self.dsp_rf_root_dir = None
+
         self.download_tool = None
         self.log = logger
         self.cp_sdk_release_dir = cfg.cp_sdk_release_dir
+
         self.git_push_cp_dir = cfg.git_push_cp_dir
+        self.git_push_dsp_dir = None
+
         self.cp_sdk_dir = cfg.cp_sdk_dir
 
         self.cp_version_file = os.path.join(cfg.cur_crane, cfg.cp_version_file)
@@ -128,9 +136,12 @@ class gitPushCpDailyBuild(object):
         self.git = _repo.git
         self.zip_tool = zipTool()
 
+        # self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/for/master")
+        self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master")
+
     def find_new_cp_sdk(self):
         "ASR3601_MINIGUI_20191206_SDK.zip"
-        cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if _file.endswith("SDK.zip") and "ASR3601_MINIGUI_" in _file]
+        cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if (_file.endswith("SDK.zip") or _file.endswith("SDK.7z")) and "ASR3601_MINIGUI_" in _file]
         cp_sdk_list.sort(key=lambda fn:os.path.getmtime(os.path.join(self.cp_sdk_release_dir,fn)))
         assert cp_sdk_list,"can not find sdk"
         self.cp_sdk = cp_sdk_list[-1]
@@ -160,11 +171,19 @@ class gitPushCpDailyBuild(object):
             for _file in os.listdir(root_dir):
                 fname = os.path.join(root_dir,_file)
                 if os.path.isfile(fname):
-                    shutil.copyfile(fname,os.path.join(self.git_push_cp_dir,_file))
+                    shutil.copy2(fname,os.path.join(self.git_push_cp_dir,_file))
                 elif os.path.isdir(fname):
                     shutil.copytree(fname,os.path.join(self.git_push_cp_dir,_file))
                 else:
                     self.log.warning("%s"%fname)
+            if self.dsp_rf_root_dir and os.path.exists(self.dsp_rf_root_dir):
+                for _file in ["dsp.bin","rf.bin"]:
+                    fname = os.path.join(self.dsp_rf_root_dir,_file)
+                    if os.path.exists(self.git_push_dsp_dir):
+                        if os.path.isfile(fname):
+                            shutil.copy2(fname, self.git_push_dsp_dir)
+                        else:
+                            self.log.warning("%s"%fname)
             self.log.info("copy_sdk_to_git_push_cp done.")
         except Exception,e:
             self.log.error(e)
@@ -174,6 +193,22 @@ class gitPushCpDailyBuild(object):
 
     def unzip_sdk(self):
         self.zip_tool.unpack_archive(os.path.join(self.cp_sdk_dir,self.cp_sdk))
+        fname, _ = os.path.splitext(self.cp_sdk)
+        self.cp_sdk_root_dir = os.path.join(self.cp_sdk_dir, fname)
+        assert os.path.exists(self.cp_sdk_root_dir),"can not find %s"%self.cp_sdk_root_dir
+        for root, dirs, files in os.walk(self.cp_sdk_root_dir, topdown=False):
+            if "3g_ps" in dirs:
+                self.cp_sdk_root_dir = root
+                break
+        assert os.path.exists(self.cp_sdk_root_dir),"can not find %s"%self.cp_sdk_root_dir
+
+        for root, dirs, files in os.walk(self.cp_sdk_root_dir, topdown=False):
+            if "DSP" in dirs:
+                self.dsp_rf_root_dir = os.path.join(root,"DSP")
+                self.git_push_dsp_dir = os.path.dirname(self.git_push_cp_dir)
+                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                break
+
 
     def delete_gui_lib(self,path_dir):
         if not os.path.exists(path_dir):
@@ -225,7 +260,7 @@ class gitPushCpDailyBuild(object):
         time.sleep(60)
         self.copy_sdk()
         self.unzip_sdk()
-        cp_sdk = os.path.join(self.cp_sdk_dir,self.cp_sdk.replace(".zip",""))
+        cp_sdk = self.cp_sdk_root_dir
         self.log.info(cp_sdk)
         cnt = 0
         while not os.path.exists(cp_sdk):
@@ -255,7 +290,7 @@ class gitPushCpDailyBuild(object):
             self.log.info("="*50)
             self.log.info("git push cp...")
             self.clean_git_push_cp()
-            gui_lib = os.path.join(self.cp_sdk_dir,cp_sdk,"tavor","Arbel","lib")
+            gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
             self.delete_gui_lib(gui_lib)
             self.copy_sdk_to_git_push_cp(cp_sdk)
             self.log.info("git add...")
@@ -266,14 +301,33 @@ class gitPushCpDailyBuild(object):
             self.git.commit("-m %s"%commit_info)
             self.log.info("git commit done")
             self.log.info("git push...")
-            # self.git.push("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/for/master")
-            self.git.push("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master")
+            self.git.push(*self.push_cmd)
             self.log.info("git push done")
             return True
         except Exception,e:
             self.log.error(e)
             self.log.error("git push error")
             return None
+
+
+class gitPushCusSDK(gitPushCpDailyBuild):
+    def __init__(self,cfg, logger):
+        super(gitPushCusSDK,self).__init__(cfg, logger)
+        self.cp_sdk_version = None
+        self.cp_sdk = None
+        self.download_tool = None
+        self.log = logger
+        self.cp_sdk_release_dir = cfg.cus_cp_sdk_release_dir
+        self.git_push_cp_dir = cfg.git_push_cus_dir
+        self.cp_sdk_dir = cfg.cp_sdk_dir
+
+        self.cp_version_file = os.path.join(cfg.cur_crane_cus, "evb", "src", cfg.cp_version_file)
+
+        _repo = git.Repo(cfg.git_push_cus_root_dir)
+        self.git = _repo.git
+
+        self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
+
 
 
 class gitPushDspDailyBuild():
