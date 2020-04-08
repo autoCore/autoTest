@@ -180,8 +180,9 @@ class gitPushCpDailyBuild(object):
                     self.log.warning("%s"%fname)
             self.log.info("%s"%self.dsp_rf_root_dir)
             if self.dsp_rf_root_dir and os.path.exists(self.dsp_rf_root_dir):
-                _, dirname = os.path.split(self.dsp_rf_root_dir)
-                shutil.copytree(self.dsp_rf_root_dir, os.path.join(self.git_push_cp_dir,dirname))
+                dir_path= os.path.dirname(self.dsp_rf_root_dir)
+                self.log.info("%s"%dir_path)
+                shutil.copytree(dir_path, os.path.join(self.git_push_cp_dir, os.path.basename(dir_path)))
                 for _file in ["dsp.bin","rf.bin"]:
                     fname = os.path.join(self.dsp_rf_root_dir,_file)
                     if os.path.exists(self.git_push_dsp_dir):
