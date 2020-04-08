@@ -149,6 +149,8 @@ class gitPushCpDailyBuild(object):
 
 
     def clean_git_push_cp(self):
+        self.git.clean("-xdf")
+        self.git.reset("--hard","HEAD")
         self.git.pull()
         for _file in os.listdir(self.git_push_cp_dir):
             if "X.bat" in _file or ".git" in _file:
@@ -176,7 +178,10 @@ class gitPushCpDailyBuild(object):
                     shutil.copytree(fname,os.path.join(self.git_push_cp_dir,_file))
                 else:
                     self.log.warning("%s"%fname)
+            self.log.info("%s"%self.dsp_rf_root_dir)
             if self.dsp_rf_root_dir and os.path.exists(self.dsp_rf_root_dir):
+                _, dirname = os.path.split(self.dsp_rf_root_dir)
+                shutil.copytree(self.dsp_rf_root_dir, os.path.join(self.git_push_cp_dir,dirname))
                 for _file in ["dsp.bin","rf.bin"]:
                     fname = os.path.join(self.dsp_rf_root_dir,_file)
                     if os.path.exists(self.git_push_dsp_dir):
@@ -190,19 +195,18 @@ class gitPushCpDailyBuild(object):
             self.log.error("copy_sdk_to_git_push_cp error")
             raise Exception,"copy_sdk_to_git_push_cp error"
 
-
     def unzip_sdk(self):
         self.zip_tool.unpack_archive(os.path.join(self.cp_sdk_dir,self.cp_sdk))
         fname, _ = os.path.splitext(self.cp_sdk)
-        self.cp_sdk_root_dir = os.path.join(self.cp_sdk_dir, fname)
-        assert os.path.exists(self.cp_sdk_root_dir),"can not find %s"%self.cp_sdk_root_dir
-        for root, dirs, files in os.walk(self.cp_sdk_root_dir, topdown=False):
+        root_dir = os.path.join(self.cp_sdk_dir, fname)
+        assert os.path.exists(root_dir),"can not find %s"%root_dir
+        for root, dirs, files in os.walk(root_dir, topdown=False):
             if "3g_ps" in dirs:
                 self.cp_sdk_root_dir = root
                 break
         assert os.path.exists(self.cp_sdk_root_dir),"can not find %s"%self.cp_sdk_root_dir
 
-        for root, dirs, files in os.walk(self.cp_sdk_root_dir, topdown=False):
+        for root, dirs, files in os.walk(root_dir, topdown=False):
             if "DSP" in dirs:
                 self.dsp_rf_root_dir = os.path.join(root,"DSP")
                 self.git_push_dsp_dir = os.path.dirname(self.git_push_cp_dir)
@@ -249,8 +253,7 @@ class gitPushCpDailyBuild(object):
             # self.log.info("release_sdk_time: %r"%(release_sdk_time))
             # self.log.info("local_sdk_time: %r"%(local_sdk_time))
             if long(release_sdk_time) <= long(local_sdk_time):
-                # self.log.info("%s already exists"%self.cp_sdk)
-                time.sleep(10)
+                self.log.debug("%s already exists"%self.cp_sdk)
                 return None
             else:
                 self.log.info("release_sdk_time: %s"%time.asctime(time.localtime(release_sdk_time)))
@@ -284,7 +287,6 @@ class gitPushCpDailyBuild(object):
             self.cp_sdk_version = release_sdk_version
             if release_sdk_version in local_sdk_version:
                 self.log.info("%s already sync"%self.cp_sdk)
-                time.sleep(10)
                 return None
 
             self.log.info("="*50)
