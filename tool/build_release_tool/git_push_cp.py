@@ -350,7 +350,7 @@ class gitPushDspDailyBuild():
         with open(self.local_dsp_bin,"rb") as obj:
             text = obj.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        match = re.findall("(CRANE_.{48})",text)
+        match = re.findall("(CRANE_.{47})",text)
         if match:
             self.log.debug(match[0])
             return match[0]

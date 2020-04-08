@@ -342,7 +342,7 @@ class myRepo(object):
         fobj = open(dsp_bin,"rb")
         text = fobj.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        match = re.findall("(CRANE_.{43})",text)
+        match = re.findall("(CRANE_.{47})",text)
         if match:
             version_info = match[0]
             logger.debug(version_info)
@@ -505,6 +505,11 @@ class dailyBuild(object):
             else:
                 logger.warning("%s file not exists"%src)
 
+        if os.path.exists(self.mdb_file_dir):
+            for _file in os.listdir(self.mdb_file_dir):
+                if "MDB.TXT" in _file.upper():
+                    shutil.copy2(os.path.join(self.mdb_file_dir, _file),os.path.join(dist_dir, _file))
+                    break
 
     def copy_sdk_files_to_release_dir(self, dist_dir, board = "crane_evb_z2"):
         src_dir = self.cur_crane
@@ -771,6 +776,7 @@ class autoPush(ThreadBase):
             dsp_class.git_push()
             cp_sdk_class.git_push()
             cus_sdk_class.git_push()
+            time.sleep(10)
 
 def clean_overdue_dir(dir,del_time,target_dir = '',isdir = True):
     os.chdir(dir)
@@ -798,9 +804,10 @@ class autoCleanOverdueDir(ThreadBase):
                 if now.minute > 1 or now.hour != 2:
                     continue
                 clean_overdue_dir(r"E:\crane_dailybuild",5,target_dir = 'crane_git_')
-                clean_overdue_dir(cfg.download_tool_dir,10,target_dir = 'MINIGUI_SDK_')
-                clean_overdue_dir(cfg.cp_sdk_dir,10,target_dir = 'ASR3601_MINIGUI_')
-                clean_overdue_dir("D:\crane_cus",10,target_dir = 'crane_release_')
+                clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'MINIGUI_SDK_')
+                clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'CRANE_RELEASE_')
+                clean_overdue_dir(cfg.cp_sdk_dir,5,target_dir = 'ASR3601_MINIGUI_')
+                clean_overdue_dir("D:\crane_cus",5,target_dir = 'crane_release_')
                 time.sleep(10)
             except KeyboardInterrupt:
                 logger.info('clean_overdue_dir exit')
