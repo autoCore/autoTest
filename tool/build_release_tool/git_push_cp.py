@@ -385,7 +385,6 @@ class gitPushDspDailyBuild():
             return None
         if self.dsp_version in local_dsp_version:
             self.log.debug("%s already sync"%self.dsp_version)
-            time.sleep(10)
             return None
         self.log.info(local_dsp_version)
         self.log.info(self.dsp_version)
