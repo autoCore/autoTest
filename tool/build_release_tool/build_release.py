@@ -325,6 +325,7 @@ class myRepo(object):
         self.cp_version = self.get_cp_version(cp_version_file)
         with open(cp_version_log_file,"w") as obj:
             obj.write(self.cp_version)
+        return self.cp_version
 
     def get_old_cp_version(self,cp_version_log_file):
         if not os.path.exists(cp_version_log_file):
@@ -349,61 +350,6 @@ class myRepo(object):
             self.dsp_version = version_info
             with open(dsp_version_log_file,"w") as obj:
                 obj.write(self.dsp_version)
-
-def prepare_release_dir(version_file,release_version = False):
-    os.mkdir(version_file)
-    os.mkdir(os.path.join(version_file,"version_info"))
-    if release_version:
-        board_list = ["crane_evb_z2"]
-        os.mkdir(os.path.join(version_file,"download_tool"))
-    else:
-        board_list = cfg.BOARD_LIST
-    for board in board_list:
-        os.mkdir(os.path.join(version_file, board))
-        if not release_version:
-            os.mkdir(os.path.join(version_file, board, "download_tool"))
-        os.mkdir(os.path.join(version_file, board, "cp_images"))
-
-
-def copy_build_file_to_release_dir(dist_dir, src_dir = None):
-    if not src_dir:
-        src_dir = cfg.cur_crane
-    BUILD_IMAGES = cfg.BUILD_IMAGES[:]
-    for _file in BUILD_IMAGES:
-        src = os.path.join(src_dir,_file)
-        dist = os.path.join(dist_dir, os.path.basename(_file))
-        if os.path.exists(src):
-            if os.path.isfile(src):
-                shutil.copy2(src, dist)
-            elif os.path.isdir(src):
-                shutil.copytree(src, dist)
-        else:
-            logger.warning("%s file not exists"%src)
-
-    if os.path.exists(cfg.mdb_file_dir):
-        for _file in os.listdir(cfg.mdb_file_dir):
-            if "MDB.TXT" in _file.upper():
-                shutil.copy2(os.path.join(cfg.mdb_file_dir, _file),os.path.join(dist_dir, _file))
-                break
-
-
-def copy_cp_file_to_release_dir(dist_dir, board = "crane_evb_z2",src_dir = None):
-    if not src_dir:
-        src_dir = cfg.cur_crane
-    src_bin_l = cfg.BOARD_CP_RELEASE_BIN_DICT.get(board,[])
-    src_bin_l = [os.path.join(src_dir,_file) for _file in src_bin_l]
-    dist_bin_l = [os.path.join(dist_dir,_file) for _file in cfg.IMAGES]
-    for src_bin,dist_bin in zip(src_bin_l,dist_bin_l):
-        if os.path.exists(src_bin):
-            shutil.copy2(src_bin,dist_bin)
-        else:
-            logger.warning("%s not exists"%src_bin)
-
-    if os.path.exists(cfg.mdb_file_dir):
-        for _file in os.listdir(cfg.mdb_file_dir):
-            if "MDB.TXT" in _file.upper():
-                shutil.copy2(os.path.join(cfg.mdb_file_dir, _file),os.path.join(dist_dir, _file))
-                break
 
 
 class dailyBuild(object):
@@ -436,6 +382,7 @@ class dailyBuild(object):
         self.xml_file = None
         self.git_version_dir = None
         self.massage_file = None
+        self.cp_version = None
 
     def prepare_release_dir(self):
         assert self.git_version_dir,"version_file: %s is None"
@@ -451,8 +398,9 @@ class dailyBuild(object):
             if os.path.exists(_file):
                 shutil.copy2(_file,os.path.join(self.git_version_dir,"version_info",os.path.basename(_file)))
 
-    def copy_build_file_to_release_dir(self, dist_dir):
-        src_dir = self.cur_crane
+    def copy_build_file_to_release_dir(self, dist_dir, src_dir = None):
+        if not src_dir:
+            src_dir = self.cur_crane
         for _file in self.build_images:
             src = os.path.join(src_dir,_file)
             dist = os.path.join(dist_dir, os.path.basename(_file))
@@ -470,8 +418,9 @@ class dailyBuild(object):
                     shutil.copy2(os.path.join(self.mdb_file_dir, _file),os.path.join(dist_dir, _file))
                     break
 
-    def copy_sdk_files_to_release_dir(self, dist_dir, board = "crane_evb_z2"):
-        src_dir = self.cur_crane
+    def copy_sdk_files_to_release_dir(self, dist_dir, board = "crane_evb_z2", src_dir = None):
+        if not src_dir:
+            src_dir = self.cur_crane
         src_bin_l = self.sdk_files_dict.get(board,[])
         src_bin_l = [os.path.join(src_dir,_file) for _file in src_bin_l]
         dist_bin_l = [os.path.join(dist_dir,_file) for _file in self.sdk_images]
@@ -492,8 +441,6 @@ class dailyBuild(object):
         return self.repo.sync()
 
     def build(self):
-        if not self.condition():
-            return
         self.repo.get_dsp_version(self.dsp_bin, self.dsp_version_log)
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
         self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
@@ -542,90 +489,118 @@ class dailyBuild(object):
         return self.git_version_dir
 
 
-def find_newest_notes():
-    root_dir = os.path.join(cfg.cur_crane_cus,"note")
-    release_note_list = [_file for _file in os.listdir(root_dir) if _file.startswith("ReleaseNotes")]
-    release_note_list.sort(key=lambda fn:os.path.getmtime(os.path.join(root_dir,fn)))
-    if release_note_list:
-        file_name = release_note_list[-1]
-        logger.debug(file_name)
-        return os.path.join(root_dir, file_name)
-    else:
-        return None
 
+class cusbuild(dailyBuild):
+    def __init__(self,cfg, repo_cus):
+        super(cusbuild,self).__init__(cfg, repo_cus)
 
-def auto_build_cus():
-    if not repo_cus.sync():
-        return None
-    curdir = cfg.cur_crane_cus
-    build_root_dir = os.path.join(curdir,"evb","src")
-    commit_id, owner,date, commit_info = repo_cus.get_revion_owner()
-    logger.info("="*50)
-    logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
-    date = time.strftime("%Y%m%d_%H%M%S")
-    file_name = "crane_release_%s"%date
-    logger.info("version: "+file_name)
-    dist = os.path.join(cfg.release_dist_dir,file_name)
-    massage_file = repo_cus.get_commit_massages()
+        self.cur_crane = cfg.cur_crane_cus
+        self.build_root_dir = os.path.join(cfg.cur_crane_cus,"evb","src")
 
-    version_file = os.path.join(os.path.dirname(curdir),file_name)
-    build_controller.git_version_dir = version_file
-    prepare_release_dir(version_file,True)
-    release_note = find_newest_notes()
-    if release_note:
-        shutil.copy2(release_note,os.path.join(version_file,"crane_evb_z2",os.path.basename(release_note)))
-    shutil.copy2(massage_file,os.path.join(version_file,"crane_evb_z2",os.path.basename(massage_file)))
-    dsp_bin = os.path.join(build_root_dir,"cus","evb","images","dsp.bin")
-    repo_cus.get_dsp_version(dsp_bin, os.path.join(version_file,"version_info",os.path.basename(cfg.release_dsp_version_log)))
-    repo_cus.update_cp_version(os.path.join(build_root_dir,cfg.cp_version_file),os.path.join(version_file,"version_info",os.path.basename(cfg.release_cp_version_log)))
+        self.relase_download_tool = None
+        self.release_mdb_dir = None
 
-    for board, build_cmd in [("crane_evb_z2","autobuild.bat")]:
-        repo_cus.git_clean()
-        build_controller.build(build_root_dir, cmd = build_cmd)
-        build_controller.send_email(build_root_dir, owner,os.path.join(cfg.release_dist_dir,file_name),board)
+        self.board_list = cfg.BOARD_LIST[:1]
+        self.borad_build_cmd = cfg.BOARD_BUILD_CMD[:1]
 
-        copy_build_file_to_release_dir(os.path.join(version_file,board),build_root_dir)
-        copy_cp_file_to_release_dir(os.path.join(version_file,board,"cp_images"), "cus_evb", build_root_dir)
-        archive_file = os.path.join(version_file,board, "ASR_CRANE_EVB_A0_16MB.zip")
-        dist_dir = os.path.join(version_file,board,"cp_images")
-        zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
-        kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
+        self.release_dist_dir = cfg.release_dist_dir
 
-        if board in cfg.BOARD_LIST[0] and build_controller.build_res in "FAIL":
-            return version_file
+        self.dsp_bin = os.path.join(self.build_root_dir,"cus","evb","images","dsp.bin")
+        self.dsp_version_log = cfg.release_dsp_version_log
 
-    dist = os.path.join(cfg.release_dist_dir,os.path.basename(version_file))
-    root_dir = os.path.join(version_file, "crane_evb_z2", "cp_images")
-    images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
-    download_controller.update_download_tool()
-    download_controller.prepare_download_tool(images)
-    download_controller.release_download_tool(os.path.basename(version_file), "crane_evb_z2", dist_dir = os.path.join(version_file,"download_tool"))
-    build_controller.copy(version_file, dist)
+        self.cp_version_file = os.path.join(self.build_root_dir, cfg.cp_version_file)
+        self.cp_version_log = cfg.release_cp_version_log
 
-    try:
-        board = "crane_evb_z2"
-        sdk_tool_abs_path = os.listdir(os.path.join(dist,"download_tool"))
-        if sdk_tool_abs_path:
-            sdk_tool_abs_path = os.path.join(dist,"download_tool",sdk_tool_abs_path[0])
+    def prepare_release_dir(self, version_file):
+        os.mkdir(version_file)
+        os.mkdir(os.path.join(version_file,"version_info"))
+        os.mkdir(os.path.join(version_file,"download_tool"))
+        for board in self.board_list:
+            os.mkdir(os.path.join(version_file, board))
+            os.mkdir(os.path.join(version_file, board, "cp_images"))
+
+    def find_newest_notes(self):
+        root_dir = os.path.join(self.cur_crane,"note")
+        release_note_list = [_file for _file in os.listdir(root_dir) if _file.startswith("ReleaseNotes")]
+        release_note_list.sort(key=lambda fn:os.path.getmtime(os.path.join(root_dir,fn)))
+        if release_note_list:
+            file_name = release_note_list[-1]
+            logger.debug(file_name)
+            return os.path.join(root_dir, file_name)
         else:
-            sdk_tool_abs_path = None
-        mdb_txt_file_dir = os.path.join(dist,board)
-        logger.info(mdb_txt_file_dir)
-        for _file in os.listdir(mdb_txt_file_dir):
-            if "MDB.TXT" in _file.upper():
-                mdb_txt_file_abs_path = os.path.join(mdb_txt_file_dir,_file)
-                break
-        else:
-            mdb_txt_file_abs_path = None
-        logger.info(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
-        trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
-    except Exception,e:
-        logger.info(e)
-    return version_file
+            return None
+
+    def build(self):
+        commit_id, owner,date, commit_info = self.repo.get_revion_owner()
+        logger.info("="*50)
+        logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
+        date = time.strftime("%Y%m%d_%H%M%S")
+        file_name = "crane_release_%s"%date
+        logger.info("version: "+file_name)
+        dist = os.path.join(self.release_dist_dir,file_name)
+        massage_file = self.repo.get_commit_massages()
+
+        version_file = os.path.join(os.path.dirname(self.cur_crane),file_name)
+        build_controller.git_version_dir = version_file
+        self.prepare_release_dir(version_file)
+        release_note = self.find_newest_notes()
+        if release_note:
+            shutil.copy2(release_note,os.path.join(version_file,"crane_evb_z2",os.path.basename(release_note)))
+        shutil.copy2(massage_file,os.path.join(version_file,"crane_evb_z2",os.path.basename(massage_file)))
+        self.repo.get_dsp_version(self.dsp_bin, os.path.join(version_file,"version_info",os.path.basename(self.dsp_version_log)))
+        self.repo.update_cp_version(self.cp_version_file, os.path.join(version_file,"version_info",os.path.basename(self.cp_version_log)))
+
+        for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
+            self.git_clean()
+            build_controller.build(self.build_root_dir, cmd = build_cmd)
+            build_controller.send_email(self.build_root_dir, owner,os.path.join(self.release_dist_dir,file_name),board)
+
+            self.copy_build_file_to_release_dir(os.path.join(version_file,board), self.build_root_dir)
+            self.copy_sdk_files_to_release_dir(os.path.join(version_file,board,"cp_images"), "cus_evb", self.build_root_dir)
+            archive_file = os.path.join(version_file,board, "ASR_CRANE_EVB_A0_16MB.zip")
+            dist_dir = os.path.join(version_file,board,"cp_images")
+            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
+            kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
+
+            if board in self.board_list[0] and build_controller.build_res in "FAIL":
+                return version_file
+
+        dist = os.path.join(self.release_dist_dir,os.path.basename(version_file))
+        root_dir = os.path.join(version_file, "crane_evb_z2", "cp_images")
+        images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
+        download_controller.update_download_tool()
+        download_controller.prepare_download_tool(images)
+        download_controller.release_download_tool(os.path.basename(version_file), "crane_evb_z2", dist_dir = os.path.join(version_file,"download_tool"))
+        build_controller.copy(version_file, dist)
+
+        self.trigger_auto_test(dist)
+
+        return version_file
+
+    def trigger_auto_test(self, dist_dir, board = "crane_evb_z2"):
+        try:
+            sdk_tool_abs_path = os.listdir(os.path.join(dist_dir,"download_tool"))
+            if sdk_tool_abs_path:
+                sdk_tool_abs_path = os.path.join(dist_dir,"download_tool",sdk_tool_abs_path[0])
+            else:
+                sdk_tool_abs_path = None
+            mdb_txt_file_dir = os.path.join(dist_dir,board)
+            logger.info(mdb_txt_file_dir)
+            for _file in os.listdir(mdb_txt_file_dir):
+                if "MDB.TXT" in _file.upper():
+                    mdb_txt_file_abs_path = os.path.join(mdb_txt_file_dir,_file)
+                    break
+            else:
+                mdb_txt_file_abs_path = None
+            logger.info(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
+            trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
+        except Exception,e:
+            logger.info(e)
+
 
 
 class autoRelease(ThreadBase):
-    def __init__(self,cfg):
+    def __init__(self,cfg, release_event):
         super(autoRelease,self).__init__()
         self.cur_crane = cfg.cur_crane
         self.dist_dir = cfg.dist_dir
@@ -636,7 +611,7 @@ class autoRelease(ThreadBase):
         self.board_list = cfg.BOARD_LIST[:]
 
         self.today_release_flag = threading.Event()
-
+        self.release_event = release_event
 
     def get_release_version(self, root_dir, dist_dir, target = "crane_git_r"):
         root_dir = os.path.dirname(root_dir)
@@ -694,10 +669,10 @@ class autoRelease(ThreadBase):
 
 
 
-    def run(self, release_event):
+    def run(self):
         while self._running:
-            release_event.wait()
-            release_event.clear()
+            self.release_event.wait()
+            self.release_event.clear()
             version_file = self.get_release_version(self.cur_crane, self.dist_dir)
             if not version_file:
                 continue
@@ -778,67 +753,77 @@ class autoRelease(ThreadBase):
 class autoPush(ThreadBase):
     def __init__(self):
         super(autoPush,self).__init__()
+        self.git_list = []
 
-    def run(self, cp_sdk_class,dsp_class,cus_sdk_class):
+    def add_git_push(self,git_obj):
+        self.git_list.append(git_obj)
+
+    def run(self):
         while self._running:
-            dsp_class.git_push()
-            cp_sdk_class.git_push()
-            cus_sdk_class.git_push()
+            for git_obj in self.git_list:
+                git_obj.git_push()
             time.sleep(10)
 
-def clean_overdue_dir(dir,del_time,target_dir = '',isdir = True):
-    os.chdir(dir)
-    listdir = os.listdir(dir)
-    listdir = [d for d in listdir if os.path.isdir(d) and target_dir in d] if isdir else [f for f in listdir if os.path.isfile(f) and target_dir in f]
-    del_t = datetime.timedelta(days=del_time)
-    now = datetime.datetime.now()
-    for d in listdir:
-        ctime = datetime.datetime.fromtimestamp(os.path.getctime(d))
-        if (now - ctime) > del_t:
-            # os.chmod(d,0o777)
-            # shutil.rmtree(d)
-            logger.info("delete %s start..."%d)
-            os.system(r"rd /s /q %s"%d)
-            logger.info("delete %s done"%d)
 
 class autoCleanOverdueDir(ThreadBase):
-    def __init__(self):
+    def __init__(self, logger):
+        self.log = logger
         super(autoCleanOverdueDir,self).__init__()
 
-    def run(self,logger):
+    def clean_overdue_dir(self, dir,del_time,target_dir = '',isdir = True):
+        os.chdir(dir)
+        listdir = os.listdir(dir)
+        listdir = [d for d in listdir if os.path.isdir(d) and target_dir in d] if isdir else [f for f in listdir if os.path.isfile(f) and target_dir in f]
+        del_t = datetime.timedelta(days=del_time)
+        now = datetime.datetime.now()
+        for d in listdir:
+            ctime = datetime.datetime.fromtimestamp(os.path.getctime(d))
+            if (now - ctime) > del_t:
+                # os.chmod(d,0o777)
+                # shutil.rmtree(d)
+                logger.info("delete %s start..."%d)
+                os.system(r"rd /s /q %s"%d)
+                logger.info("delete %s done"%d)
+
+    def run(self):
         while self._running:
             try:
                 now = datetime.datetime.today()
                 if now.minute > 1 or now.hour != 2:
                     continue
-                clean_overdue_dir(r"E:\crane_dailybuild",5,target_dir = 'crane_git_')
-                clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'MINIGUI_SDK_')
-                clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'CRANE_RELEASE_')
-                clean_overdue_dir(cfg.cp_sdk_dir,5,target_dir = 'ASR3601_MINIGUI_')
-                clean_overdue_dir("D:\crane_cus",5,target_dir = 'crane_release_')
+                self.clean_overdue_dir(r"E:\crane_dailybuild",5,target_dir = 'crane_git_')
+                self.clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'MINIGUI_SDK_')
+                self.clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'CRANE_RELEASE_')
+                self.clean_overdue_dir(cfg.cp_sdk_dir,5,target_dir = 'ASR3601_MINIGUI_')
+                self.clean_overdue_dir("D:\crane_cus",5,target_dir = 'crane_release_')
                 time.sleep(10)
             except KeyboardInterrupt:
-                logger.info('clean_overdue_dir exit')
+                self.log.info('clean_overdue_dir exit')
                 self._running = False
             except:
                 pass
 
 class autoBuild(ThreadBase):
-    def __init__(self):
+    def __init__(self,logger):
         super(autoBuild,self).__init__()
+        self.log = logger
+        self.build_list = []
 
-    def run(self,repo, logger):
+    def add_build(self, build_obj):
+        self.build_list.append(build_obj)
+
+    def run(self):
         while self._running:
             try:
-                # auto_dailybuild()
-                auto_daily_build_cls.build()
-                auto_build_cus()
+                for build_obj in self.build_list:
+                    if build_obj.condition():
+                        build_obj.build()
                 time.sleep(10)
             except KeyboardInterrupt:
-                logger.info('autoBuild exit')
+                self.log.info('autoBuild exit')
                 self.terminate()
             except Exception,e:
-                logger.error(e)
+                self.log.error(e)
 
 def prepare_system_start():
     cfg.update('config.ini')
@@ -887,24 +872,34 @@ if __name__ == "__main__":
     # download_controller.update_download_tool()
 
     auto_daily_build_cls = dailyBuild(cfg, repo)
+    auto_cus_build_cls = cusbuild(cfg, repo_cus)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg,logger)
     dsp_cls = gitPushDspDailyBuild(cfg,logger)
-
     cus_sdk_cls = gitPushCusSDK(cfg,logger)
 
-    release_tool = releaseZip(cfg)
-    auto_release_task = autoRelease(cfg)
+    auto_release_task = autoRelease(cfg, RELEASE_EVENT)
+
+
     auto_push_cp_task = autoPush()
-    auto_build_task = autoBuild()
-    auto_clean_overdue_dir_task = autoCleanOverdueDir()
+    auto_push_cp_task.add_git_push(dsp_cls)
+    auto_push_cp_task.add_git_push(cp_sdk_cls)
+    auto_push_cp_task.add_git_push(cus_sdk_cls)
+
+
+    auto_build_task = autoBuild(logger)
+    auto_build_task.add_build(auto_daily_build_cls)
+    auto_build_task.add_build(auto_cus_build_cls)
+
+    auto_clean_overdue_dir_task = autoCleanOverdueDir(logger)
 
     cp_sdk_cls.git_push()
 
-    auto_clean_overdue_dir_task.start(logger)
-    auto_release_task.start(RELEASE_EVENT)
-    auto_push_cp_task.start(cp_sdk_cls, dsp_cls, cus_sdk_cls)
-    auto_build_task.start(repo, logger)
+    auto_clean_overdue_dir_task.start()
+    auto_release_task.start()
+    auto_push_cp_task.start()
+    auto_build_task.start()
+
     logger.info("**********************start**********************")
     while 1:
         try:
@@ -936,14 +931,5 @@ if __name__ == "__main__":
             auto_release_task.terminate()
             auto_push_cp_task.terminate()
             auto_build_task.terminate()
-
-
-
-
-
-
-
-
-
 
 
