@@ -11,7 +11,19 @@ import threading
 import subprocess
 import shutil
 import multiprocessing as mp
+import psutil
 
+def kill_winproc(*proc_name):
+    for _proc in psutil.process_iter():
+        try:
+            pinfo = _proc.as_dict(attrs=['pid', 'name'])
+        except psutil.NoSuchProcess:
+            pass
+        else:
+            if  pinfo['name'] in proc_name:
+                cmd = "taskkill /F /IM %s"%pinfo['name']
+                print "target: ", pinfo
+                os.system(cmd)
 
 class myLogger(object):
     def __init__(self, name = '', level = logging.INFO):
@@ -219,6 +231,7 @@ class zipTool(object):
         file_name = ".".join([base_name,format])
         pack_cmd = "%s a %s %s -y"%(self._external_tool, file_name, root_dir)
         subprocess.call(pack_cmd,shell = True)
+        kill_winproc("7z.exe")
 
     def unpack_archive(self,filename, extract_dir = None):
         assert os.path.exists(filename),"can not find %r"%filename
@@ -230,6 +243,7 @@ class zipTool(object):
             unpack_cmd = "%s x %s -o. -y"%(self._external_tool, filename)
         # print unpack_cmd
         subprocess.call(unpack_cmd,shell = True)
+        kill_winproc("7z.exe")
 
 
     def unpack_files_from_archive(self, archive_file, dist_dir, *fname):

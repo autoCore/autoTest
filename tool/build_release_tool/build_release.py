@@ -551,7 +551,7 @@ class cusbuild(dailyBuild):
         self.repo.update_cp_version(self.cp_version_file, os.path.join(version_file,"version_info",os.path.basename(self.cp_version_log)))
 
         for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
-            self.git_clean()
+            self.repo.git_clean()
             build_controller.build(self.build_root_dir, cmd = build_cmd)
             build_controller.send_email(self.build_root_dir, owner,os.path.join(self.release_dist_dir,file_name),board)
 
@@ -857,7 +857,6 @@ if __name__ == "__main__":
     root_dir = os.getcwd()
     logger = myLogger("build_release")
     prepare_system_start()
-    now = datetime.datetime.today()
     log_file = os.path.join(cfg.log_dir,"log_%s.txt"%time.strftime("%Y%m%d_%H%M%S"))
     zip_tool = zipTool()
 
@@ -878,27 +877,28 @@ if __name__ == "__main__":
     dsp_cls = gitPushDspDailyBuild(cfg,logger)
     cus_sdk_cls = gitPushCusSDK(cfg,logger)
 
+    # release tast
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
 
-
+    # auto push task
     auto_push_cp_task = autoPush()
     auto_push_cp_task.add_git_push(dsp_cls)
     auto_push_cp_task.add_git_push(cp_sdk_cls)
     auto_push_cp_task.add_git_push(cus_sdk_cls)
 
-
+    # auto build task
     auto_build_task = autoBuild(logger)
     auto_build_task.add_build(auto_daily_build_cls)
     auto_build_task.add_build(auto_cus_build_cls)
 
+    # auto clean task
     auto_clean_overdue_dir_task = autoCleanOverdueDir(logger)
 
     cp_sdk_cls.git_push()
 
-    auto_clean_overdue_dir_task.start()
-    auto_release_task.start()
-    auto_push_cp_task.start()
-    auto_build_task.start()
+    # task start
+    for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_cp_task, auto_build_task]:
+        _task.start()
 
     logger.info("**********************start**********************")
     while 1:
