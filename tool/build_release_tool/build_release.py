@@ -13,7 +13,6 @@ from release_zip import *
 from send_email import *
 from ftp import ftp_upload_file
 from TriggerTest import trigger_test
-from kill_winproc import kill_winproc
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 
