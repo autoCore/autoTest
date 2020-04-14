@@ -12,18 +12,19 @@ import subprocess
 import shutil
 import multiprocessing as mp
 import psutil
+import Queue
+
 
 def kill_winproc(*proc_name):
     for _proc in psutil.process_iter():
         try:
-            pinfo = _proc.as_dict(attrs=['pid', 'name'])
-        except psutil.NoSuchProcess:
-            pass
-        else:
-            if  pinfo['name'] in proc_name:
-                cmd = "taskkill /F /IM %s"%pinfo['name']
-                print "target: ", pinfo
-                os.system(cmd)
+            if _proc.name() in proc_name:
+                print "%r, %s"%(_proc.pid, _proc.name())
+                if _proc.is_running():
+                    _proc.terminate()
+        except Exception,e:
+            print e
+
 
 class myLogger(object):
     def __init__(self, name = '', level = logging.INFO):
@@ -155,6 +156,13 @@ class ThreadBase(object):
         self._running = False
         self._proc = None
         self._name = name
+        self._queue = Queue.Queue()
+
+    def get_massage(self):
+        return self._queue.get()
+
+    def put_massage(self,msg):
+        self._queue.put(msg)
 
     def terminate(self):
         if self._proc:
