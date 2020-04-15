@@ -134,6 +134,10 @@ class gitPushCpDailyBuild(object):
 
         _repo = git.Repo(self.git_push_cp_dir)
         self.git = _repo.git
+        self.git.config("--global","core.autocrlf","false")
+        self.git.config("--global","user.name","binwu")
+        self.git.config("--global","user.email","binwu@asrmicro.com")
+
         self.zip_tool = zipTool()
 
         # self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/for/master")
@@ -165,6 +169,7 @@ class gitPushCpDailyBuild(object):
     def copy_sdk(self):
         self.log.info("copy %s..."%self.cp_sdk)
         shutil.copy2(os.path.join(self.cp_sdk_release_dir,self.cp_sdk),self.cp_sdk_dir)
+        time.sleep(3)
         self.log.info("copy done.")
 
     def copy_sdk_to_git_push_cp(self,cp_sdk):
@@ -328,6 +333,9 @@ class gitPushCusSDK(gitPushCpDailyBuild):
 
         _repo = git.Repo(cfg.git_push_cus_root_dir)
         self.git = _repo.git
+        self.git.config("--global","core.autocrlf","false")
+        self.git.config("--global","user.name","binwu")
+        self.git.config("--global","user.email","binwu@asrmicro.com")
 
         self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
 

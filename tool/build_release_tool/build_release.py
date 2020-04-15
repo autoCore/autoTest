@@ -347,8 +347,11 @@ class myRepo(object):
             version_info = match[0]
             logger.debug(version_info)
             self.dsp_version = version_info
-            with open(dsp_version_log_file,"w") as obj:
-                obj.write(self.dsp_version)
+        else:
+            version_info = "can not match dsp version".upper()
+        with open(dsp_version_log_file,"w") as obj:
+            obj.write(version_info)
+
 
 
 class dailyBuild(object):
@@ -700,7 +703,7 @@ class autoRelease(ThreadBase):
 
             self.send_release_email(version_file, cus_version_file)
 
-            # customer trigger dailybuild test
+            # trigger dailybuild test
             try:
                 board = "crane_evb_z2"
                 sdk_tool_abs_path = download_controller.download_tool_dict.get(board)
@@ -716,10 +719,12 @@ class autoRelease(ThreadBase):
             except Exception,e:
                 logger.info(e)
 
+            '''
             root_dir = os.path.join(cus_version_file, "crane_evb_z2", "cp_images")
             images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
             download_controller.prepare_download_tool(images)
             download_controller.release_download_tool(os.path.basename(cus_version_file), "crane_evb_z2", dist_dir = os.path.join(cus_version_file,"download_tool"))
+
 
             #trigger customer test
             try:
@@ -738,6 +743,7 @@ class autoRelease(ThreadBase):
                 trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
             except Exception,e:
                 logger.info(e)
+            '''
 
             try:
                 lib_src = os.path.join(version_file,"crane_evb_z2","rel_lib")
