@@ -352,6 +352,16 @@ class myRepo(object):
         with open(dsp_version_log_file,"w") as obj:
             obj.write(version_info)
 
+class cusRepo(myRepo):
+    def __init__(self, version_log, root_path):
+        super(cusRepo,self).__init__(version_log, root_path, ['.'])
+
+        _path = os.path.join(self.root_path, '.')
+        self.git = git.Repo(_path).git
+        if cfg.release_branch in "r1":
+            self.git.checkout("r1")
+        else:
+            self.git.checkout("master")
 
 
 class dailyBuild(object):
@@ -869,7 +879,7 @@ if __name__ == "__main__":
     logger.debug(cfg)
     repo = myRepo(cfg.version_log, cfg.cur_crane)
     repo.update_cp_version(os.path.join(cfg.cur_crane,cfg.cp_version_file),cfg.cp_version_log)
-    repo_cus = myRepo(cfg.version_cus_log,cfg.cur_crane_cus,["."])
+    repo_cus = cusRepo(cfg.version_cus_log,cfg.cur_crane_cus)
 
     build_controller = buildController(cfg)
     download_controller = downloadToolController(cfg, logger)

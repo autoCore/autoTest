@@ -337,7 +337,12 @@ class gitPushCusSDK(gitPushCpDailyBuild):
         self.git.config("--global","user.name","binwu")
         self.git.config("--global","user.email","binwu@asrmicro.com")
 
-        self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
+        if cfg.release_branch in "r1":
+            self.git.checkout("r1")
+            self.push_cmd = ("origin","r1")
+        else:
+            self.git.checkout("master")
+            self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
 
 
 
@@ -353,6 +358,9 @@ class gitPushDspDailyBuild():
 
         self.git = git.Repo(cfg.git_push_dsp_dir).git
         self.log = logger
+
+        self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master")
+
 
     def get_local_dsp_version(self):
         "CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
@@ -417,7 +425,7 @@ class gitPushDspDailyBuild():
             self.git.commit("-m %s"%str(commit_info))
             self.log.info("git commit done")
             self.log.info("git push...")
-            self.git.push("ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master")
+            self.git.push(*self.push_cmd)
             self.log.info("git push done")
             return True
         except Exception,e:
