@@ -224,7 +224,7 @@ class dailyBuild(object):
     def build(self):
         self.repo.get_dsp_version(self.dsp_bin, self.dsp_version_log)
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
-        self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+        self.cp_version = self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
         commit_id, owner,date, commit_info = self.repo.get_revion_owner()
         logger.info("="*50)
         logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
@@ -264,8 +264,9 @@ class dailyBuild(object):
         dist = os.path.join(self.dist_dir,file_name)
         build_controller.copy(self.git_version_dir, dist)
 
-        logger.info("old_cp_version: %s, new_cp_version: %s"%(old_cp_version,self.repo.cp_version))
-        if self.repo.cp_version not in old_cp_version:
+        logger.info("old_cp_version: %s"%(old_cp_version))
+        logger.info("new_cp_version: %s"%(self.cp_version))
+        if self.cp_version not in old_cp_version:
             RELEASE_EVENT.set()
         return self.git_version_dir
 

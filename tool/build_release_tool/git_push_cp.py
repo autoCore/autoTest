@@ -416,7 +416,7 @@ class gitPushDspDailyBuild():
             # self.dsp_version = " ".join(self.dsp_version.split())
             # self.dsp_version = self.dsp_version.split(",")[-1]
             match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",self.dsp_version)
-            if match:
+            if match and "\00" not in match[0]:
                 dsp_version = match[0]
             else:
                 dsp_version =  str(time.asctime())
