@@ -374,7 +374,9 @@ class cusbuild(dailyBuild):
                     break
             else:
                 mdb_txt_file_abs_path = None
-            logger.info(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
+            logger.info("sdk_tool:", sdk_tool_abs_path)
+            logger.info("mdb path:", mdb_txt_file_abs_path)
+            logger.info("test type: ", "evb_customer")
             trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
         except Exception,e:
             logger.info(e)
@@ -411,9 +413,11 @@ class autoRelease(ThreadBase):
     def CHECK_DSP_VERSION(self, dsp_version):
         '''CRANE_CAT1GSM_L1_1.053.001 , Feb 29 2020 03:40:50'''
         match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",dsp_version)
-        if not match:
+        if match and "\00" not in match[0]:
+            return match[0]
+        else:
             return "can not match dsp version".upper()
-        return match[0]
+
 
     def send_release_email(self, version_file, customer_file = None):
         to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com,crane_sw_mmi_group@asrmicro.com"
