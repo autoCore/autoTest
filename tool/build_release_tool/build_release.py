@@ -93,7 +93,7 @@ class buildController(object):
             self.build_res = "FAIL"
             return
         time.sleep(5)
-        if os.path.exists(r"%s\build\%s\crane_evb.elf"%(curdir,build_dir)):
+        if os.path.exists(r"%s\build\%s\crane_evb.elf"%(curdir,build_dir)) and os.path.exists(r"%s\build\%s\crane_evb.bin"%(curdir,build_dir)):
             logger.info("%s build done"%curdir)
             self.build_res = "SUCCESS"
         else:
@@ -110,7 +110,8 @@ class buildController(object):
             att_file = None
             subject = r"%s build result: pass"%borad
             msg = r"Hi %s, your patch build pass! Binary dir: %s"%(owner.split("@")[0],external_dir)
-        send_email_tool(owner, subject, msg, att_file)
+        to_address = ",".join([owner,'yuanzhizheng@asrmicro.com'])
+        send_email_tool(to_address, subject, msg, att_file)
         logger.info("send email done")
 
     def copy(self, src, dist):
@@ -325,6 +326,8 @@ class cusbuild(dailyBuild):
             return None
 
     def build(self):
+        old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
+        self.cp_version = self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
         commit_id, owner,date, commit_info = self.repo.get_revion_owner()
         logger.info("="*50)
         logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
@@ -368,6 +371,13 @@ class cusbuild(dailyBuild):
             download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir = self.download_tool_dir_d[board])
         build_controller.copy(self.loacal_dist_dir, release_dist)
 
+        logger.info("old_cp_version: %s"%(old_cp_version))
+        logger.info("new_cp_version: %s"%(self.cp_version))
+        if self.cp_version not in old_cp_version:
+            to_address = 'yuanzhizheng@asrmicro.com'
+            subject = "%s RELEASE"%self.cp_version
+            msg = r"Hi %s, %s build done! Binary dir: %s"%(to_address.split("@")[0],self.cp_version,release_dist)
+            send_email_tool(to_address, subject.upper(), msg)
         self.trigger_auto_test(release_dist)
 
         return self.loacal_dist_dir
