@@ -31,6 +31,10 @@ class myRepo(object):
         self.cp_version = None
         self.dsp_version = None
         self.log = logger
+        self.version_pattern = r'(crane_.*?)([0-9][0-9][0-9][0-9])'
+        self.verion_name = None
+
+        self.get_verion_name()
 
 
     def clone(self,clone_path):
@@ -147,17 +151,26 @@ class myRepo(object):
         _obj.write(manifest_text.lstrip())
         _obj.close()
 
+    def get_verion_name(self):
+        flog = open(self.version_log)
+        text = flog.read()
+        text = text.replace('\n','')
+        text_list = re.findall(self.version_pattern, text)
+        self.log.debug(text_list)
+        assert text_list,"can not find version info"
+        self.verion_name, _ = text_list[-1]
+
     def get_nearest_version(self):
         flog = open(self.version_log)
         text = flog.read()
         text = text.replace('\n','')
-        text_list = re.findall(r'crane_git_r([0-9]+)',text)
+        # text_list = re.findall(r'crane_git_r([0-9]+)',text)
+        text_list = re.findall(self.version_pattern, text)
         self.log.debug(text_list)
-        if text_list:
-            cnt = int(text_list[-1])
-        else:
-            cnt = 0
-        return "crane_git_r%d"%(cnt+1)
+        assert text_list,"can not find version info"
+        self.verion_name, cnt = text_list[-1]
+        cnt = int(cnt)
+        return "%s%04d"%(self.verion_name,cnt+1)
 
     def record_version(self,version = '',info = ''):
         flog = open(self.version_log,'a')
@@ -233,15 +246,24 @@ class myRepo(object):
             obj.write(version_info)
 
 class cusRepo(myRepo):
-    def __init__(self, logger, version_log, root_path, release_branch):
-        super(cusRepo,self).__init__(logger, version_log, root_path, ['.'])
-
+    def __init__(self, logger, cfg):
+        super(cusRepo,self).__init__(logger, cfg.version_cus_log, cfg.cur_crane_cus, ['.'])
+        self.release_branch = cfg.release_branch
         _path = os.path.join(self.root_path, '.')
         self.git = git.Repo(_path).git
-        if release_branch in "r1":
+        if self.release_branch in "r1":
             self.git.checkout("r1")
+            self.version_log = cfg.version_r_log
+            self.release_dist_dir = cfg.release_r1_dist_dir
+        elif self.release_branch in "r1_plus_j":
+            self.git.checkout("r1_plus_j")
+            self.version_log = cfg.version_r1_plus_j_log
+            self.release_dist_dir = cfg.release_r1_plus_j_dist_dir
         else:
             self.git.checkout("master")
+            self.version_log = cfg.version_cus_log
+            self.release_dist_dir = cfg.release_dist_dir
 
+        self.get_verion_name()
 
 

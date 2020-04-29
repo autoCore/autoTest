@@ -157,14 +157,16 @@ class dailyBuild(object):
         self.cp_version_file = os.path.join(cfg.cur_crane,cfg.cp_version_file)
         self.cp_version_log = cfg.cp_version_log
 
+        self.ap_version_log = cfg.ap_version_log
+
         self.dist_dir = cfg.dist_dir
 
         self.manisest_xml_dir = cfg.manisest_xml_dir
 
-        self.xml_file = None
-        self.git_version_dir = None
-        self.massage_file = None
-        self.cp_version = None
+        self.xml_file = ''
+        self.git_version_dir = ''
+        self.massage_file = ''
+        self.cp_version = ''
 
     def prepare_release_dir(self):
         assert self.git_version_dir,"version_file: %s is None"
@@ -175,8 +177,12 @@ class dailyBuild(object):
             os.mkdir(os.path.join(self.git_version_dir, board))
             os.mkdir(os.path.join(self.git_version_dir, board, "cp_images"))
 
+    def record_ap_version(self, version):
+        with open(self.ap_version_log,'w') as _obj:
+            _obj.write(version.upper())
+
     def copy_version_file_to_release_dir(self):
-        for _file in [self.xml_file, self.cp_version_log, self.dsp_version_log, self.massage_file]:
+        for _file in [self.xml_file, self.ap_version_log, self.cp_version_log, self.dsp_version_log, self.massage_file]:
             if os.path.exists(_file):
                 shutil.copy2(_file,os.path.join(self.git_version_dir,"version_info",os.path.basename(_file)))
 
@@ -230,6 +236,7 @@ class dailyBuild(object):
         logger.info("="*50)
         logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
         _r = self.repo.record_version()
+        self.record_ap_version(_r)
         date = time.strftime("%Y%m%d_%H%M%S")
         file_name = "%s_%s"%(_r,date)
         logger.info("version: "+file_name)
@@ -247,20 +254,24 @@ class dailyBuild(object):
 
         for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
             self.repo.git_clean()
-            build_controller.build(self.cur_crane, cmd = build_cmd)
-            build_controller.send_email(self.cur_crane, owner,os.path.join(self.external_dir,file_name),board)
+            try:
+                build_controller.build(self.cur_crane, cmd = build_cmd)
+                build_controller.send_email(self.cur_crane, owner,os.path.join(self.external_dir,file_name),board)
 
-            self.copy_build_file_to_release_dir(os.path.join(self.git_version_dir,board))
-            self.copy_sdk_files_to_release_dir(os.path.join(self.git_version_dir,board,"cp_images"), board)
+                kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
 
-            archive_file = os.path.join(self.git_version_dir,board, "ASR_CRANE_EVB_A0_16MB.zip")
-            dist_dir = os.path.join(self.git_version_dir,board,"cp_images")
-            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
+                if board in self.board_list[0] and build_controller.build_res in "FAIL":
+                    logger.info(self.git_version_dir,"build fail")
+                    return self.git_version_dir
 
-            kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
+                self.copy_build_file_to_release_dir(os.path.join(self.git_version_dir,board))
+                self.copy_sdk_files_to_release_dir(os.path.join(self.git_version_dir,board,"cp_images"), board)
 
-            if board in self.board_list[0] and build_controller.build_res in "FAIL":
-                return self.git_version_dir
+                archive_file = os.path.join(self.git_version_dir,board, "ASR_CRANE_EVB_A0_16MB.zip")
+                dist_dir = os.path.join(self.git_version_dir,board,"cp_images")
+                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
+            except Exception, e:
+                logger.error(e)
 
         dist = os.path.join(self.dist_dir,file_name)
         build_controller.copy(self.git_version_dir, dist)
@@ -276,7 +287,7 @@ class dailyBuild(object):
 class cusbuild(dailyBuild):
     def __init__(self,cfg, repo_cus):
         super(cusbuild,self).__init__(cfg, repo_cus)
-
+        self.cfg = cfg
         self.cur_crane = cfg.cur_crane_cus
         self.build_root_dir = os.path.join(cfg.cur_crane_cus,"evb","src")
 
@@ -286,7 +297,7 @@ class cusbuild(dailyBuild):
         self.board_list = cfg.BOARD_LIST[:]
         self.borad_build_cmd = cfg.BOARD_BUILD_CMD[:]
 
-        self.release_dist_dir = cfg.release_dist_dir
+        self.release_dist_dir = repo_cus.release_dist_dir
 
         self.dsp_bin = os.path.join(self.build_root_dir,"cus","evb","images","dsp.bin")
         self.dsp_version_log = cfg.release_dsp_version_log
@@ -294,15 +305,21 @@ class cusbuild(dailyBuild):
         self.cp_version_file = os.path.join(self.build_root_dir, cfg.cp_version_file)
         self.cp_version_log = cfg.release_cp_version_log
 
-        self.loacal_dist_dir = None
+        self.ap_version_log = cfg.release_ap_version_log
+
+        self.sdk_release_notes_file = os.path.join(self.build_root_dir, cfg.sdk_release_notes_file)
+
+        self.loacal_dist_dir = ''
         self.loacal_build_dir_d = {}
         self.download_tool_dir_d = {}
         self.download_tool_images_dir_d = {}
-        self.version_info_dir = None
+        self.version_info_dir = ''
 
+        self.dist_dir = repo_cus.release_dist_dir
 
     def prepare_release_dir(self, version_file):
         self.loacal_dist_dir = version_file
+        self.git_version_dir = version_file
         os.mkdir(self.loacal_dist_dir)
         self.version_info_dir = os.path.join(version_file,"version_info")
         os.mkdir(self.version_info_dir)
@@ -313,6 +330,7 @@ class cusbuild(dailyBuild):
             os.mkdir(self.download_tool_dir_d[board])
             self.download_tool_images_dir_d[board] = os.path.join(version_file, board, "cp_images")
             os.mkdir(self.download_tool_images_dir_d[board])
+
 
     def find_newest_notes(self):
         root_dir = os.path.join(self.cur_crane,"note")
@@ -326,49 +344,74 @@ class cusbuild(dailyBuild):
             return None
 
     def build(self):
+        if self.repo.release_branch in "r1_plus_j":
+            self.board_list = self.cfg.BOARD_LIST[:1]
+            self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:1]
+        else:
+            self.board_list = self.cfg.BOARD_LIST[:]
+            self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:]
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
         self.cp_version = self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
-        commit_id, owner,date, commit_info = self.repo.get_revion_owner()
+        self.repo.get_dsp_version(self.dsp_bin, self.dsp_version_log)
+        commit_id, owner, date, commit_info = self.repo.get_revion_owner()
         logger.info("="*50)
         logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
+        _r = self.repo.record_version()
+        self.record_ap_version(_r)
         date = time.strftime("%Y%m%d_%H%M%S")
-        file_name = "crane_release_%s"%date
+        file_name = "%s_%s"%(_r,date)
         logger.info("version: "+file_name)
         release_dist = os.path.join(self.release_dist_dir,file_name)
-        massage_file = self.repo.get_commit_massages()
+        self.massage_file = self.repo.get_commit_massages()
 
         version_file = os.path.join(os.path.dirname(self.cur_crane),file_name)
         build_controller.git_version_dir = version_file
+
         self.prepare_release_dir(version_file)
+        self.copy_version_file_to_release_dir()
+
         release_note = self.find_newest_notes()
         if release_note:
             shutil.copy2(release_note,os.path.join(self.version_info_dir, os.path.basename(release_note)))
-        shutil.copy2(massage_file,os.path.join(self.version_info_dir, os.path.basename(massage_file)))
-        self.repo.get_dsp_version(self.dsp_bin, os.path.join(self.version_info_dir, os.path.basename(self.dsp_version_log)))
-        self.repo.update_cp_version(self.cp_version_file, os.path.join(self.version_info_dir, os.path.basename(self.cp_version_log)))
+
+        if os.path.exists(self.sdk_release_notes_file):
+            shutil.copy2(self.sdk_release_notes_file, os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
+
+        # if os.path.exists(self.ap_version_log):
+            # shutil.copy2(self.ap_version_log, os.path.join(self.version_info_dir, os.path.basename(self.ap_version_log)))
+
+        # shutil.copy2(self.massage_file,os.path.join(self.version_info_dir, os.path.basename(massage_file)))
+        # self.repo.update_cp_version(self.cp_version_file, os.path.join(self.version_info_dir, os.path.basename(self.cp_version_log)))
 
         for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
             self.repo.git_clean()
-            build_controller.build(self.build_root_dir, cmd = build_cmd)
-            build_controller.send_email(self.build_root_dir, owner,os.path.join(self.release_dist_dir,file_name),board)
+            try:
+                build_controller.build(self.build_root_dir, cmd = build_cmd)
+                build_controller.send_email(self.build_root_dir, owner,os.path.join(self.release_dist_dir,file_name),board)
 
-            kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
+                kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
 
-            if board in self.board_list and build_controller.build_res in "FAIL":
-                return self.loacal_dist_dir
+                if board in self.board_list[0] and build_controller.build_res in "FAIL":
+                    logger.info(self.loacal_dist_dir,"build fail")
+                    return self.loacal_dist_dir
 
-            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
-            self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], "cus_evb", self.build_root_dir)
-            archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
-            dist_dir = self.download_tool_images_dir_d[board]
-            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
+                self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
+                self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], "cus_evb", self.build_root_dir)
+                archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
+                dist_dir = self.download_tool_images_dir_d[board]
+                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
+            except Exception, e:
+                logger.error(e)
 
         download_controller.update_download_tool()
         for board in self.board_list:
-            root_dir = self.download_tool_images_dir_d[board]
-            images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
-            download_controller.prepare_download_tool(images)
-            download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir = self.download_tool_dir_d[board])
+            try:
+                root_dir = self.download_tool_images_dir_d[board]
+                images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
+                download_controller.prepare_download_tool(images)
+                download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir = self.download_tool_dir_d[board])
+            except Exception, e:
+                logger.error(e)
         build_controller.copy(self.loacal_dist_dir, release_dist)
 
         logger.info("old_cp_version: %s"%(old_cp_version))
@@ -421,7 +464,7 @@ class autoRelease(ThreadBase):
         self.today_release_flag = threading.Event()
         self.release_event = release_event
 
-    def get_release_version(self, root_dir, dist_dir, target = "crane_git_r"):
+    def get_release_version(self, root_dir, dist_dir, target = "crane_d"):
         root_dir = os.path.dirname(root_dir)
         dailybuild_list = [_file for _file in os.listdir(root_dir) if _file.startswith(target)]
         dailybuild_list.sort(key=lambda fn:os.path.getmtime(os.path.join(root_dir,fn)))
@@ -447,7 +490,7 @@ class autoRelease(ThreadBase):
         to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com,crane_sw_mmi_group@asrmicro.com"
         version_fname = os.path.basename(version_file)
         subject = email_subject%version_fname.upper()
-        _match = re.findall("crane_git_r[0-9]+",version_fname)
+        _match = re.findall(repo.verion_name+"[0-9]+",version_fname)
         assert _match,"file name can not match"
         version = _match[0]
 
@@ -483,30 +526,29 @@ class autoRelease(ThreadBase):
         while self._running:
             self.release_event.wait()
             self.release_event.clear()
-            version_file = self.get_release_version(self.cur_crane, self.dist_dir)
+            version_file = self.get_release_version(self.cur_crane, self.dist_dir, repo.verion_name)
             if not version_file:
                 continue
             logger.info(version_file)
             cp_version_file = os.path.join(version_file,"version_info", "cp_version.txt")
             with open(cp_version_file) as obj:
                 cp_version = obj.read()
+            ap_version_file = os.path.join(version_file,"version_info", "ap_version.txt")
+            with open(ap_version_file) as obj:
+                ap_version = obj.read()
+            _match = re.findall("MINIGUI_SDK_[0-9]+",cp_version)
+            assert _match,"cp_version can not match"
+            cp_version_sdk = _match[0]
+            release_name = "_".join([cp_version_sdk, ap_version])
             download_controller.update_download_tool()
             self.today_release_flag.set()
             for board in self.board_list:
                 root_dir = os.path.join(version_file, board, "cp_images")
                 images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
-                version_fname = os.path.basename(version_file)
-                _match = re.findall("crane_git_r[0-9]+",version_fname)
-                assert _match,"file name can not match"
-                version = _match[0]
-                _match = re.findall("MINIGUI_SDK_[0-9]+",cp_version)
-                assert _match,"cp_version can not match"
-                cp_version_sdk = _match[0]
                 download_controller.prepare_download_tool(images,board)
-                release_name = "_".join([cp_version_sdk, version])
                 download_controller.release_download_tool(release_name, board, dist_dir = os.path.join(self.dist_dir,"download_tool", board))
 
-            cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir,"crane_release_")
+            cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir, repo_cus.verion_name)
             cus_version_file = os.path.join(self.release_dist_dir,os.path.basename(cus_version_file))
 
             self.send_release_email(version_file, cus_version_file)
@@ -677,7 +719,9 @@ if __name__ == "__main__":
     logger.debug(cfg)
     repo = myRepo(logger, cfg.version_log, cfg.cur_crane)
     repo.update_cp_version(os.path.join(cfg.cur_crane,cfg.cp_version_file),cfg.cp_version_log)
-    repo_cus = cusRepo(logger, cfg.version_cus_log,cfg.cur_crane_cus, cfg.release_branch)
+    repo_cus = cusRepo(logger, cfg)
+    repo_cus.update_cp_version(os.path.join(cfg.cur_crane_cus,"evb","src",cfg.cp_version_file),cfg.release_cp_version_log)
+
 
     build_controller = buildController(cfg)
     download_controller = downloadToolController(cfg, logger)
