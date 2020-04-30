@@ -248,22 +248,13 @@ class myRepo(object):
 class cusRepo(myRepo):
     def __init__(self, logger, cfg):
         super(cusRepo,self).__init__(logger, cfg.version_cus_log, cfg.cur_crane_cus, ['.'])
-        self.release_branch = cfg.release_branch
+        self.release_branch = cfg.release_branch.strip().lower()
         _path = os.path.join(self.root_path, '.')
         self.git = git.Repo(_path).git
-        if self.release_branch in "r1":
-            self.git.checkout("r1")
-            self.version_log = cfg.version_r_log
-            self.release_dist_dir = cfg.release_r1_dist_dir
-        elif self.release_branch in "r1_plus_j":
-            self.git.checkout("r1_plus_j")
-            self.version_log = cfg.version_r1_plus_j_log
-            self.release_dist_dir = cfg.release_r1_plus_j_dist_dir
-        else:
-            self.git.checkout("master")
-            self.version_log = cfg.version_cus_log
-            self.release_dist_dir = cfg.release_dist_dir
-
+        if self.release_branch in cfg.CUS_BRANCH_INFO:
+            self.git.checkout(self.release_branch)
+            self.version_log = cfg.CUS_BRANCH_INFO[self.release_branch]["version_file"]
+            self.release_dist_dir = cfg.CUS_BRANCH_INFO[self.release_branch]["release_dist_dir"]
         self.get_verion_name()
 
 

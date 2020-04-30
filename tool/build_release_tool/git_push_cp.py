@@ -338,8 +338,9 @@ class gitPushCusSDK(gitPushCpDailyBuild):
         self.git.config("--global","user.email","binwu@asrmicro.com")
 
         if cfg.release_branch in "r1":
-            self.git.checkout("r1")
-            self.push_cmd = ("origin","r1")
+            pass
+            # self.git.checkout("r1")
+            # self.push_cmd = ("origin","r1")
         else:
             self.git.checkout("master")
             self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
