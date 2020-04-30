@@ -21,40 +21,40 @@ sys.setdefaultencoding( "utf-8" )
 
 email_subject = "CRANE PHONE: AUTO RELEASE %s"
 email_msg = r"""
-GUI VERSION: %s
-CP VERSION: %s
-DSP VERSION: %s
+GUI VERSION: {0}
+CP VERSION: {1}
+DSP VERSION: {2}
 
 NORMAL VERSION(SINGLE and DUAL SIM):
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\crane_evb_z2
-hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\crane_evb_z2\rel_lib
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2
+hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2\rel_lib
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\crane_evb_z2
 
 BIRD PHONE VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone
-hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone\rel_lib
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone
+hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone\rel_lib
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\bird_phone
 
 """
 email_msg_with_cus = r"""
-GUI VERSION: %s
-CP VERSION: %s
-DSP VERSION: %s
+GUI VERSION: {0}
+CP VERSION: {1}
+DSP VERSION: {2}
 
 NORMAL VERSION(SINGLE and DUAL SIM):
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\crane_evb_z2
-hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\crane_evb_z2\rel_lib
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2
+hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2\rel_lib
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\crane_evb_z2
 
 BIRD PHONE VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone
-hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\%s\bird_phone\rel_lib
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone
+hal lib: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone\rel_lib
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\bird_phone
 
 CUSTOMER RELEASE:
-CP VERSION: %s
-DSP VERSION: %s
-RELEASE VERSION: %s
+CP VERSION: {4}
+DSP VERSION: {5}
+RELEASE VERSION: {6}
 """
 
 class buildController(object):
@@ -289,7 +289,7 @@ class cusbuild(dailyBuild):
         super(cusbuild,self).__init__(cfg, repo_cus)
         self.cfg = cfg
         self.cur_crane = cfg.cur_crane_cus
-        self.build_root_dir = os.path.join(cfg.cur_crane_cus,"evb","src")
+        self.build_root_dir = cfg.cus_build_root_dir
 
         self.relase_download_tool = None
         self.release_mdb_dir = None
@@ -513,9 +513,9 @@ class autoRelease(ThreadBase):
         logger.info(dsp_version_cus)
         dsp_version_cus = self.CHECK_DSP_VERSION(dsp_version_cus)
         if customer_file:
-            msg = email_msg_with_cus%((version.upper(), cp_version, dsp_version)+(version_fname,)*4+(cp_version_cus,dsp_version_cus, customer_file))
+            msg = email_msg_with_cus.format(version.upper(), cp_version, dsp_version, version_fname, cp_version_cus, dsp_version_cus, customer_file)
         else:
-            msg = email_msg%((version.upper(), cp_version, dsp_version)+(version_fname,)*4)
+            msg = email_msg.format(version.upper(), cp_version, dsp_version, version_fname)
         logger.info(subject)
         logger.info(msg)
         send_email_tool(to_address,subject,msg)
@@ -761,7 +761,6 @@ if __name__ == "__main__":
     while 1:
         try:
             now = datetime.datetime.today()
-            cfg.update('config.ini')
             if now.hour == 0 and now.minute == 0 and now.second == 0:
                 auto_release_task.today_release_flag.clear()
                 time.sleep(1)

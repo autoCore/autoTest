@@ -13,10 +13,10 @@ manifest_xml = \
   <remote fetch=".." name="origin" review="https://source.asrmicro.com/"/>
   
   <default remote="origin" revision="master" sync-j="4"/>
-  <project name="crane/crane-dev" path="crane" revision="%s" upstream="master"/>
-  <project name="crane/cp" path="crane/cp" revision="%s" upstream="master"/>
-  <project name="crane/gui" path="crane/gui" revision="%s" upstream="master"/>
-  <project name="crane/tool" path="crane/tool" revision="%s" upstream="master"/>
+  <project name="crane/crane-dev" path="crane" revision="{0[0]}" upstream="master"/>
+  <project name="crane/cp" path="crane/cp" revision="{0[1]}" upstream="master"/>
+  <project name="crane/gui" path="crane/gui" revision="{0[2]}" upstream="master"/>
+  <project name="crane/tool" path="crane/tool" revision="{0[3]}" upstream="master"/>
 </manifest>
 """
 
@@ -145,7 +145,7 @@ class myRepo(object):
             info = _git.log("-1","--pretty=format:%H")
             self.log.debug(storage,info)
             info_list.append(info)
-        manifest_text = manifest_xml%tuple(info_list)
+        manifest_text = manifest_xml.format(info_list)
         self.log.debug(manifest_text)
         _obj = open(xml_file,'w')
         _obj.write(manifest_text.lstrip())

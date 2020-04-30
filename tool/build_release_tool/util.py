@@ -205,10 +205,10 @@ class config:
             conf.read(cfg_file)
         else:
             assert('No config file')
+        conf.set("basic_config","root_dir",self.cur_work_dir)
         for sec in conf.sections():
             if 'basic_config' in str(sec):
                 for attr,value in conf.items(sec):
-                    value = os.path.join(self.cur_work_dir,value)
                     setattr(self,attr,value)
             # elif "cp_release_bin_config" in str(sec):
                 # for attr,value in conf.items(sec):
