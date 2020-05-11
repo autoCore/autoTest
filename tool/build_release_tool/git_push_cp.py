@@ -26,8 +26,8 @@ class downloadToolController(object):
         self.release_download_tool_name = None
         self.zip_tool = zipTool()
 
-    def unzip_download_tool(self, zip_file):
-        self.zip_tool.unpack_archive(os.path.join(self.download_tool_dir, zip_file))
+    def unzip_download_tool(self, zip_file, extract_dir = None):
+        self.zip_tool.unpack_archive(os.path.join(self.download_tool_dir, zip_file), extract_dir)
 
     def update_download_tool(self):
         tools_list = [_file for _file in os.listdir(self.download_tool_release_dir) if self.win_type in _file and "aboot-tools" in _file and _file.endswith(".exe")]
@@ -46,8 +46,10 @@ class downloadToolController(object):
             download_tool_fname = zip_file.replace(".exe","")
             if not os.path.exists(zip_file):
                 shutil.copy2(os.path.join(self.download_tool_release_dir,file_name),self.download_tool_dir)
+                time.sleep(3)
                 self.unzip_download_tool(zip_file)
             elif not os.path.exists(download_tool_fname):
+                time.sleep(3)
                 self.unzip_download_tool(zip_file)
             self.download_tool.append(download_tool_fname)
         self.log.info("\n".join(self.download_tool))
@@ -145,7 +147,7 @@ class gitPushCpDailyBuild(object):
 
     def find_new_cp_sdk(self):
         "ASR3601_MINIGUI_20191206_SDK.zip"
-        cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if (_file.endswith("SDK.zip") or _file.endswith("SDK.7z")) and "ASR3601_MINIGUI_" in _file]
+        cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if (_file.endswith(".zip") or _file.endswith(".7z")) and _file.startswith("ASR3601_MINIGUI_")]
         cp_sdk_list.sort(key=lambda fn:os.path.getmtime(os.path.join(self.cp_sdk_release_dir,fn)))
         assert cp_sdk_list,"can not find sdk"
         self.cp_sdk = cp_sdk_list[-1]
@@ -202,9 +204,9 @@ class gitPushCpDailyBuild(object):
             raise Exception,"copy_sdk_to_git_push_cp error"
 
     def unzip_sdk(self):
-        self.zip_tool.unpack_archive(os.path.join(self.cp_sdk_dir,self.cp_sdk))
         fname, _ = os.path.splitext(self.cp_sdk)
         root_dir = os.path.join(self.cp_sdk_dir, fname)
+        self.zip_tool.unpack_archive(os.path.join(self.cp_sdk_dir,self.cp_sdk), root_dir)
         assert os.path.exists(root_dir),"can not find %s"%root_dir
         for root, dirs, files in os.walk(root_dir, topdown=False):
             if "3g_ps" in dirs:
@@ -291,7 +293,7 @@ class gitPushCpDailyBuild(object):
             self.log.info("local_sdk_version:",local_sdk_version)
             self.log.info("release_sdk_version:",release_sdk_version)
             self.cp_sdk_version = release_sdk_version
-            if release_sdk_version in local_sdk_version:
+            if release_sdk_version == local_sdk_version:
                 self.log.info("%s already sync"%self.cp_sdk)
                 return None
 
@@ -325,7 +327,6 @@ class gitPushCusSDK(gitPushCpDailyBuild):
         self.cp_sdk = None
         self.download_tool = None
         self.log = logger
-        self.cp_sdk_release_dir = cfg.cus_cp_sdk_release_dir
         self.git_push_cp_dir = cfg.git_push_cus_dir
         self.cp_sdk_dir = cfg.cp_sdk_dir
 
@@ -336,15 +337,23 @@ class gitPushCusSDK(gitPushCpDailyBuild):
         self.git.config("--global","core.autocrlf","false")
         self.git.config("--global","user.name","binwu")
         self.git.config("--global","user.email","binwu@asrmicro.com")
+        self.cfg = cfg
 
-        if cfg.release_branch in "r1":
-            pass
-            # self.git.checkout("r1")
-            # self.push_cmd = ("origin","r1")
-        else:
+        self.init()
+
+    def init(self):
+        if self.cfg.release_branch == "r1":
+            self.git.checkout("r1")
+            self.push_cmd = ("origin","r1")
+            self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
+        elif self.cfg.release_branch == "r1_plus_j":
+            self.git.checkout("r1_plus_j")
+            self.push_cmd = ("origin","r1_plus_j")
+            self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
+        elif self.cfg.release_branch == "master":
             self.git.checkout("master")
+            self.cp_sdk_release_dir = self.cfg.cus_cp_sdk_release_dir
             self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
-
 
 
 class gitPushDspDailyBuild():
@@ -360,21 +369,31 @@ class gitPushDspDailyBuild():
         self.git = git.Repo(cfg.git_push_dsp_dir).git
         self.log = logger
 
+        self.tmp_dir = cfg.tmp_dir
+        self.decompress_tool = cfg.decompress_tool
+
         self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master")
 
 
     def get_local_dsp_version(self):
         "CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
-        with open(self.local_dsp_bin,"rb") as obj:
-            text = obj.read()
+        dsp_version_file = os.path.join(self.tmp_dir,"dsp_version_tmp.bin")
+        decompress_cmd = "{0} -d -f {1} -o{2}".format(self.decompress_tool,self.local_dsp_bin, dsp_version_file)
+        os.system(decompress_cmd)
+        assert os.path.exists(dsp_version_file),"canot find {}".format(dsp_version_file)
+        with open(dsp_version_file,"rb") as fobj:
+            text = fobj.read()
+        fobj.close()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
         match = re.findall("(CRANE_.{47})",text)
         if match:
             self.log.debug(match[0])
-            return match[0]
+            version_info =  match[0]
         else:
             self.log.error("can not find dsp version infomation")
-            return None
+            version_info = None
+        # os.remove(dsp_version_file)
+        return version_info
 
     def update_dsp_version(self):
         dsp_version = self.get_local_dsp_version()
@@ -400,7 +419,7 @@ class gitPushDspDailyBuild():
         if not self.update_dsp_version():
             self.log.info("dsp_version is None")
             return None
-        if self.dsp_version in local_dsp_version:
+        if self.dsp_version == local_dsp_version:
             self.log.debug("%s already sync"%self.dsp_version)
             return None
         self.log.info(local_dsp_version)

@@ -153,6 +153,7 @@ class dailyBuild(object):
 
         self.dsp_bin = os.path.join(cfg.cur_crane,"cus","evb","images","dsp.bin")
         self.dsp_version_log = cfg.dsp_version_log
+        self.decompress_tool = cfg.decompress_tool
 
         self.cp_version_file = os.path.join(cfg.cur_crane,cfg.cp_version_file)
         self.cp_version_log = cfg.cp_version_log
@@ -161,12 +162,38 @@ class dailyBuild(object):
 
         self.dist_dir = cfg.dist_dir
 
+        self.tmp_dir = cfg.tmp_dir
+
         self.manisest_xml_dir = cfg.manisest_xml_dir
+
+        self.sdk_release_notes_file = os.path.join(cfg.cur_crane, cfg.sdk_release_notes_file)
 
         self.xml_file = ''
         self.git_version_dir = ''
         self.massage_file = ''
         self.cp_version = ''
+        self.dsp_version = ''
+
+    def get_dsp_version(self,dsp_bin):
+        "!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
+        dsp_version_file = os.path.join(self.tmp_dir,"dsp_version.bin")
+        decompress_cmd = "{0} -d -f {1} -o{2}".format(self.decompress_tool,dsp_bin, dsp_version_file)
+        os.system(decompress_cmd)
+        assert os.path.exists(dsp_version_file),"canot find {}".format(dsp_version_file)
+        with open(dsp_version_file,"rb") as fobj:
+            text = fobj.read()
+        # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
+        fobj.close()
+        match = re.findall("(CRANE_.{47})",text)
+        if match:
+            version_info = match[0]
+            logger.debug(version_info)
+            self.dsp_version = version_info
+        else:
+            version_info = "can not match dsp version".upper()
+        with open(self.dsp_version_log,"w") as obj:
+            obj.write(version_info)
+        return version_info
 
     def prepare_release_dir(self):
         assert self.git_version_dir,"version_file: %s is None"
@@ -229,7 +256,7 @@ class dailyBuild(object):
         return self.repo.sync()
 
     def build(self):
-        self.repo.get_dsp_version(self.dsp_bin, self.dsp_version_log)
+        self.get_dsp_version(self.dsp_bin)
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
         self.cp_version = self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
         commit_id, owner,date, commit_info = self.repo.get_revion_owner()
@@ -307,7 +334,7 @@ class cusbuild(dailyBuild):
 
         self.ap_version_log = cfg.release_ap_version_log
 
-        self.sdk_release_notes_file = os.path.join(self.build_root_dir, cfg.sdk_release_notes_file)
+        self.sdk_release_notes_file = cfg.cus_sdk_release_notes_file
 
         self.loacal_dist_dir = ''
         self.loacal_build_dir_d = {}
@@ -344,7 +371,7 @@ class cusbuild(dailyBuild):
             return None
 
     def build(self):
-        if self.repo.release_branch in "r1_plus_j":
+        if self.repo.release_branch in ["r1","r1_plus_j"]:
             self.board_list = self.cfg.BOARD_LIST[:1]
             self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:1]
         else:
@@ -352,7 +379,7 @@ class cusbuild(dailyBuild):
             self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:]
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
         self.cp_version = self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
-        self.repo.get_dsp_version(self.dsp_bin, self.dsp_version_log)
+        self.get_dsp_version(self.dsp_bin)
         commit_id, owner, date, commit_info = self.repo.get_revion_owner()
         logger.info("="*50)
         logger.debug(commit_id, owner,date, commit_info,time.asctime(time.localtime(int(date))))
@@ -373,9 +400,6 @@ class cusbuild(dailyBuild):
         release_note = self.find_newest_notes()
         if release_note:
             shutil.copy2(release_note,os.path.join(self.version_info_dir, os.path.basename(release_note)))
-
-        if os.path.exists(self.sdk_release_notes_file):
-            shutil.copy2(self.sdk_release_notes_file, os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
 
         # if os.path.exists(self.ap_version_log):
             # shutil.copy2(self.ap_version_log, os.path.join(self.version_info_dir, os.path.basename(self.ap_version_log)))
@@ -403,6 +427,9 @@ class cusbuild(dailyBuild):
             except Exception, e:
                 logger.error(e)
 
+        if os.path.exists(self.sdk_release_notes_file) and self.repo.release_branch == "master":
+            shutil.copy2(self.sdk_release_notes_file, os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
+
         download_controller.update_download_tool()
         for board in self.board_list:
             try:
@@ -422,7 +449,7 @@ class cusbuild(dailyBuild):
             msg = r"Hi %s, %s build done! Binary dir: %s"%(to_address.split("@")[0],self.cp_version,release_dist)
             send_email_tool(to_address, subject.upper(), msg)
         self.trigger_auto_test(release_dist)
-
+        self.repo.git_clean()
         return self.loacal_dist_dir
 
     def trigger_auto_test(self, dist_dir, board = "crane_evb_z2"):
@@ -616,7 +643,10 @@ class autoPush(ThreadBase):
     def run(self):
         while self._running:
             for git_obj in self.git_list:
-                git_obj.git_push()
+                try:
+                    git_obj.git_push()
+                except Exception,e:
+                    logger.error(e)
             time.sleep(10)
 
 
