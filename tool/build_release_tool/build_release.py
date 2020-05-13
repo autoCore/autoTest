@@ -54,6 +54,7 @@ download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\bird_pho
 CUSTOMER RELEASE:
 CP VERSION: {4}
 DSP VERSION: {5}
+
 RELEASE VERSION: {6}
 """
 

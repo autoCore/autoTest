@@ -73,6 +73,7 @@ class myRepo(object):
                 _git.clean("-xdf")
                 _git.reset("--hard","HEAD")
             except Exception,e:
+                self.log.error(storage)
                 self.log.error(e)
 
 
@@ -198,6 +199,8 @@ class myRepo(object):
         SYSTEM_TARGET_OS = "TX"
         APPEND_REVERSION = "_".join([SYSTEM_CUST_SKU,SYSTEM_SKU_REVERSION])
         file_obj = open(cp_version_file)
+        SYSTEM_VERSION = ''
+        DISTRIBUTION_VERSION = ''
         for _line in file_obj:
             format = '#define[ ]+SYSTEM_VERSION[ ]+"(.*?)"'
             match = re.findall(format,_line)

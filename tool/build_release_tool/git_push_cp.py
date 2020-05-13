@@ -128,7 +128,7 @@ class gitPushCpDailyBuild(object):
         self.cp_sdk_release_dir = cfg.cp_sdk_release_dir
 
         self.git_push_cp_dir = cfg.git_push_cp_dir
-        self.git_push_dsp_dir = None
+        self.git_push_dsp_dir = ''
 
         self.cp_sdk_dir = cfg.cp_sdk_dir
 
@@ -155,9 +155,13 @@ class gitPushCpDailyBuild(object):
 
 
     def clean_git_push_cp(self):
-        self.git.clean("-xdf")
-        self.git.reset("--hard","HEAD")
-        self.git.pull()
+        try:
+            self.git.clean("-xdf")
+            self.git.reset("--hard","HEAD")
+            self.git.pull()
+        except Exception,e:
+            assert("clean_git_push_cp error")
+            self.log.error(e)
         for _file in os.listdir(self.git_push_cp_dir):
             if "X.bat" in _file or ".git" in _file:
                 continue
@@ -412,6 +416,7 @@ class gitPushDspDailyBuild():
             self.git.reset("--hard","HEAD")
             self.git.pull()
         except Exception,e:
+            self.log.error("gitPushDspDailyBuild")
             self.log.error(e)
             return None
         local_dsp_version = self.get_local_dsp_version()
