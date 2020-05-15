@@ -24,6 +24,7 @@ class downloadToolController(object):
         self.log = logger
         self.download_tool_dict = {}
         self.release_download_tool_name = None
+        self.download_tool_release_zip_dir = ""
         self.zip_tool = zipTool()
 
     def unzip_download_tool(self, zip_file, extract_dir = None):
@@ -33,10 +34,10 @@ class downloadToolController(object):
         tools_list = [_file for _file in os.listdir(self.download_tool_release_dir) if self.win_type in _file and "aboot-tools" in _file and _file.endswith(".exe")]
         tools_list.sort(key=lambda fn:os.path.getmtime(self.download_tool_release_dir+'\\'+fn))
         self.log.debug(tools_list)
-        if self.download_tool_file_name:
-            file_name = self.download_tool_file_name
-        else:
-            file_name = tools_list[-1]
+        if not self.download_tool_file_name:
+            self.download_tool_file_name = tools_list[-1]
+        file_name = self.download_tool_file_name
+        self.download_tool_release_zip_dir = os.path.join(self.download_tool_dir,self.download_tool_file_name.replace(".exe",""))
         self.log.info(file_name)
         file_name_l = [file_name,file_name.replace("x64","x86")]
         self.download_tool = []
@@ -87,6 +88,14 @@ class downloadToolController(object):
                 shutil.copy2(self.template_config,os.path.join(download_tool_dir,"config","template",os.path.basename(self.template_config)))
             else:
                 self.log.error("self.template_config:%s error"%self.template_config)
+
+    def release_zip(self, dist_dir):
+        assert os.path.exists(self.download_tool_release_zip_dir)," can not find download tool %s "%self.download_tool_release_zip_dir
+        os.chdir(self.download_tool_release_zip_dir)
+        zip_file = "ASR_CRANE_EVB_A0_16MB.zip"
+        zip_file = os.path.join(dist_dir, zip_file)
+        release_cmd = "arelease.exe -c . -g --erase-all -p ASR_CRANE_EVB -v CRANE_A0_16MB %s"%zip_file
+        os.system(release_cmd)
 
 
     def release_download_tool(self, release_name, borad = "crane_evb_z2", dist_dir = None):
@@ -145,6 +154,37 @@ class gitPushCpDailyBuild(object):
         # self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/for/master")
         self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master")
 
+    def git_add(self,*file_name_l):
+        self.log.info("git add...")
+        if file_name_l:
+            self.git.add(*file_name_l)
+        else:
+            self.git.add("--all")
+        self.log.info("git add done")
+
+    def git_commit(self,commit_info):
+        self.log.info("git commit...")
+        self.log.info("conmmit info:", commit_info)
+        self.git.commit("-m %s"%commit_info)
+        self.log.info("git commit done")
+
+    def git_push(self):
+        self.log.info("git push...")
+        self.git.push(*self.push_cmd)
+        self.log.info("git push done")
+
+    def git_clean(self):
+        # self.log.info("git clean...")
+        try:
+            self.git.clean("-xdf")
+            self.git.reset("--hard","HEAD")
+            self.git.pull()
+        except Exception,e:
+            self.log.error(e)
+            assert("git_clean error")
+        # self.log.info("git clean done")
+
+
     def find_new_cp_sdk(self):
         "ASR3601_MINIGUI_20191206_SDK.zip"
         cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if (_file.endswith(".zip") or _file.endswith(".7z")) and _file.startswith("ASR3601_MINIGUI_")]
@@ -155,15 +195,9 @@ class gitPushCpDailyBuild(object):
 
 
     def clean_git_push_cp(self):
-        try:
-            self.git.clean("-xdf")
-            self.git.reset("--hard","HEAD")
-            self.git.pull()
-        except Exception,e:
-            assert("clean_git_push_cp error")
-            self.log.error(e)
+        self.git_clean()
         for _file in os.listdir(self.git_push_cp_dir):
-            if "X.bat" in _file or ".git" in _file:
+            if _file  in [".git", "X.bat", "Image"]:
                 continue
             _file = os.path.join(self.git_push_cp_dir,_file)
             if os.path.isfile(_file):
@@ -193,7 +227,10 @@ class gitPushCpDailyBuild(object):
             if self.dsp_rf_root_dir and os.path.exists(self.dsp_rf_root_dir):
                 dir_path= os.path.dirname(self.dsp_rf_root_dir)
                 self.log.info("%s"%dir_path)
-                shutil.copytree(dir_path, os.path.join(self.git_push_cp_dir, os.path.basename(dir_path)))
+                dist_dir = os.path.join(self.git_push_cp_dir, os.path.basename(dir_path))
+                if os.path.exists(dist_dir):
+                    shutil.rmtree(dist_dir)
+                shutil.copytree(dir_path, dist_dir)
                 for _file in ["dsp.bin","rf.bin"]:
                     fname = os.path.join(self.dsp_rf_root_dir,_file)
                     if os.path.exists(self.git_push_dsp_dir):
@@ -257,7 +294,7 @@ class gitPushCpDailyBuild(object):
         self.log.debug(CRANE_CUST_VER_INFO)
         return CRANE_CUST_VER_INFO
 
-    def git_push(self):
+    def git_push_start(self):
         self.find_new_cp_sdk()
         if os.path.exists(os.path.join(self.cp_sdk_dir,self.cp_sdk)):
             release_sdk_time = os.path.getmtime(os.path.join(self.cp_sdk_release_dir,self.cp_sdk))
@@ -291,32 +328,28 @@ class gitPushCpDailyBuild(object):
             if not os.path.exists(version_file):
                 self.log.error("can not file: %s"%version_file)
                 return None
-        try:
-            local_sdk_version = self.get_sdk_version(sdk_verion_file[1])
-            release_sdk_version = self.get_sdk_version(sdk_verion_file[0])
-            self.log.info("local_sdk_version:",local_sdk_version)
-            self.log.info("release_sdk_version:",release_sdk_version)
-            self.cp_sdk_version = release_sdk_version
-            if release_sdk_version == local_sdk_version:
-                self.log.info("%s already sync"%self.cp_sdk)
-                return None
 
-            self.log.info("="*50)
-            self.log.info("git push cp...")
-            self.clean_git_push_cp()
-            gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
-            self.delete_gui_lib(gui_lib)
-            self.copy_sdk_to_git_push_cp(cp_sdk)
-            self.log.info("git add...")
-            self.git.add("--all")
-            self.log.info("git add done")
-            self.log.info("git commit...")
+        local_sdk_version = self.get_sdk_version(sdk_verion_file[1])
+        release_sdk_version = self.get_sdk_version(sdk_verion_file[0])
+        self.log.info("local_sdk_version:",local_sdk_version)
+        self.log.info("release_sdk_version:",release_sdk_version)
+        self.cp_sdk_version = release_sdk_version
+        if release_sdk_version == local_sdk_version:
+            self.log.info("%s already sync"%self.cp_sdk)
+            return None
+
+        self.log.info("="*50)
+        self.log.info("git push cp...")
+        self.clean_git_push_cp()
+        gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
+        self.delete_gui_lib(gui_lib)
+        self.copy_sdk_to_git_push_cp(cp_sdk)
+
+        try:
+            self.git_add()
             commit_info = "%s"%self.cp_sdk
-            self.git.commit("-m %s"%commit_info)
-            self.log.info("git commit done")
-            self.log.info("git push...")
-            self.git.push(*self.push_cmd)
-            self.log.info("git push done")
+            self.git_commit(commit_info)
+            self.git_push()
             return True
         except Exception,e:
             self.log.error(e)
@@ -378,6 +411,36 @@ class gitPushDspDailyBuild():
 
         self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master")
 
+    def git_add(self,*file_name_l):
+        self.log.info("git add...")
+        if file_name_l:
+            self.git.add(*file_name_l)
+        else:
+            self.git.add("--all")
+        self.log.info("git add done")
+
+    def git_commit(self,commit_info):
+        self.log.info("git commit...")
+        self.log.info("conmmit info:", commit_info)
+        self.git.commit("-m %s"%commit_info)
+        self.log.info("git commit done")
+
+    def git_push(self):
+        self.log.info("git push...")
+        self.git.push(*self.push_cmd)
+        self.log.info("git push done")
+
+    def git_clean(self):
+        # self.log.info("git clean...")
+        try:
+            self.git.clean("-xdf")
+            self.git.reset("--hard","HEAD")
+            self.git.pull()
+        except Exception,e:
+            self.log.error(e)
+            assert("git_clean error")
+        # self.log.info("git clean done")
+
 
     def get_local_dsp_version(self):
         "CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
@@ -410,15 +473,8 @@ class gitPushDspDailyBuild():
         return self.dsp_version
 
 
-    def git_push(self):
-        try:
-            self.git.clean("-xdf")
-            self.git.reset("--hard","HEAD")
-            self.git.pull()
-        except Exception,e:
-            self.log.error("gitPushDspDailyBuild")
-            self.log.error(e)
-            return None
+    def git_push_start(self):
+        self.git_clean()
         local_dsp_version = self.get_local_dsp_version()
         self.check_dsp_rf()
         if not self.update_dsp_version():
@@ -434,24 +490,15 @@ class gitPushDspDailyBuild():
         self.log.info("="*50)
         self.log.info("git push dsp...")
         try:
-            self.log.info("git add...")
-            self.git.add(self.local_dsp_bin, self.local_rf_bin)
-            self.log.info("git add done")
-            self.log.info("git commit...")
-            # self.dsp_version = " ".join(self.dsp_version.split())
-            # self.dsp_version = self.dsp_version.split(",")[-1]
+            self.git_add(self.local_dsp_bin, self.local_rf_bin)
             match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",self.dsp_version)
             if match and "\00" not in match[0]:
                 dsp_version = match[0]
             else:
                 dsp_version =  str(time.asctime())
             commit_info = "update dsp dailybuild %s"%dsp_version
-            self.log.info("-m %s"%str(commit_info))
-            self.git.commit("-m %s"%str(commit_info))
-            self.log.info("git commit done")
-            self.log.info("git push...")
-            self.git.push(*self.push_cmd)
-            self.log.info("git push done")
+            self.git_commit(commit_info)
+            self.git_push()
             return True
         except Exception,e:
             self.log.error(e)

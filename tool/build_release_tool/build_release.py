@@ -437,6 +437,7 @@ class cusbuild(dailyBuild):
                 root_dir = self.download_tool_images_dir_d[board]
                 images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
                 download_controller.prepare_download_tool(images)
+                download_controller.release_zip(os.path.dirname(root_dir))
                 download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir = self.download_tool_dir_d[board])
             except Exception, e:
                 logger.error(e)
@@ -574,6 +575,8 @@ class autoRelease(ThreadBase):
                 root_dir = os.path.join(version_file, board, "cp_images")
                 images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
                 download_controller.prepare_download_tool(images,board)
+                zip_root_dir = os.path.join(self.dist_dir, os.path.basename(version_file),board)
+                download_controller.release_zip(zip_root_dir)
                 download_controller.release_download_tool(release_name, board, dist_dir = os.path.join(self.dist_dir,"download_tool", board))
 
             cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir, repo_cus.verion_name)
@@ -645,7 +648,7 @@ class autoPush(ThreadBase):
         while self._running:
             for git_obj in self.git_list:
                 try:
-                    git_obj.git_push()
+                    git_obj.git_push_start()
                 except Exception,e:
                     logger.error(e)
             time.sleep(10)
@@ -677,11 +680,11 @@ class autoCleanOverdueDir(ThreadBase):
                 now = datetime.datetime.today()
                 if now.minute > 1 or now.hour != 2:
                     continue
-                self.clean_overdue_dir(r"E:\crane_dailybuild",5,target_dir = 'crane_git_')
+                self.clean_overdue_dir(r"E:\crane_dailybuild",5,target_dir = 'crane_d_')
                 self.clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'MINIGUI_SDK_')
                 self.clean_overdue_dir(cfg.download_tool_dir,5,target_dir = 'CRANE_RELEASE_')
                 self.clean_overdue_dir(cfg.cp_sdk_dir,5,target_dir = 'ASR3601_MINIGUI_')
-                self.clean_overdue_dir("D:\crane_cus",5,target_dir = 'crane_release_')
+                self.clean_overdue_dir("D:\crane_cus",5,target_dir = 'crane_rc_')
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
@@ -782,7 +785,7 @@ if __name__ == "__main__":
     # auto clean task
     auto_clean_overdue_dir_task = autoCleanOverdueDir(logger)
 
-    cp_sdk_cls.git_push()
+    cp_sdk_cls.git_push_start()
 
     # task start
     for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_cp_task, auto_build_task]:

@@ -257,7 +257,7 @@ class zipTool(object):
             subprocess.call(unpack_cmd,shell = True)
             kill_winproc("7z.exe")
 
-
+    '''
     def unpack_files_from_archive(self, archive_file, dist_dir, *fname):
         archive_file = os.path.realpath(archive_file)
         assert os.path.exists(archive_file),"can not find %r"%archive_file
@@ -282,6 +282,16 @@ class zipTool(object):
             else:
                 print "%r not exists"%_file
         shutil.rmtree(dir_name)
+    '''
+    def unpack_files_from_archive(self, archive_file, dist_dir, *fname):
+        archive_file = os.path.realpath(archive_file)
+        assert os.path.exists(archive_file),"can not find %r"%archive_file
+        unpack_cmd = "{} e {} {} -o{} -y".format(self._external_tool, archive_file, " ".join(fname),dist_dir)
+        # print unpack_cmd
+        with self._mutex:
+            subprocess.call(unpack_cmd,shell = True)
+            kill_winproc("7z.exe")
+
 
     def pack_files_to_archive(self,base_name, format, *fname):
         root_dir, _ = os.path.splitext(base_name)
