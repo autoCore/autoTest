@@ -12,7 +12,7 @@ class downloadToolController(object):
     def __init__(self,cfg, logger):
         super(downloadToolController,self).__init__()
         self.download_tool = None
-
+        self.tmp = cfg.tmp_dir
         self.download_tool_dir = cfg.download_tool_dir
         self.download_tool_release_dir = cfg.download_tool_release_dir
         self.download_tool_file_name = cfg.download_tool_file_name
@@ -94,7 +94,8 @@ class downloadToolController(object):
         os.chdir(self.download_tool_release_zip_dir)
         zip_file = "ASR_CRANE_EVB_A0_16MB.zip"
         zip_file = os.path.join(dist_dir, zip_file)
-        release_cmd = "arelease.exe -c . -g --erase-all -p ASR_CRANE_EVB -v CRANE_A0_16MB %s"%zip_file
+        release_log = os.path.join(self.tmp,"release_log.txt")
+        release_cmd = "arelease.exe -c . -g --erase-all -p ASR_CRANE_EVB -v CRANE_A0_16MB %s > %s"%(zip_file,release_log)
         os.system(release_cmd)
 
 
@@ -130,7 +131,7 @@ class gitPushCpDailyBuild(object):
         self.cp_sdk = None
 
         self.cp_sdk_root_dir = None
-        self.dsp_rf_root_dir = None
+        self.dsp_rf_root_dir = ''
 
         self.download_tool = None
         self.log = logger
@@ -197,7 +198,7 @@ class gitPushCpDailyBuild(object):
     def clean_git_push_cp(self):
         self.git_clean()
         for _file in os.listdir(self.git_push_cp_dir):
-            if _file  in [".git", "X.bat", "Image"]:
+            if _file  in [".git", "X.bat"]:
                 continue
             _file = os.path.join(self.git_push_cp_dir,_file)
             if os.path.isfile(_file):
@@ -223,19 +224,22 @@ class gitPushCpDailyBuild(object):
                     shutil.copytree(fname,os.path.join(self.git_push_cp_dir,_file))
                 else:
                     self.log.warning("%s"%fname)
+
             self.log.info("%s"%self.dsp_rf_root_dir)
-            if self.dsp_rf_root_dir and os.path.exists(self.dsp_rf_root_dir):
+            if os.path.exists(self.dsp_rf_root_dir):
                 dir_path= os.path.dirname(self.dsp_rf_root_dir)
                 self.log.info("%s"%dir_path)
                 dist_dir = os.path.join(self.git_push_cp_dir, os.path.basename(dir_path))
+                self.log.info("%s"%dist_dir)
                 if os.path.exists(dist_dir):
                     shutil.rmtree(dist_dir)
                 shutil.copytree(dir_path, dist_dir)
                 for _file in ["dsp.bin","rf.bin"]:
                     fname = os.path.join(self.dsp_rf_root_dir,_file)
+                    dist_file = os.path.join(self.git_push_dsp_dir,_file)
                     if os.path.exists(self.git_push_dsp_dir):
                         if os.path.isfile(fname):
-                            shutil.copy2(fname, self.git_push_dsp_dir)
+                            shutil.copy2(fname, dist_file)
                         else:
                             self.log.warning("%s"%fname)
             self.log.info("copy_sdk_to_git_push_cp done.")
@@ -267,7 +271,7 @@ class gitPushCpDailyBuild(object):
         if not os.path.exists(path_dir):
             assert("%r not exists"%path_dir)
         for _file in os.listdir(path_dir):
-            self.log.debug(os.path.join(path_dir,_file))
+            self.log.info(os.path.join(path_dir,_file))
             if _file in ["libmgapollo.a","libmgngux.a","libmgminigui.a","libtarget.a","libthirdparty.a","libmgmgeff.a","libhal.a","hal_init.o"]:
                 os.remove(os.path.join(path_dir,_file))
         self.log.info("delete_gui_lib done.")
@@ -344,7 +348,6 @@ class gitPushCpDailyBuild(object):
         gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
         self.delete_gui_lib(gui_lib)
         self.copy_sdk_to_git_push_cp(cp_sdk)
-
         try:
             self.git_add()
             commit_info = "%s"%self.cp_sdk
@@ -521,7 +524,7 @@ class gitPushDspDailyBuild():
                     if os.path.exists(rf):
                         dsp_release_bin_l.append(os.path.join(root,tgt_file))
         dsp_release_bin_l.sort(key=lambda fn:os.path.getmtime(fn))
-        # self.log.debug("\n".join(dsp_release_bin_l))
+        self.log.debug("\n".join(dsp_release_bin_l))
         dsp_release_bin = dsp_release_bin_l[-1]
         self.log.debug(dsp_release_bin)
         root_dir = os.path.dirname(dsp_release_bin)

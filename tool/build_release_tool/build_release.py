@@ -226,7 +226,8 @@ class dailyBuild(object):
                 elif os.path.isdir(src):
                     shutil.copytree(src, dist)
             else:
-                logger.warning("%s file not exists"%src)
+                raise Exception,"%s file not exists"%src
+                # logger.warning("%s file not exists"%src)
 
         if os.path.exists(self.mdb_file_dir):
             for _file in os.listdir(self.mdb_file_dir):
@@ -244,7 +245,8 @@ class dailyBuild(object):
             if os.path.exists(src_bin):
                 shutil.copy2(src_bin,dist_bin)
             else:
-                logger.warning("%s not exists"%src_bin)
+                raise Exception,"%s file not exists"%src_bin
+                # logger.warning("%s not exists"%src_bin)
 
         if os.path.exists(self.mdb_file_dir):
             for _file in os.listdir(self.mdb_file_dir):
@@ -410,23 +412,20 @@ class cusbuild(dailyBuild):
 
         for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
             self.repo.git_clean()
-            try:
-                build_controller.build(self.build_root_dir, cmd = build_cmd)
-                build_controller.send_email(self.build_root_dir, owner,os.path.join(self.release_dist_dir,file_name),board)
+            build_controller.build(self.build_root_dir, cmd = build_cmd)
+            build_controller.send_email(self.build_root_dir, owner,os.path.join(self.release_dist_dir,file_name),board)
 
-                kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
+            kill_winproc("mingw32-make.exe",'cmake.exe',"make.exe", 'armcc.exe',  'wtee.exe')
 
-                if board in self.board_list[0] and build_controller.build_res in "FAIL":
-                    logger.info(self.loacal_dist_dir,"build fail")
-                    return self.loacal_dist_dir
+            if board in self.board_list[0] and build_controller.build_res in "FAIL":
+                logger.info(self.loacal_dist_dir,"build fail")
+                return self.loacal_dist_dir
 
-                self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
-                self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], "cus_evb", self.build_root_dir)
-                archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
-                dist_dir = self.download_tool_images_dir_d[board]
-                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
-            except Exception, e:
-                logger.error(e)
+            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
+            self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], "cus_evb", self.build_root_dir)
+            archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
+            dist_dir = self.download_tool_images_dir_d[board]
+            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin","rf.bin","ReliableData.bin")
 
         if os.path.exists(self.sdk_release_notes_file) and self.repo.release_branch == "master":
             shutil.copy2(self.sdk_release_notes_file, os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
@@ -498,10 +497,10 @@ class autoRelease(ThreadBase):
         dailybuild_list = [_file for _file in os.listdir(root_dir) if _file.startswith(target)]
         dailybuild_list.sort(key=lambda fn:os.path.getmtime(os.path.join(root_dir,fn)))
         for file_name in dailybuild_list[::-1]:
-            logger.debug(file_name)
+            logger.info(file_name)
             dist = os.path.join(dist_dir,file_name)
             if os.path.exists(dist):
-                logger.debug(dist)
+                logger.info(dist)
                 return os.path.join(root_dir,file_name)
         else:
             return None
