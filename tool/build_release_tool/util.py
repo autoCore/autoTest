@@ -45,7 +45,7 @@ class myLogger(object):
         if self._logger:
             self._logger.setLevel(level)
 
-    def resetLogFile(self, file_name, fmt = ''):
+    def resetLogFile(self, file_name, level=logging.INFO, fmt=''):
         if self._file_handler:
             self._logger.removeHandler(self._file_handler)
         self._file_name = file_name
@@ -55,7 +55,7 @@ class myLogger(object):
             self._file_handler.setFormatter(_fmt)
         else:
             self._file_handler.setFormatter(self._formate)
-        self._file_handler.setLevel(logging.DEBUG)
+        self._file_handler.setLevel(level)
         self._logger.addHandler(self._file_handler)
 
     def info(self,*message):
