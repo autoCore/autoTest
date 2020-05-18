@@ -56,6 +56,7 @@ RELEASE VERSION: {6}
 
 def copy(src, dist):
     assert os.path.exists(src), "%s not exists" % src
+    logger.info("copy %s start..."%src)
     if os.path.isfile(src):
         shutil.copy2(src, dist)
     elif os.path.isdir(src):
@@ -279,7 +280,7 @@ class DailyBuild(object):
 
                 archive_file = os.path.join(self.git_version_dir, board, "ASR_CRANE_EVB_A0_16MB.zip")
                 dist_dir = os.path.join(self.git_version_dir, board, "cp_images")
-                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin")
+                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
             except Exception, e:
                 logger.error(e)
 
@@ -382,12 +383,6 @@ class CusBuild(DailyBuild):
         if release_note:
             copy(release_note, os.path.join(self.version_info_dir, os.path.basename(release_note)))
 
-        # if os.path.exists(self.ap_version_log):
-        # shutil.copy2(self.ap_version_log, os.path.join(self.version_info_dir, os.path.basename(self.ap_version_log)))
-
-        # shutil.copy2(self.massage_file,os.path.join(self.version_info_dir, os.path.basename(massage_file)))
-        # self.repo.update_cp_version(self.cp_version_file, os.path.join(self.version_info_dir, os.path.basename(self.cp_version_log)))
-
         for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
             self.repo.git_clean()
             build_controller.build(self.build_root_dir, cmd=build_cmd)
@@ -404,7 +399,7 @@ class CusBuild(DailyBuild):
             self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], "cus_evb", self.build_root_dir)
             archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
             dist_dir = self.download_tool_images_dir_d[board]
-            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin")
+            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
 
         if os.path.exists(self.sdk_release_notes_file) and self.repo.release_branch == "master":
             copy(self.sdk_release_notes_file,
