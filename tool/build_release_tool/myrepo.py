@@ -22,6 +22,8 @@ manifest_xml = \
 
 class myRepo(object):
     def __init__(self, logger, version_log, root_path='', storage_list=None):
+        self.release_branch = None
+        self.release_dist_dir = None
         if storage_list is None:
             storage_list = ['', 'cp', 'gui', 'tool']
         self.root_path = root_path
@@ -195,12 +197,14 @@ class myRepo(object):
         return version
 
     def get_cp_version(self, cp_version_file):
-        '''#define CRANE_CUST_VER_INFO 
-        "["##SYSTEM_VERSION##"]
+        """
+        #define CRANE_CUST_VER_INFO 
+        ["##SYSTEM_VERSION##"]
         ["##DISTRIBUTION_VERSION##"]
         ["##SYSTEM_TARGET_OS##"]
         ["##SYSTEM_PS_MODE##"]
-        ["##APPEND_REVERSION##"]"'''
+        ["##APPEND_REVERSION##"]
+        """
         assert os.path.exists(cp_version_file), "%s not exists" % cp_version_file
         SYSTEM_CUST_SKU = "MINIGUI"
         SYSTEM_SKU_REVERSION = "SDK"
@@ -211,12 +215,12 @@ class myRepo(object):
         SYSTEM_VERSION = ''
         DISTRIBUTION_VERSION = ''
         for _line in file_obj:
-            format = '#define[ ]+SYSTEM_VERSION[ ]+"(.*?)"'
-            match = re.findall(format, _line)
+            _format = '#define[ ]+SYSTEM_VERSION[ ]+"(.*?)"'
+            match = re.findall(_format, _line)
             if match:
                 SYSTEM_VERSION = match[0]
-            format = '#define[ ]+DISTRIBUTION_VERSION[ ]+"(.*?)"'
-            match = re.findall(format, _line)
+            _format = '#define[ ]+DISTRIBUTION_VERSION[ ]+"(.*?)"'
+            match = re.findall(_format, _line)
             if match:
                 DISTRIBUTION_VERSION = match[0]
         CRANE_CUST_VER_INFO = "[%s][%s][%s][%s][%s]" % (SYSTEM_VERSION, \
@@ -232,7 +236,8 @@ class myRepo(object):
             obj.write(self.cp_version)
         return self.cp_version
 
-    def get_old_cp_version(self, cp_version_log_file):
+    @staticmethod
+    def get_old_cp_version(cp_version_log_file):
         if not os.path.exists(cp_version_log_file):
             return None
         else:
@@ -244,9 +249,9 @@ class myRepo(object):
             obj.write(self.cp_version)
 
     def get_dsp_version(self, dsp_bin, dsp_version_log_file):
-        "!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
-        fobj = open(dsp_bin, "rb")
-        text = fobj.read()
+        """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
+        fob = open(dsp_bin, "rb")
+        text = fob.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
         match = re.findall("(CRANE_.{47})", text)
         if match:
@@ -260,6 +265,7 @@ class myRepo(object):
 
 
 class cusRepo(myRepo):
+
     def __init__(self, logger, cfg):
         super(cusRepo, self).__init__(logger, cfg.version_cus_log, cfg.cur_crane_cus, ['.'])
         _path = os.path.join(self.root_path, '.')
