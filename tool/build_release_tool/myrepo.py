@@ -56,7 +56,7 @@ class myRepo(object):
                 info = _git.pull()
                 if not storage:
                     storage = 'hal'
-                self.log.debug("%-4s %s"%(storage,info))
+                # self.log.debug("%-4s %s"%(storage,info))
                 if "Already up to date." not in info:
                     ret = 1
             except Exception,e:
@@ -144,10 +144,10 @@ class myRepo(object):
             _repo = git.Repo(_path)
             _git = _repo.git
             info = _git.log("-1","--pretty=format:%H")
-            self.log.debug(storage,info)
+            # self.log.debug(storage,info)
             info_list.append(info)
         manifest_text = manifest_xml.format(info_list)
-        self.log.debug(manifest_text)
+        self.log.info(manifest_text)
         _obj = open(xml_file,'w')
         _obj.write(manifest_text.lstrip())
         _obj.close()
@@ -158,8 +158,12 @@ class myRepo(object):
         text = text.replace('\n','')
         text_list = re.findall(self.version_pattern, text)
         self.log.debug(text_list)
-        assert text_list,"can not find version info"
-        self.verion_name, _ = text_list[-1]
+        if text_list:
+            # assert text_list,"can not find version info"
+            self.verion_name, _ = text_list[-1]
+        else:
+            self.verion_name = self.release_branch
+        self.log.debug(self.verion_name)
 
     def get_nearest_version(self):
         flog = open(self.version_log)
@@ -168,10 +172,15 @@ class myRepo(object):
         # text_list = re.findall(r'crane_git_r([0-9]+)',text)
         text_list = re.findall(self.version_pattern, text)
         self.log.debug(text_list)
-        assert text_list,"can not find version info"
-        self.verion_name, cnt = text_list[-1]
-        cnt = int(cnt)
-        return "%s%04d"%(self.verion_name,cnt+1)
+        if text_list:
+            # assert text_list,"can not find version info"
+            self.verion_name, cnt = text_list[-1]
+            cnt = int(cnt)
+            version = "%s%04d"%(self.verion_name,cnt+1)
+            self.log.info(version)
+        else:
+            version = self.release_branch
+        return version
 
     def record_version(self,version = '',info = ''):
         flog = open(self.version_log,'a')
@@ -212,7 +221,7 @@ class myRepo(object):
                 DISTRIBUTION_VERSION = match[0]
         CRANE_CUST_VER_INFO = "[%s][%s][%s][%s][%s]"%(SYSTEM_VERSION,\
         DISTRIBUTION_VERSION,SYSTEM_TARGET_OS,SYSTEM_PS_MODE,APPEND_REVERSION)
-        self.log.debug(CRANE_CUST_VER_INFO)
+        # self.log.debug(CRANE_CUST_VER_INFO)
         self.cp_version = CRANE_CUST_VER_INFO
         return CRANE_CUST_VER_INFO
 
@@ -241,7 +250,7 @@ class myRepo(object):
         match = re.findall("(CRANE_.{47})",text)
         if match:
             version_info = match[0]
-            self.log.debug(version_info)
+            # self.log.debug(version_info)
             self.dsp_version = version_info
         else:
             version_info = "can not match dsp version".upper()
@@ -263,6 +272,10 @@ class cusRepo(myRepo):
             self.git.checkout(self.release_branch)
             self.version_log = self.cfg.CUS_BRANCH_INFO[self.release_branch]["version_file"]
             self.release_dist_dir = self.cfg.CUS_BRANCH_INFO[self.release_branch]["release_dist_dir"]
+        elif self.release_branch == "r1_1.006.027":
+            self.version_log = self.cfg.version_r1_tmp
+            self.release_dist_dir = self.cfg.release_r1_tmp
+
         self.get_verion_name()
 
 
