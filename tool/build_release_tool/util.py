@@ -26,24 +26,24 @@ def kill_win_process(*process_name):
 
 
 class MyLogger(object):
-    def __init__(self, name = '', level = logging.INFO):
+    def __init__(self, name='', level=logging.INFO):
         logging.root.setLevel(logging.NOTSET)
         self._logger = logging.getLogger(name)
         self._file_name = None
         self._file_handler = None
         self._stream_handler = None
         self._formate = logging.Formatter('[%(asctime)s] %(message)s')
-        self.enablePrint(level)
+        self.enable_print(level)
 
-    def addHandler(self, handler):
+    def add_handler(self, handler):
         if self._logger:
             self._logger.addHandler(handler)
 
-    def setLevel(self, level):
+    def set_level(self, level):
         if self._logger:
             self._logger.setLevel(level)
 
-    def resetLogFile(self, file_name, level=logging.INFO, fmt=''):
+    def reset_log_file(self, file_name, level=logging.INFO, fmt=''):
         if self._file_handler:
             self._logger.removeHandler(self._file_handler)
         self._file_name = file_name
@@ -73,19 +73,19 @@ class MyLogger(object):
     def critical(self, *message):
         self._logger.critical("%s " * len(message) % (message))
 
-    def enablePrint(self, level=logging.INFO):
+    def enable_print(self, level=logging.INFO):
         if not self._stream_handler:
             self._stream_handler = logging.StreamHandler()
             self._stream_handler.setLevel(level)
             self._stream_handler.setFormatter(self._formate)
             self._logger.addHandler(self._stream_handler)
 
-    def disablePrint(self):
+    def disable_print(self):
         if self._stream_handler:
-            self._stream_handler = None
             self._logger.removeHandler(self._stream_handler)
+            self._stream_handler = None
 
-    def getLogFile(self):
+    def get_log_file(self):
         return self._file_name
 
     def write(self, *message):
@@ -93,35 +93,36 @@ class MyLogger(object):
 
 
 def get_sudo_password():
-    proc = pexpect.spawn("sudo ls")
+    password = None
+    prc = pexpect.spawn("sudo ls")
     while 1:
-        index = proc.expect([r'\[sudo\] password for', r'Sorry, try again', "sudo: 3 incorrect password attempts",
+        index = prc.expect([r'\[sudo\] password for', r'Sorry, try again', "sudo: 3 incorrect password attempts",
                              pexpect.EOF, pexpect.TIMEOUT], timeout=2)
         if index == 0:
             password = getpass.getpass("[sudo] password input: ")
-            proc.sendline(password)
+            prc.sendline(password)
         if index == 1:
             print "Sorry, try again."
         if index == 2:
             print 'sudo: 3 incorrect password attempts'
-            proc.close(force=True)
+            prc.close(force=True)
             sys.exit(1)
         if index == 3:
-            proc.close(force=True)
+            prc.close(force=True)
             return password
 
 
-class ProcBase(object):
+class PrcBase(object):
     """docstring for ProcBase"""
 
     def __init__(self):
         self._running = mp.Event()
-        self._proc = None
+        self._prc = None
 
     def terminate(self):
-        if self._proc:
+        if self._prc:
             self._running.clear()
-            self._proc.terminate()
+            self._prc.terminate()
 
     def run(self, *args):
         while self._running.is_set():
@@ -129,21 +130,21 @@ class ProcBase(object):
 
     def start(self, *args):
         self._running.set()
-        self._proc = mp.Process(target=self.run, args=args)
-        self._proc.daemon = True
-        self._proc.start()
+        self._prc = mp.Process(target=self.run, args=args)
+        self._prc.daemon = True
+        self._prc.start()
 
     def restart(self, *args):
         self.terminate()
         self.start(*args)
 
-    def setDaemon(self, BOOL):
-        if self._proc:
-            self._proc.daemon = BOOL
+    def set_daemon(self, BOOL):
+        if self._prc:
+            self._prc.daemon = BOOL
 
-    def isOpen(self):
-        if self._proc:
-            return self._proc.is_alive()
+    def is_open(self):
+        if self._prc:
+            return self._prc.is_alive()
         return False
 
 
@@ -152,7 +153,7 @@ class ThreadBase(object):
 
     def __init__(self, name=None):
         self._running = False
-        self._proc = None
+        self._prc = None
         self._name = name
         self._queue = Queue.Queue()
 
@@ -163,7 +164,7 @@ class ThreadBase(object):
         self._queue.put(msg)
 
     def terminate(self):
-        if self._proc:
+        if self._prc:
             self._running = False
 
     def run(self, *arg):
@@ -172,22 +173,22 @@ class ThreadBase(object):
 
     def start(self, *args):
         self._running = True
-        self._proc = threading.Thread(target=self.run, name=self._name, args=args)
-        self._proc.daemon = True
-        self._proc.start()
+        self._prc = threading.Thread(target=self.run, name=self._name, args=args)
+        self._prc.daemon = True
+        self._prc.start()
 
     def restart(self, *args):
         self.terminate()
-        self._proc = None
+        self._prc = None
         self.start(*args)
 
-    def setDaemon(self, BOOL):
-        if self._proc:
-            self._proc.daemon = BOOL
+    def set_daemon(self, BOOL):
+        if self._prc:
+            self._prc.daemon = BOOL
 
-    def isOpen(self):
-        if self._proc:
-            return self._proc.is_alive()
+    def is_open(self):
+        if self._prc:
+            return self._prc.is_alive()
         return False
 
 
@@ -202,7 +203,7 @@ class config:
         if os.path.exists(cfg_file):
             conf.read(cfg_file)
         else:
-            assert ('No config file')
+            assert 'No config file'
         conf.set("basic_config", "root_dir", self.cur_work_dir)
         for sec in conf.sections():
             if 'basic_config' in str(sec):
@@ -233,7 +234,8 @@ class zipTool(object):
         work_dir = os.path.dirname(os.path.abspath(__file__))
         self._external_tool = os.path.join(work_dir, "unzip_tool", "7z.exe")
 
-    def make_archive(self, base_name, _format, root_dir):
+    @staticmethod
+    def make_archive(base_name, _format, root_dir):
         shutil.make_archive(base_name, _format, root_dir)
 
     def make_archive_e(self, base_name, _format, root_dir):

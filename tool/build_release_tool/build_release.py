@@ -3,6 +3,7 @@
 import sys
 import os
 import time
+
 from util import *
 from git_push_cp import *
 from release_zip import *
@@ -10,6 +11,7 @@ from send_email import *
 from ftp import ftp_upload_file
 from TriggerTest import trigger_test
 from myrepo import *
+from util import config
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -56,7 +58,7 @@ RELEASE VERSION: {6}
 
 def copy(src, dist):
     assert os.path.exists(src), "%s not exists" % src
-    logger.info("copy %s start..."%src)
+    logger.info("copy %s start..." % src)
     if os.path.isfile(src):
         shutil.copy2(src, dist)
     elif os.path.isdir(src):
@@ -108,16 +110,16 @@ class BuildController(object):
             logger.warning("%s build fail" % cur_dir)
             self.build_res = "FAIL"
 
-    def send_email(self, cur_dir, owner, external_dir, brd="crane_evb_z2"):
+    def send_email(self, cur_dir, owner, external_dir, board="crane_evb_z2"):
         os.chdir(cur_dir)
         if self.build_res in "FAIL":
             att_file = '@'.join(
                 [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log, self.compile_log])
-            subject = r"%s build result: fail" % brd
+            subject = r"%s build result: fail" % board
             msg = r"Hi %s, your patch build fail! Pls check attachment log" % (owner.split("@")[0])
         else:
             att_file = None
-            subject = r"%s build result: pass" % brd
+            subject = r"%s build result: pass" % board
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
         to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
         send_email_tool(to_address, subject, msg, att_file)
@@ -169,11 +171,11 @@ class DailyBuild(object):
         dsp_version_file = os.path.join(self.tmp_dir, "dsp_version.bin")
         decompress_cmd = "{0} -d -f {1} -o{2}".format(self.decompress_tool, dsp_bin, dsp_version_file)
         os.system(decompress_cmd)
-        assert os.path.exists(dsp_version_file), "canot find {}".format(dsp_version_file)
-        with open(dsp_version_file, "rb") as fobj:
-            text = fobj.read()
+        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
+        with open(dsp_version_file, "rb") as fob:
+            text = fob.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        fobj.close()
+        fob.close()
         match = re.findall("(CRANE_.{47})", text)
         if match:
             version_info = match[0]
@@ -224,21 +226,18 @@ class DailyBuild(object):
         src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
         dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.sdk_images]
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
-            if os.path.exists(src_bin):
-                shutil.copy2(src_bin, dist_bin)
-            else:
-                raise Exception, "%s file not exists" % src_bin
-                # logger.warning("%s not exists"%src_bin)
+            copy(src_bin, dist_bin)
 
         if os.path.exists(self.mdb_file_dir):
             for _file in os.listdir(self.mdb_file_dir):
                 if "MDB.TXT" in _file.upper():
-                    shutil.copy2(os.path.join(self.mdb_file_dir, _file), os.path.join(dist_dir, _file))
+                    copy(os.path.join(self.mdb_file_dir, _file), os.path.join(dist_dir, _file))
                     break
 
     def condition(self):
         return self.repo.sync()
 
+    @property
     def build(self):
         self.get_dsp_version(self.dsp_bin)
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
@@ -280,34 +279,35 @@ class DailyBuild(object):
 
                 archive_file = os.path.join(self.git_version_dir, board, "ASR_CRANE_EVB_A0_16MB.zip")
                 dist_dir = os.path.join(self.git_version_dir, board, "cp_images")
-                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
+                time.sleep(5)
+                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin",
+                                                                                            "logo.bin", "updater.bin")
             except Exception, e:
                 logger.error(e)
 
         dist = os.path.join(self.dist_dir, file_name)
         copy(self.git_version_dir, dist)
 
-        logger.info("old_cp_version: %s" % (old_cp_version))
-        logger.info("new_cp_version: %s" % (self.cp_version))
+        logger.info("old_cp_version: %s" % old_cp_version)
+        logger.info("new_cp_version: %s" % self.cp_version)
         if self.cp_version not in old_cp_version:
             RELEASE_EVENT.set()
         return self.git_version_dir
 
 
 class CusBuild(DailyBuild):
-    def __init__(self, _cfg, repo_cus):
-        super(CusBuild, self).__init__(_cfg, repo_cus)
+    def __init__(self, _cfg, _repo_cus):
+        super(CusBuild, self).__init__(_cfg, _repo_cus)
         self.cfg = _cfg
         self.cur_crane = _cfg.cur_crane_cus
         self.build_root_dir = _cfg.cus_build_root_dir
 
-        self.relase_download_tool = None
         self.release_mdb_dir = None
 
         self.board_list = _cfg.BOARD_LIST[:]
         self.borad_build_cmd = _cfg.BOARD_BUILD_CMD[:]
 
-        self.release_dist_dir = repo_cus.release_dist_dir
+        self.release_dist_dir = _repo_cus.release_dist_dir
 
         self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
         self.dsp_version_log = _cfg.release_dsp_version_log
@@ -325,40 +325,41 @@ class CusBuild(DailyBuild):
         self.download_tool_images_dir_d = {}
         self.version_info_dir = ''
 
-        self.dist_dir = repo_cus.release_dist_dir
+        self.dist_dir = _repo_cus.release_dist_dir
 
-    def prepare_release_dir(self, version_file):
-        self.loacal_dist_dir = version_file
-        self.git_version_dir = version_file
+    def cus_prepare_release_dir(self, version_dir):
+        self.loacal_dist_dir = version_dir
+        self.git_version_dir = version_dir
         os.mkdir(self.loacal_dist_dir)
-        self.version_info_dir = os.path.join(version_file, "version_info")
+        self.version_info_dir = os.path.join(version_dir, "version_info")
         os.mkdir(self.version_info_dir)
         for board in self.board_list:
-            self.loacal_build_dir_d[board] = os.path.join(version_file, board)
+            self.loacal_build_dir_d[board] = os.path.join(version_dir, board)
             os.mkdir(self.loacal_build_dir_d[board])
-            self.download_tool_dir_d[board] = os.path.join(version_file, board, "download_tool")
+            self.download_tool_dir_d[board] = os.path.join(version_dir, board, "download_tool")
             os.mkdir(self.download_tool_dir_d[board])
-            self.download_tool_images_dir_d[board] = os.path.join(version_file, board, "cp_images")
+            self.download_tool_images_dir_d[board] = os.path.join(version_dir, board, "cp_images")
             os.mkdir(self.download_tool_images_dir_d[board])
 
     def find_newest_notes(self):
-        root_dir = os.path.join(self.cur_crane, "note")
-        release_note_list = [_file for _file in os.listdir(root_dir) if _file.startswith("ReleaseNotes")]
-        release_note_list.sort(key=lambda fn: os.path.getmtime(os.path.join(root_dir, fn)))
+        _root_dir = os.path.join(self.cur_crane, "note")
+        release_note_list = [_file for _file in os.listdir(_root_dir) if _file.startswith("ReleaseNotes")]
+        release_note_list.sort(key=lambda fn: os.path.getmtime(os.path.join(_root_dir, fn)))
         if release_note_list:
             file_name = release_note_list[-1]
             logger.debug(file_name)
-            return os.path.join(root_dir, file_name)
+            return os.path.join(_root_dir, file_name)
         else:
             return None
 
     def build(self):
-        if self.repo.release_branch in ["r1", "r1_plus_j", "r1_1.006.027"]:
-            self.board_list = self.cfg.BOARD_LIST[:1]
-            self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:1]
-        else:
+        if self.repo.release_branch == "master":
             self.board_list = self.cfg.BOARD_LIST[:]
             self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:]
+        else: # ["r1", "r1_plus_j", "r1_1.006.027"]
+            self.board_list = self.cfg.BOARD_LIST[:1]
+            self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:1]
+
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
         self.cp_version = self.repo.update_cp_version(self.cp_version_file, self.cp_version_log)
         self.get_dsp_version(self.dsp_bin)
@@ -376,7 +377,7 @@ class CusBuild(DailyBuild):
         version_file = os.path.join(os.path.dirname(self.cur_crane), file_name)
         build_controller.git_version_dir = version_file
 
-        self.prepare_release_dir(version_file)
+        self.cus_prepare_release_dir(version_file)
         self.copy_version_file_to_release_dir()
 
         release_note = self.find_newest_notes()
@@ -399,6 +400,7 @@ class CusBuild(DailyBuild):
             self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], "cus_evb", self.build_root_dir)
             archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
             dist_dir = self.download_tool_images_dir_d[board]
+            time.sleep(5)
             zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
 
         if os.path.exists(self.sdk_release_notes_file) and self.repo.release_branch == "master":
@@ -408,18 +410,18 @@ class CusBuild(DailyBuild):
         download_controller.update_download_tool()
         for board in self.board_list:
             try:
-                root_dir = self.download_tool_images_dir_d[board]
-                images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
-                download_controller.prepare_download_tool(images)
-                download_controller.release_zip(os.path.dirname(root_dir))
+                _root_dir = self.download_tool_images_dir_d[board]
+                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+                download_controller.prepare_download_tool(_images)
+                download_controller.release_zip(os.path.dirname(_root_dir))
                 download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                           dist_dir=self.download_tool_dir_d[board])
             except Exception, e:
                 logger.error(e)
         copy(self.loacal_dist_dir, release_dist)
 
-        logger.info("old_cp_version: %s" % (old_cp_version))
-        logger.info("new_cp_version: %s" % (self.cp_version))
+        logger.info("old_cp_version: %s" % old_cp_version)
+        logger.info("new_cp_version: %s" % self.cp_version)
         if self.cp_version not in old_cp_version:
             to_address = 'yuanzhizheng@asrmicro.com'
             subject = "%s RELEASE" % self.cp_version
@@ -429,7 +431,8 @@ class CusBuild(DailyBuild):
         self.repo.git_clean()
         return self.loacal_dist_dir
 
-    def trigger_auto_test(self, dist_dir, board="crane_evb_z2"):
+    @staticmethod
+    def trigger_auto_test(dist_dir, board="crane_evb_z2"):
         try:
             sdk_tool_abs_dir = os.path.join(dist_dir, board, "download_tool")
             sdk_tool_abs_path = os.listdir(sdk_tool_abs_dir)
@@ -454,34 +457,36 @@ class CusBuild(DailyBuild):
 
 
 class autoRelease(ThreadBase):
-    def __init__(self, cfg, release_event):
+    def __init__(self, _cfg, release_event):
         super(autoRelease, self).__init__()
-        self.cur_crane = cfg.cur_crane
-        self.dist_dir = cfg.dist_dir
+        self.cur_crane = _cfg.cur_crane
+        self.dist_dir = _cfg.dist_dir
 
-        self.cur_crane_cus = cfg.cur_crane_cus
-        self.release_dist_dir = cfg.release_dist_dir
+        self.cur_crane_cus = _cfg.cur_crane_cus
+        self.release_dist_dir = _cfg.release_dist_dir
 
-        self.board_list = cfg.BOARD_LIST[:]
+        self.board_list = _cfg.BOARD_LIST[:]
 
         self.today_release_flag = threading.Event()
         self.release_event = release_event
 
-    def get_release_version(self, root_dir, dist_dir, target="crane_d"):
-        root_dir = os.path.dirname(root_dir)
-        dailybuild_list = [_file for _file in os.listdir(root_dir) if _file.startswith(target)]
-        dailybuild_list.sort(key=lambda fn: os.path.getmtime(os.path.join(root_dir, fn)))
+    @staticmethod
+    def get_release_version(_root_dir, dist_dir, target="crane_d"):
+        _root_dir = os.path.dirname(_root_dir)
+        dailybuild_list = [_file for _file in os.listdir(_root_dir) if _file.startswith(target)]
+        dailybuild_list.sort(key=lambda fn: os.path.getmtime(os.path.join(_root_dir,fn)))
         for file_name in dailybuild_list[::-1]:
             logger.info(file_name)
             dist = os.path.join(dist_dir, file_name)
             if os.path.exists(dist):
                 logger.info(dist)
-                return os.path.join(root_dir, file_name)
+                return os.path.join(_root_dir,file_name)
         else:
             return None
 
-    def CHECK_DSP_VERSION(self, dsp_version):
-        '''CRANE_CAT1GSM_L1_1.053.001 , Feb 29 2020 03:40:50'''
+    @staticmethod
+    def CHECK_DSP_VERSION(dsp_version):
+        """CRANE_CAT1GSM_L1_1.053.001 , Feb 29 2020 03:40:50"""
         match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])", dsp_version)
         if match and "\00" not in match[0]:
             return match[0]
@@ -489,7 +494,8 @@ class autoRelease(ThreadBase):
             return "can not match dsp version".upper()
 
     def send_release_email(self, version_file, customer_file=None):
-        to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com,crane_sw_mmi_group@asrmicro.com"
+        to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
+                     "crane_sw_mmi_group@asrmicro.com "
         version_fname = os.path.basename(version_file)
         subject = email_subject % version_fname.upper()
         _match = re.findall(repo.verion_name + "[0-9]+", version_fname)
@@ -544,9 +550,9 @@ class autoRelease(ThreadBase):
             download_controller.update_download_tool()
             self.today_release_flag.set()
             for board in self.board_list:
-                root_dir = os.path.join(version_file, board, "cp_images")
-                images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
-                download_controller.prepare_download_tool(images, board)
+                _root_dir = os.path.join(version_file, board, "cp_images")
+                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+                download_controller.prepare_download_tool(_images, board)
                 zip_root_dir = os.path.join(self.dist_dir, os.path.basename(version_file), board)
                 download_controller.release_zip(zip_root_dir)
                 download_controller.release_download_tool(release_name, board,
@@ -621,7 +627,7 @@ class autoPush(ThreadBase):
             for git_obj in self.git_list:
                 try:
                     git_obj.git_push_start()
-                except Exception, e:
+                except Exception,e:
                     logger.error(e)
             time.sleep(10)
 
@@ -632,19 +638,17 @@ class autoCleanOverdueDir(ThreadBase):
         super(autoCleanOverdueDir, self).__init__()
 
     @staticmethod
-    def clean_overdue_dir(dir, del_time, target_dir='', isdir=True):
-        os.chdir(dir)
-        listdir = os.listdir(dir)
+    def clean_overdue_dir(_dir, del_time, target_dir='', isdir=True):
+        os.chdir(_dir)
+        listdir = os.listdir(_dir)
         listdir = [d for d in listdir if os.path.isdir(d) and target_dir in d] if isdir else [f for f in listdir if
                                                                                               os.path.isfile(
                                                                                                   f) and target_dir in f]
         del_t = datetime.timedelta(days=del_time)
-        now = datetime.datetime.now()
+        _now = datetime.datetime.now()
         for d in listdir:
-            ctime = datetime.datetime.fromtimestamp(os.path.getctime(d))
-            if (now - ctime) > del_t:
-                # os.chmod(d,0o777)
-                # shutil.rmtree(d)
+            create_time = datetime.datetime.fromtimestamp(os.path.getctime(d))
+            if (_now - create_time) > del_t:
                 logger.info("delete %s start..." % d)
                 os.system(r"rd /s /q %s" % d)
                 logger.info("delete %s done" % d)
@@ -652,8 +656,8 @@ class autoCleanOverdueDir(ThreadBase):
     def run(self):
         while self._running:
             try:
-                now = datetime.datetime.today()
-                if now.minute > 1 or now.hour != 2:
+                _now = datetime.datetime.today()
+                if _now.minute > 1 or _now.hour != 2:
                     continue
                 self.clean_overdue_dir(r"E:\crane_dailybuild", 5, target_dir='crane_d_')
                 self.clean_overdue_dir(cfg.download_tool_dir, 5, target_dir='MINIGUI_SDK_')
@@ -682,7 +686,7 @@ class autoBuild(ThreadBase):
             try:
                 for build_obj in self.build_list:
                     if build_obj.condition():
-                        build_obj.build()
+                        var = build_obj.build
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('autoBuild exit')
@@ -718,16 +722,16 @@ def prepare_system_start():
 
 
 RELEASE_EVENT = threading.Event()
-cfg = config()
 
 if __name__ == "__main__":
     root_dir = os.getcwd()
+    cfg = config()
     logger = MyLogger("build_release")
     prepare_system_start()
     log_file = os.path.join(cfg.log_dir, "log_%s.txt" % time.strftime("%Y%m%d_%H%M%S"))
     zip_tool = zipTool()
 
-    logger.resetLogFile(log_file)
+    logger.reset_log_file(log_file)
     logger.debug(cfg)
     repo = myRepo(logger, cfg.version_log, cfg.cur_crane)
     repo.update_cp_version(os.path.join(cfg.cur_crane, cfg.cp_version_file), cfg.cp_version_log)
@@ -735,11 +739,14 @@ if __name__ == "__main__":
     repo_cus.update_cp_version(os.path.join(cfg.cur_crane_cus, "evb", "src", cfg.cp_version_file),
                                cfg.release_cp_version_log)
 
+    # noinspection PyTypeChecker
     build_controller = BuildController(cfg)
     download_controller = downloadToolController(cfg, logger)
     # download_controller.update_download_tool()
 
+    # noinspection PyTypeChecker
     auto_daily_build_cls = DailyBuild(cfg, repo)
+    # noinspection PyTypeChecker
     auto_cus_build_cls = CusBuild(cfg, repo_cus)
 
 
@@ -747,7 +754,7 @@ if __name__ == "__main__":
     dsp_cls = gitPushDspDailyBuild(cfg, logger)
     cus_sdk_cls = gitPushCusSDK(cfg, logger)
 
-    # release tast
+    # release task
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
 
     # auto push task
