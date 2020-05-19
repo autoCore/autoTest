@@ -224,7 +224,7 @@ class DailyBuild(object):
             src_dir = self.cur_crane
         src_bin_l = self.sdk_files_dict.get(board, [])
         src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
-        dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.sdk_images]
+        dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.sdk_files_dict.get("IMAGES", [])]
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
             copy(src_bin, dist_bin)
 
@@ -397,7 +397,7 @@ class CusBuild(DailyBuild):
                 return self.loacal_dist_dir
 
             self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
-            self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], "cus_evb", self.build_root_dir)
+            self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.uild_root_dir)
             archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
             dist_dir = self.download_tool_images_dir_d[board]
             time.sleep(5)
