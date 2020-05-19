@@ -228,12 +228,6 @@ class DailyBuild(object):
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
             copy(src_bin, dist_bin)
 
-        if os.path.exists(self.mdb_file_dir):
-            for _file in os.listdir(self.mdb_file_dir):
-                if "MDB.TXT" in _file.upper():
-                    copy(os.path.join(self.mdb_file_dir, _file), os.path.join(dist_dir, _file))
-                    break
-
     def condition(self):
         return self.repo.sync()
 
@@ -264,26 +258,23 @@ class DailyBuild(object):
 
         for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
             self.repo.git_clean()
-            try:
-                build_controller.build(self.cur_crane, cmd=build_cmd)
-                build_controller.send_email(self.cur_crane, owner, os.path.join(self.external_dir, file_name), board)
+            build_controller.build(self.cur_crane, cmd=build_cmd)
+            build_controller.send_email(self.cur_crane, owner, os.path.join(self.external_dir, file_name), board)
 
-                kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
+            kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-                if board in self.board_list[0] and build_controller.build_res in "FAIL":
-                    logger.info(self.git_version_dir, "build fail")
-                    return self.git_version_dir
+            if board in self.board_list[0] and build_controller.build_res in "FAIL":
+                logger.info(self.git_version_dir, "build fail")
+                return self.git_version_dir
 
-                self.copy_build_file_to_release_dir(os.path.join(self.git_version_dir, board))
-                self.copy_sdk_files_to_release_dir(os.path.join(self.git_version_dir, board, "cp_images"), board)
+            self.copy_build_file_to_release_dir(os.path.join(self.git_version_dir, board))
+            self.copy_sdk_files_to_release_dir(os.path.join(self.git_version_dir, board, "cp_images"), board)
 
-                archive_file = os.path.join(self.git_version_dir, board, "ASR_CRANE_EVB_A0_16MB.zip")
-                dist_dir = os.path.join(self.git_version_dir, board, "cp_images")
-                time.sleep(5)
-                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin",
-                                                                                            "logo.bin", "updater.bin")
-            except Exception, e:
-                logger.error(e)
+            archive_file = os.path.join(self.git_version_dir, board, "ASR_CRANE_EVB_A0_16MB.zip")
+            dist_dir = os.path.join(self.git_version_dir, board, "cp_images")
+            # time.sleep(5)
+            # zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin",
+            #                                                                                 "logo.bin", "updater.bin")
 
         dist = os.path.join(self.dist_dir, file_name)
         copy(self.git_version_dir, dist)
@@ -397,7 +388,7 @@ class CusBuild(DailyBuild):
                 return self.loacal_dist_dir
 
             self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
-            self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.uild_root_dir)
+            self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
             dist_dir = self.download_tool_images_dir_d[board]
             time.sleep(5)
@@ -741,7 +732,7 @@ if __name__ == "__main__":
 
     # noinspection PyTypeChecker
     build_controller = BuildController(cfg)
-    download_controller = downloadToolController(cfg, logger)
+    download_controller = DownloadToolController(cfg, logger)
     # download_controller.update_download_tool()
 
     # noinspection PyTypeChecker

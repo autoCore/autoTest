@@ -26,14 +26,14 @@ def kill_win_process(*process_name):
 
 
 class MyLogger(object):
-    def __init__(self, name='', level=logging.INFO):
+    def __init__(self, _name='', _level=logging.INFO):
         logging.root.setLevel(logging.NOTSET)
-        self._logger = logging.getLogger(name)
+        self._logger = logging.getLogger(_name)
         self._file_name = None
         self._file_handler = None
         self._stream_handler = None
         self._formate = logging.Formatter('[%(asctime)s] %(message)s')
-        self.enable_print(level)
+        self.enable_print(_level)
 
     def add_handler(self, handler):
         if self._logger:
@@ -194,6 +194,13 @@ class ThreadBase(object):
 
 class config:
     def __init__(self):
+        self.release_cp_version_log = None
+        self.cur_crane_cus = None
+        self.cp_version_log = None
+        self.cp_version_file = None
+        self.cur_crane = None
+        self.version_log = None
+        self.log_dir = None
         self.cur_work_dir = None
 
     def update(self, cfg_file):
