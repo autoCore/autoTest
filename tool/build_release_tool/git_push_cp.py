@@ -10,8 +10,8 @@ from util import *
 
 
 class DownloadToolController(object):
-    def __init__(self,_cfg,_logger):
-        super(downloadToolController,self).__init__()
+    def __init__(self, _cfg, _logger):
+        super(DownloadToolController, self).__init__()
         self.download_tool = None
         self.tmp = _cfg.tmp_dir
         self.download_tool_dir = _cfg.download_tool_dir
