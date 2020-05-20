@@ -228,10 +228,10 @@ class DailyBuild(object):
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
             copy(src_bin, dist_bin)
 
+    @property
     def condition(self):
         return self.repo.sync()
 
-    @property
     def build(self):
         self.get_dsp_version(self.dsp_bin)
         old_cp_version = self.repo.get_old_cp_version(self.cp_version_log)
@@ -676,8 +676,8 @@ class autoBuild(ThreadBase):
         while self._running:
             try:
                 for build_obj in self.build_list:
-                    if build_obj.condition():
-                        var = build_obj.build
+                    if build_obj.condition:
+                        build_obj.build()
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('autoBuild exit')
