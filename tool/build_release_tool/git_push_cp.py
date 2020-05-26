@@ -392,18 +392,15 @@ class gitPushCusSDK(gitPushCpDailyBuild):
         self.init()
 
     def init(self):
-        if self.cfg.release_branch == "r1":
-            self.git.checkout("r1")
-            self.push_cmd = ("origin","r1")
-            self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
-        elif self.cfg.release_branch == "r1_plus_j":
-            self.git.checkout("r1_plus_j")
-            self.push_cmd = ("origin","r1_plus_j")
-            self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
-        elif self.cfg.release_branch == "master":
+        if self.cfg.release_branch == "master":
             self.git.checkout("master")
             self.cp_sdk_release_dir = self.cfg.cus_cp_sdk_release_dir
             self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
+        else:
+            self.git.checkout(str(self.cfg.release_branch))
+            self.push_cmd = ("origin",str(self.cfg.release_branch))
+            self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
+
 
 
 class gitPushDspDailyBuild():

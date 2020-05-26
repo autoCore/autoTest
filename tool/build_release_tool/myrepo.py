@@ -264,8 +264,12 @@ class myRepo(object):
             obj.write(version_info)
 
 
-class cusRepo(myRepo):
+class DailyRepo(myRepo):
+    def __init__(self, logger, _cfg):
+        super(DailyRepo, self).__init__(logger, _cfg.version_log, _cfg.cur_crane)
 
+
+class CusRepo(myRepo):
     def __init__(self, logger, cfg):
         super(cusRepo, self).__init__(logger, cfg.version_cus_log, cfg.cur_crane_cus, ['.'])
         _path = os.path.join(self.root_path, '.')
@@ -276,11 +280,11 @@ class cusRepo(myRepo):
 
     def init(self):
         self.release_branch = self.cfg.release_branch
+        self.git.checkout(self.release_branch)
         if self.release_branch in self.cfg.CUS_BRANCH_INFO:
-            self.git.checkout(self.release_branch)
             self.version_log = self.cfg.CUS_BRANCH_INFO[self.release_branch]["version_file"]
             self.release_dist_dir = self.cfg.CUS_BRANCH_INFO[self.release_branch]["release_dist_dir"]
-        elif self.release_branch == "r1_1.006.027":
+        else:
             self.version_log = self.cfg.version_r1_tmp
             self.release_dist_dir = self.cfg.release_r1_tmp
 
