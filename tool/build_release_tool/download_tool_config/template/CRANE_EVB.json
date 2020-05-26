@@ -235,7 +235,7 @@
     },
     {
       "name": "fuse",
-      "image": "fuse.bin",
+      "image": "fuse.dat",
       "io": "out",
       "format": "fuse"
     },
@@ -341,7 +341,7 @@
     }
   ],
   "values": {
-    "product": "arom",
+    "product": "arom|arom-tiny",
     "version": "",
     "version-bootrom": "",
     "weight": 0

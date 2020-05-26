@@ -84,14 +84,21 @@
           "size": "1MiB"
         },
         {
-          "name": "factory_a",
-          "format": "raw",
-          "size": "64KiB"
-        },
-        {
-          "name": "factory_b",
-          "format": "raw",
-          "size": "64KiB"
+          "name": "factory",
+          "format": "part",
+          "size": "0",
+          "partitions": [
+            {
+              "name": "factory_a",
+              "format": "raw",
+              "size": "64KiB"
+            },
+            {
+              "name": "factory_b",
+              "format": "raw",
+              "size": "64KiB"
+            }
+          ]
         }
       ]
     }
