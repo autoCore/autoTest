@@ -271,7 +271,7 @@ class DailyRepo(myRepo):
 
 class CusRepo(myRepo):
     def __init__(self, logger, cfg):
-        super(cusRepo, self).__init__(logger, cfg.version_cus_log, cfg.cur_crane_cus, ['.'])
+        super(CusRepo, self).__init__(logger, cfg.version_cus_log, cfg.cur_crane_cus, ['.'])
         _path = os.path.join(self.root_path, '.')
         self.git = git.Repo(_path).git
         self.cfg = cfg
