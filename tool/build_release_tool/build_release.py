@@ -129,40 +129,37 @@ class BuildController(object):
         logger.info("send email done")
 
 
-class DailyBuild(object):
+class BuildBase(object):
     def __init__(self, _cfg, _repo):
         self.repo = _repo
-        self.cur_crane = _cfg.cur_crane
-        self.external_dir = _cfg.external_dir
+        self.build_root_dir = _repo.build_root_dir
+        self.git_root_dir = _repo.root_path
 
-        self.board_list = _cfg.BOARD_LIST[:]
-        self.borad_build_cmd = _cfg.BOARD_BUILD_CMD[:]
+        self.release_dist_dir = _repo.release_dist_dir
 
+        self.board_list = []
+        self.borad_build_cmd = []
+        self.board_info = _cfg.BOARD_INFO
         self.build_images = _cfg.BUILD_IMAGES[:]
 
-        self.version_log = _cfg.version_log
+        self.mdb_file_dir = os.path.join(self.build_root_dir, _cfg.mdb_file_dir)
 
-        self.mdb_file_dir = _cfg.mdb_file_dir
+
         self.sdk_files_dict = _cfg.BOARD_CP_RELEASE_BIN_DICT
         self.sdk_images = _cfg.IMAGES[:]
+ 
+        self.cp_version_file = os.path.join(self.build_root_dir, _cfg.cp_version_file)
+        self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
 
-        self.dsp_bin = os.path.join(_cfg.cur_crane, "cus", "evb", "images", "dsp.bin")
-        self.dsp_version_log = _cfg.dsp_version_log
-        self.decompress_tool = _cfg.decompress_tool
+        self.ap_version_log = _repo.ap_version_log
+        self.cp_version_log = _repo.cp_version_log
+        self.dsp_version_log = _repo.dsp_version_log
 
-        self.cp_version_file = os.path.join(_cfg.cur_crane, _cfg.cp_version_file)
-        self.cp_version_log = _cfg.cp_version_log
-
-        self.ap_version_log = _cfg.ap_version_log
-
-        self.dist_dir = _cfg.dist_dir
 
         self.tmp_dir = _cfg.tmp_dir
+        self.decompress_tool = _cfg.decompress_tool
 
         self.manisest_xml_dir = _cfg.manisest_xml_dir
-
-        self.sdk_release_notes_file = os.path.join(_cfg.cur_crane, _cfg.sdk_release_notes_file)
-
 
         self.xml_file = ''
         self.git_version_dir = ''
@@ -223,8 +220,7 @@ class DailyBuild(object):
                 copy(_file, os.path.join(self.git_version_dir, "version_info", os.path.basename(_file)))
 
     def copy_build_file_to_release_dir(self, dist_dir, src_dir=None):
-        if not src_dir:
-            src_dir = self.cur_crane
+        src_dir = self.repo.build_root_dir
         for _file in self.build_images:
             if "crane_evb_z2" not in dist_dir and "rel_lib" in _file:
                 continue
@@ -239,9 +235,9 @@ class DailyBuild(object):
                     break
 
     def copy_sdk_files_to_release_dir(self, dist_dir, board="crane_evb_z2", src_dir=None):
-        if not src_dir:
-            src_dir = self.cur_crane
+        src_dir = self.repo.build_root_dir
         src_bin_l = self.sdk_files_dict.get(board, [])
+        # src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
         src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
         dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.sdk_files_dict.get("IMAGES", [])]
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
@@ -281,7 +277,7 @@ class DailyBuild(object):
         self.repo.get_manifest_xml(self.xml_file)
         self.massage_file = self.repo.get_commit_massages()
 
-        self.git_version_dir = os.path.join(os.path.dirname(self.cur_crane), file_name)
+        self.git_version_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
 
         build_controller.git_version_dir = self.git_version_dir
 
@@ -289,9 +285,10 @@ class DailyBuild(object):
         self.copy_version_file_to_release_dir()
 
         for board, build_cmd in zip(self.board_list, self.borad_build_cmd):
+            # build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
             self.repo.git_clean()
-            build_controller.build(self.cur_crane, cmd=build_cmd)
-            build_controller.send_email(self.cur_crane, owner, os.path.join(self.external_dir, file_name), board)
+            build_controller.build(self.build_root_dir, cmd=build_cmd)
+            build_controller.send_email(self.build_root_dir, owner, os.path.join(self.release_dist_dir, file_name), board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
@@ -308,7 +305,7 @@ class DailyBuild(object):
             # zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin",
             #                                                                                 "logo.bin", "updater.bin")
 
-            download_controller.update_download_tool()
+        download_controller.update_download_tool()
         for board in self.board_list:
             try:
                 _root_dir = self.download_tool_images_dir_d[board]
@@ -320,7 +317,7 @@ class DailyBuild(object):
             except Exception, e:
                 logger.error(e)
 
-        dist = os.path.join(self.dist_dir, file_name)
+        dist = os.path.join(self.release_dist_dir, file_name)
         copy(self.git_version_dir, dist)
 
         logger.info("old_cp_version: %s" % old_cp_version)
@@ -330,40 +327,29 @@ class DailyBuild(object):
         return self.git_version_dir
 
 
-class CusBuild(DailyBuild):
+class DailyBuild(BuildBase):
+    def __init__(self, _cfg, _repo):
+        super(DailyBuild, self).__init__(_cfg, _repo)
+        self.board_list = _cfg.BOARD_LIST[:3]
+        self.borad_build_cmd = _cfg.BOARD_BUILD_CMD[:3]
+
+
+class CusBuild(BuildBase):
     def __init__(self, _cfg, _repo_cus):
         super(CusBuild, self).__init__(_cfg, _repo_cus)
-        self.cfg = _cfg
-        self.cur_crane = _cfg.cur_crane_cus
-        self.build_root_dir = _cfg.cus_build_root_dir
-
-        self.release_mdb_dir = None
-
-        self.release_dist_dir = _repo_cus.release_dist_dir
-
-        self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
-        self.dsp_version_log = _cfg.release_dsp_version_log
-
-        self.cp_version_file = os.path.join(self.build_root_dir, _cfg.cp_version_file)
-        self.cp_version_log = _cfg.release_cp_version_log
-
-        self.ap_version_log = _cfg.release_ap_version_log
 
         self.sdk_release_notes_file = _cfg.cus_sdk_release_notes_file
 
-
-        self.dist_dir = _repo_cus.release_dist_dir
-
         if self.repo.release_branch == "master":
-            self.board_list = self.cfg.BOARD_LIST[:3]
-            self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:3]
+            self.board_list = _cfg.BOARD_LIST[:3]
+            self.borad_build_cmd = _cfg.BOARD_BUILD_CMD[:3]
         else: # ["r1", "r1_plus_j", "r1_1.006.027"]
-            self.board_list = self.cfg.BOARD_LIST[:1]
-            self.borad_build_cmd = self.cfg.BOARD_BUILD_CMD[:1]
+            self.board_list = _cfg.BOARD_LIST[:1]
+            self.borad_build_cmd = _cfg.BOARD_BUILD_CMD[:1]
 
 
     def find_newest_notes(self):
-        _root_dir = os.path.join(self.cur_crane, "note")
+        _root_dir = os.path.join(self.git_root_dir, "note")
         release_note_list = [_file for _file in os.listdir(_root_dir) if _file.startswith("ReleaseNotes")]
         release_note_list.sort(key=lambda fn: os.path.getmtime(os.path.join(_root_dir, fn)))
         if release_note_list:
@@ -388,7 +374,7 @@ class CusBuild(DailyBuild):
         release_dist = os.path.join(self.release_dist_dir, file_name)
         self.massage_file = self.repo.get_commit_massages()
 
-        version_file = os.path.join(os.path.dirname(self.cur_crane), file_name)
+        version_file = os.path.join(os.path.dirname(self.git_root_dir), file_name)
         build_controller.git_version_dir = version_file
 
         self.prepare_release_dir(version_file)

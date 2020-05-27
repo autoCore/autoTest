@@ -92,7 +92,8 @@ def ftp_upload_file(src_dir, dist):
     try:
         ftp.mkd(dist)
     except:
-        pass
+        raise Exception,"can not create ftp dir: %s"%dist
+        ftp.quit()
     ftp.cwd(dist)
     print "FTP dir:", ftp.pwd()
 

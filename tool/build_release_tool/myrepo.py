@@ -21,9 +21,10 @@ manifest_xml = \
 
 
 class myRepo(object):
-    def __init__(self, logger, version_log, root_path='', storage_list=None):
+    def __init__(self, _logger, version_log, root_path, storage_list=None):
         self.release_branch = None
-        self.release_dist_dir = None
+        self.release_dist_dir = ''
+        self.build_root_dir = ''
         if storage_list is None:
             storage_list = ['', 'cp', 'gui', 'tool']
         self.root_path = root_path
@@ -33,11 +34,10 @@ class myRepo(object):
         self.menifest_xml = ''
         self.cp_version = None
         self.dsp_version = None
-        self.log = logger
+        self.log = _logger
         self.version_pattern = r'(crane_.*?)([0-9][0-9][0-9][0-9])'
         self.verion_name = None
 
-        self.get_verion_name()
 
     def clone(self, clone_path):
         for storage in self._storage_list:
@@ -154,7 +154,7 @@ class myRepo(object):
         _obj.write(manifest_text.lstrip())
         _obj.close()
 
-    def get_verion_name(self):
+    def _get_verion_name(self):
         flog = open(self.version_log)
         text = flog.read()
         text = text.replace('\n', '')
@@ -267,25 +267,37 @@ class myRepo(object):
 class DailyRepo(myRepo):
     def __init__(self, logger, _cfg):
         super(DailyRepo, self).__init__(logger, _cfg.version_log, _cfg.cur_crane)
+        self.build_root_dir = _cfg.cur_crane
+        self.release_dist_dir = _cfg.dist_dir
+
+        self.ap_version_log = _cfg.ap_version_log
+        self.cp_version_log = _cfg.cp_version_log
+        self.dsp_version_log = _cfg.dsp_version_log
+
+        self._get_verion_name()
 
 
 class CusRepo(myRepo):
-    def __init__(self, logger, cfg):
-        super(CusRepo, self).__init__(logger, cfg.version_cus_log, cfg.cur_crane_cus, ['.'])
+    def __init__(self, logger, _cfg):
+        super(CusRepo, self).__init__(logger, _cfg.version_cus_log, _cfg.cur_crane_cus, ['.'])
+
+        self.build_root_dir = _cfg.cus_build_root_dir
+        self.release_branch = _cfg.release_branch
+
+        self.ap_version_log = _cfg.release_ap_version_log
+        self.cp_version_log = _cfg.release_cp_version_log
+        self.dsp_version_log = _cfg.release_dsp_version_log
+
+
         _path = os.path.join(self.root_path, '.')
-        self.git = git.Repo(_path).git
-        self.cfg = cfg
+        _git = git.Repo(_path).git
+        _git.checkout(self.release_branch)
 
-        self.init()
-
-    def init(self):
-        self.release_branch = self.cfg.release_branch
-        self.git.checkout(self.release_branch)
-        if self.release_branch in self.cfg.CUS_BRANCH_INFO:
-            self.version_log = self.cfg.CUS_BRANCH_INFO[self.release_branch]["version_file"]
-            self.release_dist_dir = self.cfg.CUS_BRANCH_INFO[self.release_branch]["release_dist_dir"]
+        if self.release_branch in _cfg.CUS_BRANCH_INFO:
+            self.version_log = _cfg.CUS_BRANCH_INFO[self.release_branch]["version_file"]
+            self.release_dist_dir = _cfg.CUS_BRANCH_INFO[self.release_branch]["release_dist_dir"]
         else:
-            self.version_log = self.cfg.version_r1_tmp
-            self.release_dist_dir = self.cfg.release_r1_tmp
+            self.version_log = _cfg.version_r1_tmp
+            self.release_dist_dir = _cfg.release_r1_tmp
 
-        self.get_verion_name()
+        self._get_verion_name()
