@@ -139,7 +139,7 @@ class BuildBase(object):
 
         self.board_list = []
         self.board_info = _cfg.BOARD_INFO
-        self.build_images = _cfg.BUILD_IMAGES[:]
+        self.build_images = _cfg.BUILD_IMAGES[1:]
 
         self.mdb_file_dir = os.path.join(self.build_root_dir, _cfg.mdb_file_dir)
 
@@ -342,6 +342,8 @@ class DailyBuild(BuildBase):
         self.prepare_release_dir(self.loacal_dist_dir)
         self.copy_version_file_to_release_dir()
 
+        download_controller.update_download_tool()
+
         for board in self.board_list:
             self.git_clean()
             build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
@@ -358,7 +360,16 @@ class DailyBuild(BuildBase):
             self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
             self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
 
-        self.create_download_tool()
+            if build_controller.build_res == "SUCCESS":
+                _root_dir = self.download_tool_images_dir_d[board]
+                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+                download_controller.prepare_download_tool(_images)
+                download_controller.release_zip(os.path.dirname(_root_dir))
+                download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
+                                                          dist_dir=self.download_tool_dir_d[board])
+
+
+        # self.create_download_tool()
 
         dist = os.path.join(self.release_dist_dir, file_name)
         copy(self.loacal_dist_dir, dist)
@@ -449,17 +460,8 @@ class CusBuild(BuildBase):
             copy(self.sdk_release_notes_file,
                          os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
 
-        download_controller.update_download_tool()
-        for board in self.board_list:
-            try:
-                _root_dir = self.download_tool_images_dir_d[board]
-                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
-                download_controller.prepare_download_tool(_images)
-                download_controller.release_zip(os.path.dirname(_root_dir))
-                download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
-                                                          dist_dir=self.download_tool_dir_d[board])
-            except Exception, e:
-                logger.error(e)
+        self.create_download_tool()
+
         copy(self.loacal_dist_dir, release_dist)
 
         logger.info("old_cp_version: %s" % old_cp_version)

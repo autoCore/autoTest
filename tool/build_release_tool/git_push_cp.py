@@ -56,7 +56,8 @@ class DownloadToolController(object):
                 time.sleep(3)
                 self.unzip_download_tool(zip_file)
             self.download_tool.append(download_tool_fname)
-        self.log.info("\n".join(self.download_tool))
+        for _tool in self.download_tool:
+            self.log.info(_tool)
 
     def prepare_download_tool(self,images,borad="crane_evb_z2"):
         """borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"""
@@ -98,15 +99,18 @@ class DownloadToolController(object):
             else:
                 self.log.error("self.template_config:%s error" % self.template_config)
 
-    def release_zip(self,dist_dir):
+    def release_zip(self, dist_dir, project_type = "CRANE_A0_16MB"):
         assert os.path.exists(
             self.download_tool_release_zip_dir)," can not find download tool %s " % self.download_tool_release_zip_dir
         os.chdir(self.download_tool_release_zip_dir)
-        zip_file = "ASR_CRANE_EVB_A0_16MB.zip"
+        if "crane_lwg" in dist_dir:
+            project_type = "CRANEG_Z1_32+8MB"
+        zip_file = "ASR_CRANE_EVB_%s.zip" % project_type
         zip_file = os.path.join(dist_dir,zip_file)
         release_log = os.path.join(self.tmp,"release_log.txt")
-        release_cmd = "arelease.exe -c . -g --erase-all -p ASR_CRANE_EVB -v CRANE_A0_16MB %s > %s" % (
-            zip_file,release_log)
+        self.log.info("create zip %s" % zip_file)
+        release_cmd = "arelease.exe -c . -g --erase-all -p ASR_CRANE_EVB -v %s %s > %s" % (
+            project_type, zip_file, release_log)
         os.system(release_cmd)
 
     def release_download_tool(self,release_name,borad="crane_evb_z2",dist_dir=None):
