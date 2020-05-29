@@ -249,7 +249,7 @@ class BuildBase(object):
     def trigger_auto_test(self, dist_dir, test_type, board="crane_evb_z2"):
         try:
             board = "crane_evb_z2"
-            sdk_tool_abs_path_dir = os.path.join(dist_dir, os.path.basename(version_file),
+            sdk_tool_abs_path_dir = os.path.join(dist_dir, os.path.basename(dist_dir),
                                                                                   board, "download_tool")
             for _file in os.listdir(sdk_tool_abs_path_dir):
                 if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
@@ -450,7 +450,7 @@ class CusBuild(BuildBase):
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
                 self.log.error(e)
-            archive_file = os.path.join(self.loacal_build_dir_d[board], "ASR_CRANE_EVB_A0_16MB.zip")
+            archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
             dist_dir = self.download_tool_images_dir_d[board]
             time.sleep(5)
             zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
