@@ -249,8 +249,8 @@ class BuildBase(object):
     def trigger_auto_test(self, dist_dir, test_type, board="crane_evb_z2"):
         try:
             board = "crane_evb_z2"
-            sdk_tool_abs_path_dir = os.path.join(dist_dir, os.path.basename(dist_dir),
-                                                                                  board, "download_tool")
+            sdk_tool_abs_path_dir = os.path.join(dist_dir, board, "download_tool")
+            self.log.info(sdk_tool_abs_path_dir)
             for _file in os.listdir(sdk_tool_abs_path_dir):
                 if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
                     sdk_tool_abs_path = os.path.join(sdk_tool_abs_path_dir, _file)
@@ -795,8 +795,8 @@ if __name__ == "__main__":
 
     # auto build task
     auto_build_task = autoBuild()
-    auto_build_task.add_build(auto_daily_build_cls)
     auto_build_task.add_build(auto_cus_build_cls)
+    auto_build_task.add_build(auto_daily_build_cls)
 
     # auto clean task
     auto_clean_overdue_dir_task = autoCleanOverdueDir()
