@@ -26,14 +26,13 @@ def kill_win_process(*process_name):
 
 
 class MyLogger(object):
-    def __init__(self, _name='', _level=logging.INFO):
+    def __init__(self, _name=''):
         logging.root.setLevel(logging.NOTSET)
         self._logger = logging.getLogger(_name)
         self._file_name = None
         self._file_handler = None
         self._stream_handler = None
-        self._formate = logging.Formatter('[%(asctime)s] %(message)s')
-        self.enable_print(_level)
+        self._formate = logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s]: %(message)s')
 
     def add_handler(self, handler):
         if self._logger:
@@ -42,6 +41,10 @@ class MyLogger(object):
     def set_level(self, level):
         if self._logger:
             self._logger.setLevel(level)
+        if self._stream_handler:
+            self._stream_handler.setLevel(level)
+        if self._file_handler:
+            self._file_handler.setLevel(level)
 
     def reset_log_file(self, file_name, level=logging.INFO, fmt=''):
         if self._file_handler:

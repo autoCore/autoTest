@@ -7,10 +7,10 @@ import time
 import re
 from send_email import *
 from util import *
-
+from util import MyLogger
 
 class DownloadToolController(object):
-    def __init__(self, _cfg, _logger):
+    def __init__(self, _cfg):
         super(DownloadToolController, self).__init__()
         self.download_tool = None
         self.tmp = _cfg.tmp_dir
@@ -22,7 +22,7 @@ class DownloadToolController(object):
         self.default_dist_dir = _cfg.dist_dir
         self.win_type = _cfg.win_type
 
-        self.log = _logger
+        self.log = MyLogger(self.__class__.__name__)
         self.download_tool_dict = {}
         self.release_download_tool_name = None
         self.download_tool_release_zip_dir = ""
@@ -140,7 +140,7 @@ class DownloadToolController(object):
 
 
 class gitPushCpDailyBuild(object):
-    def __init__(self,cfg,logger):
+    def __init__(self,cfg):
         self.cp_sdk_version = None
         self.cp_sdk = None
 
@@ -148,7 +148,7 @@ class gitPushCpDailyBuild(object):
         self.dsp_rf_root_dir = ''
 
         self.download_tool = None
-        self.log = logger
+        self.log = MyLogger(self.__class__.__name__)
         self.cp_sdk_release_dir = cfg.cp_sdk_release_dir
 
         self.git_push_cp_dir = cfg.git_push_cp_dir
@@ -375,12 +375,12 @@ class gitPushCpDailyBuild(object):
 
 
 class gitPushCusSDK(gitPushCpDailyBuild):
-    def __init__(self,cfg,logger):
-        super(gitPushCusSDK,self).__init__(cfg,logger)
+    def __init__(self,cfg):
+        super(gitPushCusSDK,self).__init__(cfg)
         self.cp_sdk_version = None
         self.cp_sdk = None
         self.download_tool = None
-        self.log = logger
+        self.log = MyLogger(self.__class__.__name__)
         self.git_push_cp_dir = cfg.git_push_cus_dir
         self.cp_sdk_dir = cfg.cp_sdk_dir
 
@@ -408,7 +408,7 @@ class gitPushCusSDK(gitPushCpDailyBuild):
 
 
 class gitPushDspDailyBuild():
-    def __init__(self,cfg,logger):
+    def __init__(self,cfg):
         self.dsp_version = None
 
         self.dsp_version_log = cfg.dsp_version_log
@@ -418,7 +418,7 @@ class gitPushDspDailyBuild():
         self.local_rf_bin = cfg.local_rf_bin
 
         self.git = git.Repo(cfg.git_push_dsp_dir).git
-        self.log = logger
+        self.log = MyLogger(self.__class__.__name__)
 
         self.tmp_dir = cfg.tmp_dir
         self.decompress_tool = cfg.decompress_tool

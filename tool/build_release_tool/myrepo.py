@@ -4,6 +4,7 @@ import os
 import datetime
 import re
 import git
+from util import MyLogger
 
 manifest_xml = \
     """
@@ -21,7 +22,7 @@ manifest_xml = \
 
 
 class myRepo(object):
-    def __init__(self, _logger, version_log, root_path, storage_list=None):
+    def __init__(self, version_log, root_path, storage_list=None):
         self.release_branch = None
         self.release_dist_dir = ''
         self.build_root_dir = ''
@@ -34,7 +35,7 @@ class myRepo(object):
         self.menifest_xml = ''
         self.cp_version = None
         self.dsp_version = None
-        self.log = _logger
+        self.log = MyLogger(self.__class__.__name__)
         self.version_pattern = r'(crane_.*?)([0-9][0-9][0-9][0-9])'
         self.verion_name = None
 
@@ -265,8 +266,9 @@ class myRepo(object):
 
 
 class DailyRepo(myRepo):
-    def __init__(self, logger, _cfg):
-        super(DailyRepo, self).__init__(logger, _cfg.version_log, _cfg.cur_crane)
+    def __init__(self, _cfg):
+        super(DailyRepo, self).__init__(_cfg.version_log, _cfg.cur_crane)
+        self.log = MyLogger(self.__class__.__name__)
         self.build_root_dir = _cfg.cur_crane
         self.release_dist_dir = _cfg.dist_dir
 
@@ -278,9 +280,9 @@ class DailyRepo(myRepo):
 
 
 class CusRepo(myRepo):
-    def __init__(self, logger, _cfg):
-        super(CusRepo, self).__init__(logger, _cfg.version_cus_log, _cfg.cur_crane_cus, ['.'])
-
+    def __init__(self, _cfg):
+        super(CusRepo, self).__init__(_cfg.version_cus_log, _cfg.cur_crane_cus, ['.'])
+        self.log = MyLogger(self.__class__.__name__)
         self.build_root_dir = _cfg.cus_build_root_dir
         self.release_branch = _cfg.release_branch
 
@@ -301,3 +303,4 @@ class CusRepo(myRepo):
             self.release_dist_dir = _cfg.release_r1_tmp
 
         self._get_verion_name()
+
