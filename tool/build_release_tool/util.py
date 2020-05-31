@@ -32,7 +32,7 @@ class MyLogger(object):
         self._file_name = None
         self._file_handler = None
         self._stream_handler = None
-        self._formate = logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s]: %(message)s')
+        self._formate = logging.Formatter('[%(asctime)s][%(name)-13s][%(levelname)s]: %(message)s')
 
     def add_handler(self, handler):
         if self._logger:
@@ -66,12 +66,10 @@ class MyLogger(object):
         self._logger.debug("%s " * len(message) % (message))
 
     def warning(self, *message):
-        _str = "%s " * len(message) % (message)
-        self._logger.warning('*** %s ***' % _str)
+        self._logger.warning("%s " * len(message) % (message))
 
     def error(self, *message):
-        _str = "%s " * len(message) % (message)
-        self._logger.error('### %s ###' % _str)
+        self._logger.error("%s " * len(message) % (message))
 
     def critical(self, *message):
         self._logger.critical("%s " * len(message) % (message))
