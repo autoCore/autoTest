@@ -17,20 +17,6 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 email_subject = "CRANE PHONE: AUTO RELEASE %s"
-email_msg = r"""
-GUI VERSION: {0}
-CP VERSION: {1}
-DSP VERSION: {2}
-
-NORMAL VERSION(SINGLE and DUAL SIM):
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\crane_evb_z2
-
-BIRD PHONE VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\download_tool\bird_phone
-
-"""
 email_msg_with_cus = r"""
 GUI VERSION: {0}
 CP VERSION: {1}
@@ -47,6 +33,11 @@ download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone\downloa
 VISENK PHONE VERSION:
 binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone\download_tool
+
+CRANEG VERSION:
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_lwg
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_lwg\download_tool
+
 
 CUSTOMER RELEASE:
 CP VERSION: {4}
@@ -131,7 +122,7 @@ class BuildBase(object):
         self._repo = _repo
         self.log = MyLogger(self.__class__.__name__)
         self.build_root_dir = _repo.build_root_dir
-        self.git_root_dir = _repo.root_path
+        self.git_root_dir = _repo.git_root_dir
 
         self.release_dist_dir = _repo.release_dist_dir
 
@@ -450,10 +441,10 @@ class CusBuild(BuildBase):
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
                 self.log.error(e)
-            archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
-            dist_dir = self.download_tool_images_dir_d[board]
-            time.sleep(5)
-            zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
+            if self.release_branch not in  "master":
+                archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
+                dist_dir = self.download_tool_images_dir_d[board]
+                zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
 
         if os.path.exists(self.sdk_release_notes_file) and self.release_branch == "master":
             copy(self.sdk_release_notes_file,

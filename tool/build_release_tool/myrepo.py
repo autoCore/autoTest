@@ -5,6 +5,7 @@ import datetime
 import re
 import git
 from util import MyLogger
+import json
 
 manifest_xml = \
     """
@@ -22,13 +23,14 @@ manifest_xml = \
 
 
 class myRepo(object):
-    def __init__(self, version_log, root_path, storage_list=None):
+    def __init__(self, version_log="", root_path="", storage_list=None):
+        self.root_dir = os.getcwd()
         self.release_branch = None
         self.release_dist_dir = ''
         self.build_root_dir = ''
         if storage_list is None:
             storage_list = ['', 'cp', 'gui', 'tool']
-        self.root_path = root_path
+        self.git_root_dir = root_path
         self._storage_list = storage_list
         self.CUR_DATE = 0
         self.version_log = version_log
@@ -42,7 +44,7 @@ class myRepo(object):
 
     def clone(self, clone_path):
         for storage in self._storage_list:
-            _path = os.path.join(self.root_path, storage)
+            _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _path = os.path.join(clone_path, storage)
             _repo.clone(_path)
@@ -51,7 +53,7 @@ class myRepo(object):
         ret = None
         self.git_clean()
         for storage in self._storage_list:
-            _path = os.path.join(self.root_path, storage)
+            _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
             _git.config("--global", "core.autocrlf", "false")
@@ -69,7 +71,7 @@ class myRepo(object):
 
     def git_clean(self):
         for storage in self._storage_list:
-            _path = os.path.join(self.root_path, storage)
+            _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
             try:
@@ -82,7 +84,7 @@ class myRepo(object):
     def get_revion_owner(self):
         info_list = []
         for storage in self._storage_list:
-            _path = os.path.join(self.root_path, storage)
+            _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
             info = _git.log("-1", "--date=raw", '--pretty=format:"<%H> <%ae> <%cd> <%s>"')
@@ -108,12 +110,12 @@ class myRepo(object):
         offset = datetime.timedelta(days=delta_time)
         date = (now - offset).strftime("%Y-%m-%d")
         massage_file = "release_notes.txt"
-        massage_file = os.path.join(self.root_path, massage_file)
+        massage_file = os.path.join(self.git_root_dir, massage_file)
         info_list = []
         for storage in self._storage_list:
             if storage is 'tool':
                 continue
-            _path = os.path.join(self.root_path, storage)
+            _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
             info = _git.log("--after=%s" % date, "--pretty=format:commit ID: %H\nAuthor: %an <%ae>\nDate:  %cd\ncommit msg: %s\n\
@@ -132,7 +134,7 @@ class myRepo(object):
     def get_revion_info(self):
         info_list = []
         for storage in self._storage_list:
-            _path = os.path.join(self.root_path, storage)
+            _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
             info = _git.log("-1",
@@ -143,7 +145,7 @@ class myRepo(object):
     def get_manifest_xml(self, xml_file):
         info_list = []
         for storage in self._storage_list:
-            _path = os.path.join(self.root_path, storage)
+            _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
             info = _git.log("-1", "--pretty=format:%H")
@@ -199,7 +201,7 @@ class myRepo(object):
 
     def get_cp_version(self, cp_version_file):
         """
-        #define CRANE_CUST_VER_INFO 
+        #define CRANE_CUST_VER_INFO
         ["##SYSTEM_VERSION##"]
         ["##DISTRIBUTION_VERSION##"]
         ["##SYSTEM_TARGET_OS##"]
@@ -266,8 +268,8 @@ class myRepo(object):
 
 
 class DailyRepo(myRepo):
-    def __init__(self, _cfg):
-        super(DailyRepo, self).__init__(_cfg.version_log, _cfg.cur_crane)
+    def __init__(self):
+        super(DailyRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
         self.build_root_dir = _cfg.cur_crane
         self.release_dist_dir = _cfg.dist_dir
@@ -280,8 +282,8 @@ class DailyRepo(myRepo):
 
 
 class CusRepo(myRepo):
-    def __init__(self, _cfg):
-        super(CusRepo, self).__init__(_cfg.version_cus_log, _cfg.cur_crane_cus, ['.'])
+    def __init__(self):
+        super(CusRepo, self).__init__(storage_list=['.'])
         self.log = MyLogger(self.__class__.__name__)
         self.build_root_dir = _cfg.cus_build_root_dir
         self.release_branch = _cfg.release_branch
