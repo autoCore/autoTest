@@ -481,8 +481,8 @@ class autoRelease(ThreadBase):
         self.today_release_flag = threading.Event()
         self.release_event = release_event
 
-    @staticmethod
-    def get_release_version(_root_dir, dist_dir, target="crane_d"):
+
+    def get_release_version(self, _root_dir, dist_dir, target="crane_d"):
         _root_dir = os.path.dirname(_root_dir)
         dailybuild_list = [_file for _file in os.listdir(_root_dir) if _file.startswith(target)]
         dailybuild_list.sort(key=lambda fn: os.path.getmtime(os.path.join(_root_dir,fn)))
@@ -655,9 +655,8 @@ class autoCleanOverdueDir(ThreadBase):
     def clean_overdue_dir(_dir, del_time, target_dir='', isdir=True):
         os.chdir(_dir)
         listdir = os.listdir(_dir)
-        listdir = [d for d in listdir if os.path.isdir(d) and target_dir in d] if isdir else [f for f in listdir if
-                                                                                              os.path.isfile(
-                                                                                                  f) and target_dir in f]
+        listdir = [d for d in listdir if os.path.isdir(d) and target_dir in d] if isdir else\
+                  [f for f in listdir if os.path.isfile(f) and target_dir in f]
         del_t = datetime.timedelta(days=del_time)
         _now = datetime.datetime.now()
         for d in listdir:
@@ -674,8 +673,7 @@ class autoCleanOverdueDir(ThreadBase):
                 if _now.minute > 1 or _now.hour != 2:
                     continue
                 self.clean_overdue_dir(r"E:\crane_dailybuild", 5, target_dir='crane_d_')
-                self.clean_overdue_dir(cfg.download_tool_dir, 5, target_dir='MINIGUI_SDK_')
-                self.clean_overdue_dir(cfg.download_tool_dir, 5, target_dir='CRANE_RELEASE_')
+                self.clean_overdue_dir(cfg.download_tool_dir, 5, target_dir='_DOWNLOAD_TOOL_')
                 self.clean_overdue_dir(cfg.cp_sdk_dir, 5, target_dir='ASR3601_MINIGUI_')
                 self.clean_overdue_dir("D:\crane_cus", 5, target_dir='crane_rc_')
                 time.sleep(10)
