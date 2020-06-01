@@ -271,12 +271,23 @@ class DailyRepo(myRepo):
     def __init__(self):
         super(DailyRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-        self.build_root_dir = _cfg.cur_crane
-        self.release_dist_dir = _cfg.dist_dir
 
-        self.ap_version_log = _cfg.ap_version_log
-        self.cp_version_log = _cfg.cp_version_log
-        self.dsp_version_log = _cfg.dsp_version_log
+        self.update()
+        self.log.info("create repo done")
+
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        with open(json_file) as f:
+            json_str = json.load(f)
+        self.branch_name = json_str["daily_branch"]
+        self.version_log = os.path.join(self.root_dir,json_str["daily_branch_info"][self.branch_name]["version_file"])
+        self.build_root_dir = json_str["daily_dir_info"]["build"]
+        self.git_root_dir = json_str["daily_dir_info"]["git"]
+        self.release_dist_dir = json_str["daily_branch_info"][self.branch_name]["release_dist_dir"]
+
+        self.ap_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["ap_version_log"])
+        self.cp_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["cp_version_log"])
+        self.dsp_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["dsp_version_log"])
 
         self._get_verion_name()
 
@@ -285,24 +296,30 @@ class CusRepo(myRepo):
     def __init__(self):
         super(CusRepo, self).__init__(storage_list=['.'])
         self.log = MyLogger(self.__class__.__name__)
-        self.build_root_dir = _cfg.cus_build_root_dir
-        self.release_branch = _cfg.release_branch
 
-        self.ap_version_log = _cfg.release_ap_version_log
-        self.cp_version_log = _cfg.release_cp_version_log
-        self.dsp_version_log = _cfg.release_dsp_version_log
+        self.update()
+        self.log.info(self.branch_name)
+        self.log.info("create repo done")
 
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        with open(json_file) as f:
+            json_str = json.load(f)
+        self.branch_name = json_str["cus_branch"]
+        self.release_branch = self.branch_name
+        self.version_log = os.path.join(self.root_dir,json_str["cus_branch_info"][self.branch_name]["version_file"])
+        self.release_dist_dir = json_str["cus_branch_info"][self.branch_name]["release_dist_dir"]
 
-        _path = os.path.join(self.root_path, '.')
+        self.build_root_dir = json_str["cus_dir_info"]["build"]
+        self.git_root_dir = json_str["cus_dir_info"]["git"]
+        self.ap_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["ap_version_log"])
+        self.cp_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["cp_version_log"])
+        self.dsp_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["dsp_version_log"])
+        _path = os.path.join(self.git_root_dir, '.')
         _git = git.Repo(_path).git
-        _git.checkout(self.release_branch)
-
-        if self.release_branch in _cfg.CUS_BRANCH_INFO:
-            self.version_log = _cfg.CUS_BRANCH_INFO[self.release_branch]["version_file"]
-            self.release_dist_dir = _cfg.CUS_BRANCH_INFO[self.release_branch]["release_dist_dir"]
-        else:
-            self.version_log = _cfg.version_r1_tmp
-            self.release_dist_dir = _cfg.release_r1_tmp
+        _git.checkout(self.branch_name)
 
         self._get_verion_name()
+        # self.log.info(self.branch_name)
+
 

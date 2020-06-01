@@ -296,6 +296,7 @@ class BuildBase(object):
 
     @property
     def condition(self):
+        self._repo.update()
         return self._repo.sync()
 
     def build(self):
@@ -752,9 +753,9 @@ if __name__ == "__main__":
     zip_tool = zipTool()
 
     logger.debug(cfg)
-    repo = DailyRepo(cfg)
+    repo = DailyRepo()
     repo.update_cp_version(os.path.join(cfg.cur_crane, cfg.cp_version_file), cfg.cp_version_log)
-    repo_cus = CusRepo(cfg)
+    repo_cus = CusRepo()
     repo_cus.update_cp_version(os.path.join(cfg.cur_crane_cus, "evb", "src", cfg.cp_version_file),
                                cfg.release_cp_version_log)
 

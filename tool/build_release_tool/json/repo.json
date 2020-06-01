@@ -1,0 +1,51 @@
+{
+    "cus_branch": "master",
+    "daily_branch": "master",
+    "cus_dir_info":
+    {
+        "git":"D:\\crane_cus\\crane-phone-rls",
+        "build":"D:\\crane_cus\\crane-phone-rls\\evb\\src",
+        "ap_version_log": ".\\tmp\\release_ap_version.txt",
+        "cp_version_log": ".\\tmp\\release_cp_version.txt",
+        "dsp_version_log":".\\tmp\\release_dsp_version.txt"
+    },
+    "daily_dir_info":
+    {
+        "git":"E:\\crane_dailybuild\\crane",
+        "build": "E:\\crane_dailybuild\\crane",
+        "ap_version_log": ".\\tmp\\ap_version.txt",
+        "cp_version_log": ".\\tmp\\cp_version.txt",
+        "dsp_version_log":".\\tmp\\dsp_version.txt"
+    },
+    "daily_branch_info":
+    {
+        "master":
+        {
+            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_dailybuild",
+            "version_file":".\\tmp\\version.log"
+        }
+    },
+    "cus_branch_info":
+    {
+        "master":
+        {
+            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_release",
+            "version_file":".\\tmp\\version_cus.log"
+        },
+        "r1":
+        {
+            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_release",
+            "version_file":".\\tmp\\version_r.log"
+        },
+        "r1_plus_j":
+        {
+            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_plus_j_release",
+            "version_file":".\\tmp\\version_r1_plus_j.log"
+        },
+        "r1_1.006.027":
+        {
+            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_rc",
+            "version_file":".\\tmp\\version_r1_tmp.log"
+        }
+    }
+}
