@@ -241,6 +241,14 @@ class zipTool(object):
     def __init__(self):
         work_dir = os.path.dirname(os.path.abspath(__file__))
         self._external_tool = os.path.join(work_dir, "unzip_tool", "7z.exe")
+        self._decompress_tool = os.path.join(work_dir, "unzip_tool", "asr_lzop.exe")
+
+    def decompress_bin(self, src_bin, out_bin):
+        assert os.path.exists(src_bin),"%s no exists" % src_bin
+        decompress_cmd = "{0} -d -f {1} -o{2}".format(self._decompress_tool, src_bin, out_bin)
+        subprocess.call(decompress_cmd, shell=True)
+        return out_bin
+
 
     @staticmethod
     def make_archive(base_name, _format, root_dir):

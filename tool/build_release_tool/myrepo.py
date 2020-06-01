@@ -21,6 +21,133 @@ manifest_xml = \
 </manifest>
 """
 
+class ManagerVersionBase(object):
+    def __init__(self):
+        self.version_log = ""
+        self.log = MyLogger(self.__class__.__name__)
+        self.verion_name = ''
+        self.cur_version = ''
+
+        self.decompress_tool = zipTool()
+
+        self.cp_version = None
+        self.dsp_version = None
+
+
+    def _get_verion_name(self):
+        assert os.path.exists(self.version_log),"%s no exists" % self.version_log
+        with open(self.version_log) as flog:
+            text = flog.read()
+        text = text.replace('\n', '')
+        text_list = re.findall(self.version_pattern, text)
+        self.log.debug(text_list)
+        if text_list:
+            # assert text_list,"can not find version info"
+            self.verion_name, _ = text_list[-1]
+        else:
+            self.verion_name = self.release_branch
+        self.log.debug(self.verion_name)
+
+    def get_nearest_version(self):
+        assert os.path.exists(self.version_log),"%s no exists" % self.version_log
+        with open(self.version_log) as flog:
+            text = flog.read()
+        text = text.replace('\n', '')
+        # text_list = re.findall(r'crane_git_r([0-9]+)',text)
+        text_list = re.findall(self.version_pattern, text)
+        self.log.debug(text_list)
+        if text_list:
+            # assert text_list,"can not find version info"
+            self.verion_name, cnt = text_list[-1]
+            cnt = int(cnt)
+            version = "%s%04d" % (self.verion_name, cnt + 1)
+            self.log.info(version)
+        else:
+            version = self.release_branch
+        return version
+
+    def record_version(self, version='', info=''):
+        flog = open(self.version_log, 'a')
+        if not version:
+            version = self.get_nearest_version()
+        if not info:
+            info = self.get_revion_info()
+        text = "\n".join([version + ":", info])
+        flog.write(text + "\n\n")
+        flog.flush()
+        flog.close()
+        return version
+
+    def get_cp_version(self, cp_version_file):
+        """
+        #define CRANE_CUST_VER_INFO
+        ["##SYSTEM_VERSION##"]
+        ["##DISTRIBUTION_VERSION##"]
+        ["##SYSTEM_TARGET_OS##"]
+        ["##SYSTEM_PS_MODE##"]
+        ["##APPEND_REVERSION##"]
+        """
+        assert os.path.exists(cp_version_file), "%s not exists" % cp_version_file
+        SYSTEM_CUST_SKU = "MINIGUI"
+        SYSTEM_SKU_REVERSION = "SDK"
+        SYSTEM_PS_MODE = "LTEGSM"
+        SYSTEM_TARGET_OS = "TX"
+        APPEND_REVERSION = "_".join([SYSTEM_CUST_SKU, SYSTEM_SKU_REVERSION])
+        file_obj = open(cp_version_file)
+        SYSTEM_VERSION = ''
+        DISTRIBUTION_VERSION = ''
+        for _line in file_obj:
+            _format = '#define[ ]+SYSTEM_VERSION[ ]+"(.*?)"'
+            match = re.findall(_format, _line)
+            if match:
+                SYSTEM_VERSION = match[0]
+            _format = '#define[ ]+DISTRIBUTION_VERSION[ ]+"(.*?)"'
+            match = re.findall(_format, _line)
+            if match:
+                DISTRIBUTION_VERSION = match[0]
+        CRANE_CUST_VER_INFO = "[%s][%s][%s][%s][%s]" % (SYSTEM_VERSION, \
+                                                        DISTRIBUTION_VERSION, SYSTEM_TARGET_OS, SYSTEM_PS_MODE,
+                                                        APPEND_REVERSION)
+        # self.log.debug(CRANE_CUST_VER_INFO)
+        self.cp_version = CRANE_CUST_VER_INFO
+        return CRANE_CUST_VER_INFO
+
+    def update_cp_version(self, cp_version_file, cp_version_log_file):
+        self.cp_version = self.get_cp_version(cp_version_file)
+        with open(cp_version_log_file, "w") as obj:
+            obj.write(self.cp_version)
+        return self.cp_version
+
+    @staticmethod
+    def get_old_cp_version(cp_version_log_file):
+        if not os.path.exists(cp_version_log_file):
+            return None
+        else:
+            with open(cp_version_log_file) as obj:
+                return obj.read()
+
+    def record_cp_version(self, cp_version_log_file):
+        with open(cp_version_log_file, "w") as obj:
+            obj.write(self.cp_version)
+
+    def get_dsp_version(self, dsp_bin, dsp_version_log_file):
+        """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
+        dsp_version_file = "dsp_version.bin"
+        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file)
+        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
+        with open(dsp_version_file, "rb") as fob:
+            text = fob.read()
+        match = re.findall("(CRANE_.{47})", text)
+        if match:
+            version_info = match[0]
+            # self.log.debug(version_info)
+            self.dsp_version = version_info
+        else:
+            version_info = "can not match dsp version".upper()
+        with open(dsp_version_log_file, "w") as obj:
+            obj.write(version_info)
+        return version_info
+
 
 class myRepo(object):
     def __init__(self, version_log="", root_path="", storage_list=None):
@@ -118,8 +245,8 @@ class myRepo(object):
             _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
-            info = _git.log("--after=%s" % date, "--pretty=format:commit ID: %H\nAuthor: %an <%ae>\nDate:  %cd\ncommit msg: %s\n\
-------------------------------------------------------------")
+            info = _git.log("--after=%s" % date,
+                            "--pretty=format:commit ID: %H\nAuthor: %an <%ae>\nDate: %cd\ncommit msg: %s\n-----------------------------------------------")
             info_list.append("*" * 50)
             if not storage:
                 storage = 'hal'
@@ -157,117 +284,9 @@ class myRepo(object):
         _obj.write(manifest_text.lstrip())
         _obj.close()
 
-    def _get_verion_name(self):
-        flog = open(self.version_log)
-        text = flog.read()
-        text = text.replace('\n', '')
-        text_list = re.findall(self.version_pattern, text)
-        self.log.debug(text_list)
-        if text_list:
-            # assert text_list,"can not find version info"
-            self.verion_name, _ = text_list[-1]
-        else:
-            self.verion_name = self.release_branch
-        self.log.debug(self.verion_name)
-
-    def get_nearest_version(self):
-        flog = open(self.version_log)
-        text = flog.read()
-        text = text.replace('\n', '')
-        # text_list = re.findall(r'crane_git_r([0-9]+)',text)
-        text_list = re.findall(self.version_pattern, text)
-        self.log.debug(text_list)
-        if text_list:
-            # assert text_list,"can not find version info"
-            self.verion_name, cnt = text_list[-1]
-            cnt = int(cnt)
-            version = "%s%04d" % (self.verion_name, cnt + 1)
-            self.log.info(version)
-        else:
-            version = self.release_branch
-        return version
-
-    def record_version(self, version='', info=''):
-        flog = open(self.version_log, 'a')
-        if not version:
-            version = self.get_nearest_version()
-        if not info:
-            info = self.get_revion_info()
-        text = "\n".join([version + ":", info])
-        flog.write(text + "\n\n")
-        flog.flush()
-        flog.close()
-        return version
-
-    def get_cp_version(self, cp_version_file):
-        """
-        #define CRANE_CUST_VER_INFO
-        ["##SYSTEM_VERSION##"]
-        ["##DISTRIBUTION_VERSION##"]
-        ["##SYSTEM_TARGET_OS##"]
-        ["##SYSTEM_PS_MODE##"]
-        ["##APPEND_REVERSION##"]
-        """
-        assert os.path.exists(cp_version_file), "%s not exists" % cp_version_file
-        SYSTEM_CUST_SKU = "MINIGUI"
-        SYSTEM_SKU_REVERSION = "SDK"
-        SYSTEM_PS_MODE = "LTEGSM"
-        SYSTEM_TARGET_OS = "TX"
-        APPEND_REVERSION = "_".join([SYSTEM_CUST_SKU, SYSTEM_SKU_REVERSION])
-        file_obj = open(cp_version_file)
-        SYSTEM_VERSION = ''
-        DISTRIBUTION_VERSION = ''
-        for _line in file_obj:
-            _format = '#define[ ]+SYSTEM_VERSION[ ]+"(.*?)"'
-            match = re.findall(_format, _line)
-            if match:
-                SYSTEM_VERSION = match[0]
-            _format = '#define[ ]+DISTRIBUTION_VERSION[ ]+"(.*?)"'
-            match = re.findall(_format, _line)
-            if match:
-                DISTRIBUTION_VERSION = match[0]
-        CRANE_CUST_VER_INFO = "[%s][%s][%s][%s][%s]" % (SYSTEM_VERSION, \
-                                                        DISTRIBUTION_VERSION, SYSTEM_TARGET_OS, SYSTEM_PS_MODE,
-                                                        APPEND_REVERSION)
-        # self.log.debug(CRANE_CUST_VER_INFO)
-        self.cp_version = CRANE_CUST_VER_INFO
-        return CRANE_CUST_VER_INFO
-
-    def update_cp_version(self, cp_version_file, cp_version_log_file):
-        self.cp_version = self.get_cp_version(cp_version_file)
-        with open(cp_version_log_file, "w") as obj:
-            obj.write(self.cp_version)
-        return self.cp_version
-
-    @staticmethod
-    def get_old_cp_version(cp_version_log_file):
-        if not os.path.exists(cp_version_log_file):
-            return None
-        else:
-            with open(cp_version_log_file) as obj:
-                return obj.read()
-
-    def record_cp_version(self, cp_version_log_file):
-        with open(cp_version_log_file, "w") as obj:
-            obj.write(self.cp_version)
-
-    def get_dsp_version(self, dsp_bin, dsp_version_log_file):
-        """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
-        fob = open(dsp_bin, "rb")
-        text = fob.read()
-        # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        match = re.findall("(CRANE_.{47})", text)
-        if match:
-            version_info = match[0]
-            # self.log.debug(version_info)
-            self.dsp_version = version_info
-        else:
-            version_info = "can not match dsp version".upper()
-        with open(dsp_version_log_file, "w") as obj:
-            obj.write(version_info)
 
 
-class DailyRepo(myRepo):
+class DailyRepo(myRepo, ManagerVersionBase):
     def __init__(self):
         super(DailyRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
@@ -292,7 +311,7 @@ class DailyRepo(myRepo):
         self._get_verion_name()
 
 
-class CusRepo(myRepo):
+class CusRepo(myRepo, ManagerVersionBase):
     def __init__(self):
         super(CusRepo, self).__init__(storage_list=['.'])
         self.log = MyLogger(self.__class__.__name__)
@@ -320,6 +339,5 @@ class CusRepo(myRepo):
         _git.checkout(self.branch_name)
 
         self._get_verion_name()
-        # self.log.info(self.branch_name)
 
 

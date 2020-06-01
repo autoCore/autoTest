@@ -58,12 +58,11 @@ def copy(src, dist):
 
 
 class BuildController(object):
-    def __init__(self, _cfg):
+    def __init__(self):
         self.build_res = None
         self.log = MyLogger(self.__class__.__name__)
-        self.compile_log_dir = _cfg.compile_log_dir
 
-        self.git_version_dir = None
+        self.git_version_dir = ''
 
         self.gui_build_log = os.path.join(".", 'build', 'crane_evb_z2', r'gui_build.log')
         self.hal_build_log = os.path.join(".", 'build', 'crane_evb_z2', r'hal_build.log')
@@ -78,9 +77,9 @@ class BuildController(object):
         if not cmd:
             cmd = "autobuild.bat"
         if compile_log:
-            self.compile_log = os.path.join(self.compile_log_dir, compile_log)
+            self.compile_log = compile_log
         else:
-            self.compile_log = os.path.join(self.compile_log_dir, os.path.basename(self.git_version_dir) + ".log")
+            self.compile_log = os.path.basename(self.git_version_dir) + "_compile.log"
         if not os.path.exists(self.compile_log):
             fob = open(self.compile_log, 'w')
             fob.close()
@@ -299,17 +298,17 @@ class BuildBase(object):
         self._repo.update()
         return self._repo.sync()
 
-    def build(self):
+    def start(self):
         pass
 
 
-class DailyBuild(BuildBase):
+class DailyBuild(BuildBase, BuildController):
     def __init__(self, _cfg, _repo):
         super(DailyBuild, self).__init__(_cfg, _repo)
         self.board_list = _cfg.BOARD_LIST[:]
         self.log = MyLogger(self.__class__.__name__)
 
-    def build(self):
+    def start(self):
         self.get_dsp_version(self.dsp_bin)
         old_cp_version = self.get_old_cp_version()
         self.cp_version = self.update_cp_version()
@@ -328,7 +327,7 @@ class DailyBuild(BuildBase):
 
         self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
 
-        build_controller.git_version_dir = self.loacal_dist_dir
+        self.git_version_dir = self.loacal_dist_dir
 
         self.prepare_release_dir(self.loacal_dist_dir)
         self.copy_version_file_to_release_dir()
@@ -339,19 +338,19 @@ class DailyBuild(BuildBase):
             self.git_clean()
             build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
             assert build_cmd,"%s no build cmd" % board
-            build_controller.build(self.build_root_dir, cmd=build_cmd)
-            build_controller.send_email(self.build_root_dir, owner, os.path.join(self.release_dist_dir, file_name), board)
+            self.build(self.build_root_dir, cmd=build_cmd)
+            self.send_email(self.build_root_dir, owner, os.path.join(self.release_dist_dir, file_name), board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in self.board_list[0] and build_controller.build_res in "FAIL":
+            if board in self.board_list[0] and self.build_res in "FAIL":
                 self.log.info(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
 
             self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
             self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
 
-            if build_controller.build_res == "SUCCESS":
+            if self.build_res == "SUCCESS":
                 _root_dir = self.download_tool_images_dir_d[board]
                 _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
                 download_controller.prepare_download_tool(_images)
@@ -373,7 +372,7 @@ class DailyBuild(BuildBase):
 
 
 
-class CusBuild(BuildBase):
+class CusBuild(BuildBase, BuildController):
     def __init__(self, _cfg, _repo_cus):
         super(CusBuild, self).__init__(_cfg, _repo_cus)
         self.log = MyLogger(self.__class__.__name__)
@@ -398,7 +397,7 @@ class CusBuild(BuildBase):
             return None
 
  
-    def build(self):
+    def start(self):
         self.get_dsp_version(self.dsp_bin)
         old_cp_version = self.get_old_cp_version()
         self.cp_version = self.update_cp_version()
@@ -414,7 +413,7 @@ class CusBuild(BuildBase):
         self.get_commit_massages()
 
         version_file = os.path.join(os.path.dirname(self.git_root_dir), file_name)
-        build_controller.git_version_dir = version_file
+        self.git_version_dir = version_file
 
         self.prepare_release_dir(version_file)
         self.copy_version_file_to_release_dir()
@@ -427,13 +426,13 @@ class CusBuild(BuildBase):
             self.git_clean()
             build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
             assert build_cmd,"%s no build cmd" % board
-            build_controller.build(self.build_root_dir, cmd=build_cmd)
-            build_controller.send_email(self.build_root_dir, owner, os.path.join(self.release_dist_dir, file_name),
+            self.build(self.build_root_dir, cmd=build_cmd)
+            self.send_email(self.build_root_dir, owner, os.path.join(self.release_dist_dir, file_name),
                                         board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in self.board_list[0] and build_controller.build_res in "FAIL":
+            if board in self.board_list[0] and self.build_res in "FAIL":
                 self.log.info(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
 
@@ -699,7 +698,7 @@ class autoBuild(ThreadBase):
             try:
                 for build_obj in self.build_list:
                     if build_obj.condition:
-                        build_obj.build()
+                        build_obj.start()
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('autoBuild exit')
@@ -759,8 +758,6 @@ if __name__ == "__main__":
     repo_cus.update_cp_version(os.path.join(cfg.cur_crane_cus, "evb", "src", cfg.cp_version_file),
                                cfg.release_cp_version_log)
 
-    # noinspection PyTypeChecker
-    build_controller = BuildController(cfg)
     download_controller = DownloadToolController(cfg)
     # download_controller.update_download_tool()
 
