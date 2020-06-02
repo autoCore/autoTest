@@ -4,8 +4,8 @@ import os
 import datetime
 import re
 import git
-from util import MyLogger, zipTool
-import json
+from util import MyLogger, zipTool, load_json
+
 
 manifest_xml = \
     """
@@ -297,8 +297,7 @@ class DailyRepo(myRepo, ManagerVersionBase):
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
-        with open(json_file) as f:
-            json_str = json.load(f)
+        json_str = load_json(json_file)
         self.branch_name = json_str["daily_branch"]
         self.version_log = os.path.join(self.root_dir,json_str["daily_branch_info"][self.branch_name]["version_file"])
         self.build_root_dir = json_str["daily_dir_info"]["build"]
@@ -326,8 +325,7 @@ class CusRepo(myRepo, ManagerVersionBase):
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
-        with open(json_file) as f:
-            json_str = json.load(f)
+        json_str = load_json(json_file)
         self.branch_name = json_str["cus_branch"]
         self.release_branch = self.branch_name
         self.version_log = os.path.join(self.root_dir,json_str["cus_branch_info"][self.branch_name]["version_file"])

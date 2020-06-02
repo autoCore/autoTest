@@ -12,7 +12,7 @@ import shutil
 import multiprocessing as mp
 import psutil
 import Queue
-
+import json
 
 def kill_win_process(*process_name):
     for _process in psutil.process_iter():
@@ -91,6 +91,23 @@ class MyLogger(object):
 
     def write(self, *message):
         self._logger.info("%s " * len(message) % (message))
+
+def copy(src, dist):
+    assert os.path.exists(src), "%s not exists" % src
+    log = MyLogger("copy")
+    log.info("copy %s start..." % src)
+    if os.path.isfile(src):
+        shutil.copy2(src, dist)
+    elif os.path.isdir(src):
+        shutil.copytree(src, dist)
+    log.info("copy done.")
+
+
+def load_json(json_file):
+    assert os.path.exists(json_file),"%s no exists" % json_files
+    with open(json_file) as f:
+        json_str = json.load(f)
+    return json_str
 
 
 def get_sudo_password():
