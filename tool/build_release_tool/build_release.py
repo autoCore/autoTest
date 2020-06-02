@@ -344,7 +344,7 @@ if __name__ == "__main__":
     rootlogger.enable_print()
     rootlogger.set_level(logging.INFO)
 
-    logger = MyLogger("build_release")
+    logger = MyLogger("main")
     prepare_system_start()
 
     zip_tool = zipTool()

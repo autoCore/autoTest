@@ -32,7 +32,7 @@ class MyLogger(object):
         self._file_name = None
         self._file_handler = None
         self._stream_handler = None
-        self._formate = logging.Formatter('[%(asctime)s][%(name)-13s][%(levelname)s]: %(message)s')
+        self._formate = logging.Formatter('[%(asctime)s][%(name)-10s][%(levelname)s]: %(message)s')
 
     def add_handler(self, handler):
         if self._logger:
