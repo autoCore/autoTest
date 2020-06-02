@@ -4,7 +4,7 @@ import os
 import time
 import subprocess
 
-from util import MyLogger, copy, kill_win_process, zipTool
+from util import MyLogger, copy, kill_win_process, zipTool, load_json
 from send_email import send_email_tool
 from ftp import ftp_upload_file
 from TriggerTest import trigger_test
@@ -69,23 +69,12 @@ class BuildController(object):
         send_email_tool(to_address, subject, msg, att_file)
         self.log.info("send email done")
 
-'''
-json_file = os.path.join(self.root_dir,"json","build.json")
-json_str = load_json(json_file)
-self.board_list = json_str["boards"]
-self.board_info = json_str["boards_info"]
-self.build_images = json_str["build_images"][1:-1]
-self.mdb_file_dir = os.path.join(self.build_root_dir, json_str["mdb_file_dir"])
-self.images = json_str["images"]
-self.cp_version_file = os.path.join(self.build_root_dir, json_str["cp_version_file"])
-'''
-
-
 
 class BuildBase(object):
-    def __init__(self, _cfg, _repo, _download_controller):
+    def __init__(self, _repo, _download_controller):
         self._repo = _repo
         self.log = MyLogger(self.__class__.__name__)
+        self.root_dir = _repo.root_dir
         self.build_root_dir = _repo.build_root_dir
         self.git_root_dir = _repo.git_root_dir
         self.release_dist_dir = _repo.release_dist_dir
@@ -94,12 +83,6 @@ class BuildBase(object):
         self.ap_version_log = _repo.ap_version_log
         self.cp_version_log = _repo.cp_version_log
         self.dsp_version_log = _repo.dsp_version_log
-
-        self.board_list = _cfg.BOARD_LIST[:]
-        self.board_info = _cfg.BOARD_INFO
-        self.build_images = _cfg.BUILD_IMAGES[1:-1]
-        self.mdb_file_dir = os.path.join(self.build_root_dir, _cfg.mdb_file_dir)
-        self.cp_version_file = os.path.join(self.build_root_dir, _cfg.cp_version_file)
 
         self.download_controller = _download_controller
         self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
@@ -114,6 +97,21 @@ class BuildBase(object):
         self.download_tool_dir_d = {}
         self.download_tool_images_dir_d = {}
         self.version_info_dir = ''
+
+        self.update()
+
+
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.board_list = json_str["boards"]
+        self.board_info = json_str["boards_info"]
+        self.build_images = json_str["build_images"][1:-1]
+        self.mdb_file_dir = os.path.join(self.build_root_dir, json_str["mdb_file_dir"])
+        self.images = json_str["images"]
+        self.cp_version_file = os.path.join(self.build_root_dir, json_str["cp_version_file"])
+
+        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
 
 
     def prepare_release_dir(self, version_dir):
@@ -153,7 +151,7 @@ class BuildBase(object):
         src_dir = self.build_root_dir
         src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
         src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
-        dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.board_info.get("IMAGES", [])]
+        dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.images]
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
             copy(src_bin, dist_bin)
 
@@ -239,10 +237,10 @@ class BuildBase(object):
 
 
 class DailyBuild(BuildBase, BuildController):
-    def __init__(self, _cfg, _repo, _download_controller):
-        super(DailyBuild, self).__init__(_cfg, _repo, _download_controller)
+    def __init__(self, _repo, _download_controller):
+        super(DailyBuild, self).__init__(_repo, _download_controller)
         super(BuildBase, self).__init__()
-        self.board_list = _cfg.BOARD_LIST[:]
+        self.board_list = self.board_list[:]
         self.log = MyLogger(self.__class__.__name__)
 
     def start(self):
@@ -303,7 +301,7 @@ class DailyBuild(BuildBase, BuildController):
                         _images = [os.path.join(dist_dir,_file) for _file in os.listdir(dist_dir)]
                         self.download_controller.prepare_download_tool(_images)
                         self.download_controller.release_zip(os.path.dirname(dist_dir), zip_name = "ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
-                        self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"DCXO",
+                        self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"_DCXO",
                                                           dist_dir=self.download_tool_dir_d[board])
         # self.create_download_tool()
 
@@ -319,11 +317,10 @@ class DailyBuild(BuildBase, BuildController):
 
 
 class CusBuild(BuildBase, BuildController):
-    def __init__(self, _cfg, _repo_cus, _download_controller):
-        super(CusBuild, self).__init__(_cfg, _repo_cus, _download_controller)
+    def __init__(self, _repo_cus, _download_controller):
+        super(CusBuild, self).__init__(_repo_cus, _download_controller)
         super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-        self.sdk_release_notes_file = _cfg.cus_sdk_release_notes_file
         self.release_branch = _repo_cus.release_branch
 
     def find_newest_notes(self):
@@ -338,10 +335,13 @@ class CusBuild(BuildBase, BuildController):
             return None
 
     def start(self):
+        self.log.info("release_branch", self.release_branch)
         if self.release_branch == "master":
             self.board_list = self.board_list[:3]
+            self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xls"
         else: # ["r1", "r1_plus_j", "r1_1.006.027"]
             self.board_list = self.board_list[:1]
+            self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xls"
         self.get_dsp_version(self.dsp_bin)
         old_cp_version = self.get_old_cp_version()
         self.cp_version = self.update_cp_version()

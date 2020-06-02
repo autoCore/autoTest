@@ -338,8 +338,8 @@ if __name__ == "__main__":
     cfg = config()
     cfg.update('config.ini')
 
-    rootlogger = MyLogger()
     log_file = os.path.join(cfg.log_dir, "log_%s.txt" % time.strftime("%Y%m%d_%H%M%S"))
+    rootlogger = MyLogger()
     rootlogger.reset_log_file(log_file)
     rootlogger.enable_print()
     rootlogger.set_level(logging.INFO)
@@ -351,19 +351,13 @@ if __name__ == "__main__":
 
     logger.debug(cfg)
     repo = DailyRepo()
-    repo.update_cp_version(os.path.join(cfg.cur_crane, cfg.cp_version_file), cfg.cp_version_log)
     repo_cus = CusRepo()
-    repo_cus.update_cp_version(os.path.join(cfg.cur_crane_cus, "evb", "src", cfg.cp_version_file),
-                               cfg.release_cp_version_log)
 
     download_controller = DownloadToolController(cfg)
     # download_controller.update_download_tool()
 
-    # noinspection PyTypeChecker
-    auto_daily_build_cls = DailyBuild(cfg, repo, download_controller)
-    # noinspection PyTypeChecker
-    auto_cus_build_cls = CusBuild(cfg, repo_cus, download_controller)
-
+    auto_daily_build_cls = DailyBuild(repo, download_controller)
+    auto_cus_build_cls = CusBuild(repo_cus, download_controller)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg)
     dsp_cls = gitPushDspDailyBuild(cfg)
