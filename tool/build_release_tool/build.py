@@ -8,7 +8,7 @@ from util import MyLogger, copy, kill_win_process, zipTool, load_json
 from send_email import send_email_tool
 from ftp import ftp_upload_file
 from TriggerTest import trigger_test
-
+from download_tool import DownloadToolController
 
 class BuildController(object):
     def __init__(self):
@@ -71,7 +71,7 @@ class BuildController(object):
 
 
 class BuildBase(object):
-    def __init__(self, _repo, _download_controller):
+    def __init__(self, _repo):
         self._repo = _repo
         self.log = MyLogger(self.__class__.__name__)
         self.root_dir = _repo.root_dir
@@ -84,7 +84,7 @@ class BuildBase(object):
         self.cp_version_log = _repo.cp_version_log
         self.dsp_version_log = _repo.dsp_version_log
 
-        self.download_controller = _download_controller
+        self.download_controller = DownloadToolController()
         self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
 
         self.xml_file = ''
@@ -237,8 +237,8 @@ class BuildBase(object):
 
 
 class DailyBuild(BuildBase, BuildController):
-    def __init__(self, _repo, _download_controller):
-        super(DailyBuild, self).__init__(_repo, _download_controller)
+    def __init__(self, _repo):
+        super(DailyBuild, self).__init__(_repo)
         super(BuildBase, self).__init__()
         self.board_list = self.board_list[:]
         self.log = MyLogger(self.__class__.__name__)
@@ -317,8 +317,8 @@ class DailyBuild(BuildBase, BuildController):
 
 
 class CusBuild(BuildBase, BuildController):
-    def __init__(self, _repo_cus, _download_controller):
-        super(CusBuild, self).__init__(_repo_cus, _download_controller)
+    def __init__(self, _repo_cus):
+        super(CusBuild, self).__init__(_repo_cus)
         super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
         self.release_branch = _repo_cus.release_branch

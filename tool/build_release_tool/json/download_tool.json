@@ -1,0 +1,14 @@
+{
+    "dsp_release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANE\\CAT1",
+    "cus_r1_cp_sdk_release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200225_SDK",
+
+    "cus_cp_sdk_release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200415_SDK",
+    "cp_sdk_release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture",
+
+    "git_push_cus_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls\\evb\\src\\cp",
+    "local_dsp_bin": "D:\\user\\wubin\\crane\\cus\\evb\\images\\dsp.bin",
+    "local_rf_bin": "D:\\user\\wubin\\crane\\cus\\evb\\images\\rf.bin",
+    "git_push_cp_dir": "D:\\user\\wubin\\crane\\cp"
+
+    "cp_version_file": "D:\\user\\wubin\\crane\\cp\\tavor\\env\\inc\\sys_version.h"
+}

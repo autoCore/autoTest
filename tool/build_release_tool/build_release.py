@@ -14,6 +14,8 @@ from TriggerTest import trigger_test
 from myrepo import DailyRepo, CusRepo
 from util import config, copy
 from build import DailyBuild, CusBuild
+from download_tool import DownloadToolController
+
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -353,11 +355,12 @@ if __name__ == "__main__":
     repo = DailyRepo()
     repo_cus = CusRepo()
 
-    download_controller = DownloadToolController(cfg)
+    download_controller = DownloadToolController()
     # download_controller.update_download_tool()
 
-    auto_daily_build_cls = DailyBuild(repo, download_controller)
-    auto_cus_build_cls = CusBuild(repo_cus, download_controller)
+
+    auto_daily_build_cls = DailyBuild(repo)
+    auto_cus_build_cls = CusBuild(repo_cus)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg)
     dsp_cls = gitPushDspDailyBuild(cfg)
