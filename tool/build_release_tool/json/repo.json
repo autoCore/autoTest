@@ -1,6 +1,7 @@
 {
     "cus_branch": "master",
     "daily_branch": "master",
+    "manisest_xml_dir": ".\\tmp\\manifest_xml",
     "cus_dir_info":
     {
         "git":"D:\\crane_cus\\crane-phone-rls",

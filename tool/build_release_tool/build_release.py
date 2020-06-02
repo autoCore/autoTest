@@ -122,31 +122,21 @@ class BuildBase(object):
         self.log = MyLogger(self.__class__.__name__)
         self.build_root_dir = _repo.build_root_dir
         self.git_root_dir = _repo.git_root_dir
-
         self.release_dist_dir = _repo.release_dist_dir
-
-        self.board_list = []
-        self.board_info = _cfg.BOARD_INFO
-        self.build_images = _cfg.BUILD_IMAGES[1:-1]
-
-        self.mdb_file_dir = os.path.join(self.build_root_dir, _cfg.mdb_file_dir)
-
-
-        self.sdk_files_dict = _cfg.BOARD_CP_RELEASE_BIN_DICT
-        self.sdk_images = _cfg.IMAGES[:]
- 
-        self.cp_version_file = os.path.join(self.build_root_dir, _cfg.cp_version_file)
-        self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
+        self.manisest_xml_dir = _repo.manisest_xml_dir
 
         self.ap_version_log = _repo.ap_version_log
         self.cp_version_log = _repo.cp_version_log
         self.dsp_version_log = _repo.dsp_version_log
 
+        self.board_list = []
+        self.board_info = _cfg.BOARD_INFO
+        self.build_images = _cfg.BUILD_IMAGES[1:-1]
+        self.mdb_file_dir = os.path.join(self.build_root_dir, _cfg.mdb_file_dir)
+        self.cp_version_file = os.path.join(self.build_root_dir, _cfg.cp_version_file)
 
-        self.tmp_dir = _cfg.tmp_dir
-        self.decompress_tool = _cfg.decompress_tool
 
-        self.manisest_xml_dir = _cfg.manisest_xml_dir
+        self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
 
         self.xml_file = ''
         self.massage_file = ''
@@ -159,27 +149,6 @@ class BuildBase(object):
         self.download_tool_images_dir_d = {}
         self.version_info_dir = ''
 
-
-    def get_dsp_version(self, dsp_bin):
-        "!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
-        dsp_version_file = os.path.join(self.tmp_dir, "dsp_version.bin")
-        decompress_cmd = "{0} -d -f {1} -o{2}".format(self.decompress_tool, dsp_bin, dsp_version_file)
-        os.system(decompress_cmd)
-        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
-        with open(dsp_version_file, "rb") as fob:
-            text = fob.read()
-        # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        fob.close()
-        match = re.findall("(CRANE_.{47})", text)
-        if match:
-            version_info = match[0]
-            self.log.debug(version_info)
-            self.dsp_version = version_info
-        else:
-            version_info = "can not match dsp version".upper()
-        with open(self.dsp_version_log, "w") as obj:
-            obj.write(version_info)
-        return version_info
 
     def prepare_release_dir(self, version_dir):
         self.loacal_dist_dir = version_dir
@@ -216,10 +185,9 @@ class BuildBase(object):
 
     def copy_sdk_files_to_release_dir(self, dist_dir, board="crane_evb_z2", src_dir=None):
         src_dir = self.build_root_dir
-        # src_bin_l = self.sdk_files_dict.get(board, [])
         src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
         src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
-        dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.sdk_files_dict.get("IMAGES", [])]
+        dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.board_info.get("IMAGES", [])]
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
             copy(src_bin, dist_bin)
 
@@ -287,6 +255,8 @@ class BuildBase(object):
     def get_manifest_xml(self):
         self._repo.get_manifest_xml(self.xml_file)
 
+    def get_dsp_version(self, dsp_bin):
+        return self._repo.get_dsp_version(dsp_bin, self.dsp_version_log)
 
     def record_ap_version(self, version):
         with open(self.ap_version_log, 'w') as _obj:
@@ -305,6 +275,7 @@ class BuildBase(object):
 class DailyBuild(BuildBase, BuildController):
     def __init__(self, _cfg, _repo):
         super(DailyBuild, self).__init__(_cfg, _repo)
+        super(BuildBase, self).__init__()
         self.board_list = _cfg.BOARD_LIST[:]
         self.log = MyLogger(self.__class__.__name__)
 
@@ -357,8 +328,17 @@ class DailyBuild(BuildBase, BuildController):
                 download_controller.release_zip(os.path.dirname(_root_dir))
                 download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                           dist_dir=self.download_tool_dir_d[board])
-
-
+                if board == "crane_evb_z2":
+                    dcxo_zip = os.path.join(self.build_root_dir,"build","crane_evb_z2","ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
+                    if os.path.exists(dcxo_zip):
+                        dist_dir = os.path.join(self.loacal_build_dir_d[board],"dcxo_images")
+                        copy(self.download_tool_images_dir_d[board], dist_dir)
+                        zip_tool.unpack_files_from_archive(dcxo_zip, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin")
+                        _images = [os.path.join(dist_dir,_file) for _file in os.listdir(dist_dir)]
+                        download_controller.prepare_download_tool(_images)
+                        download_controller.release_zip(os.path.dirname(dist_dir), zip_name = "ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
+                        download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"DCXO",
+                                                          dist_dir=self.download_tool_dir_d[board])
         # self.create_download_tool()
 
         dist = os.path.join(self.release_dist_dir, file_name)
@@ -375,6 +355,7 @@ class DailyBuild(BuildBase, BuildController):
 class CusBuild(BuildBase, BuildController):
     def __init__(self, _cfg, _repo_cus):
         super(CusBuild, self).__init__(_cfg, _repo_cus)
+        super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
         self.sdk_release_notes_file = _cfg.cus_sdk_release_notes_file
         self.release_branch = _repo_cus.release_branch
@@ -730,6 +711,22 @@ def prepare_system_start():
     if not os.path.exists(cfg.dsp_rf_rbd_dir):
         os.mkdir(cfg.dsp_rf_rbd_dir)
     logger.info("prepare system done")
+
+
+def create_download_tool_trigger_test():
+    version_dir = ''
+    dist_dir = r'\\sh2-filer02\Data\FP_RLS\crane_r1_rc'
+    board = "crane_evb_z2"
+    download_controller.update_download_tool()
+    _root_dir = os.path.join(version_dir, board, "cp_images")
+    _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+    download_controller.prepare_download_tool(_images)
+    download_controller.release_zip(os.path.dirname(_root_dir))
+    download_controller.release_download_tool(os.path.basename(version_dir),
+                                            board, "D:\crane_cus\crane_r1_rc_0001_20200529_142934\crane_evb_z2\download_tool")
+    release_dist = os.path.join(dist_dir, os.path.basename(version_dir))
+    copy(version_dir, release_dist)
+    auto_cus_build_cls.trigger_auto_test(release_dist, "evb_customer")
 
 
 RELEASE_EVENT = threading.Event()

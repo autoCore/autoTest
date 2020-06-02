@@ -99,13 +99,16 @@ class DownloadToolController(object):
             else:
                 self.log.error("self.template_config:%s error" % self.template_config)
 
-    def release_zip(self, dist_dir, project_type = "CRANE_A0_16MB"):
+    def release_zip(self, dist_dir, project_type = "CRANE_A0_16MB", zip_name = None):
         assert os.path.exists(
             self.download_tool_release_zip_dir)," can not find download tool %s " % self.download_tool_release_zip_dir
         os.chdir(self.download_tool_release_zip_dir)
         if "crane_lwg" in dist_dir:
             project_type = "CRANEG_Z1_32+8MB"
-        zip_file = "ASR_CRANE_EVB_%s.zip" % project_type
+        if zip_name:
+            zip_file = zip_name
+        else:
+            zip_file = "ASR_CRANE_EVB_%s.zip" % project_type
         zip_file = os.path.join(dist_dir,zip_file)
         release_log = os.path.join(self.tmp,"release_log.txt")
         self.log.info("create zip %s" % zip_file)

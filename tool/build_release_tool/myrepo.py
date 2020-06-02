@@ -4,7 +4,7 @@ import os
 import datetime
 import re
 import git
-from util import MyLogger
+from util import MyLogger, zipTool
 import json
 
 manifest_xml = \
@@ -289,6 +289,7 @@ class myRepo(object):
 class DailyRepo(myRepo, ManagerVersionBase):
     def __init__(self):
         super(DailyRepo, self).__init__()
+        super(myRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
         self.update()
@@ -304,6 +305,8 @@ class DailyRepo(myRepo, ManagerVersionBase):
         self.git_root_dir = json_str["daily_dir_info"]["git"]
         self.release_dist_dir = json_str["daily_branch_info"][self.branch_name]["release_dist_dir"]
 
+        self.manisest_xml_dir = os.path.join(self.root_dir,json_str["manisest_xml_dir"])
+
         self.ap_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["ap_version_log"])
         self.cp_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["cp_version_log"])
         self.dsp_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["dsp_version_log"])
@@ -314,6 +317,7 @@ class DailyRepo(myRepo, ManagerVersionBase):
 class CusRepo(myRepo, ManagerVersionBase):
     def __init__(self):
         super(CusRepo, self).__init__(storage_list=['.'])
+        super(myRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
         self.update()
@@ -328,6 +332,8 @@ class CusRepo(myRepo, ManagerVersionBase):
         self.release_branch = self.branch_name
         self.version_log = os.path.join(self.root_dir,json_str["cus_branch_info"][self.branch_name]["version_file"])
         self.release_dist_dir = json_str["cus_branch_info"][self.branch_name]["release_dist_dir"]
+
+        self.manisest_xml_dir = os.path.join(self.root_dir,json_str["manisest_xml_dir"])
 
         self.build_root_dir = json_str["cus_dir_info"]["build"]
         self.git_root_dir = json_str["cus_dir_info"]["git"]
