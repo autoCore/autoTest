@@ -13,7 +13,7 @@ from ftp import ftp_upload_file
 from TriggerTest import trigger_test
 from myrepo import DailyRepo, CusRepo
 from util import config, copy
-from build import DailyBuild, CusBuild
+from build import CraneDailyBuild, CusBuild
 from download_tool import DownloadToolController
 
 
@@ -359,7 +359,7 @@ if __name__ == "__main__":
     # download_controller.update_download_tool()
 
 
-    auto_daily_build_cls = DailyBuild(repo, RELEASE_EVENT)
+    auto_daily_build_cls = CraneDailyBuild(repo, RELEASE_EVENT)
     auto_cus_build_cls = CusBuild(repo_cus)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg)
