@@ -286,9 +286,9 @@ class myRepo(object):
 
 
 
-class DailyRepo(myRepo, ManagerVersionBase):
+class CraneRepo(myRepo, ManagerVersionBase):
     def __init__(self):
-        super(DailyRepo, self).__init__()
+        super(CraneRepo, self).__init__()
         super(myRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
@@ -298,19 +298,52 @@ class DailyRepo(myRepo, ManagerVersionBase):
     def update(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
-        self.branch_name = json_str["daily_branch"]
-        self.version_log = os.path.join(self.root_dir,json_str["daily_branch_info"][self.branch_name]["version_file"])
-        self.build_root_dir = json_str["daily_dir_info"]["build"]
-        self.git_root_dir = json_str["daily_dir_info"]["git"]
-        self.release_dist_dir = json_str["daily_branch_info"][self.branch_name]["release_dist_dir"]
+        config_d = json_str["crane_info"]
 
-        self.manisest_xml_dir = os.path.join(self.root_dir,json_str["manisest_xml_dir"])
+        self.branch_name = config_d["branch_name"]
+        self.build_root_dir = config_d["build"]
+        self.git_root_dir = config_d["git"]
+        self.version_log = os.path.join(self.root_dir, config_d["branch_info"][self.branch_name]["version_file"])
+        self.release_dist_dir = config_d["branch_info"][self.branch_name]["release_dist_dir"]
 
-        self.ap_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["ap_version_log"])
-        self.cp_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["cp_version_log"])
-        self.dsp_version_log = os.path.join(self.root_dir,json_str["daily_dir_info"]["dsp_version_log"])
+        self.manisest_xml_dir = os.path.join(self.root_dir, config_d["manisest_xml_dir"])
+
+        self.ap_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["ap_version_log"])
+        self.cp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["cp_version_log"])
+        self.dsp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["dsp_version_log"])
 
         self._get_verion_name()
+
+
+class craneGRepo(myRepo, ManagerVersionBase):
+    def __init__(self):
+        super(craneGRepo, self).__init__()
+        super(myRepo, self).__init__()
+        self.version_pattern = r'(craneg_.*?)([0-9][0-9][0-9][0-9])'
+        self.log = MyLogger(self.__class__.__name__)
+
+        self.update()
+        self.log.info("create repo done")
+
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        config_d = json_str["craneg_info"]
+
+        self.branch_name = config_d["branch_name"]
+        self.build_root_dir = config_d["build"]
+        self.git_root_dir = config_d["git"]
+        self.version_log = os.path.join(self.root_dir, config_d["branch_info"][self.branch_name]["version_file"])
+        self.release_dist_dir = config_d["branch_info"][self.branch_name]["release_dist_dir"]
+
+        self.manisest_xml_dir = os.path.join(self.root_dir, config_d["manisest_xml_dir"])
+
+        self.ap_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["ap_version_log"])
+        self.cp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["cp_version_log"])
+        self.dsp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["dsp_version_log"])
+
+        self._get_verion_name()
+
 
 
 class CusRepo(myRepo, ManagerVersionBase):

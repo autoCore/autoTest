@@ -1,6 +1,5 @@
 {
     "cus_branch": "master",
-    "daily_branch": "master",
     "manisest_xml_dir": ".\\tmp\\manifest_xml",
     "cus_dir_info":
     {
@@ -10,22 +9,49 @@
         "cp_version_log": ".\\tmp\\release_cp_version.txt",
         "dsp_version_log":".\\tmp\\release_dsp_version.txt"
     },
-    "daily_dir_info":
+    "crane_info":
     {
+        "branch_name": "master",
+        "manisest_xml_dir": ".\\tmp\\manifest_xml",
         "git":"E:\\crane_dailybuild\\crane",
         "build": "E:\\crane_dailybuild\\crane",
-        "ap_version_log": ".\\tmp\\ap_version.txt",
-        "cp_version_log": ".\\tmp\\cp_version.txt",
-        "dsp_version_log":".\\tmp\\dsp_version.txt"
-    },
-    "daily_branch_info":
-    {
-        "master":
+        "branch_info":
         {
-            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_dailybuild",
-            "version_file":".\\tmp\\version.log"
+            "master":
+            {
+                "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_dailybuild",
+                "version_file":".\\tmp\\version.log"
+            }
+        },
+        "version_info_log":
+        {
+            "ap_version_log": ".\\tmp\\ap_version.txt",
+            "cp_version_log": ".\\tmp\\cp_version.txt",
+            "dsp_version_log":".\\tmp\\dsp_version.txt"
         }
     },
+    "craneg_info":
+    {
+        "branch_name": "master",
+        "manisest_xml_dir": ".\\tmp\\manifest_xml",
+        "git":"F:\\craneG_dailybuild\\craneG",
+        "build": "F:\\craneG_dailybuild\\craneG",
+        "branch_info":
+        {
+            "master":
+            {
+                "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\craneG_dailybuild",
+                "version_file":".\\tmp\\craneG_version.log"
+            }
+        },
+        "version_info_log":
+        {
+            "ap_version_log": ".\\tmp\\crang_ap_version.txt",
+            "cp_version_log": ".\\tmp\\crang_cp_version.txt",
+            "dsp_version_log":".\\tmp\\crang_dsp_version.txt"
+        }
+    },
+
     "cus_branch_info":
     {
         "master":

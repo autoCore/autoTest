@@ -315,6 +315,84 @@ class CraneDailyBuild(BuildBase, BuildController):
             self.release_event.set()
         return self.loacal_dist_dir
 
+class CraneGDailyBuild(BuildBase, BuildController):
+    def __init__(self, _repo, _release_event):
+        super(CraneGDailyBuild, self).__init__(_repo)
+        super(BuildBase, self).__init__()
+        self.board_list = ["crane_lwg"]
+        self.log = MyLogger(self.__class__.__name__)
+        self.release_event = _release_event
+
+    def start(self):
+        self.get_dsp_version(self.dsp_bin)
+        old_cp_version = self.get_old_cp_version()
+        self.cp_version = self.update_cp_version()
+        owner = self.get_revion_owner()
+        self.log.info("=" * 50)
+
+        _r = self.record_version()
+        self.record_ap_version(_r)
+        date = time.strftime("%Y%m%d_%H%M%S")
+        file_name = "%s_%s" % (_r, date)
+        self.log.info("version: " + file_name)
+        self.xml_file = _r + ".xml"
+        self.xml_file = os.path.join(self.manisest_xml_dir, self.xml_file)
+        self.get_manifest_xml()
+        self.get_commit_massages()
+
+        self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
+
+        self.git_version_dir = self.loacal_dist_dir
+
+        self.prepare_release_dir(self.loacal_dist_dir)
+        self.copy_version_file_to_release_dir()
+
+        self.download_controller.update_download_tool()
+
+        for board in self.board_list:
+            self.git_clean()
+            build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
+            assert build_cmd,"%s no build cmd" % board
+            self.build(self.build_root_dir, cmd=build_cmd)
+            self.send_email(self.build_root_dir, owner, os.path.join(self.release_dist_dir, file_name), board)
+
+            kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
+
+            if board in self.board_list[0] and self.build_res in "FAIL":
+                self.log.info(self.loacal_dist_dir, "build fail")
+                return self.loacal_dist_dir
+
+            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
+            self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
+
+            if self.build_res == "SUCCESS":
+                _root_dir = self.download_tool_images_dir_d[board]
+                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+                self.download_controller.prepare_download_tool(_images)
+                self.download_controller.release_zip(os.path.dirname(_root_dir))
+                self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
+                                                          dist_dir=self.download_tool_dir_d[board])
+                if board == "crane_evb_z2":
+                    dcxo_zip = os.path.join(self.build_root_dir,"build","crane_evb_z2","ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
+                    if os.path.exists(dcxo_zip):
+                        dist_dir = os.path.join(self.loacal_build_dir_d[board],"dcxo_images")
+                        copy(self.download_tool_images_dir_d[board], dist_dir)
+                        self.zip_tool.unpack_files_from_archive(dcxo_zip, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin")
+                        _images = [os.path.join(dist_dir,_file) for _file in os.listdir(dist_dir)]
+                        self.download_controller.prepare_download_tool(_images)
+                        self.download_controller.release_zip(os.path.dirname(dist_dir), zip_name = "ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
+                        self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"_DCXO",
+                                                          dist_dir=self.download_tool_dir_d[board])
+        # self.create_download_tool()
+
+        dist = os.path.join(self.release_dist_dir, file_name)
+        copy(self.loacal_dist_dir, dist)
+
+        self.log.info("old_cp_version: %s" % old_cp_version)
+        self.log.info("new_cp_version: %s" % self.cp_version)
+        if self.cp_version not in old_cp_version:
+            self.release_event.set()
+        return self.loacal_dist_dir
 
 
 class CusBuild(BuildBase, BuildController):
