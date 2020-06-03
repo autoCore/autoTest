@@ -359,7 +359,7 @@ if __name__ == "__main__":
     # download_controller.update_download_tool()
 
 
-    auto_daily_build_cls = DailyBuild(repo)
+    auto_daily_build_cls = DailyBuild(repo, RELEASE_EVENT)
     auto_cus_build_cls = CusBuild(repo_cus)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg)

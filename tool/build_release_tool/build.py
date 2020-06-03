@@ -237,11 +237,12 @@ class BuildBase(object):
 
 
 class DailyBuild(BuildBase, BuildController):
-    def __init__(self, _repo):
+    def __init__(self, _repo, _release_event):
         super(DailyBuild, self).__init__(_repo)
         super(BuildBase, self).__init__()
         self.board_list = self.board_list[:]
         self.log = MyLogger(self.__class__.__name__)
+        self.release_event = _release_event
 
     def start(self):
         self.get_dsp_version(self.dsp_bin)
@@ -311,7 +312,7 @@ class DailyBuild(BuildBase, BuildController):
         self.log.info("old_cp_version: %s" % old_cp_version)
         self.log.info("new_cp_version: %s" % self.cp_version)
         if self.cp_version not in old_cp_version:
-            RELEASE_EVENT.set()
+            self.release_event.set()
         return self.loacal_dist_dir
 
 
