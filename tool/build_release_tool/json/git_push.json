@@ -9,7 +9,7 @@
     },
     "craneg_dsp":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANE\\CAT1",
+        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANEG",
         "target_dir": "D:\\user\\wubin\\crane\\cus\\evb\\img4LWG",
         "git_push_root_dir": "D:\\user\\wubin\\crane",
         "verson_file": "D:\\user\\wubin\\crane\\cus\\evb\\img4LWG\\dsp.bin",
@@ -20,17 +20,19 @@
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture",
         "target_dir": "D:\\user\\wubin\\crane\\cp",
+        "local_dir": ".\\cp_sdk_dir",
         "git_push_root_dir": "D:\\user\\wubin\\crane\\cp",
         "verson_file": "D:\\user\\wubin\\crane\\cp\\tavor\\env\\inc\\sys_version.h",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master"]
     },
     "craneg_sdk":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture",
+        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\CraneG\\FeaturePhone_Watch",
         "target_dir": "D:\\user\\wubin\\crane\\cpLWG",
+        "local_dir": ".\\cp_sdk_dir",
         "git_push_root_dir": "D:\\user\\wubin\\crane",
         "verson_file": "D:\\user\\wubin\\crane\\cpLWG\\tavor\\env\\inc\\sys_version.h",
-        "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane","HEAD:refs/heads/master"]
+        "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master"]
     },
     "cus_rc_sdk":
     {

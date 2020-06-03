@@ -363,15 +363,17 @@ if __name__ == "__main__":
     auto_cus_build_cls = CusBuild(repo_cus)
 
     cp_sdk_cls = gitPushCpDailyBuild(cfg)
-    dsp_cls = gitPushDspDailyBuild(cfg)
     cus_sdk_cls = gitPushCusSDK(cfg)
 
+    crane_dsp_cls = gitPushCraneDsp()
+    craneg_dsp_cls = gitPushCraneGDsp()
     # release task
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
 
     # auto push task
     auto_push_cp_task = autoPush()
-    auto_push_cp_task.add_git_push(dsp_cls)
+    auto_push_cp_task.add_git_push(crane_dsp_cls)
+    auto_push_cp_task.add_git_push(craneg_dsp_cls)
     auto_push_cp_task.add_git_push(cp_sdk_cls)
     auto_push_cp_task.add_git_push(cus_sdk_cls)
 

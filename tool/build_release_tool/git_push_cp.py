@@ -14,7 +14,9 @@ class GitPushBase(object):
     def __init__(self, _git_push_root_dir):
         self.log = MyLogger(self.__class__.__name__)
         self.git = git.Repo(_git_push_root_dir).git
-        self.push_cmd = None
+        self.git.config("--global","core.autocrlf","false")
+        self.git.config("--global","user.name","binwu")
+        self.git.config("--global","user.email","binwu@asrmicro.com")
 
     def git_add(self,*file_name_l):
         self.log.info("git add...")
@@ -44,7 +46,6 @@ class GitPushBase(object):
             self.log.error(e)
             raise Exception("git_clean error")
 
-
 class gitPushCpDailyBuild(object):
     def __init__(self,cfg):
         self.cp_sdk_version = None
@@ -57,7 +58,6 @@ class gitPushCpDailyBuild(object):
         self.cp_sdk_release_dir = cfg.cp_sdk_release_dir
 
         self.git_push_cp_dir = cfg.git_push_cp_dir
-        self.git_push_dsp_dir = ''
 
         self.cp_sdk_dir = cfg.cp_sdk_dir
 
@@ -69,6 +69,7 @@ class gitPushCpDailyBuild(object):
         self.git.config("--global","user.name","binwu")
         self.git.config("--global","user.email","binwu@asrmicro.com")
 
+        self.git_push_dsp_dir = ''
         self.zip_tool = zipTool()
 
         self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master")
@@ -303,27 +304,32 @@ class gitPushCusSDK(gitPushCpDailyBuild):
             self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
 
 
-
-class gitPushDspDailyBuild(GitPushBase):
-    def __init__(self,cfg):
-        super(gitPushDspDailyBuild, self).__init__(cfg.git_push_dsp_dir)
+class gitPushCraneDsp(GitPushBase):
+    def __init__(self):
         self.root_dir = os.getcwd()
-
-        self.release_dir = cfg.dsp_release_bin
-        self.git_push_root_dir = cfg.git_push_dsp_dir
-
-        self.local_dsp_bin = cfg.local_dsp_bin
-        self.local_rf_bin = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin")
-
         self.log = MyLogger(self.__class__.__name__)
+        self.update()
+
+        super(gitPushCraneDsp, self).__init__(self.git_push_root_dir)
+
         self.decompress_tool = zipTool()
 
         self.release_dsp_bin = ''
         self.release_rf_bin = ''
+        self.release_rf_verson_file = ''
+        self.dsp_version = ''
 
-        self.dsp_version = None
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        config_d = json_str["crane_dsp"]
+        self.release_dir = config_d["release_dir"]
+        self.git_push_root_dir = config_d["git_push_root_dir"]
+        self.local_dsp_bin = config_d["verson_file"]
+        self.local_rf_bin = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin")
+        self.local_rf_verson_file = os.path.join(os.path.dirname(self.local_dsp_bin), "RF_Version.txt")
+        self.push_cmd = config_d["git_push_cmd"]
 
-        self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master")
 
     def get_dsp_version(self, dsp_bin = None):
         """CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
@@ -366,6 +372,7 @@ class gitPushDspDailyBuild(GitPushBase):
         self.release_dsp_bin = dsp_release_bin_l[-1]
         root_dir = os.path.dirname(self.release_dsp_bin)
         self.release_rf_bin = os.path.join(root_dir,"PM813","rf.bin")
+        self.release_rf_verson_file = os.path.join(root_dir,"PM813","RF_Version.txt")
 
     def condition(self):
         self.git_clean()
@@ -392,9 +399,9 @@ class gitPushDspDailyBuild(GitPushBase):
         self.log.info("wait for dsp copy...")
         time.sleep(30)
 
-        local_bin_l = [self.local_dsp_bin,self.local_rf_bin]
-        release_bin_l = [self.release_dsp_bin, self.release_rf_bin]
-        for release_bin,local_bin in zip(self.release_bin_l,local_bin_l):
+        local_bin_l = [self.local_dsp_bin, self.local_rf_bin, self.local_rf_verson_file]
+        release_bin_l = [self.release_dsp_bin, self.release_rf_bin, self.release_rf_verson_file]
+        for release_bin,local_bin in zip(release_bin_l,local_bin_l):
             if os.path.exists(release_bin):
                 if os.path.exists(local_bin):
                     os.remove(local_bin)
@@ -403,7 +410,7 @@ class gitPushDspDailyBuild(GitPushBase):
         self.log.info("=" * 50)
         self.log.info("git push dsp...")
         try:
-            self.git_add(self.local_dsp_bin,self.local_rf_bin)
+            self.git_add(self.local_dsp_bin, self.local_rf_bin, self.local_rf_verson_file)
             match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])", self.dsp_version)
             if match and "\00" not in match[0]:
                 dsp_version = match[0]
@@ -419,8 +426,67 @@ class gitPushDspDailyBuild(GitPushBase):
             return None
 
 
+class gitPushCraneGDsp(gitPushCraneDsp):
+    def __init__(self):
+        self.root_dir = os.getcwd()
+        self.log = MyLogger(self.__class__.__name__)
+        self.update()
+        super(gitPushCraneGDsp, self).__init__()
+
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        config_d = json_str["craneg_dsp"]
+        self.release_dir = config_d["release_dir"]
+        self.git_push_root_dir = config_d["git_push_root_dir"]
+        self.local_dsp_bin = config_d["verson_file"]
+        self.local_rf_bin = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin")
+        self.local_rf_verson_file = os.path.join(os.path.dirname(self.local_dsp_bin), "RF_Version.txt")
+        self.push_cmd = config_d["git_push_cmd"]
 
 
+    def get_dsp_version(self, dsp_bin = None):
+        """ CRANEG_L1_1.004.002 , Jun 03 2020 03:10:40"""
+        if not dsp_bin:
+            dsp_bin = self.local_dsp_bin
+        dsp_version_file = os.path.join(self.root_dir, "tmp", "craneg_dsp_version.bin")
+        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file)
+        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
+        with open(dsp_version_file, "rb") as fob:
+            text = fob.read()
+        # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
+        match = re.findall("(CRANEG_.{47})",text)
+        if match:
+            self.log.debug(match[0])
+            version_info = match[0]
+        else:
+            self.log.error("can not find dsp version infomation")
+            version_info = None
+        # os.remove(dsp_version_file)
+        return version_info
+
+
+    def get_release_dsp_rf(self):
+        dsp_release_bin_l = []
+        release_dir_list = [os.path.join(self.release_dir,_dir) for _dir in os.listdir(self.release_dir) \
+                            if os.path.isdir(os.path.join(self.release_dir,_dir))]
+        release_dir_list.sort(key=lambda fn: os.path.getmtime(fn))
+        self.log.debug("release_dir_list len:",len(release_dir_list))
+        self.log.debug(release_dir_list[-10:])
+        for release_dir in release_dir_list[-10:]:
+            self.log.debug(release_dir)
+            for root,dirs,files in os.walk(release_dir,topdown=False):
+                tgt_file = "craneg_dsp.bin"
+                if "craneg_dsp.bin" in files:
+                    rf = os.path.join(root,"PM813","rf.bin")
+                    if os.path.exists(rf):
+                        dsp_release_bin_l.append(os.path.join(root,tgt_file))
+        dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
+        self.log.debug("\n".join(dsp_release_bin_l))
+        self.release_dsp_bin = dsp_release_bin_l[-1]
+        root_dir = os.path.dirname(self.release_dsp_bin)
+        self.release_rf_bin = os.path.join(root_dir,"PM813","rf.bin")
+        self.release_rf_verson_file = os.path.join(root_dir,"PM813","RF_Version.txt")
 
 
 
