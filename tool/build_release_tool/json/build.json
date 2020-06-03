@@ -8,9 +8,11 @@
         ".\\build\\crane_evb_z2\\crane_evb.elf",
         ".\\build\\crane_evb_z2\\crane_evb.map",
         ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+        ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
         ".\\build\\crane_evb_z2\\rel_lib"
     ],
     "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+    "lwg_mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
     "cp_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
     "lwg_cp_version_file": ".\\cpLWG\\tavor\\env\\inc\\sys_version.h",
     "boards_info":

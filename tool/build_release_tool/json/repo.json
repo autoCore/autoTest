@@ -46,7 +46,7 @@
         "r1_rc":
         {
             "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_rc",
-            "version_file":".\\tmp\\version_r1_tmp.log"
+            "version_file":".\\tmp\\version_r1_rc.log"
         }
     }
 }
