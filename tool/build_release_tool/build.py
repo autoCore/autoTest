@@ -236,11 +236,11 @@ class BuildBase(object):
         pass
 
 
-class DailyBuild(BuildBase, BuildController):
+class CraneDailyBuild(BuildBase, BuildController):
     def __init__(self, _repo, _release_event):
-        super(DailyBuild, self).__init__(_repo)
+        super(CraneDailyBuild, self).__init__(_repo)
         super(BuildBase, self).__init__()
-        self.board_list = self.board_list[:]
+        self.board_list = self.board_list[:-1]
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
 
@@ -336,6 +336,7 @@ class CusBuild(BuildBase, BuildController):
             return None
 
     def start(self):
+        self.release_branch = self._repo.release_branch
         self.log.info("release_branch", self.release_branch)
         if self.release_branch == "master":
             self.board_list = self.board_list[:3]
