@@ -10,6 +10,41 @@ from util import *
 from util import MyLogger
 
 
+class GitPushBase(object):
+    def __init__(self, _git_push_root_dir):
+        self.log = MyLogger(self.__class__.__name__)
+        self.git = git.Repo(_git_push_root_dir).git
+        self.push_cmd = None
+
+    def git_add(self,*file_name_l):
+        self.log.info("git add...")
+        if file_name_l:
+            self.git.add(*file_name_l)
+        else:
+            self.git.add("--all")
+        self.log.info("git add done")
+
+    def git_commit(self,commit_info):
+        self.log.info("git commit...")
+        self.log.info("conmmit info:",commit_info)
+        self.git.commit("-m %s" % commit_info)
+        self.log.info("git commit done")
+
+    def git_push(self):
+        self.log.info("git push...")
+        self.git.push(*self.push_cmd)
+        self.log.info("git push done")
+
+    def git_clean(self):
+        try:
+            self.git.clean("-xdf")
+            self.git.reset("--hard","HEAD")
+            self.git.pull()
+        except Exception,e:
+            self.log.error(e)
+            raise Exception("git_clean error")
+
+
 class gitPushCpDailyBuild(object):
     def __init__(self,cfg):
         self.cp_sdk_version = None
@@ -18,7 +53,6 @@ class gitPushCpDailyBuild(object):
         self.cp_sdk_root_dir = None
         self.dsp_rf_root_dir = ''
 
-        self.download_tool = None
         self.log = MyLogger(self.__class__.__name__)
         self.cp_sdk_release_dir = cfg.cp_sdk_release_dir
 
@@ -37,7 +71,6 @@ class gitPushCpDailyBuild(object):
 
         self.zip_tool = zipTool()
 
-        # self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/for/master")
         self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master")
 
     def git_add(self,*file_name_l):
@@ -203,14 +236,7 @@ class gitPushCpDailyBuild(object):
         self.unzip_sdk()
         cp_sdk = self.cp_sdk_root_dir
         self.log.info(cp_sdk)
-        cnt = 0
-        while not os.path.exists(cp_sdk):
-            self.log.error("%s not exists" % cp_sdk)
-            time.sleep(10)
-            self.unzip_sdk()
-            cnt += 1
-            if cnt == 10:
-                return None
+
 
         sdk_verion_file = [os.path.join(cp_sdk,"tavor","env","inc","sys_version.h"),self.cp_version_file]
         for version_file in sdk_verion_file:
@@ -250,7 +276,7 @@ class gitPushCusSDK(gitPushCpDailyBuild):
         super(gitPushCusSDK,self).__init__(cfg)
         self.cp_sdk_version = None
         self.cp_sdk = None
-        self.download_tool = None
+
         self.log = MyLogger(self.__class__.__name__)
         self.git_push_cp_dir = cfg.git_push_cus_dir
         self.cp_sdk_dir = cfg.cp_sdk_dir
@@ -278,63 +304,36 @@ class gitPushCusSDK(gitPushCpDailyBuild):
 
 
 
-class gitPushDspDailyBuild():
+class gitPushDspDailyBuild(GitPushBase):
     def __init__(self,cfg):
-        self.dsp_version = None
+        super(gitPushDspDailyBuild, self).__init__(cfg.git_push_dsp_dir)
+        self.root_dir = os.getcwd()
 
-        self.dsp_version_log = cfg.dsp_version_log
-        self.dsp_release_bin = cfg.dsp_release_bin
+        self.release_dir = cfg.dsp_release_bin
+        self.git_push_root_dir = cfg.git_push_dsp_dir
 
         self.local_dsp_bin = cfg.local_dsp_bin
-        self.local_rf_bin = cfg.local_rf_bin
+        self.local_rf_bin = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin")
 
-        self.git = git.Repo(cfg.git_push_dsp_dir).git
         self.log = MyLogger(self.__class__.__name__)
+        self.decompress_tool = zipTool()
 
-        self.tmp_dir = cfg.tmp_dir
-        self.decompress_tool = cfg.decompress_tool
+        self.release_dsp_bin = ''
+        self.release_rf_bin = ''
+
+        self.dsp_version = None
 
         self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master")
 
-    def git_add(self,*file_name_l):
-        self.log.info("git add...")
-        if file_name_l:
-            self.git.add(*file_name_l)
-        else:
-            self.git.add("--all")
-        self.log.info("git add done")
-
-    def git_commit(self,commit_info):
-        self.log.info("git commit...")
-        self.log.info("conmmit info:",commit_info)
-        self.git.commit("-m %s" % commit_info)
-        self.log.info("git commit done")
-
-    def git_push(self):
-        self.log.info("git push...")
-        self.git.push(*self.push_cmd)
-        self.log.info("git push done")
-
-    def git_clean(self):
-        # self.log.info("git clean...")
-        try:
-            self.git.clean("-xdf")
-            self.git.reset("--hard","HEAD")
-            self.git.pull()
-        except Exception,e:
-            self.log.error(e)
-            assert ("git_clean error")
-        # self.log.info("git clean done")
-
-    def get_local_dsp_version(self):
-        "CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"
-        dsp_version_file = os.path.join(self.tmp_dir,"dsp_version_tmp.bin")
-        decompress_cmd = "{0} -d -f {1} -o{2}".format(self.decompress_tool,self.local_dsp_bin,dsp_version_file)
-        os.system(decompress_cmd)
-        assert os.path.exists(dsp_version_file),"canot find {}".format(dsp_version_file)
-        with open(dsp_version_file,"rb") as fobj:
-            text = fobj.read()
-        fobj.close()
+    def get_dsp_version(self, dsp_bin = None):
+        """CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
+        if not dsp_bin:
+            dsp_bin = self.local_dsp_bin
+        dsp_version_file = os.path.join(self.root_dir, "tmp", "dsp_version_tmp.bin")
+        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file)
+        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
+        with open(dsp_version_file, "rb") as fob:
+            text = fob.read()
         # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
         match = re.findall("(CRANE_.{47})",text)
         if match:
@@ -346,52 +345,11 @@ class gitPushDspDailyBuild():
         # os.remove(dsp_version_file)
         return version_info
 
-    def update_dsp_version(self):
-        dsp_version = self.get_local_dsp_version()
-        if not dsp_version:
-            return None
-        self.log.debug(dsp_version)
-        self.dsp_version = dsp_version
-        with open(self.dsp_version_log,"w") as obj:
-            obj.write(self.dsp_version)
-        return self.dsp_version
 
-    def git_push_start(self):
-        self.git_clean()
-        local_dsp_version = self.get_local_dsp_version()
-        self.check_dsp_rf()
-        if not self.update_dsp_version():
-            self.log.info("dsp_version is None")
-            return None
-        if self.dsp_version == local_dsp_version:
-            self.log.debug("%s already sync" % self.dsp_version)
-            return None
-        self.log.info(local_dsp_version)
-        self.log.info(self.dsp_version)
-        self.log.info("wait for dsp copy...")
-        time.sleep(30)
-        self.log.info("=" * 50)
-        self.log.info("git push dsp...")
-        try:
-            self.git_add(self.local_dsp_bin,self.local_rf_bin)
-            match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",self.dsp_version)
-            if match and "\00" not in match[0]:
-                dsp_version = match[0]
-            else:
-                dsp_version = str(time.asctime())
-            commit_info = "update dsp dailybuild %s" % dsp_version
-            self.git_commit(commit_info)
-            self.git_push()
-            return True
-        except Exception,e:
-            self.log.error(e)
-            self.log.error("git push error")
-            return None
-
-    def check_dsp_rf(self):
+    def get_release_dsp_rf(self):
         dsp_release_bin_l = []
-        release_dir_list = [os.path.join(self.dsp_release_bin,_dir) for _dir in os.listdir(self.dsp_release_bin) \
-                            if os.path.isdir(os.path.join(self.dsp_release_bin,_dir))]
+        release_dir_list = [os.path.join(self.release_dir,_dir) for _dir in os.listdir(self.release_dir) \
+                            if os.path.isdir(os.path.join(self.release_dir,_dir))]
         release_dir_list.sort(key=lambda fn: os.path.getmtime(fn))
         self.log.debug("release_dir_list len:",len(release_dir_list))
         self.log.debug(release_dir_list[-10:])
@@ -405,17 +363,62 @@ class gitPushDspDailyBuild():
                         dsp_release_bin_l.append(os.path.join(root,tgt_file))
         dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
         self.log.debug("\n".join(dsp_release_bin_l))
-        dsp_release_bin = dsp_release_bin_l[-1]
-        self.log.debug(dsp_release_bin)
-        root_dir = os.path.dirname(dsp_release_bin)
-        rf_release_bin = os.path.join(root_dir,"PM813","rf.bin")
-        release_bin_l = [dsp_release_bin,rf_release_bin]
+        self.release_dsp_bin = dsp_release_bin_l[-1]
+        root_dir = os.path.dirname(self.release_dsp_bin)
+        self.release_rf_bin = os.path.join(root_dir,"PM813","rf.bin")
+
+    def condition(self):
+        self.git_clean()
+        local_dsp_version = self.get_dsp_version()
+        self.get_release_dsp_rf()
+        release_dsp_version = self.get_dsp_version(self.release_dsp_bin)
+        # self.log.info("local_dsp_version  :", local_dsp_version)
+        # self.log.info("release_dsp_version:", release_dsp_version)
+        # self.log.info("release_dsp_bin  :", self.release_dsp_bin)
+        # self.log.info("release_rf_bin:", self.release_rf_bin)
+        if local_dsp_version == release_dsp_version:
+            return False
+        else:
+            self.log.info("local_dsp_version  :", local_dsp_version)
+            self.log.info("release_dsp_version:", release_dsp_version)
+            self.dsp_version = release_dsp_version
+            return True
+
+    def git_push_start(self):
+        if not self.condition():
+            time.sleep(10)
+            return
+
+        self.log.info("wait for dsp copy...")
+        time.sleep(30)
+
         local_bin_l = [self.local_dsp_bin,self.local_rf_bin]
-        for release_bin,local_bin in zip(release_bin_l,local_bin_l):
+        release_bin_l = [self.release_dsp_bin, self.release_rf_bin]
+        for release_bin,local_bin in zip(self.release_bin_l,local_bin_l):
             if os.path.exists(release_bin):
                 if os.path.exists(local_bin):
                     os.remove(local_bin)
                 shutil.copy2(release_bin,local_bin)
+
+        self.log.info("=" * 50)
+        self.log.info("git push dsp...")
+        try:
+            self.git_add(self.local_dsp_bin,self.local_rf_bin)
+            match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])", self.dsp_version)
+            if match and "\00" not in match[0]:
+                dsp_version = match[0]
+            else:
+                dsp_version = str(time.asctime())
+            commit_info = "update dsp dailybuild %s" % dsp_version
+            self.git_commit(commit_info)
+            self.git_push()
+            return True
+        except Exception,e:
+            self.log.error(e)
+            self.log.error("git push error")
+            return None
+
+
 
 
 
