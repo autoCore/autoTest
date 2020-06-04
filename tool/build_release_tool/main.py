@@ -60,13 +60,15 @@ class autoRelease(ThreadBase):
         self.cur_crane = _cfg.cur_crane
         self.dist_dir = _cfg.dist_dir
 
+        self.tmp = _cfg.tmp_dir
+
         self.cur_crane_cus = _cfg.cur_crane_cus
         self.release_dist_dir = _cfg.release_dist_dir
 
         self.craneg_build_dir = r"D:\craneg_dailybuild\crane"
         self.craneg_release_dir = r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
 
-
+        self.zip_tool = zipTool()
         self.today_release_flag = threading.Event()
         self.release_event = release_event
 
@@ -159,6 +161,15 @@ class autoRelease(ThreadBase):
         except Exception, e:
             self.log.info(e)
 
+    def ftp_upload(self, _version_file):
+        try:
+            lib_src = os.path.join(_version_file, "crane_evb_z2", "rel_lib")
+            self.log.info(lib_src, os.path.basename(_version_file))
+            dist_dir = os.path.join(self.tmp, "rel_lib")
+            self.zip_tool.make_archive_e(dist_dir, "zip", lib_src)
+            ftp_upload_file(dist_dir + ".zip", os.path.basename(_version_file))
+        except Exception, e:
+            self.log.info(e)
 
     def run(self):
         while self._running:
@@ -198,16 +209,9 @@ class autoRelease(ThreadBase):
 
             # self.trigger_auto_test(cus_version_file, "evb_customer")
 
-            '''
-            try:
-                lib_src = os.path.join(version_file, "crane_evb_z2", "rel_lib")
-                self.log.info(lib_src, os.path.basename(version_file))
-                zip_tool.make_archive_e(lib_src, "zip", lib_src)
-                time.sleep(5)
-                ftp_upload_file(lib_src + ".zip", os.path.basename(version_file))
-            except Exception, e:
-                self.log.info(e)
-            '''
+
+            # self.ftp_upload(version_file)
+
 
 
 class autoPush(ThreadBase):
@@ -347,7 +351,6 @@ if __name__ == "__main__":
     logger = MyLogger("main")
     prepare_system_start()
 
-    zip_tool = zipTool()
 
     logger.debug(cfg)
     repo = CraneRepo()
