@@ -30,6 +30,9 @@ class ManagerVersionBase(object):
 
         self.decompress_tool = zipTool()
 
+        self.dsp_version_pattern = None
+        self.version_pattern = None
+
         self.cp_version = None
         self.dsp_version = None
 
@@ -137,7 +140,7 @@ class ManagerVersionBase(object):
         assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
         with open(dsp_version_file, "rb") as fob:
             text = fob.read()
-        match = re.findall("(CRANE_.{47})", text)
+        match = re.findall(self.dsp_version_pattern, text)
         if match:
             version_info = match[0]
             # self.log.debug(version_info)
@@ -165,9 +168,19 @@ class myRepo(object):
         self.cp_version = None
         self.dsp_version = None
         self.log = MyLogger(self.__class__.__name__)
-        self.version_pattern = r'(crane_.*?)([0-9][0-9][0-9][0-9])'
+
         self.verion_name = None
 
+    def git_init(self):
+        for storage in self._storage_list:
+            _path = os.path.join(self.git_root_dir, storage)
+            _repo = git.Repo(_path)
+            _git = _repo.git
+            try:
+                _git.status()
+            except:
+                _git.read_tree("--empty")
+                _git.reset()
 
     def clone(self, clone_path):
         for storage in self._storage_list:
@@ -292,8 +305,12 @@ class CraneRepo(myRepo, ManagerVersionBase):
         super(myRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
+        self.dsp_version_pattern = r"(CRANE_.{47})"
+        self.version_pattern = r'(crane_.*?)([0-9][0-9][0-9][0-9])'
+
         self.update()
         self.log.info("create repo done")
+        # self.git_init()
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
@@ -312,6 +329,9 @@ class CraneRepo(myRepo, ManagerVersionBase):
         self.cp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["cp_version_log"])
         self.dsp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["dsp_version_log"])
 
+        self.sdk_version_file = os.path.join(self.build_root_dir, config_d["branch_info"][self.branch_name]["sdk_version_file"])
+        self.dsp_version_file = os.path.join(self.build_root_dir, config_d["branch_info"][self.branch_name]["dsp_version_file"])
+
         self._get_verion_name()
 
 
@@ -320,10 +340,13 @@ class craneGRepo(myRepo, ManagerVersionBase):
         super(craneGRepo, self).__init__()
         super(myRepo, self).__init__()
         self.version_pattern = r'(craneg_.*?)([0-9][0-9][0-9][0-9])'
+        self.dsp_version_pattern = r"(CRANEG_.{47})"
         self.log = MyLogger(self.__class__.__name__)
 
         self.update()
         self.log.info("create repo done")
+        # self.git_init()
+
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
@@ -342,6 +365,9 @@ class craneGRepo(myRepo, ManagerVersionBase):
         self.cp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["cp_version_log"])
         self.dsp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["dsp_version_log"])
 
+        self.sdk_version_file = os.path.join(self.build_root_dir, config_d["branch_info"][self.branch_name]["sdk_version_file"])
+        self.dsp_version_file = os.path.join(self.build_root_dir, config_d["branch_info"][self.branch_name]["dsp_version_file"])
+
         self._get_verion_name()
 
 
@@ -352,9 +378,14 @@ class CusRepo(myRepo, ManagerVersionBase):
         super(myRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
+        self.version_pattern = r'(craneg_.*?)([0-9][0-9][0-9][0-9])'
+        self.dsp_version_pattern = r"(CRANEG_.{47})"
+
         self.update()
         self.log.info(self.branch_name)
         self.log.info("create repo done")
+
+        # self.git_init()
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
@@ -371,8 +402,17 @@ class CusRepo(myRepo, ManagerVersionBase):
         self.ap_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["ap_version_log"])
         self.cp_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["cp_version_log"])
         self.dsp_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["dsp_version_log"])
+
+        self.sdk_version_file = os.path.join(self.build_root_dir, json_str["cus_branch_info"]["master"]["sdk_version_file"])
+        self.dsp_version_file = os.path.join(self.build_root_dir, json_str["cus_branch_info"]["master"]["dsp_version_file"])
+
         _path = os.path.join(self.git_root_dir, '.')
         _git = git.Repo(_path).git
+
+        _git.config("--global","core.autocrlf","false")
+        _git.config("--global","user.name","binwu")
+        _git.config("--global","user.email","binwu@asrmicro.com")
+
         _git.checkout(self.branch_name)
 
         self._get_verion_name()

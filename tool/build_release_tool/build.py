@@ -84,8 +84,10 @@ class BuildBase(object):
         self.cp_version_log = _repo.cp_version_log
         self.dsp_version_log = _repo.dsp_version_log
 
+        self.cp_version_file = _repo.sdk_version_file
+        self.dsp_bin = _repo.dsp_version_file
+
         self.download_controller = DownloadToolController()
-        self.dsp_bin = os.path.join(self.build_root_dir, "cus", "evb", "images", "dsp.bin")
 
         self.xml_file = ''
         self.massage_file = ''
@@ -107,9 +109,7 @@ class BuildBase(object):
         self.board_list = json_str["boards"]
         self.board_info = json_str["boards_info"]
         self.build_images = json_str["build_images"][1:-1]
-        self.mdb_file_dir = os.path.join(self.build_root_dir, json_str["mdb_file_dir"])
         self.images = json_str["images"]
-        self.cp_version_file = os.path.join(self.build_root_dir, json_str["cp_version_file"])
 
         self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
 
@@ -132,7 +132,7 @@ class BuildBase(object):
             if os.path.exists(_file):
                 copy(_file, os.path.join(self.loacal_dist_dir, "version_info", os.path.basename(_file)))
 
-    def copy_build_file_to_release_dir(self, dist_dir, src_dir=None):
+    def copy_build_file_to_release_dir(self, dist_dir, src_dir=None, board = "crane_evb_z2"):
         src_dir = self.build_root_dir
         for _file in self.build_images:
             if "crane_evb_z2" not in dist_dir and "rel_lib" in _file:
@@ -141,6 +141,7 @@ class BuildBase(object):
             dist = os.path.join(dist_dir, os.path.basename(_file))
             copy(src, dist)
 
+        self.mdb_file_dir = os.path.join(self.build_root_dir, self.board_info[board]["mdb_file_dir"])
         if os.path.exists(self.mdb_file_dir):
             for _file in os.listdir(self.mdb_file_dir):
                 if "MDB.TXT" in _file.upper():
@@ -206,6 +207,7 @@ class BuildBase(object):
 
     def update_cp_version(self):
         self.cp_version = self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+        self.log.info("sdk version: ", self.cp_version)
         return self.cp_version
 
     def get_revion_owner(self):
@@ -220,7 +222,9 @@ class BuildBase(object):
         self._repo.get_manifest_xml(self.xml_file)
 
     def get_dsp_version(self, dsp_bin):
-        return self._repo.get_dsp_version(dsp_bin, self.dsp_version_log)
+        dsp_version = self._repo.get_dsp_version(dsp_bin, self.dsp_version_log)
+        self.log.info("dsp version: ", dsp_version)
+        return dsp_version
 
     def record_ap_version(self, version):
         with open(self.ap_version_log, 'w') as _obj:
@@ -319,7 +323,7 @@ class CraneGDailyBuild(BuildBase, BuildController):
     def __init__(self, _repo, _release_event):
         super(CraneGDailyBuild, self).__init__(_repo)
         super(BuildBase, self).__init__()
-        self.board_list = ["crane_lwg"]
+        self.board_list = ["craneg_evb"]
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
 
@@ -362,7 +366,7 @@ class CraneGDailyBuild(BuildBase, BuildController):
                 self.log.info(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
 
-            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
+            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
             self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
 
             if self.build_res == "SUCCESS":
@@ -390,8 +394,8 @@ class CraneGDailyBuild(BuildBase, BuildController):
 
         self.log.info("old_cp_version: %s" % old_cp_version)
         self.log.info("new_cp_version: %s" % self.cp_version)
-        if self.cp_version not in old_cp_version:
-            self.release_event.set()
+        # if self.cp_version not in old_cp_version:
+            # self.release_event.set()
         return self.loacal_dist_dir
 
 

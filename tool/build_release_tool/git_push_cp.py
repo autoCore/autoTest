@@ -46,63 +46,35 @@ class GitPushBase(object):
             self.log.error(e)
             raise Exception("git_clean error")
 
-class gitPushCpDailyBuild(object):
+class gitPushCpDailyBuild(GitPushBase):
     def __init__(self,cfg):
+        self.root_dir = os.getcwd()
+        self.log = MyLogger(self.__class__.__name__)
+
+        self.update()
+
+        super(gitPushCpDailyBuild,self).__init__(self.git_push_cp_dir)
         self.cp_sdk_version = None
         self.cp_sdk = None
 
         self.cp_sdk_root_dir = None
         self.dsp_rf_root_dir = ''
 
-        self.log = MyLogger(self.__class__.__name__)
-        self.cp_sdk_release_dir = cfg.cp_sdk_release_dir
-
-        self.git_push_cp_dir = cfg.git_push_cp_dir
-
-        self.cp_sdk_dir = cfg.cp_sdk_dir
-
-        self.cp_version_file = os.path.join(cfg.cur_crane,cfg.cp_version_file)
-
-        _repo = git.Repo(self.git_push_cp_dir)
-        self.git = _repo.git
-        self.git.config("--global","core.autocrlf","false")
-        self.git.config("--global","user.name","binwu")
-        self.git.config("--global","user.email","binwu@asrmicro.com")
-
         self.git_push_dsp_dir = ''
         self.zip_tool = zipTool()
 
-        self.push_cmd = ("ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master")
 
-    def git_add(self,*file_name_l):
-        self.log.info("git add...")
-        if file_name_l:
-            self.git.add(*file_name_l)
-        else:
-            self.git.add("--all")
-        self.log.info("git add done")
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        config_d = json_str["crane_sdk"]
+        self.cp_sdk_release_dir = config_d["release_dir"]
+        self.git_push_cp_dir = config_d["git_push_root_dir"]
+        self.target_dist_dir = config_d["target_dir"]
+        self.cp_sdk_dir = os.path.join(self.root_dir, config_d["local_dir"])
+        self.cp_version_file = config_d["verson_file"]
 
-    def git_commit(self,commit_info):
-        self.log.info("git commit...")
-        self.log.info("conmmit info:",commit_info)
-        self.git.commit("-m %s" % commit_info)
-        self.log.info("git commit done")
-
-    def git_push(self):
-        self.log.info("git push...")
-        self.git.push(*self.push_cmd)
-        self.log.info("git push done")
-
-    def git_clean(self):
-        # self.log.info("git clean...")
-        try:
-            self.git.clean("-xdf")
-            self.git.reset("--hard","HEAD")
-            self.git.pull()
-        except Exception,e:
-            self.log.error(e)
-            assert ("git_clean error")
-        # self.log.info("git clean done")
+        self.push_cmd = config_d["git_push_cmd"]
 
     def find_new_cp_sdk(self):
         "ASR3601_MINIGUI_20191206_SDK.zip"
@@ -115,10 +87,10 @@ class gitPushCpDailyBuild(object):
 
     def clean_git_push_cp(self):
         self.git_clean()
-        for _file in os.listdir(self.git_push_cp_dir):
+        for _file in os.listdir(self.target_dist_dir):
             if _file in [".git","X.bat"]:
                 continue
-            _file = os.path.join(self.git_push_cp_dir,_file)
+            _file = os.path.join(self.target_dist_dir,_file)
             if os.path.isfile(_file):
                 os.remove(_file)
             else:
@@ -137,9 +109,9 @@ class gitPushCpDailyBuild(object):
             for _file in os.listdir(root_dir):
                 fname = os.path.join(root_dir,_file)
                 if os.path.isfile(fname):
-                    shutil.copy2(fname,os.path.join(self.git_push_cp_dir,_file))
+                    shutil.copy2(fname,os.path.join(self.target_dist_dir,_file))
                 elif os.path.isdir(fname):
-                    shutil.copytree(fname,os.path.join(self.git_push_cp_dir,_file))
+                    shutil.copytree(fname,os.path.join(self.target_dist_dir,_file))
                 else:
                     self.log.warning("%s" % fname)
 
@@ -147,7 +119,7 @@ class gitPushCpDailyBuild(object):
             if os.path.exists(self.dsp_rf_root_dir):
                 dir_path = os.path.dirname(self.dsp_rf_root_dir)
                 self.log.info("%s" % dir_path)
-                dist_dir = os.path.join(self.git_push_cp_dir,os.path.basename(dir_path))
+                dist_dir = os.path.join(self.target_dist_dir,os.path.basename(dir_path))
                 self.log.info("%s" % dist_dir)
                 if os.path.exists(dist_dir):
                     shutil.rmtree(dist_dir)
@@ -180,7 +152,7 @@ class gitPushCpDailyBuild(object):
         for root,dirs,files in os.walk(root_dir,topdown=False):
             if "DSP" in dirs:
                 self.dsp_rf_root_dir = os.path.join(root,"DSP")
-                self.git_push_dsp_dir = os.path.dirname(self.git_push_cp_dir)
+                self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
                 self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
                 break
 
@@ -516,6 +488,8 @@ class gitPushCraneDsp(GitPushBase):
 
         self.decompress_tool = zipTool()
 
+        self.dsp_version_pattern = "(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
+
         self.release_dsp_bin = ''
         self.release_rf_bin = ''
         self.release_rf_verson_file = ''
@@ -613,7 +587,7 @@ class gitPushCraneDsp(GitPushBase):
         self.log.info("git push dsp...")
         try:
             self.git_add(self.local_dsp_bin, self.local_rf_bin, self.local_rf_verson_file)
-            match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])", self.dsp_version)
+            match = re.findall(self.dsp_version_pattern, self.dsp_version)
             if match and "\00" not in match[0]:
                 dsp_version = match[0]
             else:
@@ -634,6 +608,7 @@ class gitPushCraneGDsp(gitPushCraneDsp):
         self.log = MyLogger(self.__class__.__name__)
         self.update()
         super(gitPushCraneGDsp, self).__init__()
+        self.dsp_version_pattern = "(CRANEG_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")

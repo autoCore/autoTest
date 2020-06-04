@@ -38,10 +38,7 @@ VISENK PHONE VERSION:
 binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone\download_tool
 
-CRANEG VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_lwg
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_lwg\download_tool
-
+CRANEG VERSION: \\sh2-filer02\Data\FP_RLS\craneG_dailybuild
 
 CUSTOMER RELEASE:
 CP VERSION: {4}
@@ -383,8 +380,8 @@ if __name__ == "__main__":
 
     # auto build task
     auto_build_task = autoBuild()
-    auto_build_task.add_build(auto_cus_build_cls)
     auto_build_task.add_build(craneg_build_cls)
+    auto_build_task.add_build(auto_cus_build_cls)
     auto_build_task.add_build(auto_daily_build_cls)
 
     # auto clean task

@@ -113,7 +113,7 @@ class DownloadToolController(object):
         assert os.path.exists(
             self.download_tool_release_zip_dir)," can not find download tool %s " % self.download_tool_release_zip_dir
         os.chdir(self.download_tool_release_zip_dir)
-        if "crane_lwg" in dist_dir:
+        if "craneg_evb" in dist_dir:
             project_type = "CRANEG_Z1_32+8MB"
         if zip_name:
             zip_file = zip_name

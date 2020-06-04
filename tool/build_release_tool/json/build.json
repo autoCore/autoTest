@@ -1,5 +1,5 @@
 {
-    "boards": ["crane_evb_z2", "bird_phone", "visenk_phone", "crane_lwg"],
+    "boards": ["crane_evb_z2", "bird_phone", "visenk_phone", "craneg_evb"],
     "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "ReliableData.bin", "dsp.bin", "rf.bin"],
     "build_images":
     [
@@ -11,7 +11,7 @@
         ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
         ".\\build\\crane_evb_z2\\rel_lib"
     ],
-    "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+
     "lwg_mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
     "cp_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
     "lwg_cp_version_file": ".\\cpLWG\\tavor\\env\\inc\\sys_version.h",
@@ -19,6 +19,7 @@
     {
         "crane_evb_z2":
         {
+            "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
             "release_bin":
             [
                 ".\\cp\\tavor\\Arbel\\build\\apn.bin",
@@ -34,6 +35,7 @@
         },
         "crane_evb_dual_sim":
         {
+            "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
             "release_bin":
             [
                 ".\\cp\\tavor\\Arbel\\build\\apn.bin",
@@ -49,6 +51,7 @@
         },
         "bird_phone":
         {
+            "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
             "release_bin":
             [
                 ".\\cp\\tavor\\Arbel\\build\\apn.bin",
@@ -64,6 +67,7 @@
         },
         "visenk_phone":
         {
+            "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
             "release_bin":
             [
                 ".\\cp\\tavor\\Arbel\\build\\apn.bin",
@@ -77,8 +81,9 @@
             ],
             "build_cmd":"autobuild.bat -f crane_evb_z2_custom_V.conf"
         },
-        "crane_lwg":
+        "craneg_evb":
         {
+            "mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
             "release_bin":
             [
                 ".\\cpLWG\\tavor\\Arbel\\build\\apn.bin",
