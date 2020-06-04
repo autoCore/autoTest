@@ -30,7 +30,7 @@ class ManagerVersionBase(object):
 
         self.decompress_tool = zipTool()
 
-        self.dsp_version_pattern = None
+        self.dsp_version_pattern = re.compile(r"(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9]|CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])")
         self.version_pattern = None
 
         self.cp_version = None
@@ -42,7 +42,7 @@ class ManagerVersionBase(object):
         with open(self.version_log) as flog:
             text = flog.read()
         text = text.replace('\n', '')
-        text_list = re.findall(self.version_pattern, text)
+        text_list = self.version_pattern.findall(text)
         self.log.debug(text_list)
         if text_list:
             # assert text_list,"can not find version info"
@@ -57,7 +57,7 @@ class ManagerVersionBase(object):
             text = flog.read()
         text = text.replace('\n', '')
         # text_list = re.findall(r'crane_git_r([0-9]+)',text)
-        text_list = re.findall(self.version_pattern, text)
+        text_list = self.version_pattern.findall(text)
         self.log.debug(text_list)
         if text_list:
             # assert text_list,"can not find version info"
@@ -140,7 +140,7 @@ class ManagerVersionBase(object):
         assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
         with open(dsp_version_file, "rb") as fob:
             text = fob.read()
-        match = re.findall(self.dsp_version_pattern, text)
+        match = self.dsp_version_pattern.findall(text)
         if match:
             version_info = match[0]
             # self.log.debug(version_info)
@@ -305,8 +305,8 @@ class CraneRepo(myRepo, ManagerVersionBase):
         super(myRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-        self.dsp_version_pattern = r"(CRANE_.{47})"
-        self.version_pattern = r'(crane_.*?)([0-9][0-9][0-9][0-9])'
+        self.dsp_version_pattern = re.compile(r"(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])")
+        self.version_pattern = re.compile(r'(crane_.*?)([0-9][0-9][0-9][0-9])')
 
         self.update()
         self.log.info("create repo done")
@@ -339,8 +339,8 @@ class craneGRepo(myRepo, ManagerVersionBase):
     def __init__(self):
         super(craneGRepo, self).__init__()
         super(myRepo, self).__init__()
-        self.version_pattern = r'(craneg_.*?)([0-9][0-9][0-9][0-9])'
-        self.dsp_version_pattern = r"(CRANEG_.{47})"
+        self.version_pattern = re.compile(r'(craneg_.*?)([0-9][0-9][0-9][0-9])')
+        self.dsp_version_pattern = re.compile(r"(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])")
         self.log = MyLogger(self.__class__.__name__)
 
         self.update()
@@ -378,9 +378,10 @@ class CusRepo(myRepo, ManagerVersionBase):
         super(myRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-        self.version_pattern = r'(craneg_.*?)([0-9][0-9][0-9][0-9])'
-        self.dsp_version_pattern = r"(CRANEG_.{47})"
+        self.version_pattern = re.compile(r'(crane_.*?)([0-9][0-9][0-9][0-9])')
+        self.dsp_version_pattern = re.compile(r"(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])")
 
+        self.branch_list = ["master", "r1_rc", "r1"]
         self.update()
         self.log.info(self.branch_name)
         self.log.info("create repo done")
@@ -390,21 +391,23 @@ class CusRepo(myRepo, ManagerVersionBase):
     def update(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
-        self.branch_name = json_str["cus_branch"]
+        config_d = json_str["cus_crane_info"]
+
+        self.branch_name = config_d["branch_name"]
         self.release_branch = self.branch_name
-        self.version_log = os.path.join(self.root_dir,json_str["cus_branch_info"][self.branch_name]["version_file"])
-        self.release_dist_dir = json_str["cus_branch_info"][self.branch_name]["release_dist_dir"]
+        self.build_root_dir = config_d["build"]
+        self.git_root_dir = config_d["git"]
+        self.version_log = os.path.join(self.root_dir, config_d["branch_info"][self.branch_name]["version_file"])
+        self.release_dist_dir = config_d["branch_info"][self.branch_name]["release_dist_dir"]
 
-        self.manisest_xml_dir = os.path.join(self.root_dir,json_str["manisest_xml_dir"])
+        self.manisest_xml_dir = os.path.join(self.root_dir, config_d["manisest_xml_dir"])
 
-        self.build_root_dir = json_str["cus_dir_info"]["build"]
-        self.git_root_dir = json_str["cus_dir_info"]["git"]
-        self.ap_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["ap_version_log"])
-        self.cp_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["cp_version_log"])
-        self.dsp_version_log = os.path.join(self.root_dir,json_str["cus_dir_info"]["dsp_version_log"])
+        self.ap_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["ap_version_log"])
+        self.cp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["cp_version_log"])
+        self.dsp_version_log = os.path.join(self.root_dir, config_d["version_info_log"]["dsp_version_log"])
 
-        self.sdk_version_file = os.path.join(self.build_root_dir, json_str["cus_branch_info"]["master"]["sdk_version_file"])
-        self.dsp_version_file = os.path.join(self.build_root_dir, json_str["cus_branch_info"]["master"]["dsp_version_file"])
+        self.sdk_version_file = os.path.join(self.build_root_dir, config_d["branch_info"][self.branch_name]["sdk_version_file"])
+        self.dsp_version_file = os.path.join(self.build_root_dir, config_d["branch_info"][self.branch_name]["dsp_version_file"])
 
         _path = os.path.join(self.git_root_dir, '.')
         _git = git.Repo(_path).git

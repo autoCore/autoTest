@@ -1,6 +1,4 @@
 {
-    "cus_branch": "master",
-    "manisest_xml_dir": ".\\tmp\\manifest_xml",
     "cus_dir_info":
     {
         "git":"D:\\crane_cus\\crane-phone-rls",
@@ -55,31 +53,6 @@
             "dsp_version_log":".\\tmp\\crang_dsp_version.txt"
         }
     },
-    "cus_branch_info":
-    {
-        "master":
-        {
-            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_release",
-            "version_file":".\\tmp\\version_cus.log",
-            "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
-            "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
-        },
-        "r1":
-        {
-            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_release",
-            "version_file":".\\tmp\\version_r.log"
-        },
-        "r1_plus_j":
-        {
-            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_plus_j_release",
-            "version_file":".\\tmp\\version_r1_plus_j.log"
-        },
-        "r1_rc":
-        {
-            "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_rc",
-            "version_file":".\\tmp\\version_r1_rc.log"
-        }
-    },
     "cus_crane_info":
     {
         "branch_name": "master",
@@ -98,17 +71,23 @@
             "r1":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_release",
-                "version_file":".\\tmp\\version_r.log"
+                "version_file":".\\tmp\\version_r.log",
+                "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
             },
             "r1_plus_j":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_plus_j_release",
-                "version_file":".\\tmp\\version_r1_plus_j.log"
+                "version_file":".\\tmp\\version_r1_plus_j.log",
+                "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
             },
             "r1_rc":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_rc",
-                "version_file":".\\tmp\\version_r1_rc.log"
+                "version_file":".\\tmp\\version_r1_rc.log",
+                "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
             }
         },
         "version_info_log":

@@ -451,7 +451,6 @@ class CusBuild(BuildBase, BuildController):
         super(CusBuild, self).__init__(_repo_cus)
         super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-        self.release_branch = _repo_cus.release_branch
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","build.json")
@@ -461,6 +460,7 @@ class CusBuild(BuildBase, BuildController):
         self.build_images = json_str["build_images"][1:-1]
         self.images = json_str["images"]
 
+        self.release_branch = self._repo.release_branch
         self.build_root_dir = self._repo.build_root_dir
         self.git_root_dir = self._repo.git_root_dir
         self.release_dist_dir = self._repo.release_dist_dir
