@@ -23,7 +23,7 @@ sys.setdefaultencoding("utf-8")
 email_subject = "CRANE PHONE: AUTO RELEASE %s"
 email_msg_with_cus = r"""
 GUI VERSION: {0}
-CP VERSION: {1}
+SDK VERSION: {1}
 DSP VERSION: {2}
 
 NORMAL VERSION(SINGLE and DUAL SIM):
@@ -38,13 +38,18 @@ VISENK PHONE VERSION:
 binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone\download_tool
 
-CRANEG VERSION: \\sh2-filer02\Data\FP_RLS\craneG_dailybuild
 
-CUSTOMER RELEASE:
-CP VERSION: {4}
+CUSTOMER VERSION RELEASE:
+SDK VERSION: {4}
 DSP VERSION: {5}
-
 RELEASE VERSION: {6}
+
+
+CRANEG VERSION RELEASE:
+SDK VERSION: {7}
+DSP VERSION: {8}
+RELEASE VERSION: {9}
+
 """
 
 
@@ -57,6 +62,9 @@ class autoRelease(ThreadBase):
 
         self.cur_crane_cus = _cfg.cur_crane_cus
         self.release_dist_dir = _cfg.release_dist_dir
+
+        self.craneg_build_dir = r"D:\craneg_dailybuild\crane"
+        self.craneg_release_dir = r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
 
 
         self.today_release_flag = threading.Event()
@@ -79,13 +87,19 @@ class autoRelease(ThreadBase):
     @staticmethod
     def CHECK_DSP_VERSION(dsp_version):
         """CRANE_CAT1GSM_L1_1.053.001 , Feb 29 2020 03:40:50"""
-        match = re.findall("(CRANE_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])", dsp_version)
+        match = re.findall("(CRANE.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])", dsp_version)
         if match and "\00" not in match[0]:
             return match[0]
         else:
             return "can not match dsp version".upper()
 
-    def send_release_email(self, version_file, customer_file=None):
+    @staticmethod
+    def get_version(file_name):
+        with open(file_name) as obj:
+            _version = obj.read()
+        return _version
+
+    def send_release_email(self, version_file, customer_file, craneg_file):
         to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
                      "crane_sw_mmi_group@asrmicro.com "
         version_fname = os.path.basename(version_file)
@@ -94,32 +108,57 @@ class autoRelease(ThreadBase):
         assert _match, "file name can not match"
         version = _match[0]
 
-        cp_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
-        with open(cp_version_file) as obj:
-            cp_version = obj.read()
-        dsp_version_file = os.path.join(version_file, "version_info", "dsp_version.txt")
-        with open(dsp_version_file) as obj:
-            dsp_version = obj.read()
-        self.log.info(dsp_version)
-        dsp_version = self.CHECK_DSP_VERSION(dsp_version)
+        sdk_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
+        crane_sdk_version = self.get_version(sdk_version_file)
 
-        cp_version_file = os.path.join(customer_file, "version_info", "release_cp_version.txt")
-        with open(cp_version_file) as obj:
-            cp_version_cus = obj.read()
+        dsp_version_file = os.path.join(version_file, "version_info", "dsp_version.txt")
+        crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+
+        sdk_version_file = os.path.join(customer_file, "version_info", "release_cp_version.txt")
+        cus_crane_sdk_version = self.get_version(sdk_version_file)
 
         dsp_version_file = os.path.join(customer_file, "version_info", "release_dsp_version.txt")
-        with open(dsp_version_file) as obj:
-            dsp_version_cus = obj.read()
-        self.log.info(dsp_version_cus)
-        dsp_version_cus = self.CHECK_DSP_VERSION(dsp_version_cus)
-        if customer_file:
-            msg = email_msg_with_cus.format(version.upper(), cp_version, dsp_version, version_fname, cp_version_cus,
-                                            dsp_version_cus, customer_file)
-        else:
-            msg = email_msg.format(version.upper(), cp_version, dsp_version, version_fname)
+        cus_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+
+        sdk_version_file = os.path.join(craneg_file, "version_info", "crang_cp_version.txt")
+        craneg_sdk_version = self.get_version(sdk_version_file)
+
+        dsp_version_file = os.path.join(craneg_file, "version_info", "crang_dsp_version.txt")
+        craneg_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+
+
+        msg = email_msg_with_cus.format(version.upper(), crane_sdk_version, crane_dsp_version, version_fname,\
+                                        cus_crane_sdk_version, cus_crane_dsp_version, customer_file,\
+                                        craneg_sdk_version, craneg_dsp_version, craneg_file)
+
         self.log.info(subject)
         self.log.info(msg)
         send_email_tool(to_address, subject, msg)
+
+    def trigger_auto_test(self, _version_file, project_name=None, board="crane_evb_z2"):
+        try:
+            sdk_tool_abs_path_dir = os.path.join(_version_file, board, "download_tool")
+            for _file in os.listdir(sdk_tool_abs_path_dir):
+                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
+                    sdk_tool_abs_path = os.path.join(sdk_tool_abs_path_dir, _file)
+                    break
+            else:
+                sdk_tool_abs_path = None
+
+            mdb_txt_file_dir = os.path.join(_version_file, board)
+            for _file in os.listdir(mdb_txt_file_dir):
+                if "MDB.TXT" in _file.upper():
+                    mdb_txt_file_abs_path = os.path.join(mdb_txt_file_dir, _file)
+                    break
+            else:
+                mdb_txt_file_abs_path = None
+
+            self.log.info(sdk_tool_abs_path)
+            self.log.info(mdb_txt_file_abs_path)
+            trigger_test(sdk_tool_abs_path, mdb_txt_file_abs_path,project_name)
+        except Exception, e:
+            self.log.info(e)
+
 
     def run(self):
         while self._running:
@@ -146,59 +185,20 @@ class autoRelease(ThreadBase):
             self.log.info(cus_version_file)
             cus_version_file = os.path.join(self.release_dist_dir, os.path.basename(cus_version_file))
 
-            self.send_release_email(version_file, cus_version_file)
+            craneg_version_file = self.get_release_version(self.craneg_build_dir, self.craneg_release_dir, "craneg_d_")
+            self.log.info(craneg_version_file)
+            craneg_version_file = os.path.join(self.craneg_release_dir, os.path.basename(craneg_version_file))
+
+
+            self.send_release_email(version_file, cus_version_file, craneg_version_file)
 
             # trigger dailybuild test
-            try:
-                board = "crane_evb_z2"
-                sdk_tool_abs_path_dir = os.path.join(self.dist_dir, os.path.basename(version_file),
-                                                                                      board, "download_tool")
-                for _file in os.listdir(sdk_tool_abs_path_dir):
-                    if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
-                        sdk_tool_abs_path = os.path.join(sdk_tool_abs_path_dir, _file)
-                        break
-                else:
-                    sdk_tool_abs_path = None
+            self.trigger_auto_test(version_file)
+            self.trigger_auto_test(craneg_version_file, "craneg_evb", "craneg_evb")
 
-                mdb_txt_file_dir = os.path.join(self.dist_dir, os.path.basename(version_file), board)
-                for _file in os.listdir(mdb_txt_file_dir):
-                    if "MDB.TXT" in _file.upper():
-                        mdb_txt_file_abs_path = os.path.join(mdb_txt_file_dir, _file)
-                        break
-                else:
-                    mdb_txt_file_abs_path = None
-                self.log.info(sdk_tool_abs_path)
-                self.log.info(mdb_txt_file_abs_path)
-                trigger_test(sdk_tool_abs_path, mdb_txt_file_abs_path)
-            except Exception, e:
-                self.log.info(e)
+            # self.trigger_auto_test(cus_version_file, "evb_customer")
 
             '''
-            root_dir = os.path.join(cus_version_file, "crane_evb_z2", "cp_images")
-            images = [os.path.join(root_dir, _file) for _file in os.listdir(root_dir)]
-            download_controller.prepare_download_tool(images)
-            download_controller.release_download_tool(os.path.basename(cus_version_file), "crane_evb_z2", dist_dir = os.path.join(cus_version_file,"download_tool"))
-
-
-            #trigger customer test
-            try:
-                board = "crane_evb_z2"
-                dist = cus_version_file
-                sdk_tool_abs_path = download_controller.download_tool_dict.get(board)
-                mdb_txt_file_dir = os.path.join(dist,board)
-                self.log.info(mdb_txt_file_dir)
-                for _file in os.listdir(mdb_txt_file_dir):
-                    if "MDB.TXT" in _file.upper():
-                        mdb_txt_file_abs_path = os.path.join(mdb_txt_file_dir,_file)
-                        break
-                else:
-                    mdb_txt_file_abs_path = None
-                self.log.info(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
-                trigger_test(sdk_tool_abs_path,mdb_txt_file_abs_path,"evb_customer")
-            except Exception,e:
-                self.log.info(e)
-
-
             try:
                 lib_src = os.path.join(version_file, "crane_evb_z2", "rel_lib")
                 self.log.info(lib_src, os.path.basename(version_file))

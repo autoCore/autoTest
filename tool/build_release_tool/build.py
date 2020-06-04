@@ -245,9 +245,32 @@ class CraneDailyBuild(BuildBase, BuildController):
     def __init__(self, _repo, _release_event):
         super(CraneDailyBuild, self).__init__(_repo)
         super(BuildBase, self).__init__()
-        self.board_list = self.board_list[:-1]
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
+
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.board_list = json_str["boards"][:3]
+        self.board_info = json_str["boards_info"]
+        self.build_images = json_str["build_images"][1:-1]
+        self.images = json_str["images"]
+
+        self.build_root_dir = self._repo.build_root_dir
+        self.git_root_dir = self._repo.git_root_dir
+        self.release_dist_dir = self._repo.release_dist_dir
+        self.manisest_xml_dir = self._repo.manisest_xml_dir
+
+        self.ap_version_log = self._repo.ap_version_log
+        self.cp_version_log = self._repo.cp_version_log
+        self.dsp_version_log = self._repo.dsp_version_log
+
+        self.cp_version_file = self._repo.sdk_version_file
+        self.dsp_bin = self._repo.dsp_version_file
+
+        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+
+
 
     def start(self):
         self.get_dsp_version(self.dsp_bin)
@@ -324,9 +347,32 @@ class CraneGDailyBuild(BuildBase, BuildController):
     def __init__(self, _repo, _release_event):
         super(CraneGDailyBuild, self).__init__(_repo)
         super(BuildBase, self).__init__()
-        self.board_list = ["craneg_evb"]
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
+
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.board_list = json_str["boards"][3:4]
+        self.board_info = json_str["boards_info"]
+        self.build_images = json_str["build_images"][1:-1]
+        self.images = json_str["images"]
+
+        self.build_root_dir = self._repo.build_root_dir
+        self.git_root_dir = self._repo.git_root_dir
+        self.release_dist_dir = self._repo.release_dist_dir
+        self.manisest_xml_dir = self._repo.manisest_xml_dir
+
+        self.ap_version_log = self._repo.ap_version_log
+        self.cp_version_log = self._repo.cp_version_log
+        self.dsp_version_log = self._repo.dsp_version_log
+
+        self.cp_version_file = self._repo.sdk_version_file
+        self.dsp_bin = self._repo.dsp_version_file
+
+        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+
+
 
     def start(self):
         self.get_dsp_version(self.dsp_bin)
@@ -406,6 +452,29 @@ class CusBuild(BuildBase, BuildController):
         super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
         self.release_branch = _repo_cus.release_branch
+
+    def update(self):
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.board_list = json_str["boards"][:3]
+        self.board_info = json_str["boards_info"]
+        self.build_images = json_str["build_images"][1:-1]
+        self.images = json_str["images"]
+
+        self.build_root_dir = self._repo.build_root_dir
+        self.git_root_dir = self._repo.git_root_dir
+        self.release_dist_dir = self._repo.release_dist_dir
+        self.manisest_xml_dir = self._repo.manisest_xml_dir
+
+        self.ap_version_log = self._repo.ap_version_log
+        self.cp_version_log = self._repo.cp_version_log
+        self.dsp_version_log = self._repo.dsp_version_log
+
+        self.cp_version_file = self._repo.sdk_version_file
+        self.dsp_bin = self._repo.dsp_version_file
+
+        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
