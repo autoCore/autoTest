@@ -73,20 +73,8 @@ class BuildController(object):
 class BuildBase(object):
     def __init__(self, _repo):
         self._repo = _repo
+        self.root_dir = os.getcwd()
         self.log = MyLogger(self.__class__.__name__)
-        self.root_dir = _repo.root_dir
-        self.build_root_dir = _repo.build_root_dir
-        self.git_root_dir = _repo.git_root_dir
-        self.release_dist_dir = _repo.release_dist_dir
-        self.manisest_xml_dir = _repo.manisest_xml_dir
-
-        self.ap_version_log = _repo.ap_version_log
-        self.cp_version_log = _repo.cp_version_log
-        self.dsp_version_log = _repo.dsp_version_log
-
-        self.cp_version_file = _repo.sdk_version_file
-        self.dsp_bin = _repo.dsp_version_file
-
         self.download_controller = DownloadToolController()
 
         self.xml_file = ''
@@ -110,6 +98,18 @@ class BuildBase(object):
         self.board_info = json_str["boards_info"]
         self.build_images = json_str["build_images"][1:-1]
         self.images = json_str["images"]
+
+        self.build_root_dir = self._repo.build_root_dir
+        self.git_root_dir = self._repo.git_root_dir
+        self.release_dist_dir = self._repo.release_dist_dir
+        self.manisest_xml_dir = self._repo.manisest_xml_dir
+
+        self.ap_version_log = self._repo.ap_version_log
+        self.cp_version_log = self._repo.cp_version_log
+        self.dsp_version_log = self._repo.dsp_version_log
+
+        self.cp_version_file = self._repo.sdk_version_file
+        self.dsp_bin = self._repo.dsp_version_file
 
         self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
 
@@ -234,6 +234,7 @@ class BuildBase(object):
     @property
     def condition(self):
         self._repo.update()
+        self.update()
         return self._repo.sync()
 
     def start(self):

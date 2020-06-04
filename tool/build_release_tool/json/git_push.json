@@ -37,20 +37,20 @@
     "cus_rc_sdk":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200415_SDK",
-        "target_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls\\evb\\src\\cp",
+        "target_dir": "E:\\cus_crane_git_push\\crane-phone-rls\\evb\\src\\cp",
         "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls",
-        "verson_file": "D:\\user\\wubin\\crane\\cp\\tavor\\env\\inc\\sys_version.h",
+        "git_push_root_dir": "E:\\cus_crane_git_push\\crane-phone-rls",
+        "verson_file": "E:\\cus_crane_git_push\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
         "git_push_cmd": ["ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls", "master"]
     },
 
     "cus_r1_sdk":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200225_SDK",
-        "target_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls\\evb\\src\\cp",
+        "target_dir": "E:\\cus_crane_git_push\\crane-phone-rls\\evb\\src\\cp",
         "local_dir": ".\\cp_sdk_dir",
         "git_push_root_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls",
-        "verson_file": "D:\\user\\wubin\\crane\\cp\\tavor\\env\\inc\\sys_version.h",
+        "verson_file": "E:\\cus_crane_git_push\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
         "git_push_cmd": ["ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls", "master"]
     }
 }
