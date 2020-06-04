@@ -125,7 +125,7 @@ class autoRelease(ThreadBase):
         while self._running:
             self.release_event.wait()
             self.release_event.clear()
-            version_file = self.get_release_version(self.cur_crane, self.dist_dir, repo.verion_name)
+            version_file = self.get_release_version(self.cur_crane, self.dist_dir, "crane_d_")
             if not version_file:
                 continue
             self.log.info(version_file)
@@ -139,10 +139,11 @@ class autoRelease(ThreadBase):
             assert _match, "cp_version can not match"
             cp_version_sdk = _match[0]
             release_name = "_".join([cp_version_sdk, ap_version])
-            download_controller.update_download_tool()
+            # download_controller.update_download_tool()
             self.today_release_flag.set()
 
-            cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir, repo_cus.verion_name)
+            cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir, "crane_rc_")
+            self.log.info(cus_version_file)
             cus_version_file = os.path.join(self.release_dist_dir, os.path.basename(cus_version_file))
 
             self.send_release_email(version_file, cus_version_file)
