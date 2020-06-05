@@ -141,7 +141,7 @@ class autoRelease(ThreadBase):
         try:
             sdk_tool_abs_path_dir = os.path.join(_version_file, board, "download_tool")
             for _file in os.listdir(sdk_tool_abs_path_dir):
-                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
+                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper() and "DCXO" not in _file:
                     sdk_tool_abs_path = os.path.join(sdk_tool_abs_path_dir, _file)
                     break
             else:
