@@ -3,6 +3,7 @@
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANE\\CAT1",
         "target_dir": "E:\\crane_git_push\\crane\\cus\\evb\\images",
+        "local_dir": ".\\dsp_rf_rbd_bin",
         "git_push_root_dir": "E:\\crane_git_push\\crane",
         "verson_file": "E:\\crane_git_push\\crane\\cus\\evb\\images\\dsp.bin",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
@@ -11,6 +12,7 @@
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANEG",
         "target_dir": "E:\\crane_git_push\\crane\\cus\\evb\\img4LWG",
+        "local_dir": ".\\dsp_rf_rbd_bin",
         "git_push_root_dir": "E:\\crane_git_push\\crane",
         "verson_file": "E:\\crane_git_push\\crane\\cus\\evb\\img4LWG\\dsp.bin",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]

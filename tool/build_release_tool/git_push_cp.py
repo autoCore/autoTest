@@ -299,8 +299,8 @@ class gitPushCusSDK(gitPushCraneSDK):
     def update(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
         json_str = load_json(json_file)
-        self.config_d = json_str["cus_rc_sdk"]
-        config_d = json_str["cus_rc_sdk"]
+        self.config_d = json_str["cus_master_sdk"]
+        config_d = json_str["cus_master_sdk"]
         self.cp_sdk_release_dir = config_d["release_dir"]
         self.git_push_cp_dir = config_d["git_push_root_dir"]
         self.git_push_root_dir = self.git_push_cp_dir
