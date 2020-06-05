@@ -1,18 +1,13 @@
 {
-    "cus_dir_info":
-    {
-        "git":"D:\\crane_cus\\crane-phone-rls",
-        "build":"D:\\crane_cus\\crane-phone-rls\\evb\\src",
-        "ap_version_log": ".\\tmp\\release_ap_version.txt",
-        "cp_version_log": ".\\tmp\\release_cp_version.txt",
-        "dsp_version_log": ".\\tmp\\release_dsp_version.txt"
-    },
     "crane_info":
     {
         "branch_name": "master",
         "manisest_xml_dir": ".\\tmp\\manifest_xml",
         "git":"E:\\crane_dailybuild\\crane",
+        "storage_list": [".", "cp", "gui", "tool"],
         "build": "E:\\crane_dailybuild\\crane",
+        "dsp_version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "version_pattern": "(crane_.*?)([0-9][0-9][0-9][0-9])",
         "branch_info":
         {
             "master":
@@ -35,7 +30,10 @@
         "branch_name": "master",
         "manisest_xml_dir": ".\\tmp\\manifest_xml",
         "git":"D:\\craneg_dailybuild\\crane",
+        "storage_list": [".", "cp", "gui", "tool"],
         "build": "D:\\craneg_dailybuild\\crane",
+        "dsp_version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "version_pattern": "(craneg_.*?)([0-9][0-9][0-9][0-9])",
         "branch_info":
         {
             "master":
@@ -58,7 +56,10 @@
         "branch_name": "master",
         "manisest_xml_dir": ".\\tmp\\manifest_xml",
         "git": "D:\\crane_cus\\crane-phone-rls",
+        "storage_list": ["."],
         "build": "D:\\crane_cus\\crane-phone-rls\\evb\\src",
+        "dsp_version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "version_pattern": "(crane_.*?)([0-9][0-9][0-9][0-9])",
         "branch_info":
         {
             "master":
