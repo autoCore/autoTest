@@ -87,21 +87,29 @@ class BuildBase(object):
         self.download_tool_dir_d = {}
         self.download_tool_images_dir_d = {}
 
+        # self.release_branch = "master"
+
         self.update()
         self.config()
 
         # self.print_info()
 
+    def get_config(self):
+        pass
+
     def config(self):
         pass
 
     def update(self):
+        self.get_config()
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.total_board_list = json_str["boards"]
         self.board_info = json_str["boards_info"]
         self.build_images = json_str["build_images"][1:-1]
         self.images = json_str["images"]
+
+        self._repo.update(self.release_branch)
 
         self.build_root_dir = self._repo.build_root_dir
         self.git_root_dir = self._repo.git_root_dir
@@ -115,7 +123,7 @@ class BuildBase(object):
         self.cp_version_file = self._repo.sdk_version_file
         self.dsp_bin = self._repo.dsp_version_file
 
-        self.release_branch = self._repo.release_branch
+        # self.release_branch = self._repo.branch_name
 
         self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
 
@@ -240,7 +248,6 @@ class BuildBase(object):
 
     @property
     def condition(self):
-        self._repo.update()
         self.update()
         return self._repo.sync()
 
@@ -259,6 +266,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
         super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = None
+        self.release_branch = "master"
 
         self.ap_version = None
 
@@ -279,6 +287,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
         self.xml_file = os.path.join(self.manisest_xml_dir, self.xml_file)
         self.get_manifest_xml()
 
+
     def close_build(self):
         pass
 
@@ -289,7 +298,6 @@ class MyDailyBuildBase(BuildBase, BuildController):
         self.get_dsp_version(self.dsp_bin)
 
         owner = self.get_revion_owner()
-
 
         self.log.info("=" * 80)
         self.log.info("version:", self.ap_version)
@@ -359,6 +367,9 @@ class CraneDailyBuild(MyDailyBuildBase):
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
 
+    def get_config(self):
+        self.release_branch = "master"
+
     def config(self):
         self.board_list = self.total_board_list[:3]
 
@@ -371,6 +382,10 @@ class CraneGDailyBuild(MyDailyBuildBase):
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
 
+    def get_config(self):
+        self.release_branch = "master"
+
+
     def config(self):
         self.board_list = self.total_board_list[3:4]
 
@@ -381,9 +396,12 @@ class CusBuild(MyDailyBuildBase):
         super(CusBuild, self).__init__(_repo_cus)
         self.log = MyLogger(self.__class__.__name__)
 
+    def get_config(self):
+        self.release_branch = "master"
+
     def config(self):
         self.board_list = self.total_board_list[:3]
-
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xls"
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
@@ -408,14 +426,8 @@ class CusBuild(MyDailyBuildBase):
 
         self.prepare_release_dir(self.loacal_dist_dir)
 
-        self.release_branch = self._repo.release_branch
         self.log.info("release_branch", self.release_branch)
-        if self.release_branch == "master":
-            self.board_list = self.total_board_list[:3]
-            self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xls"
-        else: # ["r1", "r1_plus_j", "r1_1.006.027"]
-            self.board_list = self.total_board_list[:1]
-            self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xls"
+
         self.ap_version = self.get_ap_version()
 
         release_note = self.find_newest_notes()
@@ -430,7 +442,25 @@ class CusBuild(MyDailyBuildBase):
         if self.cp_version not in self.old_cp_version:
             to_address = 'yuanzhizheng@asrmicro.com'
             subject = "%s RELEASE" % self.cp_version
-            msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, release_dist)
+            msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
-        self.trigger_auto_test(release_dist, "evb_customer")
+        self.trigger_auto_test(self.release_dist, "evb_customer")
         self.git_clean()
+
+
+class CusR1RCBuild(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CusR1RCBuild, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "r1_rc"
+
+    def config(self):
+        self.release_branch = "r1_rc"
+        self.board_list = self.total_board_list[:1]
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xls"
+
+
+
+

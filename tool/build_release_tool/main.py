@@ -13,7 +13,7 @@ from ftp import ftp_upload_file
 from TriggerTest import trigger_test
 from myrepo import *
 from util import config, copy
-from build import CraneDailyBuild, CusBuild, CraneGDailyBuild
+from build import *
 from download_tool import DownloadToolController
 
 
@@ -364,6 +364,7 @@ if __name__ == "__main__":
     auto_daily_build_cls = CraneDailyBuild(repo, RELEASE_EVENT)
     craneg_build_cls = CraneGDailyBuild(craneg_repo, RELEASE_EVENT)
     auto_cus_build_cls = CusBuild(repo_cus)
+    auto_r1_rc_build_cls = CusR1RCBuild(repo_cus)
 
     cp_sdk_cls = gitPushCraneSDK()
     craneg_sdk_cls = gitPushCraneGSDK()
@@ -384,6 +385,7 @@ if __name__ == "__main__":
 
     # auto build task
     auto_build_task = autoBuild()
+    auto_build_task.add_build(auto_r1_rc_build_cls)
     auto_build_task.add_build(auto_cus_build_cls)
     auto_build_task.add_build(craneg_build_cls)
     auto_build_task.add_build(auto_daily_build_cls)

@@ -48,7 +48,7 @@ class ManagerVersionBase(object):
             # assert text_list,"can not find version info"
             self.verion_name, _ = text_list[-1]
         else:
-            self.verion_name = self.release_branch
+            self.verion_name = self.branch_name
         self.log.debug(self.verion_name)
 
     def get_nearest_version(self):
@@ -66,7 +66,7 @@ class ManagerVersionBase(object):
             version = "%s%04d" % (self.verion_name, cnt + 1)
             # self.log.info(version)
         else:
-            version = self.release_branch
+            version = self.branch_name
         return version
 
     def record_version(self, version='', info=''):
@@ -160,7 +160,6 @@ class ManagerVersionBase(object):
 class myRepo(object):
     def __init__(self, version_log="", root_path=""):
         self.root_dir = os.getcwd()
-        self.release_branch = None
         self.release_dist_dir = ''
         self.build_root_dir = ''
         self.git_root_dir = root_path
@@ -315,10 +314,9 @@ class RepoBase(myRepo, ManagerVersionBase):
     def get_config(self):
         self.config_d = {}
 
-    def update(self):
+    def update(self, _branch_name="master"):
         self.get_config()
-        self.branch_name = self.config_d["branch_name"]
-        self.release_branch = self.branch_name
+        self.branch_name = _branch_name
         self.build_root_dir = self.config_d["build"]
         self.git_root_dir = self.config_d["git"]
         self._storage_list = self.config_d["storage_list"]
@@ -388,6 +386,7 @@ class CusRepo(RepoBase):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
         self.config_d = json_str["cus_crane_info"]
+
 
     def checkout_branch(self):
         _path = os.path.join(self.git_root_dir, '.')
