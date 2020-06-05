@@ -64,7 +64,7 @@ class ManagerVersionBase(object):
             self.verion_name, cnt = text_list[-1]
             cnt = int(cnt)
             version = "%s%04d" % (self.verion_name, cnt + 1)
-            self.log.info(version)
+            # self.log.info(version)
         else:
             version = self.release_branch
         return version

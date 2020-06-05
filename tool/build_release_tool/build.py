@@ -99,7 +99,7 @@ class BuildBase(object):
     def update(self):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
-        self.board_list = json_str["boards"]
+        self.total_board_list = json_str["boards"]
         self.board_info = json_str["boards_info"]
         self.build_images = json_str["build_images"][1:-1]
         self.images = json_str["images"]
@@ -214,7 +214,6 @@ class BuildBase(object):
 
     def update_cp_version(self):
         self.cp_version = self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
-        self.log.info("sdk version: ", self.cp_version)
         return self.cp_version
 
     def get_revion_owner(self):
@@ -343,7 +342,7 @@ class CraneDailyBuild(MyDailyBuildBase):
         self.release_event = _release_event
 
     def config(self):
-        self.board_list = self.board_list[:3]
+        self.board_list = self.total_board_list[:3]
 
 
 
@@ -355,7 +354,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
         self.release_event = _release_event
 
     def config(self):
-        self.board_list = self.board_list[3:4]
+        self.board_list = self.total_board_list[3:4]
 
 
 
@@ -365,7 +364,7 @@ class CusBuild(MyDailyBuildBase):
         self.log = MyLogger(self.__class__.__name__)
 
     def config(self):
-        self.board_list = self.board_list[:3]
+        self.board_list = self.total_board_list[:3]
 
 
     def find_newest_notes(self):
@@ -383,10 +382,10 @@ class CusBuild(MyDailyBuildBase):
         self.release_branch = self._repo.release_branch
         self.log.info("release_branch", self.release_branch)
         if self.release_branch == "master":
-            self.board_list = self.board_list[:3]
+            self.board_list = self.total_board_list[:3]
             self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xls"
         else: # ["r1", "r1_plus_j", "r1_1.006.027"]
-            self.board_list = self.board_list[:1]
+            self.board_list = self.total_board_list[:1]
             self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xls"
         self.get_dsp_version(self.dsp_bin)
         old_cp_version = self.get_old_cp_version()
