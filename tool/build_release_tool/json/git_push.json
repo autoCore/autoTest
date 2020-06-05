@@ -2,25 +2,30 @@
     "crane_dsp":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANE\\CAT1",
+        "release_target": "crane_compress_a0.bin",
         "target_dir": "E:\\crane_git_push\\crane\\cus\\evb\\images",
         "local_dir": ".\\dsp_rf_rbd_bin",
         "git_push_root_dir": "E:\\crane_git_push\\crane",
         "verson_file": "E:\\crane_git_push\\crane\\cus\\evb\\images\\dsp.bin",
+        "version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
     "craneg_dsp":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANEG",
+        "release_target": "craneg_dsp.bin",
         "target_dir": "E:\\crane_git_push\\crane\\cus\\evb\\img4LWG",
         "local_dir": ".\\dsp_rf_rbd_bin",
         "git_push_root_dir": "E:\\crane_git_push\\crane",
         "verson_file": "E:\\crane_git_push\\crane\\cus\\evb\\img4LWG\\dsp.bin",
+        "version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
 
     "crane_sdk":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture",
+        "release_target": "ASR3601_MINIGUI_",
         "target_dir": "E:\\crane_git_push\\crane\\cp",
         "local_dir": ".\\cp_sdk_dir",
         "git_push_root_dir": "E:\\crane_git_push\\crane\\cp",
@@ -30,6 +35,7 @@
     "craneg_sdk":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\CraneG\\FeaturePhone_Watch",
+        "release_target": "ASR3603_MINIGUI_",
         "target_dir": "E:\\crane_git_push\\crane\\cpLWG",
         "local_dir": ".\\cp_sdk_dir",
         "git_push_root_dir": "E:\\crane_git_push\\crane",
@@ -39,6 +45,7 @@
     "cus_master_sdk":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200415_SDK",
+        "release_target": "ASR3601_MINIGUI_",
         "target_dir": "E:\\cus_crane_git_push\\crane-phone-rls\\evb\\src\\cp",
         "local_dir": ".\\cp_sdk_dir",
         "git_push_root_dir": "E:\\cus_crane_git_push\\crane-phone-rls",
@@ -49,6 +56,7 @@
     "cus_r1_rc_sdk":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200225_SDK",
+        "release_target": "ASR3601_MINIGUI_",
         "target_dir": "E:\\cus_crane_git_push\\crane-phone-rls\\evb\\src\\cp",
         "local_dir": ".\\cp_sdk_dir",
         "git_push_root_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls",

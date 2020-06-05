@@ -56,9 +56,9 @@ class GitPushBase(object):
             print("{: <20}: {}".format(k,v))
 
 
-class gitPushCraneSDK(GitPushBase):
+class gitPushSDKBase(GitPushBase):
     def __init__(self):
-        super(gitPushCraneSDK, self).__init__()
+        super(gitPushSDKBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
         self.zip_tool = zipTool()
@@ -74,28 +74,31 @@ class gitPushCraneSDK(GitPushBase):
 
         # self.print_info()
 
-    def update(self):
-        json_file = os.path.join(self.root_dir,"json","git_push.json")
-        json_str = load_json(json_file)
-        self.config_d = json_str["crane_sdk"]
-        config_d = json_str["crane_sdk"]
-        self.cp_sdk_release_dir = config_d["release_dir"]
-        self.git_push_cp_dir = config_d["git_push_root_dir"]
-        self.git_push_root_dir = self.git_push_cp_dir
-        self.target_dist_dir = config_d["target_dir"]
-        self.cp_sdk_dir = os.path.join(self.root_dir, config_d["local_dir"])
-        self.cp_version_file = config_d["verson_file"]
+    def get_config(self):
+        self.config_d = {}
 
-        self.push_cmd = config_d["git_push_cmd"]
+    def update(self):
+        self.get_config()
+        self.cp_sdk_release_dir = self.config_d["release_dir"]
+        self.git_push_cp_dir = self.config_d["git_push_root_dir"]
+        self.git_push_root_dir = self.git_push_cp_dir
+        self.target_dist_dir = self.config_d["target_dir"]
+        self.cp_sdk_dir = os.path.join(self.root_dir, self.config_d["local_dir"])
+        self.cp_version_file = self.config_d["verson_file"]
+        self.release_target = self.config_d["release_target"]
+
+        self.push_cmd = self.config_d["git_push_cmd"]
+
 
     def find_new_cp_sdk(self):
-        "ASR3601_MINIGUI_20191206_SDK.zip"
+        "ASR3603_MINIGUI_20200603_SDK.zip"
         cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if
-                       (_file.endswith(".zip") or _file.endswith(".7z")) and _file.startswith("ASR3601_MINIGUI_")]
+                       (_file.endswith(".zip") or _file.endswith(".7z")) and _file.startswith(self.release_target)]
         cp_sdk_list.sort(key=lambda fn: os.path.getmtime(os.path.join(self.cp_sdk_release_dir,fn)))
         assert cp_sdk_list,"can not find sdk"
         self.cp_sdk = cp_sdk_list[-1]
         self.log.debug("newest adk: %s" % self.cp_sdk)
+
 
     def clean_git_push_cp(self):
         self.git_clean()
@@ -256,59 +259,42 @@ class gitPushCraneSDK(GitPushBase):
             return None
 
 
+class gitPushCraneSDK(gitPushSDKBase):
+    def __init__(self):
+        super(gitPushCraneSDK, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
 
 
-class gitPushCraneGSDK(gitPushCraneSDK):
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane_sdk"]
+
+
+
+class gitPushCraneGSDK(gitPushSDKBase):
     def __init__(self):
         super(gitPushCraneGSDK, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-    def update(self):
+    def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg_sdk"]
-        config_d = json_str["craneg_sdk"]
-        self.cp_sdk_release_dir = config_d["release_dir"]
-        self.git_push_cp_dir = config_d["git_push_root_dir"]
-        self.git_push_root_dir = self.git_push_cp_dir
-        self.target_dist_dir = config_d["target_dir"]
-        self.cp_sdk_dir = os.path.join(self.root_dir, config_d["local_dir"])
-        self.cp_version_file = config_d["verson_file"]
-
-        self.push_cmd = config_d["git_push_cmd"]
 
 
-    def find_new_cp_sdk(self):
-        "ASR3603_MINIGUI_20200603_SDK.zip"
-        cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if
-                       (_file.endswith(".zip") or _file.endswith(".7z")) and _file.startswith("ASR3603_MINIGUI_")]
-        cp_sdk_list.sort(key=lambda fn: os.path.getmtime(os.path.join(self.cp_sdk_release_dir,fn)))
-        assert cp_sdk_list,"can not find sdk"
-        self.cp_sdk = cp_sdk_list[-1]
-        self.log.debug("newest adk: %s" % self.cp_sdk)
-
-
-
-class gitPushCusSDK(gitPushCraneSDK):
+class gitPushCusSDK(gitPushSDKBase):
     def __init__(self):
         super(gitPushCusSDK, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
         # self.init()
 
-    def update(self):
+    def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
         json_str = load_json(json_file)
         self.config_d = json_str["cus_master_sdk"]
-        config_d = json_str["cus_master_sdk"]
-        self.cp_sdk_release_dir = config_d["release_dir"]
-        self.git_push_cp_dir = config_d["git_push_root_dir"]
-        self.git_push_root_dir = self.git_push_cp_dir
-        self.target_dist_dir = config_d["target_dir"]
-        self.cp_sdk_dir = os.path.join(self.root_dir, config_d["local_dir"])
-        self.cp_version_file = config_d["verson_file"]
 
-        self.push_cmd = config_d["git_push_cmd"]
 
     # def init(self):
         # if self.cfg.release_branch == "master":
@@ -321,9 +307,9 @@ class gitPushCusSDK(gitPushCraneSDK):
             # self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
 
 
-class gitPushCraneDsp(GitPushBase):
+class GitPushDspBase(GitPushBase):
     def __init__(self):
-        super(gitPushCraneDsp, self).__init__()
+        super(GitPushDspBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
         self.decompress_tool = zipTool()
@@ -338,20 +324,22 @@ class gitPushCraneDsp(GitPushBase):
 
         # self.print_info()
 
+    def get_config(self):
+        self.config_d = {}
+
     def update(self):
-        json_file = os.path.join(self.root_dir,"json","git_push.json")
-        json_str = load_json(json_file)
-        self.config_d = json_str["crane_dsp"]
-        config_d = json_str["crane_dsp"]
-        self.release_dir = config_d["release_dir"]
-        self.target_dist_dir = config_d["target_dir"]
-        self.git_push_root_dir = config_d["git_push_root_dir"]
-        self.local_dsp_bin = config_d["verson_file"]
+        self.get_config()
+        self.release_dir = self.config_d["release_dir"]
+        self.target_dist_dir = self.config_d["target_dir"]
+        self.git_push_root_dir = self.config_d["git_push_root_dir"]
+        self.local_dsp_bin = self.config_d["verson_file"]
         self.local_rf_bin = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin")
         self.local_rf_verson_file = os.path.join(os.path.dirname(self.local_dsp_bin), "RF_Version.txt")
-        self.push_cmd = config_d["git_push_cmd"]
+        self.push_cmd = self.config_d["git_push_cmd"]
 
-        self.dsp_version_pattern = "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
+        self.dsp_version_pattern = re.compile(self.config_d["version_pattern"])
+        self.release_target_file = self.config_d["release_target"]
+
 
     def get_dsp_version(self, dsp_bin = None):
         """CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
@@ -362,8 +350,7 @@ class gitPushCraneDsp(GitPushBase):
         assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
         with open(dsp_version_file, "rb") as fob:
             text = fob.read()
-        # match = re.findall("(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        match = re.findall("(CRANE_.{47})",text)
+        match = self.dsp_version_pattern.findall(text)
         if match:
             self.log.debug(match[0])
             version_info = match[0]
@@ -384,11 +371,10 @@ class gitPushCraneDsp(GitPushBase):
         for release_dir in release_dir_list[-10:]:
             self.log.debug(release_dir)
             for root,dirs,files in os.walk(release_dir,topdown=False):
-                tgt_file = "crane_compress_a0.bin"
-                if "crane_compress_a0.bin" in files:
+                if self.release_target_file in files:
                     rf = os.path.join(root,"PM813","rf.bin")
                     if os.path.exists(rf):
-                        dsp_release_bin_l.append(os.path.join(root,tgt_file))
+                        dsp_release_bin_l.append(os.path.join(root,self.release_target_file))
         dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
         self.log.debug("\n".join(dsp_release_bin_l))
         self.release_dsp_bin = dsp_release_bin_l[-1]
@@ -448,69 +434,30 @@ class gitPushCraneDsp(GitPushBase):
             return None
 
 
-class gitPushCraneGDsp(gitPushCraneDsp):
+
+class gitPushCraneDsp(GitPushDspBase):
+    def __init__(self):
+        super(gitPushCraneDsp, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane_dsp"]
+
+
+
+class gitPushCraneGDsp(GitPushDspBase):
     def __init__(self):
         super(gitPushCraneGDsp, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-
-    def update(self):
+    def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg_dsp"]
-        config_d = json_str["craneg_dsp"]
-        self.release_dir = config_d["release_dir"]
-        self.target_dist_dir = config_d["target_dir"]
-        self.git_push_root_dir = config_d["git_push_root_dir"]
-        self.local_dsp_bin = config_d["verson_file"]
-        self.local_rf_bin = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin")
-        self.local_rf_verson_file = os.path.join(os.path.dirname(self.local_dsp_bin), "RF_Version.txt")
-        self.push_cmd = config_d["git_push_cmd"]
 
-        self.dsp_version_pattern = "(CRANEG_.*? ,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
-
-    def get_dsp_version(self, dsp_bin = None):
-        """ CRANEG_L1_1.004.002 , Jun 03 2020 03:10:40"""
-        if not dsp_bin:
-            dsp_bin = self.local_dsp_bin
-        dsp_version_file = os.path.join(self.root_dir, "tmp", "craneg_dsp_version.bin")
-        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file)
-        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
-        with open(dsp_version_file, "rb") as fob:
-            text = fob.read()
-        # match = re.findall("!(CRANE_.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",text)
-        match = re.findall("(CRANEG_.{47})",text)
-        if match:
-            self.log.debug(match[0])
-            version_info = match[0]
-        else:
-            self.log.error("can not find dsp version infomation")
-            version_info = None
-        # os.remove(dsp_version_file)
-        return version_info
-
-
-    def get_release_dsp_rf(self):
-        dsp_release_bin_l = []
-        release_dir_list = [os.path.join(self.release_dir,_dir) for _dir in os.listdir(self.release_dir) \
-                            if os.path.isdir(os.path.join(self.release_dir,_dir))]
-        release_dir_list.sort(key=lambda fn: os.path.getmtime(fn))
-        self.log.debug("release_dir_list len:",len(release_dir_list))
-        self.log.debug(release_dir_list[-10:])
-        for release_dir in release_dir_list[-10:]:
-            self.log.debug(release_dir)
-            for root,dirs,files in os.walk(release_dir,topdown=False):
-                tgt_file = "craneg_dsp.bin"
-                if "craneg_dsp.bin" in files:
-                    rf = os.path.join(root,"PM813","rf.bin")
-                    if os.path.exists(rf):
-                        dsp_release_bin_l.append(os.path.join(root,tgt_file))
-        dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
-        self.log.debug("\n".join(dsp_release_bin_l))
-        self.release_dsp_bin = dsp_release_bin_l[-1]
-        root_dir = os.path.dirname(self.release_dsp_bin)
-        self.release_rf_bin = os.path.join(root_dir,"PM813","rf.bin")
-        self.release_rf_verson_file = os.path.join(root_dir,"PM813","RF_Version.txt")
 
 
 
