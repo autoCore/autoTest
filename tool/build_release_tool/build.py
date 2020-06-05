@@ -86,7 +86,6 @@ class BuildBase(object):
         self.loacal_build_dir_d = {}
         self.download_tool_dir_d = {}
         self.download_tool_images_dir_d = {}
-        self.version_info_dir = ''
 
         self.update()
         self.config()
@@ -266,6 +265,16 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
     def prepare_build(self):
         self.ap_version = self.get_ap_version()
+        self.record_ap_version(self.ap_version)
+
+        date = time.strftime("%Y%m%d_%H%M%S")
+        file_name = "%s_%s" % (self.ap_version, date)
+
+        self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
+        self.release_dist = os.path.join(self.release_dist_dir, file_name)
+
+        self.prepare_release_dir(self.loacal_dist_dir)
+
         self.xml_file = self.ap_version + ".xml"
         self.xml_file = os.path.join(self.manisest_xml_dir, self.xml_file)
         self.get_manifest_xml()
@@ -281,25 +290,17 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
         owner = self.get_revion_owner()
 
-        self.record_ap_version(self.ap_version)
-        date = time.strftime("%Y%m%d_%H%M%S")
-        file_name = "%s_%s" % (self.ap_version, date)
 
         self.log.info("=" * 80)
-        self.log.info("version: " + file_name)
+        self.log.info("version:", self.ap_version)
         self.log.info("sdk version:", self.cp_version)
         self.log.info("dsp version:", self.dsp_version)
         self.log.info("=" * 80)
 
-        self.release_dist = os.path.join(self.release_dist_dir, file_name)
-
         self.get_commit_massages()
-
-        self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
 
         self.git_version_dir = self.loacal_dist_dir
 
-        self.prepare_release_dir(self.loacal_dist_dir)
         self.copy_version_file_to_release_dir()
 
         self.download_controller.update_download_tool()
@@ -309,7 +310,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
             build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
             assert build_cmd,"%s no build cmd" % board
             self.build(self.build_root_dir, cmd=build_cmd)
-            self.send_email(self.build_root_dir, owner, os.path.join(self.release_dist_dir, file_name), board)
+            self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
@@ -396,6 +397,17 @@ class CusBuild(MyDailyBuildBase):
             return None
 
     def prepare_build(self):
+        self.ap_version = self.get_ap_version()
+        self.record_ap_version(self.ap_version)
+
+        date = time.strftime("%Y%m%d_%H%M%S")
+        file_name = "%s_%s" % (self.ap_version, date)
+
+        self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
+        self.release_dist = os.path.join(self.release_dist_dir, file_name)
+
+        self.prepare_release_dir(self.loacal_dist_dir)
+
         self.release_branch = self._repo.release_branch
         self.log.info("release_branch", self.release_branch)
         if self.release_branch == "master":
@@ -406,15 +418,15 @@ class CusBuild(MyDailyBuildBase):
             self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xls"
         self.ap_version = self.get_ap_version()
 
-    def close_build(self):
         release_note = self.find_newest_notes()
         if release_note:
             copy(release_note, os.path.join(self.version_info_dir, os.path.basename(release_note)))
 
-        if os.path.exists(self.sdk_release_notes_file) and self.release_branch == "master":
+        if os.path.exists(self.sdk_release_notes_file):
             copy(self.sdk_release_notes_file,
                          os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
 
+    def close_build(self):
         if self.cp_version not in self.old_cp_version:
             to_address = 'yuanzhizheng@asrmicro.com'
             subject = "%s RELEASE" % self.cp_version
