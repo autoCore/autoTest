@@ -365,9 +365,9 @@ if __name__ == "__main__":
     craneg_build_cls = CraneGDailyBuild(craneg_repo, RELEASE_EVENT)
     auto_cus_build_cls = CusBuild(repo_cus)
 
-    cp_sdk_cls = gitPushCpDailyBuild(cfg)
+    cp_sdk_cls = gitPushCraneSDK()
     craneg_sdk_cls = gitPushCraneGSDK()
-    cus_sdk_cls = gitPushCusSDK(cfg)
+    cus_sdk_cls = gitPushCusSDK()
 
     crane_dsp_cls = gitPushCraneDsp()
     craneg_dsp_cls = gitPushCraneGDsp()
@@ -384,8 +384,8 @@ if __name__ == "__main__":
 
     # auto build task
     auto_build_task = autoBuild()
-    auto_build_task.add_build(craneg_build_cls)
     auto_build_task.add_build(auto_cus_build_cls)
+    auto_build_task.add_build(craneg_build_cls)
     auto_build_task.add_build(auto_daily_build_cls)
 
     # auto clean task
