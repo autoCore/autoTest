@@ -11,10 +11,6 @@
         ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
         ".\\build\\crane_evb_z2\\rel_lib"
     ],
-
-    "lwg_mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
-    "cp_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
-    "lwg_cp_version_file": ".\\cpLWG\\tavor\\env\\inc\\sys_version.h",
     "boards_info":
     {
         "crane_evb_z2":

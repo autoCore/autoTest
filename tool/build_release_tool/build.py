@@ -89,7 +89,12 @@ class BuildBase(object):
         self.version_info_dir = ''
 
         self.update()
+        self.config()
 
+        self.print_info()
+
+    def config(self):
+        pass
 
     def update(self):
         json_file = os.path.join(self.root_dir,"json","build.json")
@@ -110,6 +115,8 @@ class BuildBase(object):
 
         self.cp_version_file = self._repo.sdk_version_file
         self.dsp_bin = self._repo.dsp_version_file
+
+        self.release_branch = self._repo.release_branch
 
         self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
 
@@ -240,6 +247,11 @@ class BuildBase(object):
     def start(self):
         pass
 
+    def print_info(self):
+        print "-"*80
+        for k, v in self.__dict__.items():
+            print("{: <20}: {}".format(k,v))
+
 
 class CraneDailyBuild(BuildBase, BuildController):
     def __init__(self, _repo, _release_event):
@@ -248,29 +260,8 @@ class CraneDailyBuild(BuildBase, BuildController):
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
 
-    def update(self):
-        json_file = os.path.join(self.root_dir,"json","build.json")
-        json_str = load_json(json_file)
-        self.board_list = json_str["boards"][:3]
-        self.board_info = json_str["boards_info"]
-        self.build_images = json_str["build_images"][1:-1]
-        self.images = json_str["images"]
-
-        self.build_root_dir = self._repo.build_root_dir
-        self.git_root_dir = self._repo.git_root_dir
-        self.release_dist_dir = self._repo.release_dist_dir
-        self.manisest_xml_dir = self._repo.manisest_xml_dir
-
-        self.ap_version_log = self._repo.ap_version_log
-        self.cp_version_log = self._repo.cp_version_log
-        self.dsp_version_log = self._repo.dsp_version_log
-
-        self.cp_version_file = self._repo.sdk_version_file
-        self.dsp_bin = self._repo.dsp_version_file
-
-        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
-
-
+    def config(self):
+        self.board_list = self.board_list[:3]
 
     def start(self):
         self.get_dsp_version(self.dsp_bin)
@@ -311,7 +302,7 @@ class CraneDailyBuild(BuildBase, BuildController):
                 self.log.info(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
 
-            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir)
+            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
             self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
 
             if self.build_res == "SUCCESS":
@@ -343,6 +334,7 @@ class CraneDailyBuild(BuildBase, BuildController):
             self.release_event.set()
         return self.loacal_dist_dir
 
+
 class CraneGDailyBuild(BuildBase, BuildController):
     def __init__(self, _repo, _release_event):
         super(CraneGDailyBuild, self).__init__(_repo)
@@ -350,29 +342,8 @@ class CraneGDailyBuild(BuildBase, BuildController):
         self.log = MyLogger(self.__class__.__name__)
         self.release_event = _release_event
 
-    def update(self):
-        json_file = os.path.join(self.root_dir,"json","build.json")
-        json_str = load_json(json_file)
-        self.board_list = json_str["boards"][3:4]
-        self.board_info = json_str["boards_info"]
-        self.build_images = json_str["build_images"][1:-1]
-        self.images = json_str["images"]
-
-        self.build_root_dir = self._repo.build_root_dir
-        self.git_root_dir = self._repo.git_root_dir
-        self.release_dist_dir = self._repo.release_dist_dir
-        self.manisest_xml_dir = self._repo.manisest_xml_dir
-
-        self.ap_version_log = self._repo.ap_version_log
-        self.cp_version_log = self._repo.cp_version_log
-        self.dsp_version_log = self._repo.dsp_version_log
-
-        self.cp_version_file = self._repo.sdk_version_file
-        self.dsp_bin = self._repo.dsp_version_file
-
-        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
-
-
+    def config(self):
+        self.board_list = self.board_list[3:4]
 
     def start(self):
         self.get_dsp_version(self.dsp_bin)
@@ -452,28 +423,8 @@ class CusBuild(BuildBase, BuildController):
         super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-    def update(self):
-        json_file = os.path.join(self.root_dir,"json","build.json")
-        json_str = load_json(json_file)
-        self.board_list = json_str["boards"][:3]
-        self.board_info = json_str["boards_info"]
-        self.build_images = json_str["build_images"][1:-1]
-        self.images = json_str["images"]
-
-        self.release_branch = self._repo.release_branch
-        self.build_root_dir = self._repo.build_root_dir
-        self.git_root_dir = self._repo.git_root_dir
-        self.release_dist_dir = self._repo.release_dist_dir
-        self.manisest_xml_dir = self._repo.manisest_xml_dir
-
-        self.ap_version_log = self._repo.ap_version_log
-        self.cp_version_log = self._repo.cp_version_log
-        self.dsp_version_log = self._repo.dsp_version_log
-
-        self.cp_version_file = self._repo.sdk_version_file
-        self.dsp_bin = self._repo.dsp_version_file
-
-        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+    def config(self):
+        self.board_list = self.board_list[:3]
 
 
     def find_newest_notes(self):
