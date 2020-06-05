@@ -318,6 +318,7 @@ class RepoBase(myRepo, ManagerVersionBase):
     def update(self):
         self.get_config()
         self.branch_name = self.config_d["branch_name"]
+        self.release_branch = self.branch_name
         self.build_root_dir = self.config_d["build"]
         self.git_root_dir = self.config_d["git"]
         self._storage_list = self.config_d["storage_list"]
