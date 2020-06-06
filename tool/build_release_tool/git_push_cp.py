@@ -288,7 +288,7 @@ class gitPushCusSDK(gitPushSDKBase):
         super(gitPushCusSDK, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-        # self.init()
+        self.git.checkout("master")
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
@@ -296,15 +296,19 @@ class gitPushCusSDK(gitPushSDKBase):
         self.config_d = json_str["cus_master_sdk"]
 
 
-    # def init(self):
-        # if self.cfg.release_branch == "master":
-            # self.git.checkout("master")
-            # self.cp_sdk_release_dir = self.cfg.cus_cp_sdk_release_dir
-            # self.push_cmd = ("ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls","master")
-        # else:
-            # self.git.checkout(str(self.cfg.release_branch))
-            # self.push_cmd = ("origin",str(self.cfg.release_branch))
-            # self.cp_sdk_release_dir = self.cfg.cus_r1_cp_sdk_release_dir
+class gitPushR1RCSDK(gitPushSDKBase):
+    def __init__(self):
+        super(gitPushR1RCSDK, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+        self.git.checkout("r1_rc")
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_r1_rc_sdk"]
+
+
 
 
 class GitPushDspBase(GitPushBase):

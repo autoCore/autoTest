@@ -12,6 +12,7 @@ from download_tool import DownloadToolController
 
 class BuildController(object):
     def __init__(self):
+        self.root_dir = os.getcwd()
         self.build_res = None
         self.log = MyLogger(self.__class__.__name__)
 
@@ -21,7 +22,7 @@ class BuildController(object):
         self.hal_build_log = os.path.join(".", 'build', 'crane_evb_z2', r'hal_build.log')
         self.cp_build_log = os.path.join(".", 'build', 'crane_evb_z2', r'cp_build.log')
         self.link_log = os.path.join(".", 'build', 'crane_evb_z2', r'fp_link_build.log')
-        self.compile_log = "compile.log"
+        self.compile_log_dir = os.path.join(self.root_dir, 'tmp', 'compile_log')
         self.zip_tool = zipTool()
 
     def build(self, cur_dir, build_dir='crane_evb_z2', compile_log='', cmd=''):
@@ -33,7 +34,7 @@ class BuildController(object):
         if compile_log:
             self.compile_log = compile_log
         else:
-            self.compile_log = os.path.basename(self.git_version_dir) + "_compile.log"
+            self.compile_log = os.path.join(self.compile_log_dir, os.path.basename(self.git_version_dir) + "_compile.txt")
         if not os.path.exists(self.compile_log):
             fob = open(self.compile_log, 'w')
             fob.close()

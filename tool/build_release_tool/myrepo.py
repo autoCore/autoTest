@@ -23,6 +23,7 @@ manifest_xml = \
 
 class ManagerVersionBase(object):
     def __init__(self):
+        self.root_dir = os.getcwd()
         self.version_log = ""
         self.log = MyLogger(self.__class__.__name__)
         self.verion_name = ''
@@ -135,7 +136,7 @@ class ManagerVersionBase(object):
 
     def get_dsp_version(self, dsp_bin, dsp_version_log_file):
         """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
-        dsp_version_file = "dsp_version.bin"
+        dsp_version_file = os.path.join(self.root_dir, "tmp","dsp_version.bin")
         self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file)
         assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
         with open(dsp_version_file, "rb") as fob:
@@ -397,4 +398,19 @@ class CusRepo(RepoBase):
         _git.config("--global","user.email","binwu@asrmicro.com")
 
         _git.checkout(self.branch_name)
+
+
+class cusR1RCRepo(CusRepo):
+    def __init__(self):
+        super(CusRepo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+        self.log.info("create repo done")
+        # self.git_init()
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["r1_rc_crane_info"]
+
 
