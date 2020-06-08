@@ -256,13 +256,12 @@ class autoCleanOverdueDir(ThreadBase):
         while self._running:
             try:
                 _now = datetime.datetime.today()
-                if _now.minute > 1 or _now.hour != 2:
-                    continue
-                self.clean_overdue_dir(r"E:\crane_dailybuild", 2, target_dir='crane_d_')
-                self.clean_overdue_dir(cfg.download_tool_dir, 2, target_dir='_DOWNLOAD_TOOL_')
-                self.clean_overdue_dir(cfg.cp_sdk_dir, 2, target_dir='ASR3601_MINIGUI_')
-                self.clean_overdue_dir("D:\crane_cus", 2, target_dir='crane_rc_')
-                self.clean_overdue_dir("D:\craneg_dailybuild", 2, target_dir='craneg_d_')
+                if _now.hour == 2 and _now.minute == 0 and _now.second <= 10:
+                    self.clean_overdue_dir(r"E:\crane_dailybuild", 2, target_dir='crane_d_')
+                    self.clean_overdue_dir(cfg.download_tool_dir, 2, target_dir='_DOWNLOAD_TOOL_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 2, target_dir='ASR3601_MINIGUI_')
+                    self.clean_overdue_dir("D:\crane_cus", 2, target_dir='crane_rc_')
+                    self.clean_overdue_dir("D:\craneg_dailybuild", 2, target_dir='craneg_d_')
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
@@ -301,6 +300,9 @@ def prepare_system_start():
 
     if not os.path.exists(cfg.log_dir):
         os.mkdir(cfg.log_dir)
+
+    if not os.path.exists(cfg.version_file_dir):
+        os.mkdir(cfg.version_file_dir)
 
     if not os.path.exists(cfg.manisest_xml_dir):
         os.mkdir(cfg.manisest_xml_dir)

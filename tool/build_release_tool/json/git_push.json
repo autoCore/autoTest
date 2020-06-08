@@ -59,8 +59,8 @@
         "release_target": "ASR3601_MINIGUI_",
         "target_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls\\evb\\src\\cp",
         "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "D:\\user\\wubin\\crane_cus\\crane-phone-rls",
-        "verson_file": "D:\\user\\wubin\\crane_cus\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
+        "git_push_root_dir": "E:\\cus_crane_git_push\\cus_r1_rc\\crane-phone-rls",
+        "verson_file": "E:\\cus_crane_git_push\\cus_r1_rc\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
         "git_push_cmd": ["ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls", "origin", "r1_rc"]
     }
 }
