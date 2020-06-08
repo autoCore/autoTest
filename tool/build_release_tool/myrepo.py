@@ -317,7 +317,7 @@ class RepoBase(myRepo, ManagerVersionBase):
 
     def update(self, _branch_name="master"):
         self.get_config()
-        self.branch_name = _branch_name
+        # self.branch_name = _branch_name
         self.build_root_dir = self.config_d["build"]
         self.git_root_dir = self.config_d["git"]
         self._storage_list = self.config_d["storage_list"]
@@ -336,7 +336,7 @@ class RepoBase(myRepo, ManagerVersionBase):
         self.dsp_version_pattern = re.compile(self.config_d["dsp_version_pattern"])
         self.version_pattern = re.compile(self.config_d["version_pattern"])
 
-        self.checkout_branch()
+        # self.checkout_branch()
 
         self._get_verion_name()
 
@@ -356,6 +356,7 @@ class CraneRepo(RepoBase):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane_info"]
+        self.branch_name = "master"
 
 
 
@@ -372,6 +373,7 @@ class craneGRepo(RepoBase):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg_info"]
+        self.branch_name = "master"
 
 
 
@@ -382,12 +384,13 @@ class CusRepo(RepoBase):
 
         self.log.info("create repo done")
         # self.git_init()
+        self.checkout_branch()
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
         self.config_d = json_str["cus_crane_info"]
-
+        self.branch_name = "master"
 
     def checkout_branch(self):
         _path = os.path.join(self.git_root_dir, '.')
@@ -402,7 +405,7 @@ class CusRepo(RepoBase):
 
 class cusR1RCRepo(CusRepo):
     def __init__(self):
-        super(CusRepo, self).__init__()
+        super(cusR1RCRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
         self.log.info("create repo done")
@@ -411,6 +414,7 @@ class cusR1RCRepo(CusRepo):
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
-        self.config_d = json_str["r1_rc_crane_info"]
+        self.config_d = json_str["cus_crane_info"]
+        self.branch_name = "r1_rc"
 
 

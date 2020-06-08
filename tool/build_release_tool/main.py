@@ -258,10 +258,11 @@ class autoCleanOverdueDir(ThreadBase):
                 _now = datetime.datetime.today()
                 if _now.minute > 1 or _now.hour != 2:
                     continue
-                self.clean_overdue_dir(r"E:\crane_dailybuild", 5, target_dir='crane_d_')
-                self.clean_overdue_dir(cfg.download_tool_dir, 5, target_dir='_DOWNLOAD_TOOL_')
-                self.clean_overdue_dir(cfg.cp_sdk_dir, 5, target_dir='ASR3601_MINIGUI_')
-                self.clean_overdue_dir("D:\crane_cus", 5, target_dir='crane_rc_')
+                self.clean_overdue_dir(r"E:\crane_dailybuild", 2, target_dir='crane_d_')
+                self.clean_overdue_dir(cfg.download_tool_dir, 2, target_dir='_DOWNLOAD_TOOL_')
+                self.clean_overdue_dir(cfg.cp_sdk_dir, 2, target_dir='ASR3601_MINIGUI_')
+                self.clean_overdue_dir("D:\crane_cus", 2, target_dir='crane_rc_')
+                self.clean_overdue_dir("D:\craneg_dailybuild", 2, target_dir='craneg_d_')
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
