@@ -1,6 +1,7 @@
 {
     "boards": ["crane_evb_z2", "bird_phone", "visenk_phone", "craneg_evb"],
     "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "ReliableData.bin", "dsp.bin", "rf.bin"],
+    "compile_log_dir": ".\\tmp\\compile_log",
     "build_images":
     [
         ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_A0_16MB.zip",

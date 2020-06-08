@@ -3,9 +3,7 @@
     {
         "branch_name": "master",
         "manisest_xml_dir": ".\\tmp\\manifest_xml",
-        "git":"E:\\crane_dailybuild\\crane",
         "storage_list": [".", "cp", "gui", "tool"],
-        "build": "E:\\crane_dailybuild\\crane",
         "dsp_version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "version_pattern": "(crane_.*?)([0-9][0-9][0-9][0-9])",
         "branch_info":
@@ -13,9 +11,11 @@
             "master":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_dailybuild",
-                "version_file":".\\tmp\\version.log",
+                "version_file":".\\version_file_dir\\version.log",
                 "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
-                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
+                "git": "F:\\DailyBuild\\crane",
+                "build": "F:\\DailyBuild\\crane"
             }
         },
         "version_info_log":
@@ -29,9 +29,7 @@
     {
         "branch_name": "master",
         "manisest_xml_dir": ".\\tmp\\manifest_xml",
-        "git":"D:\\craneg_dailybuild\\crane",
         "storage_list": [".", "cp", "gui", "tool"],
-        "build": "D:\\craneg_dailybuild\\crane",
         "dsp_version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "version_pattern": "(craneg_.*?)([0-9][0-9][0-9][0-9])",
         "branch_info":
@@ -39,9 +37,11 @@
             "master":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\craneG_dailybuild",
-                "version_file":".\\tmp\\craneG_version.log",
+                "version_file":".\\version_file_dir\\craneG_version.log",
                 "dsp_version_file": ".\\cus\\evb\\img4LWG\\dsp.bin",
-                "sdk_version_file": ".\\cpLWG\\tavor\\env\\inc\\sys_version.h"
+                "sdk_version_file": ".\\cpLWG\\tavor\\env\\inc\\sys_version.h",
+                "git": "F:\\craneG_DailyBiuld\\crane",
+                "build": "F:\\craneG_DailyBiuld\\crane"
             }
         },
         "version_info_log":
@@ -53,11 +53,8 @@
     },
     "cus_crane_info":
     {
-        "branch_name": "master",
-        "manisest_xml_dir": ".\\tmp\\manifest_xml",
-        "git": "D:\\crane_cus\\crane-phone-rls",
         "storage_list": ["."],
-        "build": "D:\\crane_cus\\crane-phone-rls\\evb\\src",
+        "manisest_xml_dir": ".\\tmp\\manifest_xml",
         "dsp_version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "version_pattern": "(crane_.*?)([0-9][0-9][0-9][0-9])",
         "branch_info":
@@ -65,30 +62,38 @@
             "master":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_release",
-                "version_file":".\\tmp\\version_cus.log",
+                "version_file":".\\version_file_dir\\version_cus.log",
                 "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
-                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
+                "git": "F:\\cus_master\\crane-phone-rls",
+                "build": "F:\\cus_master\\crane-phone-rls\\evb\\src"
             },
             "r1":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_release",
-                "version_file":".\\tmp\\version_r.log",
+                "version_file":".\\version_file_dir\\version_r.log",
                 "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
-                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
+                "git": "F:\\cus_r1\\crane-phone-rls",
+                "build": "F:\\cus_r1\\crane-phone-rls\\evb\\src"
             },
             "r1_plus_j":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_plus_j_release",
-                "version_file":".\\tmp\\version_r1_plus_j.log",
+                "version_file":".\\version_file_dir\\version_r1_plus_j.log",
                 "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
-                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
+                "git": "F:\\cus_r1_plus_j\\crane-phone-rls",
+                "build": "F:\\cus_r1_plus_j\\crane-phone-rls\\evb\\src"
             },
             "r1_rc":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_rc",
-                "version_file":".\\tmp\\version_r1_rc.log",
+                "version_file":".\\version_file_dir\\version_r1_rc.log",
                 "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
-                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h"
+                "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
+                "git": "F:\\cus_r1_rc\\crane-phone-rls",
+                "build": "F:\\cus_r1_rc\\crane-phone-rls\\evb\\src"
             }
         },
         "version_info_log":

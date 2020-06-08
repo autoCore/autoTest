@@ -109,8 +109,9 @@ class BuildBase(object):
         self.board_info = json_str["boards_info"]
         self.build_images = json_str["build_images"][1:-1]
         self.images = json_str["images"]
+        self.compile_log_dir = os.path.join(self.root_dir, json_str["compile_log_dir"])
 
-        self._repo.update(self.release_branch)
+        # self._repo.update(self.release_branch)
 
         self.build_root_dir = self._repo.build_root_dir
         self.git_root_dir = self._repo.git_root_dir
@@ -190,7 +191,7 @@ class BuildBase(object):
             sdk_tool_abs_path_dir = os.path.join(dist_dir, board, "download_tool")
             self.log.info(sdk_tool_abs_path_dir)
             for _file in os.listdir(sdk_tool_abs_path_dir):
-                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
+                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper() and "DCXO" not in _file:
                     sdk_tool_abs_path = os.path.join(sdk_tool_abs_path_dir, _file)
                     break
             else:
@@ -301,7 +302,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
         owner = self.get_revion_owner()
 
         self.log.info("=" * 80)
-        self.log.info("version:", self.ap_version)
+        self.log.info("patch owner:", owner)
+        self.log.info("mUI version:", self.ap_version.upper())
         self.log.info("sdk version:", self.cp_version)
         self.log.info("dsp version:", self.dsp_version)
         self.log.info("=" * 80)
@@ -402,11 +404,11 @@ class CusBuild(MyDailyBuildBase):
 
     def config(self):
         self.board_list = self.total_board_list[:3]
-        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xls"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
-        release_note_list = [_file for _file in os.listdir(_root_dir) if _file.startswith("ReleaseNotes")]
+        release_note_list = [_file for _file in os.listdir(_root_dir) if _file.startswith("ReleaseNotes") and not _file.endswith(".xlsx")]
         release_note_list.sort(key=lambda fn: os.path.getmtime(os.path.join(_root_dir, fn)))
         if release_note_list:
             file_name = release_note_list[-1]
@@ -460,7 +462,7 @@ class CusR1RCBuild(CusBuild):
     def config(self):
         self.release_branch = "r1_rc"
         self.board_list = self.total_board_list[:1]
-        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xls"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xlsx"
 
 
 

@@ -385,7 +385,7 @@ if __name__ == "__main__":
     auto_push_cp_task.add_git_push(craneg_sdk_cls)
     auto_push_cp_task.add_git_push(cp_sdk_cls)
     auto_push_cp_task.add_git_push(cus_sdk_cls)
-    auto_push_cp_task.add_git_push(cus_r1_rc_sdk_cls)
+    # auto_push_cp_task.add_git_push(cus_r1_rc_sdk_cls)
 
     # auto build task
     auto_build_task = autoBuild()
