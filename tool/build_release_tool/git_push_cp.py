@@ -44,7 +44,7 @@ class GitPushBase(object):
     def git_clean(self):
         try:
             self.git.clean("-xdf")
-            self.git.reset("--hard","HEAD^")
+            self.git.reset("--hard","HEAD")
             self.git.pull()
         except Exception,e:
             self.log.error(e)
@@ -243,11 +243,11 @@ class gitPushSDKBase(GitPushBase):
 
         self.log.info("=" * 50)
         self.log.info("git push cp...")
-        self.clean_git_push_cp()
-        gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
-        self.delete_gui_lib(gui_lib)
-        self.copy_sdk_to_git_push_cp(cp_sdk)
         try:
+            self.clean_git_push_cp()
+            gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
+            self.delete_gui_lib(gui_lib)
+            self.copy_sdk_to_git_push_cp(cp_sdk)
             self.git_add()
             commit_info = "%s" % self.cp_sdk
             self.git_commit(commit_info)
@@ -256,6 +256,10 @@ class gitPushSDKBase(GitPushBase):
         except Exception,e:
             self.log.error(e)
             self.log.error("git push error")
+            self.git_clean()
+            self.git.reset("--hard","HEAD^")
+            self.git.pull()
+            self.remove(os.path.join(self.cp_sdk_dir,self.cp_sdk))
             return None
 
 

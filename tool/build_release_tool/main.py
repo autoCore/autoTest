@@ -57,16 +57,18 @@ class autoRelease(ThreadBase):
     def __init__(self, _cfg, release_event):
         super(autoRelease, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-        self.cur_crane = _cfg.cur_crane
-        self.dist_dir = _cfg.dist_dir
+        self.cur_crane = repo.git_root_dir#_cfg.cur_crane
+        self.dist_dir = repo.release_dist_dir#_cfg.dist_dir
 
         self.tmp = _cfg.tmp_dir
 
-        self.cur_crane_cus = _cfg.cur_crane_cus
-        self.release_dist_dir = _cfg.release_dist_dir
+        self.cur_crane_cus = repo_cus.git_root_dir#_cfg.cur_crane_cus
+        self.release_dist_dir = repo_cus.release_dist_dir#_cfg.release_dist_dir
 
-        self.craneg_build_dir = r"D:\craneg_dailybuild\crane"
-        self.craneg_release_dir = r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
+        # self.craneg_build_dir = r"D:\craneg_dailybuild\crane"
+        # self.craneg_release_dir = r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
+        self.craneg_build_dir = craneg_repo.git_root_dir #r"D:\craneg_dailybuild\crane"
+        self.craneg_release_dir = craneg_repo.release_dist_dir #r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
 
         self.zip_tool = zipTool()
         self.today_release_flag = threading.Event()
@@ -400,6 +402,7 @@ if __name__ == "__main__":
     auto_clean_overdue_dir_task = autoCleanOverdueDir()
 
     cp_sdk_cls.git_push_start()
+    craneg_sdk_cls.git_push_start()
 
     # task start
     for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_cp_task, auto_build_task]:

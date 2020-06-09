@@ -66,7 +66,7 @@ class BuildController(object):
             att_file = None
             subject = r"%s build result: pass" % board
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
-        to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
+        to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
         send_email_tool(to_address, subject, msg, att_file)
         self.log.info("send email done")
 
