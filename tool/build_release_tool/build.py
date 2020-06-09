@@ -107,7 +107,7 @@ class BuildBase(object):
         json_str = load_json(json_file)
         self.total_board_list = json_str["boards"]
         self.board_info = json_str["boards_info"]
-        self.build_images = json_str["build_images"][1:-1]
+        self.build_images = json_str["build_images"][1:]
         self.images = json_str["images"]
         self.compile_log_dir = os.path.join(self.root_dir, json_str["compile_log_dir"])
 
@@ -151,7 +151,7 @@ class BuildBase(object):
     def copy_build_file_to_release_dir(self, dist_dir, src_dir=None, board = "crane_evb_z2"):
         src_dir = self.build_root_dir
         for _file in self.build_images:
-            if "crane_evb_z2" not in dist_dir and "rel_lib" in _file:
+            if ("crane_evb_z2" not in dist_dir and "craneg_evb" not in dist_dir) and "rel_lib" in _file:
                 continue
             src = os.path.join(src_dir, _file)
             dist = os.path.join(dist_dir, os.path.basename(_file))
