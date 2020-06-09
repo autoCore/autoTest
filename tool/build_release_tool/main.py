@@ -347,15 +347,16 @@ if __name__ == "__main__":
     cfg = config()
     cfg.update('config.ini')
 
-    log_file = os.path.join(cfg.log_dir, "log_%s.txt" % time.strftime("%Y%m%d_%H%M%S"))
     rootlogger = MyLogger()
-    rootlogger.reset_log_file(log_file)
+
     rootlogger.enable_print()
     rootlogger.set_level(logging.INFO)
 
     logger = MyLogger("main")
     prepare_system_start()
 
+    log_file = os.path.join(cfg.log_dir, "log_%s.txt" % time.strftime("%Y%m%d_%H%M%S"))
+    rootlogger.reset_log_file(log_file)
 
     logger.debug(cfg)
     repo = CraneRepo()
