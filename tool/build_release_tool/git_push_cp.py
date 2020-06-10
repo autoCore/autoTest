@@ -259,7 +259,7 @@ class gitPushSDKBase(GitPushBase):
             self.git_clean()
             self.git.reset("--hard","HEAD^")
             self.git.pull()
-            self.remove(os.path.join(self.cp_sdk_dir,self.cp_sdk))
+            os.remove(os.path.join(self.cp_sdk_dir,self.cp_sdk))
             return None
 
 
@@ -440,7 +440,6 @@ class GitPushDspBase(GitPushBase):
             self.log.error(e)
             self.log.error("git push error")
             return None
-
 
 
 class gitPushCraneDsp(GitPushDspBase):
