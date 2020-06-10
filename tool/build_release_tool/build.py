@@ -443,7 +443,8 @@ class CusBuild(MyDailyBuildBase):
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
-            to_address = 'yuanzhizheng@asrmicro.com'
+            # to_address = 'yuanzhizheng@asrmicro.com'
+            to_address = ",".join(['yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
             subject = "%s RELEASE" % self.cp_version
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
