@@ -465,6 +465,15 @@ class CusR1RCBuild(CusBuild):
         self.board_list = self.total_board_list[:1]
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xlsx"
 
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            # to_address = 'yuanzhizheng@asrmicro.com'
+            to_address = ",".join(['yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
+            subject = "%s RELEASE" % self.cp_version
+            msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
+            send_email_tool(to_address, subject.upper(), msg)
+        self.trigger_auto_test(self.release_dist, "evb_customer_r1")
+        self.git_clean()
 
 
 

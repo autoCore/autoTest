@@ -23,6 +23,8 @@ def upload_version(sdk_tool_abs_path, mdb_txt_file_abs_path, kid_project_name):
         version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane-evb-dual-sim-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'evb_customer':
         version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane-evb-customer-branch', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+    elif kid_project_name == 'evb_customer_r1':
+        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane-evb-customer-r1', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'craneg_evb':
         version_dir = os.path.join(r'\\10.1.166.208\craneversion\craneg-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     os.mkdir(version_dir)
@@ -53,7 +55,7 @@ def check_param(sdk_tool_abs_path, mdb_txt_file_abs_path, kid_project_name):
         raise Exception('{0} not a zip file'.format(sdk_tool_abs_path))
     if not mdb_txt_file_abs_path.endswith('MDB.txt'):
         raise Exception('{0} not MDB txt file'.format(mdb_txt_file_abs_path))
-    if kid_project_name is not None and kid_project_name not in ['evb_dual_sim', 'evb_customer', 'craneg_evb']:
+    if kid_project_name is not None and kid_project_name not in ['evb_dual_sim', 'evb_customer', 'craneg_evb', 'evb_customer_r1']:
         raise Exception('{0} not support'.format(kid_project_name))
 
 def trigger_test(sdk_tool_abs_path, mdb_txt_file_abs_path, project_name = None):
