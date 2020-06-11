@@ -174,6 +174,7 @@ class autoRelease(ThreadBase):
             self.log.info(e)
 
     def run(self):
+        self.log.info(self.__class__.__name__, "start...")
         while self._running:
             self.release_event.wait()
             self.release_event.clear()
@@ -225,6 +226,7 @@ class autoPush(ThreadBase):
         self.git_list.append(git_obj)
 
     def run(self):
+        self.log.info(self.__class__.__name__, "start...")
         while self._running:
             for git_obj in self.git_list:
                 try:
@@ -236,15 +238,16 @@ class autoPush(ThreadBase):
 
 class autoCleanOverdueDir(ThreadBase):
     def __init__(self):
-        self.log = MyLogger(self.__class__.__name__)
         super(autoCleanOverdueDir, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
 
-    @staticmethod
-    def clean_overdue_dir(_dir, del_time, target_dir='', isdir=True):
-        os.chdir(_dir)
+    def clean_overdue_dir(self, _dir, del_time, target_dir='', isdir=True):
         listdir = os.listdir(_dir)
-        listdir = [d for d in listdir if os.path.isdir(d) and target_dir in d] if isdir else\
-                  [f for f in listdir if os.path.isfile(f) and target_dir in f]
+        if isdir:
+            listdir = [os.path.join(_dir,d) for d in listdir if os.path.isdir(os.path.join(_dir,d)) and target_dir in d]
+        else:
+            listdir = [os.path.join(_dir,f) for f in listdir if os.path.isfile(os.path.join(_dir,f)) and target_dir in f]
+        self.log.info(listdir)
         del_t = datetime.timedelta(days=del_time)
         _now = datetime.datetime.now()
         for d in listdir:
@@ -255,21 +258,22 @@ class autoCleanOverdueDir(ThreadBase):
                 self.log.info("delete %s done" % d)
 
     def run(self):
+        self.log.info(self.__class__.__name__, "start...")
         while self._running:
             try:
                 _now = datetime.datetime.today()
-                if _now.hour == 2 and _now.minute == 0 and _now.second <= 10:
-                    self.clean_overdue_dir(r"E:\crane_dailybuild", 2, target_dir='crane_d_')
-                    self.clean_overdue_dir(cfg.download_tool_dir, 2, target_dir='_DOWNLOAD_TOOL_')
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 2, target_dir='ASR3601_MINIGUI_')
-                    self.clean_overdue_dir("D:\crane_cus", 2, target_dir='crane_rc_')
-                    self.clean_overdue_dir("D:\craneg_dailybuild", 2, target_dir='craneg_d_')
+                if _now.hour == 1 and _now.minute == 0 and _now.second <= 10:
+                    self.clean_overdue_dir(cfg.download_tool_dir, 3, target_dir='_DOWNLOAD_TOOL_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_')
+                    for _repo in [repo, craneg_repo]:
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 10, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
                 self._running = False
-            except:
-                pass
+            except Exception,e:
+                self.log.error(e)
 
 
 class autoBuild(ThreadBase):
@@ -282,6 +286,7 @@ class autoBuild(ThreadBase):
         self.build_list.append(build_obj)
 
     def run(self):
+        self.log.info(self.__class__.__name__, "start...")
         while self._running:
             try:
                 for build_obj in self.build_list:
@@ -324,16 +329,18 @@ def prepare_system_start():
 
 
 def create_download_tool_trigger_test():
-    version_dir = ''
+    version_dir = "D:\crane_cus\crane_r1_rc_0001_20200529_142934"
     dist_dir = r'\\sh2-filer02\Data\FP_RLS\crane_r1_rc'
     board = "crane_evb_z2"
+
+    download_tool_dir = os.path.join(version_dir, board, "download_tool")
     download_controller.update_download_tool()
     _root_dir = os.path.join(version_dir, board, "cp_images")
     _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
     download_controller.prepare_download_tool(_images)
     download_controller.release_zip(os.path.dirname(_root_dir))
     download_controller.release_download_tool(os.path.basename(version_dir),
-                                            board, "D:\crane_cus\crane_r1_rc_0001_20200529_142934\crane_evb_z2\download_tool")
+                                            board, download_tool_dir)
     release_dist = os.path.join(dist_dir, os.path.basename(version_dir))
     copy(version_dir, release_dist)
     auto_cus_build_cls.trigger_auto_test(release_dist, "evb_customer")
@@ -390,7 +397,7 @@ if __name__ == "__main__":
     auto_push_cp_task.add_git_push(craneg_sdk_cls)
     auto_push_cp_task.add_git_push(cp_sdk_cls)
     auto_push_cp_task.add_git_push(cus_sdk_cls)
-    # auto_push_cp_task.add_git_push(cus_r1_rc_sdk_cls)
+    auto_push_cp_task.add_git_push(cus_r1_rc_sdk_cls)
 
     # auto build task
     auto_build_task = autoBuild()
@@ -404,6 +411,8 @@ if __name__ == "__main__":
 
     cp_sdk_cls.git_push_start()
     craneg_sdk_cls.git_push_start()
+    cus_r1_rc_sdk_cls.git_push_start()
+    cus_sdk_cls.git_push_start()
 
     # task start
     for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_cp_task, auto_build_task]:
