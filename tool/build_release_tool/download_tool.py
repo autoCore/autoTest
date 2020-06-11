@@ -51,12 +51,12 @@ class DownloadToolController(object):
         file_name = self.download_tool_file_name
         self.download_tool_release_zip_dir = os.path.join(self.download_tool_dir,
                                                           self.download_tool_file_name.replace(".exe",""))
-        self.log.info(file_name)
+        # self.log.info(file_name)
         file_name_l = [file_name,file_name.replace("x64","x86")]
         self.download_tool = []
         for file_name in file_name_l:
             zip_file = os.path.join(self.download_tool_dir,file_name)
-            self.log.info(zip_file)
+            # self.log.info(zip_file)
             download_tool_fname = zip_file.replace(".exe","")
             if not os.path.exists(zip_file):
                 shutil.copy2(os.path.join(self.download_tool_release_dir,file_name),self.download_tool_dir)
@@ -134,10 +134,10 @@ class DownloadToolController(object):
         release_dir = os.path.join(self.download_tool_dir,release_file_name)
         os.mkdir(release_dir) if not os.path.exists(release_dir) else None
         self.log.info(release_file_name)
-        self.log.info(release_dir)
+        # self.log.info(release_dir)
         for _tool in self.download_tool:
             dist_file = os.path.join(release_dir,os.path.basename(_tool))
-            self.log.info(dist_file)
+            # self.log.info(dist_file)
             if not os.path.exists(dist_file):
                 shutil.copytree(_tool,dist_file)
 
@@ -145,7 +145,7 @@ class DownloadToolController(object):
         self.zip_tool.make_archive_e(dist,"zip",release_dir)
         self.release_download_tool_name = dist + ".zip"
         self.download_tool_dict[borad] = self.release_download_tool_name
-        self.log.info(self.download_tool_dict)
+        # self.log.info(self.download_tool_dict)
         return self.release_download_tool_name
 
 

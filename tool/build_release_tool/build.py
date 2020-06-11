@@ -60,11 +60,11 @@ class BuildController(object):
         if self.build_res in "FAIL":
             att_file = '@'.join(
                 [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log, self.compile_log])
-            subject = r"%s build result: fail" % board
+            subject = r"%s %s build result: fail" % (self.__class__.__name__, board)
             msg = r"Hi %s, your patch build fail! Pls check attachment log" % (owner.split("@")[0])
         else:
             att_file = None
-            subject = r"%s build result: pass" % board
+            subject = r"%s %s build result: pass" % (self.__class__.__name__, board)
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
         to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
         send_email_tool(to_address, subject, msg, att_file)
