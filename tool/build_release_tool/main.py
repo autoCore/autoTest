@@ -247,7 +247,7 @@ class autoCleanOverdueDir(ThreadBase):
             listdir = [os.path.join(_dir,d) for d in listdir if os.path.isdir(os.path.join(_dir,d)) and target_dir in d]
         else:
             listdir = [os.path.join(_dir,f) for f in listdir if os.path.isfile(os.path.join(_dir,f)) and target_dir in f]
-        self.log.info(listdir)
+        # self.log.info(listdir)
         del_t = datetime.timedelta(days=del_time)
         _now = datetime.datetime.now()
         for d in listdir:
@@ -263,9 +263,9 @@ class autoCleanOverdueDir(ThreadBase):
             try:
                 _now = datetime.datetime.today()
                 if _now.hour == 1 and _now.minute == 0 and _now.second <= 10:
-                    self.clean_overdue_dir(cfg.download_tool_dir, 3, target_dir='_DOWNLOAD_TOOL_')
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_')
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_')
+                    self.clean_overdue_dir(cfg.download_tool_dir, 1, target_dir='_DOWNLOAD_TOOL_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 7, target_dir='ASR3601_MINIGUI_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 7, target_dir='ASR3603_MINIGUI_')
                     for _repo in [repo, craneg_repo]:
                         self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 10, target_dir=_repo.verion_name)
                 time.sleep(10)
@@ -386,6 +386,7 @@ if __name__ == "__main__":
     cus_r1_rc_sdk_cls = gitPushR1RCSDK()
 
     crane_dsp_cls = gitPushCraneDsp()
+    crane_dsp_dcxo_cls = gitPushCraneDCXODsp()
     craneg_dsp_cls = gitPushCraneGDsp()
     # release task
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
@@ -394,6 +395,7 @@ if __name__ == "__main__":
     auto_push_cp_task = autoPush()
     auto_push_cp_task.add_git_push(crane_dsp_cls)
     auto_push_cp_task.add_git_push(craneg_dsp_cls)
+    auto_push_cp_task.add_git_push(crane_dsp_dcxo_cls)
     auto_push_cp_task.add_git_push(craneg_sdk_cls)
     auto_push_cp_task.add_git_push(cp_sdk_cls)
     auto_push_cp_task.add_git_push(cus_sdk_cls)
@@ -413,7 +415,8 @@ if __name__ == "__main__":
     craneg_sdk_cls.git_push_start()
     cus_r1_rc_sdk_cls.git_push_start()
     cus_sdk_cls.git_push_start()
-
+    crane_dsp_dcxo_cls.git_push_start()
+    craneg_dsp_cls.git_push_start()
     # task start
     for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_cp_task, auto_build_task]:
         _task.start()
