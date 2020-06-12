@@ -475,5 +475,94 @@ class CusR1RCBuild(CusBuild):
         self.trigger_auto_test(self.release_dist, "evb_customer_r1")
         self.git_clean()
 
+    def create_download_tool(self, release_name, borad="crane_evb_z2", dist_dir=None):
+        date = time.strftime("%Y%m%d_%H%M%S")
+        release_file_name = "%s_%s_DOWNLOAD_TOOL_%s" % (release_name.upper(),borad.upper(),date)
+        download_tool_dir = os.path.join(self.root_dir, "download_tool_dir")
+        release_dir = os.path.join(download_tool_dir, release_file_name)
+        os.mkdir(release_dir) if not os.path.exists(release_dir) else None
+        self.log.info(release_file_name)
+        # self.log.info(release_dir)
+        download_tool_l = []
+        local_download_tool_dir = os.path.join(self.build_root_dir,"tool","downloadtool")
+        # self.log.info(local_download_tool_dir)
+        for _tool in os.listdir(local_download_tool_dir):
+            download_tool_l.append(os.path.join(local_download_tool_dir, _tool))
+        # self.log.info(download_tool_l)
+        release_downlaod_tool_l = []
+        for _tool in download_tool_l:
+            dist_file = os.path.join(release_dir, os.path.basename(_tool))
+            # self.log.info(dist_file)
+            release_downlaod_tool_l.append(dist_file)
+            copy(_tool, dist_file)
+        zip_dir = os.path.join(self.build_root_dir, "build","crane_evb_z2")
+        for _file in os.listdir(zip_dir):
+            if "ASR_CRANE_EVB_" in _file:
+                zip_file = os.path.join(zip_dir, _file)
+                copy(zip_file, os.path.dirname(dist_dir))
+                for _dir in release_downlaod_tool_l:
+                    copy(zip_file, _dir)
+                break
+        dist = os.path.join(dist_dir,release_file_name)
+        self.zip_tool.make_archive_e(dist,"zip",release_dir)
 
+    def start(self):
+        self.prepare_build()
+        self.old_cp_version = self.get_old_cp_version()
+        self.cp_version = self.update_cp_version()
+        self.get_dsp_version(self.dsp_bin)
+
+        owner = self.get_revion_owner()
+
+        self.log.info("=" * 80)
+        self.log.info("patch owner:", owner)
+        self.log.info("mUI version:", self.ap_version.upper())
+        self.log.info("sdk version:", self.cp_version)
+        self.log.info("dsp version:", self.dsp_version)
+        self.log.info("=" * 80)
+
+        self.get_commit_massages()
+        self.git_version_dir = self.loacal_dist_dir
+        self.copy_version_file_to_release_dir()
+
+        for board in self.board_list:
+            self.git_clean()
+            build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
+            assert build_cmd,"%s no build cmd" % board
+            self.build(self.build_root_dir, cmd=build_cmd)
+            # self.send_email(self.build_root_dir, owner, self.release_dist, board)
+
+            kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
+
+            if board in self.board_list[0] and self.build_res in "FAIL":
+                self.log.info(self.loacal_dist_dir, "build fail")
+                return self.loacal_dist_dir
+
+            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+            """
+            try:
+                self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
+            except Exception,e:
+                self.log.error(e)
+            """
+            if self.build_res == "SUCCESS":
+                self.create_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir=self.download_tool_dir_d[board])
+                """
+                if board == "crane_evb_z2":
+                    dcxo_zip = os.path.join(self.build_root_dir,"build","crane_evb_z2","ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
+                    if os.path.exists(dcxo_zip):
+                        dist_dir = os.path.join(self.loacal_build_dir_d[board],"dcxo_images")
+                        copy(self.download_tool_images_dir_d[board], dist_dir)
+                        self.zip_tool.unpack_files_from_archive(dcxo_zip, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin")
+                        _images = [os.path.join(dist_dir,_file) for _file in os.listdir(dist_dir)]
+                        self.download_controller.prepare_download_tool(_images)
+                        self.download_controller.release_zip(os.path.dirname(dist_dir), zip_name = "ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
+                        self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"_DCXO",
+                                                          dist_dir=self.download_tool_dir_d[board])
+                """
+
+        self.record_version()
+        copy(self.loacal_dist_dir, self.release_dist)
+
+        self.close_build()
 
