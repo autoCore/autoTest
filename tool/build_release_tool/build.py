@@ -539,12 +539,15 @@ class CusR1RCBuild(CusBuild):
                 return self.loacal_dist_dir
 
             self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
-            """
+
             try:
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
                 self.log.error(e)
-            """
+                archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
+                dist_dir = self.download_tool_images_dir_d[board]
+                self.zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
+
             if self.build_res == "SUCCESS":
                 self.create_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir=self.download_tool_dir_d[board])
                 """
