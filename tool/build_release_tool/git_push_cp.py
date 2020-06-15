@@ -206,6 +206,7 @@ class gitPushSDKBase(GitPushBase):
 
     def git_push_start(self):
         self.find_new_cp_sdk()
+        self.git_clean()
         if os.path.exists(os.path.join(self.cp_sdk_dir,self.cp_sdk)):
             release_sdk_time = os.path.getmtime(os.path.join(self.cp_sdk_release_dir,self.cp_sdk))
             local_sdk_time = os.path.getmtime(os.path.join(self.cp_sdk_dir,self.cp_sdk))
