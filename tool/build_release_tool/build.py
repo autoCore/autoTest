@@ -105,11 +105,12 @@ class BuildBase(object):
         self.get_config()
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
-        self.total_board_list = json_str["boards"]
-        self.board_info = json_str["boards_info"]
+
         self.build_images = json_str["build_images"][1:]
         self.images = json_str["images"]
         self.compile_log_dir = os.path.join(self.root_dir, json_str["compile_log_dir"])
+
+        self.board_info = self.config_d["boards_info"]
 
         # self._repo.update(self.release_branch)
 
@@ -372,10 +373,10 @@ class CraneDailyBuild(MyDailyBuildBase):
 
     def get_config(self):
         self.release_branch = "master"
-
-    def config(self):
-        self.board_list = self.total_board_list[:3]
-
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane"]
+        self.board_list = self.config_d["boards"]
 
 
 class CraneGDailyBuild(MyDailyBuildBase):
@@ -387,10 +388,10 @@ class CraneGDailyBuild(MyDailyBuildBase):
 
     def get_config(self):
         self.release_branch = "master"
-
-
-    def config(self):
-        self.board_list = self.total_board_list[3:4]
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["craneg"]
+        self.board_list = self.config_d["boards"]
 
 
 
@@ -401,9 +402,12 @@ class CusBuild(MyDailyBuildBase):
 
     def get_config(self):
         self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane"]
+        self.board_list = self.config_d["boards"][:3]
 
     def config(self):
-        self.board_list = self.total_board_list[:3]
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"
 
     def find_newest_notes(self):
@@ -459,10 +463,13 @@ class CusR1RCBuild(CusBuild):
 
     def get_config(self):
         self.release_branch = "r1_rc"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane"]
+        self.board_list = self.config_d["boards"][:1]
 
     def config(self):
         self.release_branch = "r1_rc"
-        self.board_list = self.total_board_list[:1]
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xlsx"
 
     def close_build(self):
