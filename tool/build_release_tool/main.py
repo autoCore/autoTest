@@ -263,9 +263,9 @@ class autoCleanOverdueDir(ThreadBase):
             try:
                 _now = datetime.datetime.today()
                 if _now.hour == 1 and _now.minute == 0 and _now.second <= 10:
-                    self.clean_overdue_dir(cfg.download_tool_dir, 1, target_dir='_DOWNLOAD_TOOL_')
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 7, target_dir='ASR3601_MINIGUI_')
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 7, target_dir='ASR3603_MINIGUI_')
+                    self.clean_overdue_dir(cfg.download_tool_dir, 0.5, target_dir='_DOWNLOAD_TOOL_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_')
                     for _repo in [repo, craneg_repo]:
                         self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 10, target_dir=_repo.verion_name)
                 time.sleep(10)
@@ -392,14 +392,14 @@ if __name__ == "__main__":
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
 
     # auto push task
-    auto_push_cp_task = autoPush()
-    auto_push_cp_task.add_git_push(crane_dsp_cls)
-    auto_push_cp_task.add_git_push(craneg_dsp_cls)
-    auto_push_cp_task.add_git_push(crane_dsp_dcxo_cls)
-    auto_push_cp_task.add_git_push(craneg_sdk_cls)
-    auto_push_cp_task.add_git_push(cp_sdk_cls)
-    auto_push_cp_task.add_git_push(cus_sdk_cls)
-    auto_push_cp_task.add_git_push(cus_r1_rc_sdk_cls)
+    auto_push_task = autoPush()
+    auto_push_task.add_git_push(crane_dsp_cls)
+    auto_push_task.add_git_push(craneg_dsp_cls)
+    auto_push_task.add_git_push(crane_dsp_dcxo_cls)
+    auto_push_task.add_git_push(craneg_sdk_cls)
+    auto_push_task.add_git_push(cp_sdk_cls)
+    auto_push_task.add_git_push(cus_sdk_cls)
+    auto_push_task.add_git_push(cus_r1_rc_sdk_cls)
 
     # auto build task
     auto_build_task = autoBuild()
@@ -417,8 +417,10 @@ if __name__ == "__main__":
     cus_sdk_cls.git_push_start()
     crane_dsp_dcxo_cls.git_push_start()
     craneg_dsp_cls.git_push_start()
+
+    # RELEASE_EVENT.set()
     # task start
-    for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_cp_task, auto_build_task]:
+    for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_task, auto_build_task]:
         _task.start()
 
     logger.info("**********************start**********************")
@@ -438,7 +440,7 @@ if __name__ == "__main__":
             logger.info("exit: KeyboardInterrupt")
             auto_clean_overdue_dir_task.terminate()
             auto_release_task.terminate()
-            auto_push_cp_task.terminate()
+            auto_push_task.terminate()
             auto_build_task.terminate()
             os.chdir(root_dir)
             os.system("del *.pyc")
@@ -449,5 +451,5 @@ if __name__ == "__main__":
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
             auto_clean_overdue_dir_task.terminate()
             auto_release_task.terminate()
-            auto_push_cp_task.terminate()
+            auto_push_task.terminate()
             auto_build_task.terminate()
