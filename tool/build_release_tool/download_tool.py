@@ -143,6 +143,7 @@ class DownloadToolController(object):
 
         dist = os.path.join(dist_dir,release_file_name)
         self.zip_tool.make_archive_e(dist,"zip",release_dir)
+        shutil.rmtree(release_dir)
         self.release_download_tool_name = dist + ".zip"
         self.download_tool_dict[borad] = self.release_download_tool_name
         # self.log.info(self.download_tool_dict)
