@@ -537,7 +537,7 @@ class CusR1RCBuild(CusBuild):
             build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
             assert build_cmd,"%s no build cmd" % board
             self.build(self.build_root_dir, cmd=build_cmd)
-            # self.send_email(self.build_root_dir, owner, self.release_dist, board)
+            self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
