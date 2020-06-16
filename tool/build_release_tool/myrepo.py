@@ -183,10 +183,13 @@ class myRepo(object):
             _repo = git.Repo(_path)
             _git = _repo.git
             try:
+                _git.config("--global", "user.name", "binwu")
+                _git.config("--global", "user.email", "binwu@asrmicro.com")
                 _git.status()
-            except:
-                _git.read_tree("--empty")
-                _git.reset()
+            except Exception,e:
+                self.log.error(e)
+                # _git.read_tree("--empty")
+                # _git.reset()
 
     def clone(self, clone_path):
         for storage in self._storage_list:
@@ -310,6 +313,7 @@ class RepoBase(myRepo, ManagerVersionBase):
         self.log = MyLogger(self.__class__.__name__)
 
         self.update()
+        self.git_init()
         # self.print_info()
 
     def checkout_branch(self):
