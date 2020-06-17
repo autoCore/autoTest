@@ -3,6 +3,7 @@
 import os
 import time
 import subprocess
+import shutil
 
 from util import MyLogger, copy, kill_win_process, zipTool, load_json
 from send_email import send_email_tool
@@ -173,8 +174,12 @@ class BuildBase(object):
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
             copy(src_bin, dist_bin)
 
-    def create_download_tool(self):
+    def update_download_tool(self):
         self.download_controller.update_download_tool()
+
+
+    def create_download_tool(self):
+        self.update_download_tool()
         for board in self.board_list:
             try:
                 _root_dir = self.download_tool_images_dir_d[board]
@@ -315,7 +320,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
         self.copy_version_file_to_release_dir()
 
-        self.download_controller.update_download_tool()
+        self.update_download_tool()
 
         for board in self.board_list:
             self.git_clean()
@@ -393,6 +398,11 @@ class CraneGDailyBuild(MyDailyBuildBase):
         self.config_d = json_str["craneg"]
         self.board_list = self.config_d["boards"]
 
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            self.release_event.set()
+        self.git_clean()
+
 
 
 class CusBuild(MyDailyBuildBase):
@@ -409,6 +419,10 @@ class CusBuild(MyDailyBuildBase):
 
     def config(self):
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"
+
+    def update_download_tool(self):
+        self.download_tool_file_name = "aboot-tools-2020.05.14-win-x64.exe"
+        self.download_controller.update_download_tool()
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
@@ -512,6 +526,7 @@ class CusR1RCBuild(CusBuild):
                 break
         dist = os.path.join(dist_dir,release_file_name)
         self.zip_tool.make_archive_e(dist,"zip",release_dir)
+        shutil.rmtree(release_dir)
 
     def start(self):
         self.prepare_build()
