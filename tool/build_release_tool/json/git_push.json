@@ -73,5 +73,18 @@
         "git_push_root_dir": "E:\\cus_auto_push\\cus_r1_rc\\crane-phone-rls",
         "verson_file": "E:\\cus_auto_push\\cus_r1_rc\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
         "git_push_cmd": ["origin","r1_rc"]
+    },
+    "downloadtool":
+    {
+        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\Crane\\Tools\\AbootTools",
+        "release_target": "aboot-tools-",
+        "target_dir": "E:\\daily_auto_push\\tool\\downloadtool",
+        "local_dir": ".\\download_tool_dir",
+        "git_push_root_dir": "E:\\daily_auto_push\\tool",
+        "verson_file": "",
+        "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/tool","HEAD:refs/heads/master"],
+        "partition_config": ".\\download_tool_config\\partition",
+        "template_config": ".\\download_tool_config\\template",
+        "win_type": "x64"
     }
 }

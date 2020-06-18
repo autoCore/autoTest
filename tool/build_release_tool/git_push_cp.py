@@ -498,5 +498,130 @@ class gitPushCraneDCXODsp(GitPushDspBase):
         self.release_rf_bin = os.path.join(root_dir,"PM813","rf.bin")
         self.release_rf_verson_file = os.path.join(root_dir,"PM813","RF_Version.txt")
 
+class gitPushDownloadTool(GitPushBase):
+    def __init__(self):
+        super(gitPushDownloadTool, self).__init__()
+        self.zip_tool = zipTool()
+
+        self.downloadtool_name = None
+        self.downloadtool_list = []
+        self.update()
+        self.create_git()
+
+        # self.print_info()
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["downloadtool"]
+
+    def update(self):
+        self.get_config()
+        self.downloadtool_release_dir = self.config_d["release_dir"]
+        self.git_push_root_dir = self.config_d["git_push_root_dir"]
+        self.target_dist_dir = self.config_d["target_dir"]
+        self.downloadtool_dir = os.path.join(self.root_dir, self.config_d["local_dir"])
+        self.version_file = self.config_d["verson_file"]
+        self.release_target = self.config_d["release_target"]
+
+        self.partition_config = os.path.join(self.root_dir, self.config_d["partition_config"])
+        self.template_config = os.path.join(self.root_dir, self.config_d["template_config"])
+
+        self.push_cmd = self.config_d["git_push_cmd"]
+        self.win_type = self.config_d["win_type"]
+
+    def find_new_tool(self):
+        tool_list = [_file for _file in os.listdir(self.downloadtool_release_dir) if self.win_type in _file and _file.endswith(".exe") and _file.startswith(self.release_target)]
+        tool_list.sort(key=lambda fn: os.path.getmtime(os.path.join(self.downloadtool_release_dir,fn)))
+        assert tool_list,"can not find downloadtool"
+        self.downloadtool_name = tool_list[-1]
+        self.log.debug("newest downloadtool: %s" % self.downloadtool_name)
+
+    def copy_tool(self):
+        file_name_l = [self.downloadtool_name, self.downloadtool_name.replace("x64","x86")]
+        self.downloadtool_list = []
+        for file_name in file_name_l:
+            zip_file = os.path.join(self.downloadtool_dir, file_name)
+            # self.log.info(zip_file)
+            download_tool_fname = zip_file.replace(".exe","")
+            if not os.path.exists(zip_file):
+                shutil.copy2(os.path.join(self.downloadtool_release_dir, file_name), self.downloadtool_dir)
+                time.sleep(3)
+                self.zip_tool.unpack_archive(zip_file)
+            elif not os.path.exists(download_tool_fname):
+                time.sleep(3)
+                self.zip_tool.unpack_archive(zip_file)
+            self.downloadtool_list.append(download_tool_fname)
+        for _tool in self.downloadtool_list:
+            self.log.info(_tool)
+
+    def prepare_download_tool(self):
+        self.log.debug("\n".join(self.downloadtool_list))
+        for download_tool_dir in self.downloadtool_list:
+            if not os.path.exists(download_tool_dir):
+                self.log.warning("%s not exists" % download_tool_dir)
+                continue
+            dist_dir = os.path.join(self.target_dist_dir, download_tool_dir,"images")
+            dist_bin_l = [os.path.join(dist_dir, _file) for _file in os.listdir(dist_dir) if os.path.isfile(os.path.join(dist_dir, _file))]
+            for _file in dist_bin_l:
+                if os.path.exists(_file):
+                    os.remove(_file)
+            if os.path.isdir(self.partition_config):
+                for _file in os.listdir(self.partition_config):
+                    shutil.copy2(os.path.join(self.partition_config,_file),
+                                 os.path.join(download_tool_dir,"config","partition",_file))
+            elif os.path.isfile(self.partition_config):
+                shutil.copy2(self.partition_config,os.path.join(download_tool_dir,"config","partition",
+                                                                os.path.basename(self.partition_config)))
+            else:
+                self.log.error("self.partition_config:%s error" % self.partition_config)
+
+            if os.path.isdir(self.template_config):
+                for _file in os.listdir(self.template_config):
+                    shutil.copy2(os.path.join(self.template_config,_file),
+                                 os.path.join(download_tool_dir,"config","template",_file))
+            elif os.path.isfile(self.template_config):
+                shutil.copy2(self.template_config,
+                             os.path.join(download_tool_dir,"config","template",os.path.basename(self.template_config)))
+            else:
+                self.log.error("self.template_config:%s error" % self.template_config)
+
+    def prepare_git_push(self):
+        self.prepare_download_tool()
+        for _tool in os.listdir(self.target_dist_dir):
+            shutil.rmtree(os.path.join(self.target_dist_dir, _tool))
+        for _tool in self.downloadtool_list:
+            shutil.copytree(_tool, os.path.join(self.target_dist_dir,os.path.basename(_tool)))
+
+
+    def git_push_start(self):
+        self.find_new_tool()
+        self.git_clean()
+        if os.path.exists(os.path.join(self.downloadtool_dir,self.downloadtool_name)):
+            self.log.debug("%s already exists" % self.downloadtool_name)
+            return None
+        self.log.info("wait for copy...")
+        time.sleep(60)
+        self.copy_tool()
+        downloadtool = os.path.join(self.downloadtool_dir, self.downloadtool_name)
+        # self.log.info(downloadtool)
+
+        self.log.info("=" * 50)
+        self.log.info("git push ...")
+        try:
+            self.prepare_git_push()
+            self.git_add()
+            commit_info = "%s" % self.downloadtool_name
+            self.git_commit(commit_info)
+            self.git_push()
+            return True
+        except Exception,e:
+            self.log.error(e)
+            self.log.error("git push error")
+            self.git_clean()
+            self.git.reset("--hard","HEAD^")
+            self.git.pull()
+            os.remove(os.path.join(self.downloadtool_dir,self.downloadtool_name))
+            return None
 
 
