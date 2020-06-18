@@ -122,7 +122,7 @@ class DownloadToolController(object):
         zip_file = os.path.join(dist_dir,zip_file)
         release_log = os.path.join(self.tmp,"release_log.txt")
         self.log.info("create zip %s" % zip_file)
-        release_cmd = "arelease.exe -c . -g --erase-all -p ASR_CRANE_EVB -v %s %s > %s" % (
+        release_cmd = "arelease.exe -c . -g -p ASR_CRANE_EVB -v %s %s > %s" % (
             project_type, zip_file, release_log)
         os.system(release_cmd)
 
