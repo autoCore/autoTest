@@ -159,6 +159,12 @@ class BuildBase(object):
             dist = os.path.join(dist_dir, os.path.basename(_file))
             copy(src, dist)
 
+        self.zip_file_dir = os.path.join(self.build_root_dir, self.board_info[board]["zip_file_dir"])
+        if os.path.exists(self.zip_file_dir):
+            for _file in os.listdir(self.zip_file_dir):
+                if "ASR_CRANE_EVB" in _file.upper() and _file.endswith(".zip"):
+                    copy(os.path.join(self.zip_file_dir, _file), os.path.join(dist_dir, _file))
+
         self.mdb_file_dir = os.path.join(self.build_root_dir, self.board_info[board]["mdb_file_dir"])
         if os.path.exists(self.mdb_file_dir):
             for _file in os.listdir(self.mdb_file_dir):
@@ -175,21 +181,33 @@ class BuildBase(object):
             copy(src_bin, dist_bin)
 
     def update_download_tool(self):
-        self.download_controller.update_download_tool()
+        # self.download_controller.update_download_tool()
+        download_tool_dir = os.path.join(self.build_root_dir, "tool", "downloadtool")
+        self.download_tool_l = [os.path.join(download_tool_dir, _tool) for _tool in os.listdir(download_tool_dir)]
+        for _tool in self.download_tool_l:
+            self.log.info(_tool)
 
+    def prepare_download_tool(self, images):
+        for download_tool_dir in self.download_tool_l:
+            if not os.path.exists(download_tool_dir):
+                self.log.warning("%s not exists" % download_tool_dir)
+                continue
+            dist_dir = os.path.join(download_tool_dir,"images")
+            dist_bin_l = [os.path.join(dist_dir,os.path.basename(_file)) for _file in images]
+            for _file in dist_bin_l:
+                if os.path.exists(_file):
+                    os.remove(_file)
+            for src_bin, dist_bin in zip(images, dist_bin_l):
+                if os.path.exists(dist_bin):
+                    os.remove(dist_bin)
+                copy(src_bin,dist_bin)
 
-    def create_download_tool(self):
-        self.update_download_tool()
-        for board in self.board_list:
-            try:
-                _root_dir = self.download_tool_images_dir_d[board]
-                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
-                self.download_controller.prepare_download_tool(_images)
-                self.download_controller.release_zip(os.path.dirname(_root_dir))
-                self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
-                                                          dist_dir=self.download_tool_dir_d[board])
-            except Exception, e:
-                self.log.error(e)
+    def create_download_tool(self, board):
+        try:
+            self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
+                                                      dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
+        except Exception, e:
+            self.log.error(e)
 
     def trigger_auto_test(self, dist_dir, test_type, board="crane_evb_z2"):
         try:
@@ -348,22 +366,18 @@ class MyDailyBuildBase(BuildBase, BuildController):
             if self.build_res == "SUCCESS":
                 _root_dir = self.download_tool_images_dir_d[board]
                 _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
-                self.download_controller.prepare_download_tool(_images)
-                self.download_controller.release_zip(os.path.dirname(_root_dir))
+                self.prepare_download_tool(_images)
                 self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
-                                                          dist_dir=self.download_tool_dir_d[board])
+                                                      dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
                 if board == "crane_evb_z2":
-                    dcxo_zip = os.path.join(self.build_root_dir,"build","crane_evb_z2","ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
-                    if os.path.exists(dcxo_zip):
-                        dist_dir = os.path.join(self.loacal_build_dir_d[board],"dcxo_images")
-                        copy(self.download_tool_images_dir_d[board], dist_dir)
-                        self.zip_tool.unpack_files_from_archive(dcxo_zip, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin")
-                        _images = [os.path.join(dist_dir,_file) for _file in os.listdir(dist_dir)]
-                        self.download_controller.prepare_download_tool(_images)
-                        self.download_controller.release_zip(os.path.dirname(dist_dir), zip_name = "ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip")
-                        self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"_DCXO",
-                                                          dist_dir=self.download_tool_dir_d[board])
-        # self.create_download_tool()
+                    dcxo_images_dir = os.path.join(self.loacal_build_dir_d[board],"dcxo_images")
+                    os.mkdir(dcxo_images_dir)
+                    self.copy_sdk_files_to_release_dir(dcxo_images_dir, "crane_evb_z2_dcxo", self.build_root_dir)
+                    _images = [os.path.join(dcxo_images_dir, _file) for _file in os.listdir(dcxo_images_dir)]
+                    self.prepare_download_tool(_images)
+                    self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"_DCXO",
+                                                      dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
+
         self.record_version()
         copy(self.loacal_dist_dir, self.release_dist)
 
