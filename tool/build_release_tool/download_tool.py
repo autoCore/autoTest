@@ -126,7 +126,7 @@ class DownloadToolController(object):
             project_type, zip_file, release_log)
         os.system(release_cmd)
 
-    def release_download_tool(self,release_name,borad="crane_evb_z2",dist_dir=None):
+    def release_download_tool(self,release_name,borad="crane_evb_z2",dist_dir=None, download_tool_l=[]):
         import time
         "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
         date = time.strftime("%Y%m%d_%H%M%S")
@@ -135,7 +135,11 @@ class DownloadToolController(object):
         os.mkdir(release_dir) if not os.path.exists(release_dir) else None
         self.log.info(release_file_name)
         # self.log.info(release_dir)
-        for _tool in self.download_tool:
+        if download_tool_l:
+            download_tool_src = download_tool_l[:]
+        else:
+            download_tool_src = self.download_tool
+        for _tool in download_tool_src:
             dist_file = os.path.join(release_dir,os.path.basename(_tool))
             # self.log.info(dist_file)
             if not os.path.exists(dist_file):
