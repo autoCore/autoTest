@@ -265,7 +265,9 @@ class autoCleanOverdueDir(ThreadBase):
                 if _now.hour == 1 and _now.minute == 0 and _now.second <= 10:
                     self.clean_overdue_dir(cfg.download_tool_dir, 0.5, target_dir='_DOWNLOAD_TOOL_')
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_', isdir=False)
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_', isdir=False)
                     for _repo in [repo, craneg_repo]:
                         self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 10, target_dir=_repo.verion_name)
                 time.sleep(10)
@@ -292,7 +294,7 @@ class autoBuild(ThreadBase):
                 for build_obj in self.build_list:
                     if build_obj.condition:
                         build_obj.start()
-                time.sleep(10)
+                time.sleep(30)
             except KeyboardInterrupt:
                 self.log.info('autoBuild exit')
                 self.terminate()
@@ -388,6 +390,9 @@ if __name__ == "__main__":
     crane_dsp_cls = gitPushCraneDsp()
     crane_dsp_dcxo_cls = gitPushCraneDCXODsp()
     craneg_dsp_cls = gitPushCraneGDsp()
+    download_tool = gitPushDownloadTool()
+
+
     # release task
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
 
@@ -400,6 +405,7 @@ if __name__ == "__main__":
     auto_push_task.add_git_push(cp_sdk_cls)
     auto_push_task.add_git_push(cus_sdk_cls)
     auto_push_task.add_git_push(cus_r1_rc_sdk_cls)
+    auto_push_task.add_git_push(download_tool)
 
     # auto build task
     auto_build_task = autoBuild()
@@ -431,7 +437,7 @@ if __name__ == "__main__":
                 auto_release_task.today_release_flag.clear()
                 time.sleep(1)
 
-            if now.hour == 9 and now.minute == 0 and now.second == 0:
+            if now.hour == 9 and now.minute == 15 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():
                     RELEASE_EVENT.set()
                     time.sleep(1)
