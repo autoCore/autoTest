@@ -435,6 +435,7 @@ class CusBuild(MyDailyBuildBase):
 
     def config(self):
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK"
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
@@ -471,6 +472,12 @@ class CusBuild(MyDailyBuildBase):
             copy(self.sdk_release_notes_file,
                          os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
 
+        for _file in os.listdir(self.sdk_release_notes_dir):
+            if _file.endswith(".xls") or _file.endswith(".xlsx"):
+                src_file = os.path.join(self.sdk_release_notes_dir, _file)
+                copy(src_file, os.path.join(self.version_info_dir, _file))
+
+
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
             # to_address = 'yuanzhizheng@asrmicro.com'
@@ -497,6 +504,7 @@ class CusR1RCBuild(CusBuild):
     def config(self):
         self.release_branch = "r1_rc"
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200225_SDK"
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
