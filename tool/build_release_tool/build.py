@@ -163,6 +163,8 @@ class BuildBase(object):
         if os.path.exists(self.zip_file_dir):
             for _file in os.listdir(self.zip_file_dir):
                 if "ASR_CRANE_EVB" in _file.upper() and _file.endswith(".zip"):
+                    if board == "craneg_evb" and "DCXO" in _file:
+                        continue
                     copy(os.path.join(self.zip_file_dir, _file), os.path.join(dist_dir, _file))
 
         self.mdb_file_dir = os.path.join(self.build_root_dir, self.board_info[board]["mdb_file_dir"])
@@ -372,7 +374,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 if board == "crane_evb_z2":
                     dcxo_images_dir = os.path.join(self.loacal_build_dir_d[board],"dcxo_images")
                     os.mkdir(dcxo_images_dir)
-                    self.copy_sdk_files_to_release_dir(dcxo_images_dir, "crane_evb_z2_dcxo", self.build_root_dir)
+                    self.copy_sdk_files_to_release_dir(dcxo_images_dir, board+"_dcxo", self.build_root_dir)
                     _images = [os.path.join(dcxo_images_dir, _file) for _file in os.listdir(dcxo_images_dir)]
                     self.prepare_download_tool(_images)
                     self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"_DCXO",
@@ -433,10 +435,6 @@ class CusBuild(MyDailyBuildBase):
 
     def config(self):
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"
-
-    def update_download_tool(self):
-        self.download_tool_file_name = "aboot-tools-2020.05.14-win-x64.exe"
-        self.download_controller.update_download_tool()
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
