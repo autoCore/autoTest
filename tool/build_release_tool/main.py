@@ -38,6 +38,10 @@ VISENK PHONE VERSION:
 binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone\download_tool
 
+FWP VERSION:
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_wirelessphone
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_wirelessphone\download_tool
+
 
 CUSTOMER VERSION RELEASE:
 SDK VERSION: {4}
