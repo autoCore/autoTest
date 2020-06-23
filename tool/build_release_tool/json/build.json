@@ -13,7 +13,7 @@
     ],
     "crane":
     {
-        "boards": ["crane_evb_z2", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_wirelessphone"],
+        "boards": ["crane_evb_z2", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp"],
         "boards_info":
         {
             "crane_evb_z2":
@@ -101,7 +101,7 @@
                 ],
                 "build_cmd":"autobuild.bat -f crane_evb_z2_lcd128x160.conf"
             },
-            "crane_evb_z2_wirelessphone":
+            "crane_evb_z2_fwp":
             {
                 "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
                 "zip_file_dir": ".\\build\\crane_evb_z2",
