@@ -381,8 +381,8 @@ if __name__ == "__main__":
     # download_controller.update_download_tool()
 
 
-    auto_daily_build_cls = CraneDailyBuild(repo, RELEASE_EVENT)
-    craneg_build_cls = CraneGDailyBuild(craneg_repo, RELEASE_EVENT)
+    auto_daily_build_cls = CraneDailyBuild(repo)
+    craneg_build_cls = CraneGDailyBuild(craneg_repo)
     auto_cus_build_cls = CusBuild(repo_cus)
     auto_r1_rc_build_cls = CusR1RCBuild(r1_rc_repo)
 
@@ -438,8 +438,15 @@ if __name__ == "__main__":
         try:
             now = datetime.datetime.today()
             if now.hour == 0 and now.minute == 0 and now.second == 0:
+                auto_daily_build_cls.sdk_update_flag.clear()
+                craneg_build_cls.sdk_update_flag.clear()
                 auto_release_task.today_release_flag.clear()
                 time.sleep(1)
+
+            if auto_daily_build_cls.sdk_update_flag.is_set() and craneg_build_cls.sdk_update_flag.is_set():
+                auto_daily_build_cls.sdk_update_flag.clear()
+                craneg_build_cls.sdk_update_flag.clear()
+                RELEASE_EVENT.set()
 
             if now.hour == 9 and now.minute == 15 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():

@@ -4,6 +4,7 @@ import os
 import time
 import subprocess
 import shutil
+import threading
 
 from util import MyLogger, copy, kill_win_process, zipTool, load_json
 from send_email import send_email_tool
@@ -298,6 +299,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
         self.ap_version = None
 
+        self.sdk_update_flag = threading.Event()
 
     def prepare_build(self):
         self.ap_version = self.get_ap_version()
@@ -387,10 +389,9 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
 
 class CraneDailyBuild(MyDailyBuildBase):
-    def __init__(self, _repo, _release_event):
+    def __init__(self, _repo):
         super(CraneDailyBuild, self).__init__(_repo)
         self.log = MyLogger(self.__class__.__name__)
-        self.release_event = _release_event
 
     def get_config(self):
         self.release_branch = "master"
@@ -399,13 +400,17 @@ class CraneDailyBuild(MyDailyBuildBase):
         self.config_d = json_str["crane"]
         self.board_list = self.config_d["boards"]
 
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            self.sdk_update_flag.set()
+        self.git_clean()
+
 
 class CraneGDailyBuild(MyDailyBuildBase):
-    def __init__(self, _repo, _release_event):
+    def __init__(self, _repo):
         super(CraneGDailyBuild, self).__init__(_repo)
         super(BuildBase, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-        self.release_event = _release_event
 
     def get_config(self):
         self.release_branch = "master"
@@ -416,7 +421,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
-            self.release_event.set()
+            self.sdk_update_flag.set()
         self.git_clean()
 
 
