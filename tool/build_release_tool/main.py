@@ -22,7 +22,7 @@ sys.setdefaultencoding("utf-8")
 
 email_subject = "CRANE PHONE: AUTO RELEASE %s"
 email_msg_with_cus = r"""
-GUI VERSION: {0}
+mUI VERSION: {0}
 SDK VERSION: {1}
 DSP VERSION: {2}
 
@@ -39,8 +39,8 @@ binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_pho
 download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone\download_tool
 
 FWP VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_wirelessphone
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_wirelessphone\download_tool
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_fwp
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_fwp\download_tool
 
 
 CUSTOMER VERSION RELEASE:
@@ -267,13 +267,12 @@ class autoCleanOverdueDir(ThreadBase):
             try:
                 _now = datetime.datetime.today()
                 if _now.hour == 1 and _now.minute == 0 and _now.second <= 10:
-                    self.clean_overdue_dir(cfg.download_tool_dir, 0.5, target_dir='_DOWNLOAD_TOOL_')
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_')
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_', isdir=False)
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_')
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_', isdir=False)
                     for _repo in [repo, craneg_repo]:
-                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 10, target_dir=_repo.verion_name)
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 15, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
