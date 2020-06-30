@@ -243,7 +243,7 @@ class gitPushSDKBase(GitPushBase):
             return None
 
         self.log.info("=" * 50)
-        self.log.info("git push cp...")
+        self.log.info("git push sdk...")
         try:
             self.clean_git_push_cp()
             gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
@@ -464,6 +464,29 @@ class gitPushCraneGDsp(GitPushDspBase):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg_dsp"]
+
+
+    def get_release_dsp_rf(self):
+        dsp_release_bin_l = []
+        release_dir_list = [os.path.join(self.release_dir,_dir) for _dir in os.listdir(self.release_dir) \
+                            if os.path.isdir(os.path.join(self.release_dir,_dir))]
+        release_dir_list.sort(key=lambda fn: os.path.getmtime(fn))
+        self.log.debug("release_dir_list len:",len(release_dir_list))
+        self.log.debug(release_dir_list[-10:])
+        for release_dir in release_dir_list[-10:]:
+            self.log.debug(release_dir)
+            for root,dirs,files in os.walk(release_dir,topdown=False):
+                if self.release_target_file in files:
+                    rf = os.path.join(root,"Z1_PM813","rf.bin")
+                    if os.path.exists(rf):
+                        dsp_release_bin_l.append(os.path.join(root,self.release_target_file))
+        dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
+        self.log.debug("\n".join(dsp_release_bin_l))
+        self.release_dsp_bin = dsp_release_bin_l[-1]
+        root_dir = os.path.dirname(self.release_dsp_bin)
+        self.release_rf_bin = os.path.join(root_dir,"Z1_PM813","rf.bin")
+        self.release_rf_verson_file = os.path.join(root_dir,"Z1_PM813","RF_Version.txt")
+
 
 
 class gitPushCraneDCXODsp(GitPushDspBase):
