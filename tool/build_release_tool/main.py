@@ -426,10 +426,16 @@ if __name__ == "__main__":
     cus_sdk_cls.git_push_start()
     crane_dsp_dcxo_cls.git_push_start()
     craneg_dsp_cls.git_push_start()
+    crane_dsp_cls.git_push_start()
 
     # RELEASE_EVENT.set()
     # task start
-    for _task in [auto_clean_overdue_dir_task, auto_release_task, auto_push_task, auto_build_task]:
+    task_list = []
+    task_list.append(auto_clean_overdue_dir_task)
+    task_list.append(auto_release_task)
+    task_list.append(auto_push_task)
+    task_list.append(auto_build_task)
+    for _task in task_list:
         _task.start()
 
     logger.info("**********************start**********************")
