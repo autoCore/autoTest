@@ -105,14 +105,8 @@ class BuildBase(object):
 
     def update(self):
         self.get_config()
-        json_file = os.path.join(self.root_dir,"json","build.json")
-        json_str = load_json(json_file)
-
-        self.build_images = json_str["build_images"][1:]
-        self.images = json_str["images"]
-        self.compile_log_dir = os.path.join(self.root_dir, json_str["compile_log_dir"])
-
         self.board_info = self.config_d["boards_info"]
+        self.compile_log_dir = os.path.join(self.root_dir, self.config_d["compile_log_dir"])
 
         # self._repo.update(self.release_branch)
 
@@ -153,22 +147,19 @@ class BuildBase(object):
 
     def copy_build_file_to_release_dir(self, dist_dir, src_dir=None, board = "crane_evb_z2"):
         src_dir = self.build_root_dir
+        self.build_images = self.board_info.get(board, {}).get("build_images",[])
         for _file in self.build_images:
-            if ("crane_evb_z2" not in dist_dir and "craneg_evb" not in dist_dir) and "rel_lib" in _file:
-                continue
             src = os.path.join(src_dir, _file)
             dist = os.path.join(dist_dir, os.path.basename(_file))
             copy(src, dist)
 
-        self.zip_file_dir = os.path.join(self.build_root_dir, self.board_info[board]["zip_file_dir"])
-        if os.path.exists(self.zip_file_dir):
-            for _file in os.listdir(self.zip_file_dir):
-                if "ASR_CRANE_EVB" in _file.upper() and _file.endswith(".zip"):
-                    if board == "craneg_evb" and "DCXO" in _file:
-                        continue
-                    copy(os.path.join(self.zip_file_dir, _file), os.path.join(dist_dir, _file))
+        _zip_file = self.board_info.get(board, {}).get("build_zip_file","")
+        self.build_zip_file = os.path.join(self.build_root_dir, _zip_file)
+        if os.path.exists(self.build_zip_file):
+            copy(self.build_zip_file, os.path.join(dist_dir, os.path.basename(_zip_file)))
 
-        self.mdb_file_dir = os.path.join(self.build_root_dir, self.board_info[board]["mdb_file_dir"])
+        _mdb_file_dir = self.board_info.get(board, {}).get("mdb_file_dir","")
+        self.mdb_file_dir = os.path.join(self.build_root_dir, _mdb_file_dir)
         if os.path.exists(self.mdb_file_dir):
             for _file in os.listdir(self.mdb_file_dir):
                 if "MDB.TXT" in _file.upper():
@@ -177,6 +168,7 @@ class BuildBase(object):
 
     def copy_sdk_files_to_release_dir(self, dist_dir, board="crane_evb_z2", src_dir=None):
         src_dir = self.build_root_dir
+        self.images = self.board_info.get(board, {}).get("images",[])
         src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
         src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
         dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.images]
@@ -258,7 +250,7 @@ class BuildBase(object):
     def get_revion_owner(self):
         commit_id, owner, date, commit_info = self._repo.get_revion_owner()
         self.log.debug(commit_id, owner, date, commit_info, time.asctime(time.localtime(int(date))))
-        return owner
+        return owner, time.asctime(time.localtime(int(date)))
 
     def record_version(self):
         return self._repo.record_version()
@@ -327,10 +319,11 @@ class MyDailyBuildBase(BuildBase, BuildController):
         self.cp_version = self.update_cp_version()
         self.get_dsp_version(self.dsp_bin)
 
-        owner = self.get_revion_owner()
+        owner, date = self.get_revion_owner()
 
         self.log.info("=" * 80)
         self.log.info("patch owner:", owner)
+        self.log.info("patch time :", date)
         self.log.info("mUI version:", self.ap_version.upper())
         self.log.info("sdk version:", self.cp_version)
         self.log.info("dsp version:", self.dsp_version)
@@ -345,10 +338,14 @@ class MyDailyBuildBase(BuildBase, BuildController):
         self.update_download_tool()
 
         for board in self.board_list:
+            if board == "crane_evb_z2_dcxo":
+                continue
             self.git_clean()
-            build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
-            assert build_cmd,"%s no build cmd" % board
-            self.build(self.build_root_dir, cmd=build_cmd)
+            build_cmd_str = self.board_info.get(board, {}).get("build_cmd",'')
+            for build_cmd in build_cmd_str.split("@"):
+                self.log.info("build command: %s"%build_cmd)
+                assert build_cmd,"%s no build cmd" % board
+                self.build(self.build_root_dir, cmd=build_cmd)
             self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
@@ -374,13 +371,14 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                       dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
                 if board == "crane_evb_z2":
-                    dcxo_images_dir = os.path.join(self.loacal_build_dir_d[board],"dcxo_images")
-                    os.mkdir(dcxo_images_dir)
-                    self.copy_sdk_files_to_release_dir(dcxo_images_dir, board+"_dcxo", self.build_root_dir)
-                    _images = [os.path.join(dcxo_images_dir, _file) for _file in os.listdir(dcxo_images_dir)]
+                    board = "crane_evb_z2_dcxo"
+                    self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+                    self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
+                    _root_dir = self.download_tool_images_dir_d[board]
+                    _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
                     self.prepare_download_tool(_images)
-                    self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board+"_DCXO",
-                                                      dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
+                    self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
+                                                          dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
 
         self.record_version()
         copy(self.loacal_dist_dir, self.release_dist)
@@ -399,6 +397,7 @@ class CraneDailyBuild(MyDailyBuildBase):
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
         self.board_list = self.config_d["boards"]
+        self.board_list = self.config_d["boards"][:-1]
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
@@ -436,7 +435,7 @@ class CusBuild(MyDailyBuildBase):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = self.config_d["boards"][:3]
+        self.board_list = self.config_d["boards"][:4]
 
     def config(self):
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"
@@ -505,6 +504,9 @@ class CusR1RCBuild(CusBuild):
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
         self.board_list = self.config_d["boards"][:1]
+        for board in self.board_list:
+            self.config_d["boards_info"][board]["build_zip_file"] = os.path.join("build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
+
 
     def config(self):
         self.release_branch = "r1_rc"
@@ -541,14 +543,8 @@ class CusR1RCBuild(CusBuild):
             # self.log.info(dist_file)
             release_downlaod_tool_l.append(dist_file)
             copy(_tool, dist_file)
-        zip_dir = os.path.join(self.build_root_dir, "build","crane_evb_z2")
-        for _file in os.listdir(zip_dir):
-            if "ASR_CRANE_EVB_" in _file:
-                zip_file = os.path.join(zip_dir, _file)
-                copy(zip_file, os.path.dirname(dist_dir))
-                for _dir in release_downlaod_tool_l:
-                    copy(zip_file, _dir)
-                break
+        for _dir in release_downlaod_tool_l:
+            copy(self.build_zip_file, _dir)
         dist = os.path.join(dist_dir,release_file_name)
         self.zip_tool.make_archive_e(dist,"zip",release_dir)
         shutil.rmtree(release_dir)
@@ -591,9 +587,8 @@ class CusR1RCBuild(CusBuild):
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
                 self.log.error(e)
-                archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
                 dist_dir = self.download_tool_images_dir_d[board]
-                self.zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
+                self.zip_tool.unpack_files_from_archive(self.build_zip_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
 
             if self.build_res == "SUCCESS":
                 self.create_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir=self.download_tool_dir_d[board])
