@@ -428,7 +428,6 @@ if __name__ == "__main__":
     craneg_dsp_cls.git_push_start()
     crane_dsp_cls.git_push_start()
 
-    # RELEASE_EVENT.set()
     # task start
     task_list = []
     task_list.append(auto_clean_overdue_dir_task)
@@ -453,7 +452,7 @@ if __name__ == "__main__":
                 craneg_build_cls.sdk_update_flag.clear()
                 RELEASE_EVENT.set()
 
-            if now.hour == 9 and now.minute == 15 and now.second == 0:
+            if now.hour == 9 and now.minute == 0 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():
                     RELEASE_EVENT.set()
                     time.sleep(1)
