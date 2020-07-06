@@ -135,6 +135,8 @@ class BuildBase(object):
         for board in self.board_list:
             self.loacal_build_dir_d[board] = os.path.join(version_dir, board)
             os.mkdir(self.loacal_build_dir_d[board])
+            if board == "no_ui_crane_lib":
+                continue
             self.download_tool_dir_d[board] = os.path.join(version_dir, board, "download_tool")
             os.mkdir(self.download_tool_dir_d[board])
             self.download_tool_images_dir_d[board] = os.path.join(version_dir, board, "cp_images")
@@ -322,11 +324,11 @@ class MyDailyBuildBase(BuildBase, BuildController):
         owner, date = self.get_revion_owner()
 
         self.log.info("=" * 80)
-        self.log.info("patch owner:", owner)
-        self.log.info("patch time :", date)
         self.log.info("mUI version:", self.ap_version.upper())
         self.log.info("sdk version:", self.cp_version)
         self.log.info("dsp version:", self.dsp_version)
+        self.log.info("patch owner:", owner)
+        self.log.info("patch time :", date)
         self.log.info("=" * 80)
 
         self.get_commit_massages()
@@ -343,8 +345,12 @@ class MyDailyBuildBase(BuildBase, BuildController):
             self.git_clean()
             build_cmd_str = self.board_info.get(board, {}).get("build_cmd",'')
             for build_cmd in build_cmd_str.split("@"):
-                self.log.info("build command: %s"%build_cmd)
                 assert build_cmd,"%s no build cmd" % board
+                self.log.info("-" * 80)
+                self.log.info("patch owner:", owner)
+                self.log.info("patch time :", date)
+                self.log.info("build cmd  :", build_cmd)
+                self.log.info("-" * 80)
                 self.build(self.build_root_dir, cmd=build_cmd)
             self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
@@ -355,6 +361,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 return self.loacal_dist_dir
 
             self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+            if board == "no_ui_crane_lib":
+                continue
             try:
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
@@ -397,7 +405,7 @@ class CraneDailyBuild(MyDailyBuildBase):
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
         self.board_list = self.config_d["boards"]
-        self.board_list = self.config_d["boards"][:-1]
+        self.board_list = self.config_d["boards"][:]
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
@@ -435,7 +443,7 @@ class CusBuild(MyDailyBuildBase):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = self.config_d["boards"][:4]
+        self.board_list = self.config_d["boards"][:6]
 
     def config(self):
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"

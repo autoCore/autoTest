@@ -165,10 +165,10 @@
             "no_ui_crane_lib":
             {
                 "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
-                "build_zip_file": "",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
                 "build_images":
                 [
-                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
+                    ".\\build\\crane_evb_z2\\libhalrel.a"
                 ],
                 "release_bin":
                 [
