@@ -212,8 +212,10 @@ class autoRelease(ThreadBase):
 
             # trigger dailybuild test
             self.trigger_auto_test(version_file)
+
             self.trigger_auto_test(craneg_version_file, "craneg_evb", "craneg_evb")
 
+            self.trigger_auto_test(version_file, "crane_evb_z2_fwp", "crane_evb_z2_fwp")
             # self.trigger_auto_test(cus_version_file, "evb_customer")
 
 
@@ -272,7 +274,7 @@ class autoCleanOverdueDir(ThreadBase):
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_')
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_', isdir=False)
                     for _repo in [repo, craneg_repo]:
-                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 15, target_dir=_repo.verion_name)
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 21, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
@@ -452,7 +454,7 @@ if __name__ == "__main__":
                 craneg_build_cls.sdk_update_flag.clear()
                 RELEASE_EVENT.set()
 
-            if now.hour == 9 and now.minute == 0 and now.second == 0:
+            if now.hour == 8 and now.minute == 30 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():
                     RELEASE_EVENT.set()
                     time.sleep(1)
