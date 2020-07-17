@@ -164,11 +164,11 @@
             },
             "no_ui_crane_lib":
             {
-                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "mdb_file_dir": "CAN_NOT_COPY",
                 "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
                 "build_images":
                 [
-                    ".\\build\\crane_evb_z2\\libhalrel.a"
+                    ".\\build\\rel\\build\\crane_evb_z2\\libhalrel.a"
                 ],
                 "release_bin":
                 [
@@ -194,7 +194,7 @@
             "craneg_evb":
             {
                 "mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z1_32+8MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_32+8MB.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "ReliableData.bin", "dsp.bin", "rf.bin"],
                 "build_images":
                 [

@@ -349,9 +349,15 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 self.log.info("-" * 80)
                 self.log.info("patch owner:", owner)
                 self.log.info("patch time :", date)
+                self.log.info("board name :", board)
                 self.log.info("build cmd  :", build_cmd)
                 self.log.info("-" * 80)
-                self.build(self.build_root_dir, cmd=build_cmd)
+                _root_dir = self.build_root_dir
+                if board == "no_ui_crane_lib":
+                    _rel_dir = os.path.join(self.build_root_dir,"build","rel")
+                    if os.path.exists(_rel_dir):
+                        _root_dir = _rel_dir
+                self.build(_root_dir, cmd=build_cmd)
             self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
@@ -388,8 +394,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
                     self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                           dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
 
-        self.record_version()
         copy(self.loacal_dist_dir, self.release_dist)
+        self.record_version()
 
         self.close_build()
 
@@ -405,7 +411,6 @@ class CraneDailyBuild(MyDailyBuildBase):
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
         self.board_list = self.config_d["boards"]
-        self.board_list = self.config_d["boards"][:]
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
@@ -563,13 +568,14 @@ class CusR1RCBuild(CusBuild):
         self.cp_version = self.update_cp_version()
         self.get_dsp_version(self.dsp_bin)
 
-        owner = self.get_revion_owner()
+        owner, date = self.get_revion_owner()
 
         self.log.info("=" * 80)
-        self.log.info("patch owner:", owner)
         self.log.info("mUI version:", self.ap_version.upper())
         self.log.info("sdk version:", self.cp_version)
         self.log.info("dsp version:", self.dsp_version)
+        self.log.info("patch owner:", owner)
+        self.log.info("patch time :", date)
         self.log.info("=" * 80)
 
         self.get_commit_massages()
