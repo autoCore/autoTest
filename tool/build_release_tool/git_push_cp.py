@@ -477,15 +477,15 @@ class gitPushCraneGDsp(GitPushDspBase):
             self.log.debug(release_dir)
             for root,dirs,files in os.walk(release_dir,topdown=False):
                 if self.release_target_file in files:
-                    rf = os.path.join(root,"Z1_PM813","rf.bin")
+                    rf = os.path.join(root,"Z2_PM813","rf.bin")
                     if os.path.exists(rf):
                         dsp_release_bin_l.append(os.path.join(root,self.release_target_file))
         dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
         self.log.debug("\n".join(dsp_release_bin_l))
         self.release_dsp_bin = dsp_release_bin_l[-1]
         root_dir = os.path.dirname(self.release_dsp_bin)
-        self.release_rf_bin = os.path.join(root_dir,"Z1_PM813","rf.bin")
-        self.release_rf_verson_file = os.path.join(root_dir,"Z1_PM813","RF_Version.txt")
+        self.release_rf_bin = os.path.join(root_dir,"Z2_PM813","rf.bin")
+        self.release_rf_verson_file = os.path.join(root_dir,"Z2_PM813","RF_Version.txt")
 
 
 
@@ -549,6 +549,7 @@ class gitPushDownloadTool(GitPushBase):
 
         self.partition_config = os.path.join(self.root_dir, self.config_d["partition_config"])
         self.template_config = os.path.join(self.root_dir, self.config_d["template_config"])
+        self.product_config = os.path.join(self.root_dir, self.config_d["product_config"])
 
         self.push_cmd = self.config_d["git_push_cmd"]
         self.win_type = self.config_d["win_type"]
@@ -598,6 +599,16 @@ class gitPushDownloadTool(GitPushBase):
                                                                 os.path.basename(self.partition_config)))
             else:
                 self.log.error("self.partition_config:%s error" % self.partition_config)
+
+            if os.path.isdir(self.product_config):
+                for _file in os.listdir(self.product_config):
+                    shutil.copy2(os.path.join(self.product_config,_file),
+                                 os.path.join(download_tool_dir,"config","partition",_file))
+            elif os.path.isfile(self.product_config):
+                shutil.copy2(self.product_config,os.path.join(download_tool_dir,"config","partition",
+                                                                os.path.basename(self.product_config)))
+            else:
+                self.log.error("self.product_config:%s error" % self.product_config)
 
             if os.path.isdir(self.template_config):
                 for _file in os.listdir(self.template_config):
