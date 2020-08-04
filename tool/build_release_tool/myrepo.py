@@ -424,6 +424,19 @@ class cusR1RCRepo(CusRepo):
         self.config_d = json_str["cus_crane_info"]
         self.branch_name = "r1_rc"
 
+class cusCraneGRepo(CusRepo):
+    def __init__(self):
+        super(cusCraneGRepo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_craneg_info"]
+        self.branch_name = "master"
+
+
 class cusR1Repo(CusRepo):
     def __init__(self):
         super(cusR1Repo, self).__init__()

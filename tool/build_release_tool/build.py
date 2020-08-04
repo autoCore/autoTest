@@ -208,7 +208,6 @@ class BuildBase(object):
 
     def trigger_auto_test(self, dist_dir, test_type, board="crane_evb_z2"):
         try:
-            board = "crane_evb_z2"
             sdk_tool_abs_path_dir = os.path.join(dist_dir, board, "download_tool")
             self.log.info(sdk_tool_abs_path_dir)
             for _file in os.listdir(sdk_tool_abs_path_dir):
@@ -366,9 +365,15 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 self.log.info(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
 
-            self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
             if board == "no_ui_crane_lib":
+                try:
+                    self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+                except Exception,e:
+                    self.log.error(e)
                 continue
+            else:
+                self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+
             try:
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
@@ -488,11 +493,11 @@ class CusBuild(MyDailyBuildBase):
         if os.path.exists(self.sdk_release_notes_file):
             copy(self.sdk_release_notes_file,
                          os.path.join(self.version_info_dir, os.path.basename(self.sdk_release_notes_file)))
-
-        for _file in os.listdir(self.sdk_release_notes_dir):
-            if _file.endswith(".xls") or _file.endswith(".xlsx"):
-                src_file = os.path.join(self.sdk_release_notes_dir, _file)
-                copy(src_file, os.path.join(self.version_info_dir, _file))
+        if os.path.exists(self.sdk_release_notes_dir):
+            for _file in os.listdir(self.sdk_release_notes_dir):
+                if _file.endswith(".xls") or _file.endswith(".xlsx"):
+                    src_file = os.path.join(self.sdk_release_notes_dir, _file)
+                    copy(src_file, os.path.join(self.version_info_dir, _file))
 
 
     def close_build(self):
@@ -502,7 +507,34 @@ class CusBuild(MyDailyBuildBase):
             subject = "%s RELEASE" % self.cp_version
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
-        self.trigger_auto_test(self.release_dist, "evb_customer")
+        self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
+        self.git_clean()
+
+class CusCraneGBuild(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CusCraneGBuild, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["craneg"]
+        self.board_list = self.config_d["boards"][:1]
+
+    def config(self):
+        self.release_branch = "master"
+        self.sdk_release_notes_file = "NO_FILE"
+        self.sdk_release_notes_dir = "NO_DIR"
+
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            # to_address = 'yuanzhizheng@asrmicro.com'
+            to_address = ",".join(['yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
+            subject = "%s RELEASE" % self.cp_version
+            msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
+            send_email_tool(to_address, subject.upper(), msg)
+        self.trigger_auto_test(self.release_dist, "craneg_evb_release", "craneg_evb")
         self.git_clean()
 
 
@@ -516,7 +548,7 @@ class CusR1RCBuild(CusBuild):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = self.config_d["boards"][:1]
+        self.board_list = ["crane_evb_z2","crane_evb_z2_128x160"]
         for board in self.board_list:
             self.config_d["boards_info"][board]["build_zip_file"] = os.path.join("build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
 
@@ -533,7 +565,7 @@ class CusR1RCBuild(CusBuild):
             subject = "%s RELEASE" % self.cp_version
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
-        self.trigger_auto_test(self.release_dist, "evb_customer_r1")
+        self.trigger_auto_test(self.release_dist, "evb_customer_r1", "crane_evb_z2")
         self.git_clean()
 
     def create_download_tool(self, release_name, borad="crane_evb_z2", dist_dir=None):

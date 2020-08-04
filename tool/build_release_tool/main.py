@@ -377,6 +377,7 @@ if __name__ == "__main__":
     craneg_repo = craneGRepo()
     repo_cus = CusRepo()
     r1_rc_repo = cusR1RCRepo()
+    cus_craneg_repo = cusCraneGRepo()
 
     download_controller = DownloadToolController()
     # download_controller.update_download_tool()
@@ -386,6 +387,7 @@ if __name__ == "__main__":
     craneg_build_cls = CraneGDailyBuild(craneg_repo)
     auto_cus_build_cls = CusBuild(repo_cus)
     auto_r1_rc_build_cls = CusR1RCBuild(r1_rc_repo)
+    auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
 
     cp_sdk_cls = gitPushCraneSDK()
     craneg_sdk_cls = gitPushCraneGSDK()
@@ -415,6 +417,7 @@ if __name__ == "__main__":
     # auto build task
     auto_build_task = autoBuild()
     auto_build_task.add_build(auto_r1_rc_build_cls)
+    auto_build_task.add_build(auto_cus_craneg_build_cls)
     auto_build_task.add_build(auto_cus_build_cls)
     auto_build_task.add_build(craneg_build_cls)
     auto_build_task.add_build(auto_daily_build_cls)

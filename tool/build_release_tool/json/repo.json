@@ -51,6 +51,32 @@
             "dsp_version_log":".\\tmp\\crang_dsp_version.txt"
         }
     },
+    "cus_craneg_info":
+    {
+        "branch_name": "master",
+        "manisest_xml_dir": ".\\tmp\\manifest_xml",
+        "storage_list": ["."],
+        "dsp_version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "version_pattern": "(craneg_.*?)([0-9][0-9][0-9][0-9])",
+        "branch_info":
+        {
+            "master":
+            {
+                "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\craneg_release",
+                "version_file":".\\version_file_dir\\cus_craneg_version.log",
+                "dsp_version_file": ".\\cus\\evb\\img4LWG\\dsp.bin",
+                "sdk_version_file": ".\\cpLWG\\tavor\\env\\inc\\sys_version.h",
+                "git": "E:\\cus_craneg\\crane-phone-rls",
+                "build": "E:\\cus_craneg\\crane-phone-rls\\evb\\src"
+            }
+        },
+        "version_info_log":
+        {
+            "ap_version_log": ".\\tmp\\crang_ap_version.txt",
+            "cp_version_log": ".\\tmp\\crang_cp_version.txt",
+            "dsp_version_log":".\\tmp\\crang_dsp_version.txt"
+        }
+    },
     "cus_crane_info":
     {
         "storage_list": ["."],
