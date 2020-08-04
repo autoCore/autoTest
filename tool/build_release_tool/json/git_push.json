@@ -2,7 +2,7 @@
     "crane_dsp":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANE\\CAT1",
-        "release_target": "crane_compress_a0.bin",
+        "release_target": "crane_lzma_a0.bin",
         "target_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb\\images",
         "local_dir": ".\\dsp_rf_rbd_bin",
         "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",

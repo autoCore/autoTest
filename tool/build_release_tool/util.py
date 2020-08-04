@@ -259,11 +259,17 @@ class zipTool(object):
         work_dir = os.path.dirname(os.path.abspath(__file__))
         self._external_tool = os.path.join(work_dir, "unzip_tool", "7z.exe")
         self._decompress_tool = os.path.join(work_dir, "unzip_tool", "asr_lzop.exe")
+        self._decompress_tool_lzma = os.path.join(work_dir, "unzip_tool", "asr_lzma.exe")
 
-    def decompress_bin(self, src_bin, out_bin):
+    def decompress_bin(self, src_bin, out_bin, _type = "lzop"):
         assert os.path.exists(src_bin),"%s no exists" % src_bin
-        decompress_cmd = "{0} -d -f {1} -o{2}".format(self._decompress_tool, src_bin, out_bin)
-        subprocess.call(decompress_cmd, shell=True)
+        if _type == "lzop":
+            decompress_cmd = "{0} -d -f {1} -o{2}".format(self._decompress_tool, src_bin, out_bin)
+        elif _type == "lzma":
+            decompress_cmd = "{0} d {1} {2} >decompress.txt".format(self._decompress_tool_lzma, src_bin, out_bin)
+        else:
+            assert (_type in ["lzop", "lzma"]),"type not lzop or lzma"
+        subprocess.call(decompress_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return out_bin
 
 
@@ -316,5 +322,4 @@ class zipTool(object):
         self.make_archive(base_name, _format, root_dir)
         # self.make_archive_e(base_name, format, root_dir)
         shutil.rmtree(root_dir)
-
 

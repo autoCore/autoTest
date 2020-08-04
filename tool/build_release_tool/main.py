@@ -46,12 +46,14 @@ download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_fwp\d
 CUSTOMER VERSION RELEASE:
 SDK VERSION: {4}
 DSP VERSION: {5}
+
 RELEASE VERSION: {6}
 
 
 CRANEG VERSION RELEASE:
 SDK VERSION: {7}
 DSP VERSION: {8}
+
 RELEASE VERSION: {9}
 
 """
@@ -395,7 +397,7 @@ if __name__ == "__main__":
     cus_r1_rc_sdk_cls = gitPushR1RCSDK()
 
     crane_dsp_cls = gitPushCraneDsp()
-    crane_dsp_dcxo_cls = gitPushCraneDCXODsp()
+    # crane_dsp_dcxo_cls = gitPushCraneDCXODsp()
     craneg_dsp_cls = gitPushCraneGDsp()
     download_tool = gitPushDownloadTool()
 
@@ -407,7 +409,7 @@ if __name__ == "__main__":
     auto_push_task = autoPush()
     auto_push_task.add_git_push(crane_dsp_cls)
     auto_push_task.add_git_push(craneg_dsp_cls)
-    auto_push_task.add_git_push(crane_dsp_dcxo_cls)
+    # auto_push_task.add_git_push(crane_dsp_dcxo_cls)
     auto_push_task.add_git_push(craneg_sdk_cls)
     auto_push_task.add_git_push(cp_sdk_cls)
     auto_push_task.add_git_push(cus_sdk_cls)
@@ -429,7 +431,7 @@ if __name__ == "__main__":
     craneg_sdk_cls.git_push_start()
     cus_r1_rc_sdk_cls.git_push_start()
     cus_sdk_cls.git_push_start()
-    crane_dsp_dcxo_cls.git_push_start()
+    # crane_dsp_dcxo_cls.git_push_start()
     craneg_dsp_cls.git_push_start()
     crane_dsp_cls.git_push_start()
 

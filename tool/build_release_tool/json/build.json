@@ -52,9 +52,9 @@
                     ".\\build\\crane_evb_z2\\crane_evb.bin",
                     ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
                     ".\\cp\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
-                    ".\\cus\\evb\\images\\ReliableData.bin",
-                    ".\\cus\\evb_dcxo\\images\\dsp.bin",
-                    ".\\cus\\evb_dcxo\\images\\rf.bin"
+                    ".\\cus\\evb_dcxo\\images\\ReliableData.bin",
+                    ".\\cus\\evb\\images\\dsp.bin",
+                    ".\\cus\\evb\\images\\rf.bin"
                 ],
                 "build_cmd":""
             },
