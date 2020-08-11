@@ -160,7 +160,7 @@
                     ".\\cus\\evb\\images\\dsp.bin",
                     ".\\cus\\evb\\images\\rf.bin"
                 ],
-                "build_cmd":"autobuild.bat -f crane_evb_z2_FWP.conf"
+                "build_cmd":"autobuild.bat -f crane_evb_z2_lcd320x240_FWP.conf"
             },
             "no_ui_crane_lib":
             {

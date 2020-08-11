@@ -68,7 +68,7 @@ class BuildController(object):
             att_file = None
             subject = r"%s %s build result: pass" % (self.__class__.__name__, board)
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
-        to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
+        to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
         send_email_tool(to_address, subject, msg, att_file)
         self.log.info("send email done")
 
@@ -378,10 +378,10 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
                 self.log.error(e)
-            if self.release_branch not in  "master":
-                archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
-                dist_dir = self.download_tool_images_dir_d[board]
-                self.zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
+            # if self.release_branch not in  "master":
+                # archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
+                # dist_dir = self.download_tool_images_dir_d[board]
+                # self.zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
 
             if self.build_res == "SUCCESS":
                 _root_dir = self.download_tool_images_dir_d[board]
@@ -456,8 +456,8 @@ class CusBuild(MyDailyBuildBase):
         self.board_list = self.config_d["boards"][:6]
 
     def config(self):
-        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK\ReleaseNotes.xlsx"
-        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200415_SDK"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK"
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
@@ -510,6 +510,110 @@ class CusBuild(MyDailyBuildBase):
         self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
         self.git_clean()
 
+
+class CusR1RC_SDK_1_008_Build(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CusR1RC_SDK_1_008_Build, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "r1_rc_sdk_1.008"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane"]
+        self.board_list = ["crane_evb_z2", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp"]
+
+    def config(self):
+        self.release_branch = "r1_rc_sdk_1.008"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200425_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200425_SDK"
+
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            # to_address = 'yuanzhizheng@asrmicro.com'
+            to_address = ",".join(['yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
+            subject = "%s RELEASE" % self.cp_version
+            msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
+            send_email_tool(to_address, subject.upper(), msg)
+        self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
+        self.git_clean()
+
+    def start(self):
+        self.prepare_build()
+        self.old_cp_version = self.get_old_cp_version()
+        self.cp_version = self.update_cp_version()
+        self.get_dsp_version(self.dsp_bin)
+
+        owner, date = self.get_revion_owner()
+
+        self.log.info("=" * 80)
+        self.log.info("mUI version:", self.ap_version.upper())
+        self.log.info("sdk version:", self.cp_version)
+        self.log.info("dsp version:", self.dsp_version)
+        self.log.info("patch owner:", owner)
+        self.log.info("patch time :", date)
+        self.log.info("=" * 80)
+
+        self.get_commit_massages()
+
+        self.git_version_dir = self.loacal_dist_dir
+
+        self.copy_version_file_to_release_dir()
+
+        self.update_download_tool()
+
+        for board in self.board_list:
+            self.git_clean()
+            build_cmd_str = self.board_info.get(board, {}).get("build_cmd",'')
+            for build_cmd in build_cmd_str.split("@"):
+                assert build_cmd,"%s no build cmd" % board
+                self.log.info("-" * 80)
+                self.log.info("patch owner:", owner)
+                self.log.info("patch time :", date)
+                self.log.info("board name :", board)
+                self.log.info("build cmd  :", build_cmd)
+                self.log.info("-" * 80)
+                _root_dir = self.build_root_dir
+                if board == "no_ui_crane_lib":
+                    _rel_dir = os.path.join(self.build_root_dir,"build","rel")
+                    if os.path.exists(_rel_dir):
+                        _root_dir = _rel_dir
+                self.build(_root_dir, cmd=build_cmd)
+            self.send_email(self.build_root_dir, owner, self.release_dist, board)
+
+            kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
+
+            if board in self.board_list[0] and self.build_res in "FAIL":
+                self.log.info(self.loacal_dist_dir, "build fail")
+                return self.loacal_dist_dir
+
+            if board == "no_ui_crane_lib":
+                try:
+                    self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+                except Exception,e:
+                    self.log.error(e)
+                continue
+            else:
+                self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+
+            try:
+                self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
+            except Exception,e:
+                self.log.error(e)
+
+            if self.build_res == "SUCCESS":
+                _root_dir = self.download_tool_images_dir_d[board]
+                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+                self.prepare_download_tool(_images)
+                self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
+                                                      dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
+
+        copy(self.loacal_dist_dir, self.release_dist)
+        self.record_version()
+
+        self.close_build()
+
+
 class CusCraneGBuild(CusBuild):
     def __init__(self, _repo_cus):
         super(CusCraneGBuild, self).__init__(_repo_cus)
@@ -549,8 +653,8 @@ class CusR1RCBuild(CusBuild):
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
         self.board_list = ["crane_evb_z2","crane_evb_z2_128x160"]
-        for board in self.board_list:
-            self.config_d["boards_info"][board]["build_zip_file"] = os.path.join("build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
+        # for board in self.board_list:
+            # self.config_d["boards_info"][board]["build_zip_file"] = os.path.join("build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
 
 
     def config(self):
