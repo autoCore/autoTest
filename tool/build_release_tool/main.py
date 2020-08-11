@@ -198,7 +198,7 @@ class autoRelease(ThreadBase):
             assert _match, "cp_version can not match"
             cp_version_sdk = _match[0]
             release_name = "_".join([cp_version_sdk, ap_version])
-            # download_controller.update_download_tool()
+
             self.today_release_flag.set()
 
             cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir, "crane_rc_")
@@ -269,6 +269,8 @@ class autoCleanOverdueDir(ThreadBase):
         self.log.info(self.__class__.__name__, "start...")
         while self._running:
             try:
+                self.clean_overdue_dir("Y:\craneG_dailybuild", 32, target_dir='craneg_d_')
+                self.clean_overdue_dir("Y:\crane_dailybuild", 32, target_dir='crane_d_')
                 _now = datetime.datetime.today()
                 if _now.hour == 1 and _now.minute == 0 and _now.second <= 10:
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_')
@@ -342,6 +344,8 @@ def create_download_tool_trigger_test():
     dist_dir = r'\\sh2-filer02\Data\FP_RLS\crane_r1_rc'
     board = "crane_evb_z2"
 
+    download_controller = DownloadToolController()
+
     download_tool_dir = os.path.join(version_dir, board, "download_tool")
     download_controller.update_download_tool()
     _root_dir = os.path.join(version_dir, board, "cp_images")
@@ -375,58 +379,93 @@ if __name__ == "__main__":
     rootlogger.reset_log_file(log_file)
 
     logger.debug(cfg)
-    repo = CraneRepo()
-    craneg_repo = craneGRepo()
-    repo_cus = CusRepo()
-    r1_rc_repo = cusR1RCRepo()
-    cus_craneg_repo = cusCraneGRepo()
 
-    download_controller = DownloadToolController()
-    # download_controller.update_download_tool()
-
-
-    auto_daily_build_cls = CraneDailyBuild(repo)
-    craneg_build_cls = CraneGDailyBuild(craneg_repo)
-    auto_cus_build_cls = CusBuild(repo_cus)
-    auto_r1_rc_build_cls = CusR1RCBuild(r1_rc_repo)
-    auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
-
-    cp_sdk_cls = gitPushCraneSDK()
-    craneg_sdk_cls = gitPushCraneGSDK()
-    cus_sdk_cls = gitPushCusSDK()
-    cus_r1_rc_sdk_cls = gitPushR1RCSDK()
-
-    crane_dsp_cls = gitPushCraneDsp()
-    # crane_dsp_dcxo_cls = gitPushCraneDCXODsp()
-    craneg_dsp_cls = gitPushCraneGDsp()
-    download_tool = gitPushDownloadTool()
-
-
-    # release task
-    auto_release_task = autoRelease(cfg, RELEASE_EVENT)
-
+    # =====================================================
     # auto push task
     auto_push_task = autoPush()
-    auto_push_task.add_git_push(crane_dsp_cls)
-    auto_push_task.add_git_push(craneg_dsp_cls)
-    # auto_push_task.add_git_push(crane_dsp_dcxo_cls)
-    auto_push_task.add_git_push(craneg_sdk_cls)
-    auto_push_task.add_git_push(cp_sdk_cls)
-    auto_push_task.add_git_push(cus_sdk_cls)
-    auto_push_task.add_git_push(cus_r1_rc_sdk_cls)
-    auto_push_task.add_git_push(download_tool)
 
     # auto build task
     auto_build_task = autoBuild()
-    auto_build_task.add_build(auto_r1_rc_build_cls)
-    auto_build_task.add_build(auto_cus_craneg_build_cls)
-    auto_build_task.add_build(auto_cus_build_cls)
-    auto_build_task.add_build(craneg_build_cls)
-    auto_build_task.add_build(auto_daily_build_cls)
 
     # auto clean task
     auto_clean_overdue_dir_task = autoCleanOverdueDir()
+    # =====================================================
 
+
+    # crane r1_rc
+    r1_rc_repo = cusR1RCRepo()
+    auto_r1_rc_build_cls = CusR1RCBuild(r1_rc_repo)
+    auto_build_task.add_build(auto_r1_rc_build_cls)
+
+    # crane r1_rc
+    r1_rc_sdk_1_008_repo = cusR1RCSDK1_008_Repo()
+    auto_r1_rc_build_cls = CusR1RC_SDK_1_008_Build(r1_rc_sdk_1_008_repo)
+    auto_build_task.add_build(auto_r1_rc_build_cls)
+
+    # craneg rc
+    # cus_craneg_repo = cusCraneGRepo()
+    # auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
+    # auto_build_task.add_build(auto_cus_craneg_build_cls)
+
+    # crane rc
+    repo_cus = CusMasterRepo()
+    auto_cus_build_cls = CusBuild(repo_cus)
+    auto_build_task.add_build(auto_cus_build_cls)
+
+    # craneg dailay
+    craneg_repo = craneGRepo()
+    craneg_build_cls = CraneGDailyBuild(craneg_repo)
+    auto_build_task.add_build(craneg_build_cls)
+
+    # crane dailay
+    repo = CraneRepo()
+    auto_daily_build_cls = CraneDailyBuild(repo)
+    auto_build_task.add_build(auto_daily_build_cls)
+
+
+
+    # crane dailay sdk auto push
+    cp_sdk_cls = gitPushCraneSDK()
+    auto_push_task.add_git_push(cp_sdk_cls)
+
+    # craneg dailay sdk auto push
+    craneg_sdk_cls = gitPushCraneGSDK()
+    auto_push_task.add_git_push(craneg_sdk_cls)
+
+    # crane rc sdk auto push
+    cus_sdk_cls = gitPushCusSDK()
+    auto_push_task.add_git_push(cus_sdk_cls)
+
+    # crane rc sdk auto push
+    cus_SDK1_008_cls = gitPushR1RCSDK1_008()
+    auto_push_task.add_git_push(cus_SDK1_008_cls)
+
+    # crane r1_rc sdk auto push
+    cus_r1_rc_sdk_cls = gitPushR1RCSDK()
+    auto_push_task.add_git_push(cus_r1_rc_sdk_cls)
+
+    # crane dailay dsp auto push
+    crane_dsp_cls = gitPushCraneDsp()
+    auto_push_task.add_git_push(crane_dsp_cls)
+
+    # crane dailay dsp_dcxo auto push
+    # crane_dsp_dcxo_cls = gitPushCraneDCXODsp()
+    # auto_push_task.add_git_push(crane_dsp_dcxo_cls)
+
+    # craneg dailay dsp auto push
+    craneg_dsp_cls = gitPushCraneGDsp()
+    auto_push_task.add_git_push(craneg_dsp_cls)
+
+    # download tool auto push
+    download_tool = gitPushDownloadTool()
+    auto_push_task.add_git_push(download_tool)
+
+    # =====================================================
+    # release task
+    auto_release_task = autoRelease(cfg, RELEASE_EVENT)
+    # =====================================================
+
+    cus_SDK1_008_cls.git_push_start()
     cp_sdk_cls.git_push_start()
     craneg_sdk_cls.git_push_start()
     cus_r1_rc_sdk_cls.git_push_start()
@@ -437,7 +476,7 @@ if __name__ == "__main__":
 
     # task start
     task_list = []
-    task_list.append(auto_clean_overdue_dir_task)
+    # task_list.append(auto_clean_overdue_dir_task)
     task_list.append(auto_release_task)
     task_list.append(auto_push_task)
     task_list.append(auto_build_task)
@@ -459,17 +498,15 @@ if __name__ == "__main__":
                 craneg_build_cls.sdk_update_flag.clear()
                 RELEASE_EVENT.set()
 
-            if now.hour == 8 and now.minute == 30 and now.second == 0:
+            if now.hour == 9 and now.minute == 0 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():
                     RELEASE_EVENT.set()
                     time.sleep(1)
 
         except KeyboardInterrupt:
             logger.info("exit: KeyboardInterrupt")
-            auto_clean_overdue_dir_task.terminate()
-            auto_release_task.terminate()
-            auto_push_task.terminate()
-            auto_build_task.terminate()
+            for _task in task_list:
+                _task.terminate()
             os.chdir(root_dir)
             os.system("del *.pyc")
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
@@ -477,7 +514,5 @@ if __name__ == "__main__":
         except Exception, e:
             logger.error(e)
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
-            auto_clean_overdue_dir_task.terminate()
-            auto_release_task.terminate()
-            auto_push_task.terminate()
-            auto_build_task.terminate()
+            for _task in task_list:
+                _task.terminate()

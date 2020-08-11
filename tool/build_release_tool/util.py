@@ -266,7 +266,7 @@ class zipTool(object):
         if _type == "lzop":
             decompress_cmd = "{0} -d -f {1} -o{2}".format(self._decompress_tool, src_bin, out_bin)
         elif _type == "lzma":
-            decompress_cmd = "{0} d {1} {2} >decompress.txt".format(self._decompress_tool_lzma, src_bin, out_bin)
+            decompress_cmd = "{0} d {1} {2}".format(self._decompress_tool_lzma, src_bin, out_bin)
         else:
             assert (_type in ["lzop", "lzma"]),"type not lzop or lzma"
         subprocess.call(decompress_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
