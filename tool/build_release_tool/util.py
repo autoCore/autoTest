@@ -24,6 +24,18 @@ def kill_win_process(*process_name):
         except Exception, e:
             print e
 
+def create_cp_framework(root_dir, libhal_dir, output_dir):
+    if os.path.exists(libhal_dir):
+        release_log = os.path.join(output_dir,"release_log.txt")
+        obj = open(release_log,"w")
+        work_dir = os.path.join(root_dir,"tool","release_hal")
+        os.chdir(work_dir)
+        cmd = "python framework.py %s %s %s"%(root_dir, libhal_dir, output_dir)
+        subprocess.call(cmd, shell=True, stdout=obj, stderr=subprocess.PIPE)
+        obj.close()
+    else:
+        print("warning: %s not exists"%libhal_dir)
+
 
 class MyLogger(object):
     def __init__(self, _name=''):

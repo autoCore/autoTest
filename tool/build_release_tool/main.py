@@ -149,7 +149,7 @@ class autoRelease(ThreadBase):
         try:
             sdk_tool_abs_path_dir = os.path.join(_version_file, board, "download_tool")
             for _file in os.listdir(sdk_tool_abs_path_dir):
-                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper() and "DCXO" not in _file:
+                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
                     sdk_tool_abs_path = os.path.join(sdk_tool_abs_path_dir, _file)
                     break
             else:
@@ -218,6 +218,8 @@ class autoRelease(ThreadBase):
             self.trigger_auto_test(craneg_version_file, "craneg_evb", "craneg_evb")
 
             self.trigger_auto_test(version_file, "crane_evb_z2_fwp", "crane_evb_z2_fwp")
+
+            self.trigger_auto_test(version_file, "crane_evb_z2_dcxo", "crane_evb_z2_dcxo")
             # self.trigger_auto_test(cus_version_file, "evb_customer")
 
 

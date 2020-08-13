@@ -6,7 +6,7 @@ import subprocess
 import shutil
 import threading
 
-from util import MyLogger, copy, kill_win_process, zipTool, load_json
+from util import MyLogger, copy, kill_win_process, zipTool, load_json, create_cp_framework
 from send_email import send_email_tool
 from ftp import ftp_upload_file
 from TriggerTest import trigger_test
@@ -211,7 +211,7 @@ class BuildBase(object):
             sdk_tool_abs_path_dir = os.path.join(dist_dir, board, "download_tool")
             self.log.info(sdk_tool_abs_path_dir)
             for _file in os.listdir(sdk_tool_abs_path_dir):
-                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper() and "DCXO" not in _file:
+                if _file.endswith(".zip") and "DOWNLOAD_TOOL" in _file.upper():
                     sdk_tool_abs_path = os.path.join(sdk_tool_abs_path_dir, _file)
                     break
             else:
@@ -398,7 +398,10 @@ class MyDailyBuildBase(BuildBase, BuildController):
                     self.prepare_download_tool(_images)
                     self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                           dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
-
+        # create cp framework
+        if board == "no_ui_crane_lib":
+            hallib_dir = os.path.join(self.loacal_dist_dir, board, "libhalrel.a")
+            create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
         copy(self.loacal_dist_dir, self.release_dist)
         self.record_version()
 
@@ -508,6 +511,7 @@ class CusBuild(MyDailyBuildBase):
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
         self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo_rc", "crane_evb_z2_dcxo")
         self.git_clean()
 
 
