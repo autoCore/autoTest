@@ -1,10 +1,10 @@
 #include "stdlib.h"
 
-#include "app_target_defs.h"
+#include "plat_config_defs.h"
 #include "plat_types.h"
 #include "ui_os_api.h"
 #include "ui_log_api.h"
-#include "nvram_api.h"
+#include "nvram.h"
 #include "nw_api.h"
 
 #include "cus_dm_register_def.h"

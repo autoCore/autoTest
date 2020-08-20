@@ -1,12 +1,11 @@
 #include "cus_dm_register_def.h"
 
-#include "app_target_defs.h"
+#include "plat_config_defs.h"
 #include "plat_types.h"
 #include "fs_api.h"
 
-#include "nvram_api.h"
-#include "nvram_data_items.h"
-#include "nvram_user_defs.h"
+#include "nvram.h"
+
 
 
 
