@@ -429,6 +429,30 @@ class CusRepo(RepoBase):
         _git.checkout(self.branch_name)
 
 
+class CusMasterRepo(CusRepo):
+    def __init__(self):
+        super(CusMasterRepo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_dsp_version(self, dsp_bin, dsp_version_log_file):
+        """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
+        dsp_version_file = os.path.join(self.root_dir, "tmp","dsp_version.bin")
+        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file, "lzma")
+        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
+        with open(dsp_version_file, "rb") as fob:
+            text = fob.read()
+        match = self.dsp_version_pattern.findall(text)
+        if match:
+            version_info = match[0]
+            # self.log.debug(version_info)
+            self.dsp_version = version_info
+        else:
+            version_info = "can not match dsp version".upper()
+        with open(dsp_version_log_file, "w") as obj:
+            obj.write(version_info)
+        return version_info
+ 
+
 class cusR1RCRepo(CusRepo):
     def __init__(self):
         super(cusR1RCRepo, self).__init__()
@@ -440,6 +464,19 @@ class cusR1RCRepo(CusRepo):
         json_str = load_json(json_file)
         self.config_d = json_str["cus_crane_info"]
         self.branch_name = "r1_rc"
+
+class cusR1RCSDK1_008_Repo(CusRepo):
+    def __init__(self):
+        super(cusR1RCSDK1_008_Repo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_crane_info"]
+        self.branch_name = "r1_rc_sdk_1.008"
+
 
 class cusCraneGRepo(CusRepo):
     def __init__(self):

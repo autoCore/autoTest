@@ -204,7 +204,7 @@ class gitPushSDKBase(GitPushBase):
         self.log.debug(CRANE_CUST_VER_INFO)
         return CRANE_CUST_VER_INFO
 
-    def git_push_start(self):
+    def condition(self):
         self.find_new_cp_sdk()
         self.git_clean()
         if os.path.exists(os.path.join(self.cp_sdk_dir,self.cp_sdk)):
@@ -223,18 +223,23 @@ class gitPushSDKBase(GitPushBase):
         time.sleep(60)
         self.copy_sdk()
         self.unzip_sdk()
-        cp_sdk = self.cp_sdk_root_dir
-        self.log.info(cp_sdk)
+        self.log.info(self.cp_sdk_root_dir)
 
 
-        sdk_verion_file = [os.path.join(cp_sdk,"tavor","env","inc","sys_version.h"),self.cp_version_file]
+        sdk_verion_file = [os.path.join(self.cp_sdk_root_dir,"tavor","env","inc","sys_version.h"),self.cp_version_file]
         for version_file in sdk_verion_file:
             if not os.path.exists(version_file):
                 self.log.error("can not file: %s" % version_file)
                 return None
+        return True
 
-        local_sdk_version = self.get_sdk_version(sdk_verion_file[1])
-        release_sdk_version = self.get_sdk_version(sdk_verion_file[0])
+    def git_push_start(self):
+        if not self.condition():
+            time.sleep(10)
+            return
+
+        local_sdk_version = self.get_sdk_version(self.cp_version_file)
+        release_sdk_version = self.get_sdk_version(os.path.join(self.cp_sdk_root_dir,"tavor","env","inc","sys_version.h"))
         self.log.info("local_sdk_version:",local_sdk_version)
         self.log.info("release_sdk_version:",release_sdk_version)
         self.cp_sdk_version = release_sdk_version
@@ -246,9 +251,9 @@ class gitPushSDKBase(GitPushBase):
         self.log.info("git push sdk...")
         try:
             self.clean_git_push_cp()
-            gui_lib = os.path.join(cp_sdk,"tavor","Arbel","lib")
+            gui_lib = os.path.join(self.cp_sdk_root_dir,"tavor","Arbel","lib")
             self.delete_gui_lib(gui_lib)
-            self.copy_sdk_to_git_push_cp(cp_sdk)
+            self.copy_sdk_to_git_push_cp(self.cp_sdk_root_dir)
             self.git_add()
             commit_info = "%s" % self.cp_sdk
             self.git_commit(commit_info)
@@ -313,6 +318,17 @@ class gitPushR1RCSDK(gitPushSDKBase):
         json_str = load_json(json_file)
         self.config_d = json_str["cus_r1_rc_sdk"]
 
+class gitPushR1RCSDK1_008(gitPushSDKBase):
+    def __init__(self):
+        super(gitPushR1RCSDK1_008, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+        self.git.checkout("r1_rc_sdk_1.008")
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_r1_rc_sdk_1_008"]
 
 
 
@@ -429,7 +445,7 @@ class GitPushDspBase(GitPushBase):
         try:
             self.git_add(self.local_dsp_bin, self.local_rf_bin, self.local_rf_verson_file)
             match = re.findall(self.dsp_version_pattern, self.dsp_version)
-            if match and "\00" not in match[0]:
+            if match:
                 dsp_version = match[0]
             else:
                 dsp_version = str(time.asctime())
