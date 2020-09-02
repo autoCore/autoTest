@@ -4,6 +4,7 @@ import sys
 import os
 import time
 import datetime
+import shutil
 
 from util import *
 from git_push_cp import *
@@ -258,27 +259,44 @@ class autoCleanOverdueDir(ThreadBase):
         else:
             listdir = [os.path.join(_dir,f) for f in listdir if os.path.isfile(os.path.join(_dir,f)) and target_dir in f]
         # self.log.info(listdir)
+        listdir.sort(key=lambda fn: os.path.getmtime(fn))
+        # self.log.info(listdir)
         del_t = datetime.timedelta(days=del_time)
         _now = datetime.datetime.now()
-        for d in listdir:
+        for d in listdir[:-1]:
             create_time = datetime.datetime.fromtimestamp(os.path.getctime(d))
             if (_now - create_time) > del_t:
                 self.log.info("delete %s start..." % d)
-                os.system(r"rd /s /q %s" % d)
+                if os.path.isdir(d):
+                    shutil.rmtree(d)
+                else:
+                    os.remove(d)
+                # os.system(r"rd /s /q %s" % d)
                 self.log.info("delete %s done" % d)
 
     def run(self):
         self.log.info(self.__class__.__name__, "start...")
         while self._running:
             try:
-                self.clean_overdue_dir("Y:\craneG_dailybuild", 32, target_dir='craneg_d_')
-                self.clean_overdue_dir("Y:\crane_dailybuild", 32, target_dir='crane_d_')
+                # self.clean_overdue_dir("Y:\craneG_dailybuild", 32, target_dir='craneg_d_')
+                # self.clean_overdue_dir("Y:\crane_dailybuild", 32, target_dir='crane_d_')
                 _now = datetime.datetime.today()
                 if _now.hour == 1 and _now.minute == 0 and _now.second <= 10:
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_')
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3601_MINIGUI_', isdir=False)
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_')
-                    self.clean_overdue_dir(cfg.cp_sdk_dir, 3, target_dir='ASR3603_MINIGUI_', isdir=False)
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_1.006', isdir=False)
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_1.006')
+
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_1.008', isdir=False)
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_1.008')
+
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_1.009', isdir=False)
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_1.009')
+
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_20')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3601_MINIGUI_20', isdir=False)
+
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20')
+                    self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20', isdir=False)
+
                     for _repo in [repo, craneg_repo]:
                         self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 21, target_dir=_repo.verion_name)
                 time.sleep(10)
@@ -401,8 +419,8 @@ if __name__ == "__main__":
 
     # crane r1_rc
     r1_rc_sdk_1_008_repo = cusR1RCSDK1_008_Repo()
-    auto_r1_rc_build_cls = CusR1RC_SDK_1_008_Build(r1_rc_sdk_1_008_repo)
-    auto_build_task.add_build(auto_r1_rc_build_cls)
+    auto_r1_rc_008_build_cls = CusR1RC_SDK_1_008_Build(r1_rc_sdk_1_008_repo)
+    auto_build_task.add_build(auto_r1_rc_008_build_cls)
 
     # craneg rc
     # cus_craneg_repo = cusCraneGRepo()
@@ -478,7 +496,7 @@ if __name__ == "__main__":
 
     # task start
     task_list = []
-    # task_list.append(auto_clean_overdue_dir_task)
+    task_list.append(auto_clean_overdue_dir_task)
     task_list.append(auto_release_task)
     task_list.append(auto_push_task)
     task_list.append(auto_build_task)
@@ -500,7 +518,7 @@ if __name__ == "__main__":
                 craneg_build_cls.sdk_update_flag.clear()
                 RELEASE_EVENT.set()
 
-            if now.hour == 9 and now.minute == 0 and now.second == 0:
+            if now.hour == 9 and now.minute == 15 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():
                     RELEASE_EVENT.set()
                     time.sleep(1)

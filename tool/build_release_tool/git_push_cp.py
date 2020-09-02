@@ -501,6 +501,25 @@ class gitPushCraneGDsp(GitPushDspBase):
         self.config_d = json_str["craneg_dsp"]
 
 
+    def get_dsp_version(self, dsp_bin = None):
+        """CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
+        if not dsp_bin:
+            dsp_bin = self.local_dsp_bin
+        dsp_version_file = os.path.join(self.root_dir, "tmp", "dsp_version_tmp.bin")
+        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file, "lzma")
+        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
+        with open(dsp_version_file, "rb") as fob:
+            text = fob.read()
+        match = self.dsp_version_pattern.findall(text)
+        if match:
+            self.log.debug(match[0])
+            version_info = match[0]
+        else:
+            self.log.error("can not find dsp version infomation")
+            version_info = None
+        # os.remove(dsp_version_file)
+        return version_info
+
     def get_release_dsp_rf(self):
         dsp_release_bin_l = []
         release_dir_list = [os.path.join(self.release_dir,_dir) for _dir in os.listdir(self.release_dir) \

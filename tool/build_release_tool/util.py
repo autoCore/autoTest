@@ -13,6 +13,8 @@ import multiprocessing as mp
 import psutil
 import Queue
 import json
+import time
+
 
 def kill_win_process(*process_name):
     for _process in psutil.process_iter():
@@ -295,6 +297,7 @@ class zipTool(object):
         with self._mutex:
             subprocess.call(pack_cmd, shell=True)
             kill_win_process("7z.exe")
+            time.sleep(3)
 
     def unpack_archive(self, filename, extract_dir=None):
         assert os.path.exists(filename), "can not find %r" % filename
@@ -308,6 +311,7 @@ class zipTool(object):
         with self._mutex:
             subprocess.call(unpack_cmd, shell=True)
             kill_win_process("7z.exe")
+            time.sleep(3)
 
     def unpack_files_from_archive(self, archive_file, dist_dir, *fname):
         archive_file = os.path.realpath(archive_file)
@@ -317,6 +321,7 @@ class zipTool(object):
         with self._mutex:
             subprocess.call(unpack_cmd, shell=True)
             kill_win_process("7z.exe")
+            time.sleep(3)
 
     def pack_files_to_archive(self, base_name, _format, *file_name):
         root_dir, _ = os.path.splitext(base_name)

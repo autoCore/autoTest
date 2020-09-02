@@ -63,15 +63,16 @@ class BuildController(object):
             att_file = '@'.join(
                 [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log, self.compile_log])
             subject = r"%s %s build result: fail" % (self.__class__.__name__, board)
-            msg = r"Hi %s, your patch build fail! Pls check attachment log" % (owner.split("@")[0])
+            # msg = r"Hi %s, your patch build fail! Pls check attachment log" % (owner.split("@")[0])
+            msg = r"Hi All, %s build fail! Pls check attachment log" % (board)
+            to_address = "SW_CV@asrmicro.com"
         else:
             att_file = None
             subject = r"%s %s build result: pass" % (self.__class__.__name__, board)
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
-        to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
+            to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
         send_email_tool(to_address, subject, msg, att_file)
         self.log.info("send email done")
-
 
 class BuildBase(object):
     def __init__(self, _repo):
@@ -357,19 +358,25 @@ class MyDailyBuildBase(BuildBase, BuildController):
                     if os.path.exists(_rel_dir):
                         _root_dir = _rel_dir
                 self.build(_root_dir, cmd=build_cmd)
-            self.send_email(self.build_root_dir, owner, self.release_dist, board)
+            if self.build_res in "FAIL":
+                self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in self.board_list[0] and self.build_res in "FAIL":
-                self.log.info(self.loacal_dist_dir, "build fail")
+            if board in self.board_list[:6] and self.build_res in "FAIL":
+                self.log.error(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
+            elif self.build_res in "FAIL":
+                continue
 
             if board == "no_ui_crane_lib":
                 try:
                     self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
                 except Exception,e:
                     self.log.error(e)
+                # create cp framework
+                hallib_dir = os.path.join(self.loacal_dist_dir, board, "libhalrel.a")
+                create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
                 continue
             else:
                 self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
@@ -378,10 +385,6 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
                 self.log.error(e)
-            # if self.release_branch not in  "master":
-                # archive_file = os.path.join(self.build_root_dir,"build", "crane_evb_z2", "ASR_CRANE_EVB_A0_16MB.zip")
-                # dist_dir = self.download_tool_images_dir_d[board]
-                # self.zip_tool.unpack_files_from_archive(archive_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
 
             if self.build_res == "SUCCESS":
                 _root_dir = self.download_tool_images_dir_d[board]
@@ -398,13 +401,10 @@ class MyDailyBuildBase(BuildBase, BuildController):
                     self.prepare_download_tool(_images)
                     self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                           dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
-        # create cp framework
-        if board == "no_ui_crane_lib":
-            hallib_dir = os.path.join(self.loacal_dist_dir, board, "libhalrel.a")
-            create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
+
         copy(self.loacal_dist_dir, self.release_dist)
         self.record_version()
-
+        self.send_email(self.build_root_dir, owner, self.release_dist, board)
         self.close_build()
 
 
@@ -583,7 +583,8 @@ class CusR1RC_SDK_1_008_Build(CusBuild):
                     if os.path.exists(_rel_dir):
                         _root_dir = _rel_dir
                 self.build(_root_dir, cmd=build_cmd)
-            self.send_email(self.build_root_dir, owner, self.release_dist, board)
+            if self.build_res in "FAIL":
+                self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
@@ -614,7 +615,7 @@ class CusR1RC_SDK_1_008_Build(CusBuild):
 
         copy(self.loacal_dist_dir, self.release_dist)
         self.record_version()
-
+        self.send_email(self.build_root_dir, owner, self.release_dist, board)
         self.close_build()
 
 
@@ -727,7 +728,8 @@ class CusR1RCBuild(CusBuild):
             build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
             assert build_cmd,"%s no build cmd" % board
             self.build(self.build_root_dir, cmd=build_cmd)
-            self.send_email(self.build_root_dir, owner, self.release_dist, board)
+            if self.build_res in "FAIL":
+                self.send_email(self.build_root_dir, owner, self.release_dist, board)
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
@@ -762,6 +764,6 @@ class CusR1RCBuild(CusBuild):
 
         self.record_version()
         copy(self.loacal_dist_dir, self.release_dist)
-
+        self.send_email(self.build_root_dir, owner, self.release_dist, board)
         self.close_build()
 
