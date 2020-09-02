@@ -930,3 +930,51 @@ Author: yuanzhizheng <yuanzhizheng@asrmicro.com>
 Date:  Mon Jun 8 17:16:02 2020 +0800
 ------------------------------------------------
 
+crane_rc_0050:
+commit: c21084992624f8900a85955e663744438f29b770
+Author: binwu <binwu@asrmicro.com>
+Date:  Fri Jun 12 23:46:47 2020 +0800
+------------------------------------------------
+
+crane_rc_0051:
+commit: 3ebd7ad94df9fdaa918080cfea85df5cb42064c5
+Author: yuanzhizheng <yuanzhizheng@asrmicro.com>
+Date:  Mon Jun 15 14:22:38 2020 +0800
+------------------------------------------------
+
+crane_rc_0052:
+commit: 3ba9aacbc80f442573b89a079bb42c4a5f266360
+Author: yuanzhizheng <yuanzhizheng@asrmicro.com>
+Date:  Tue Jun 16 14:44:45 2020 +0800
+------------------------------------------------
+
+crane_rc_0053:
+commit: 54b088623d46ee60e723c338972812ec8e9cfffe
+Author: Zheng Yuanzhi <yuanzhizheng@asrmicro.com>
+Date:  Tue Jun 16 18:42:32 2020 +0800
+------------------------------------------------
+
+crane_rc_0054:
+commit: baf08c1b3d4ab51ccda6bc26d601a2c6f3bea302
+Author: miantianyu <miantianyu@asrmicro.com>
+Date:  Tue Jun 16 19:56:25 2020 +0800
+------------------------------------------------
+
+crane_rc_0055:
+commit: 441958369bba71be9170c6c68e96cd93153fd66e
+Author: binwu <binwu@asrmicro.com>
+Date:  Tue Jun 16 23:57:51 2020 +0800
+------------------------------------------------
+
+crane_rc_0056:
+commit: 74d486d66967bc797892b2293eb71b3ee5646460
+Author: binwu <binwu@asrmicro.com>
+Date:  Fri Jun 19 23:59:17 2020 +0800
+------------------------------------------------
+
+crane_rc_0057:
+commit: ca1332b3e3a9f65489caf0374dd37a0da4fce186
+Author: yuanzhizheng <yuanzhizheng@asrmicro.com>
+Date:  Mon Jun 22 14:24:49 2020 +0800
+------------------------------------------------
+
