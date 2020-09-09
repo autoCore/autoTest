@@ -525,7 +525,7 @@ class CusR1RC_SDK_1_008_Build(CusBuild):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = ["crane_evb_z2", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp"]
+        self.board_list = ["crane_evb_z2", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64"]
 
     def config(self):
         self.release_branch = "r1_rc_sdk_1.008"

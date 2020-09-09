@@ -18,9 +18,9 @@ class GitPushBase(object):
 
     def create_git(self):
         self.git = git.Repo(self.git_push_root_dir).git
-        self.git.config("--global","core.autocrlf","false")
-        self.git.config("--global","user.name","binwu")
-        self.git.config("--global","user.email","binwu@asrmicro.com")
+        # self.git.config("--global","core.autocrlf","false")
+        # self.git.config("--global","user.name","binwu")
+        # self.git.config("--global","user.email","binwu@asrmicro.com")
 
     def git_add(self,*file_name_l):
         self.log.info("git add...")

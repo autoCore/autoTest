@@ -183,8 +183,8 @@ class myRepo(object):
             _repo = git.Repo(_path)
             _git = _repo.git
             try:
-                _git.config("--global", "user.name", "binwu")
-                _git.config("--global", "user.email", "binwu@asrmicro.com")
+                # _git.config("--global", "user.name", "binwu")
+                # _git.config("--global", "user.email", "binwu@asrmicro.com")
                 _git.status()
             except Exception,e:
                 self.log.error(e)
@@ -439,9 +439,9 @@ class CusRepo(RepoBase):
         _path = os.path.join(self.git_root_dir, '.')
         _git = git.Repo(_path).git
 
-        _git.config("--global","core.autocrlf","false")
-        _git.config("--global","user.name","binwu")
-        _git.config("--global","user.email","binwu@asrmicro.com")
+        # _git.config("--global","core.autocrlf","false")
+        # _git.config("--global","user.name","binwu")
+        # _git.config("--global","user.email","binwu@asrmicro.com")
 
         _git.checkout(self.branch_name)
 
