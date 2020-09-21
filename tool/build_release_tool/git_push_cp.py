@@ -318,17 +318,17 @@ class gitPushR1RCSDK(gitPushSDKBase):
         json_str = load_json(json_file)
         self.config_d = json_str["cus_r1_rc_sdk"]
 
-class gitPushR1RCSDK1_008(gitPushSDKBase):
+class gitPushR2RCSDK(gitPushSDKBase):
     def __init__(self):
-        super(gitPushR1RCSDK1_008, self).__init__()
+        super(gitPushR2RCSDK, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-        self.git.checkout("r1_rc_sdk_1.008")
+        self.git.checkout("r2_rc")
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
         json_str = load_json(json_file)
-        self.config_d = json_str["cus_r1_rc_sdk_1_008"]
+        self.config_d = json_str["cus_r2_rc_sdk"]
 
 
 

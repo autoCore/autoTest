@@ -239,7 +239,7 @@
     },
     "craneg":
     {
-        "boards": ["craneg_evb"],
+        "boards": ["craneg_evb","craneg_evb_dcxo","xinxiang_phone"],
         "compile_log_dir": ".\\tmp\\compile_log",
         "boards_info":
         {
@@ -264,11 +264,64 @@
                     ".\\build\\crane_evb_z2\\crane_evb.bin",
                     ".\\cpLWG\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
                     ".\\cpLWG\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
-                    ".\\cus\\evb\\img4LWG\\dsp.bin",
-                    ".\\cus\\evb\\img4LWG\\rf.bin",
-                    ".\\cus\\evb\\images\\ReliableData.bin"
+                    ".\\cus\\evb_g\\images\\dsp.bin",
+                    ".\\cus\\evb_g\\images\\rf.bin",
+                    ".\\cus\\evb_g\\images\\ReliableData.bin"
                 ],
                 "build_cmd":"autobuild -f crane_evb_z2_bld_lwg.conf"
+            },
+            "craneg_evb_dcxo":
+            {
+                "mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_32+8MB_DCXO.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                ],
+                "release_bin":
+                [
+                    ".\\cpLWG\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cpLWG\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cpLWG\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
+                    ".\\cpLWG\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
+                    ".\\cus\\evb_g\\images\\dsp.bin",
+                    ".\\cus\\evb_g\\images\\rf.bin",
+                    ".\\cus\\evb_g_dcxo\\images\\ReliableData.bin"
+                ],
+                "build_cmd":""
+            },
+            "xinxiang_phone":
+            {
+                "mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_16+8MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\rel_lib"
+                ],
+                "release_bin":
+                [
+                    ".\\cpLWG\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cpLWG\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cus\\cus_x\\images\\logo.bin",
+                    ".\\cus\\cus_x\\images\\updater.bin",
+                    ".\\cus\\evb_g\\images\\dsp.bin",
+                    ".\\cus\\cus_x\\images\\rf.bin",
+                    ".\\cus\\cus_x\\images\\ReliableData.bin"
+                ],
+                "build_cmd":"autobuild -f crane_evb_z2_custom_X.conf"
             }
         }
     }

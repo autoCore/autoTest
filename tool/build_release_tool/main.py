@@ -221,7 +221,8 @@ class autoRelease(ThreadBase):
             self.trigger_auto_test(version_file, "crane_evb_z2_fwp", "crane_evb_z2_fwp")
 
             self.trigger_auto_test(version_file, "crane_evb_z2_dcxo", "crane_evb_z2_dcxo")
-            # self.trigger_auto_test(cus_version_file, "evb_customer")
+
+            self.trigger_auto_test(cus_version_file, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
 
 
             # self.ftp_upload(version_file)
@@ -251,6 +252,13 @@ class autoCleanOverdueDir(ThreadBase):
     def __init__(self):
         super(autoCleanOverdueDir, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
+        self._repo_list = []
+    
+    def add_repo(self, _repo):
+        self._repo_list.append(_repo)
+
+    def clear_repo(self):
+        self._repo_list = []
 
     def clean_overdue_dir(self, _dir, del_time, target_dir='', isdir=True):
         listdir = os.listdir(_dir)
@@ -263,7 +271,7 @@ class autoCleanOverdueDir(ThreadBase):
         # self.log.info(listdir)
         del_t = datetime.timedelta(days=del_time)
         _now = datetime.datetime.now()
-        for d in listdir[:-1]:
+        for d in listdir[:-2]:
             create_time = datetime.datetime.fromtimestamp(os.path.getctime(d))
             if (_now - create_time) > del_t:
                 self.log.info("delete %s start..." % d)
@@ -297,8 +305,8 @@ class autoCleanOverdueDir(ThreadBase):
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20')
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20', isdir=False)
 
-                    for _repo in [repo, craneg_repo]:
-                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 21, target_dir=_repo.verion_name)
+                    for _repo in self._repo_list:
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 24, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
@@ -416,11 +424,13 @@ if __name__ == "__main__":
     r1_rc_repo = cusR1RCRepo()
     auto_r1_rc_build_cls = CusR1RCBuild(r1_rc_repo)
     auto_build_task.add_build(auto_r1_rc_build_cls)
+    auto_clean_overdue_dir_task.add_repo(r1_rc_repo)
 
     # crane r1_rc
-    r1_rc_sdk_1_008_repo = cusR1RCSDK1_008_Repo()
-    auto_r1_rc_008_build_cls = CusR1RC_SDK_1_008_Build(r1_rc_sdk_1_008_repo)
-    auto_build_task.add_build(auto_r1_rc_008_build_cls)
+    r2_rc_repo = cusR2RCRepo()
+    auto_r2_rc_cls = CusR2RCSDKBuild(r2_rc_repo)
+    auto_build_task.add_build(auto_r2_rc_cls)
+    auto_clean_overdue_dir_task.add_repo(auto_r2_rc_cls)
 
     # craneg rc
     # cus_craneg_repo = cusCraneGRepo()
@@ -431,17 +441,19 @@ if __name__ == "__main__":
     repo_cus = CusMasterRepo()
     auto_cus_build_cls = CusBuild(repo_cus)
     auto_build_task.add_build(auto_cus_build_cls)
+    auto_clean_overdue_dir_task.add_repo(repo_cus)
 
     # craneg dailay
     craneg_repo = craneGRepo()
     craneg_build_cls = CraneGDailyBuild(craneg_repo)
     auto_build_task.add_build(craneg_build_cls)
+    auto_clean_overdue_dir_task.add_repo(craneg_repo)
 
     # crane dailay
     repo = CraneRepo()
     auto_daily_build_cls = CraneDailyBuild(repo)
     auto_build_task.add_build(auto_daily_build_cls)
-
+    auto_clean_overdue_dir_task.add_repo(repo)
 
 
     # crane dailay sdk auto push
@@ -457,8 +469,8 @@ if __name__ == "__main__":
     auto_push_task.add_git_push(cus_sdk_cls)
 
     # crane rc sdk auto push
-    cus_SDK1_008_cls = gitPushR1RCSDK1_008()
-    auto_push_task.add_git_push(cus_SDK1_008_cls)
+    cus_R2_RC_SDK_cls = gitPushR2RCSDK()
+    auto_push_task.add_git_push(cus_R2_RC_SDK_cls)
 
     # crane r1_rc sdk auto push
     cus_r1_rc_sdk_cls = gitPushR1RCSDK()
@@ -485,7 +497,7 @@ if __name__ == "__main__":
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
     # =====================================================
 
-    cus_SDK1_008_cls.git_push_start()
+    cus_R2_RC_SDK_cls.git_push_start()
     cp_sdk_cls.git_push_start()
     craneg_sdk_cls.git_push_start()
     cus_r1_rc_sdk_cls.git_push_start()

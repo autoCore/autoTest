@@ -199,24 +199,23 @@ class myRepo(object):
             _repo.clone(_path)
 
     def sync(self):
-        ret = None
+        info_d = {}
         self.git_clean()
         for storage in self._storage_list:
             _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
-            _git.config("--global", "core.autocrlf", "false")
+            # _git.config("--global", "core.autocrlf", "false")
             try:
                 info = _git.pull()
-                if not storage:
-                    storage = 'hal'
-                # self.log.debug("%-4s %s"%(storage,info))
-                if "Already up to date." not in info:
-                    ret = 1
+                # self.log.info("%-4s %s"%(storage,info.split))
+                # if "Already up to date." not in info:
+                    # info_list.append(info)
+                info_d[storage] = info
             except Exception, e:
                 self.log.error(e)
-                ret = None
-        return ret
+                return {}
+        return info_d
 
     def git_clean(self):
         for storage in self._storage_list:
@@ -482,9 +481,9 @@ class cusR1RCRepo(CusRepo):
         self.config_d = json_str["cus_crane_info"]
         self.branch_name = "r1_rc"
 
-class cusR1RCSDK1_008_Repo(CusRepo):
+class cusR2RCRepo(CusRepo):
     def __init__(self):
-        super(cusR1RCSDK1_008_Repo, self).__init__()
+        super(cusR2RCRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
 
@@ -492,7 +491,7 @@ class cusR1RCSDK1_008_Repo(CusRepo):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
         self.config_d = json_str["cus_crane_info"]
-        self.branch_name = "r1_rc_sdk_1.008"
+        self.branch_name = "r2_rc"
 
 
 class cusCraneGRepo(CusRepo):
