@@ -94,6 +94,15 @@
                 "git": "E:\\cus_master\\crane-phone-rls",
                 "build": "E:\\cus_master\\crane-phone-rls\\evb\\src"
             },
+            "master_sdk009":
+            {
+                "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_release_sdk_1.009",
+                "version_file":".\\version_file_dir\\version_cus_sdk009.log",
+                "dsp_version_file": ".\\cus\\evb_sdk009\\images\\dsp.bin",
+                "sdk_version_file": ".\\cp009\\tavor\\env\\inc\\sys_version.h",
+                "git": "E:\\cus_master_sdk009\\crane-phone-rls",
+                "build": "E:\\cus_master_sdk009\\crane-phone-rls\\evb\\src"
+            },
             "r1":
             {
                 "release_dist_dir": "\\\\sh2-filer02\\Data\\FP_RLS\\crane_r1_release",

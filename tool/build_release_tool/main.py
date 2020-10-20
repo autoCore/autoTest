@@ -59,6 +59,60 @@ RELEASE VERSION: {9}
 
 """
 
+email_msg_with_cus_1 = r"""
+CRANE FP DAILY:
+    mUI VERSION: {0}
+    SDK VERSION: {1}
+    DSP VERSION: {2}
+
+    EVB VERSION:
+    binary + debug object: {3}\crane_evb_z2
+    download tool: {3}\crane_evb_z2\download_tool
+
+    BIRD PHONE VERSION:
+    binary + debug object: {3}\bird_phone
+    download tool: {3}\bird_phone\download_tool
+
+    VISENK PHONE VERSION:
+    binary + debug object: {3}\visenk_phone
+    download tool: {3}\visenk_phone\download_tool
+
+CRANEG FP DAILY:
+    mUI VERSION: {4}
+    SDK VERSION: {5}
+    DSP VERSION: {6}
+
+    EVB VERSION:
+    binary + debug object: {7}\craneg_evb
+    download tool: {7}\craneg_evb\download_tool
+
+    XINGXIANG PHONE VERSION:
+    binary + debug object: {7}\xinxiang_phone
+    download tool: {7}\xinxiang_phone\download_tool
+
+CUSTOMER VERSION RELEASE:
+    mUI VERSION: {8}
+    SDK VERSION: {9}
+    DSP VERSION: {10}
+    RELEASE DIR: {11}
+
+    mUI VERSION: {12}
+    SDK VERSION: {13}
+    DSP VERSION: {14}
+    RELEASE DIR: {15}
+
+********************************************************************************************************************************
+
+CRANE FWP DAILY:
+    mUI VERSION: {0}
+    SDK VERSION: {1}
+    DSP VERSION: {2}
+
+    EVB VERSION:
+    binary + debug object: {3}\crane_evb_z2_fwp
+    download tool: {3}\crane_evb_z2_fwp\download_tool
+
+"""
 
 class autoRelease(ThreadBase):
     def __init__(self, _cfg, release_event):
@@ -71,6 +125,9 @@ class autoRelease(ThreadBase):
 
         self.cur_crane_cus = repo_cus.git_root_dir#_cfg.cur_crane_cus
         self.release_dist_dir = repo_cus.release_dist_dir#_cfg.release_dist_dir
+
+        self.cur_crane_cus_1 = repo_cus_sdk009.git_root_dir
+        self.cur_crane_cus_1_release_dist_dir = repo_cus_sdk009.release_dist_dir
 
         # self.craneg_build_dir = r"D:\craneg_dailybuild\crane"
         # self.craneg_release_dir = r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
@@ -91,7 +148,7 @@ class autoRelease(ThreadBase):
             dist = os.path.join(dist_dir, file_name)
             if os.path.exists(dist):
                 self.log.info(dist)
-                return os.path.join(_root_dir,file_name)
+                return os.path.join(dist_dir,file_name)
         else:
             return None
 
@@ -109,6 +166,13 @@ class autoRelease(ThreadBase):
         with open(file_name) as obj:
             _version = obj.read()
         return _version
+
+    @staticmethod
+    def get_ap_version(file_name):
+        _match = re.findall("(.*_[0-9][0-9][0-9][0-9])_", file_name)
+        assert _match, "file name can not match"
+        return _match[0]
+
 
     def send_release_email(self, version_file, customer_file, craneg_file):
         to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
@@ -145,6 +209,55 @@ class autoRelease(ThreadBase):
         self.log.info(subject)
         self.log.info(msg)
         send_email_tool(to_address, subject, msg)
+
+    def send_release_email_1(self, version_file, craneg_file, customer_file,customer_file_1):
+        to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
+                     "crane_sw_mmi_group@asrmicro.com "
+        # to_address = "binwu@asrmicro.com"
+        version_fname = os.path.basename(version_file)
+        subject = email_subject % version_fname.upper()
+
+        crane_ap_version = self.get_ap_version(os.path.basename(version_file))
+
+        sdk_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
+        crane_sdk_version = self.get_version(sdk_version_file)
+
+        dsp_version_file = os.path.join(version_file, "version_info", "dsp_version.txt")
+        crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+
+        craneg_ap_version = self.get_ap_version(os.path.basename(craneg_file))
+
+        sdk_version_file = os.path.join(craneg_file, "version_info", "crang_cp_version.txt")
+        craneg_sdk_version = self.get_version(sdk_version_file)
+
+        dsp_version_file = os.path.join(craneg_file, "version_info", "crang_dsp_version.txt")
+        craneg_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+
+        cus_ap_version = self.get_ap_version(os.path.basename(customer_file))
+
+        sdk_version_file = os.path.join(customer_file, "version_info", "release_cp_version.txt")
+        cus_crane_sdk_version = self.get_version(sdk_version_file)
+
+        dsp_version_file = os.path.join(customer_file, "version_info", "release_dsp_version.txt")
+        cus_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+
+        cus_1_ap_version = self.get_ap_version(os.path.basename(customer_file_1))
+
+        sdk_version_file = os.path.join(customer_file_1, "version_info", "release_cp_version.txt")
+        cus_1_crane_sdk_version = self.get_version(sdk_version_file)
+
+        dsp_version_file = os.path.join(customer_file_1, "version_info", "release_dsp_version.txt")
+        cus_1_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+
+
+        msg = email_msg_with_cus_1.format(crane_ap_version.upper(), crane_sdk_version, crane_dsp_version, version_file,\
+                                          craneg_ap_version.upper(), craneg_sdk_version, craneg_dsp_version, craneg_file,\
+                                          cus_ap_version.upper(), cus_crane_sdk_version, cus_crane_dsp_version, customer_file,\
+                                          cus_1_ap_version.upper(), cus_1_crane_sdk_version, cus_1_crane_dsp_version, customer_file_1)
+        self.log.info(subject)
+        self.log.info(msg)
+        send_email_tool(to_address, subject, msg)
+
 
     def trigger_auto_test(self, _version_file, project_name=None, board="crane_evb_z2"):
         try:
@@ -204,14 +317,16 @@ class autoRelease(ThreadBase):
 
             cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir, "crane_rc_")
             self.log.info(cus_version_file)
-            cus_version_file = os.path.join(self.release_dist_dir, os.path.basename(cus_version_file))
+
+            cus_1_version_file = self.get_release_version(self.cur_crane_cus_1, self.cur_crane_cus_1_release_dist_dir, "crane_rc_sdk009")
+            self.log.info(cus_1_version_file)
 
             craneg_version_file = self.get_release_version(self.craneg_build_dir, self.craneg_release_dir, "craneg_d_")
             self.log.info(craneg_version_file)
-            craneg_version_file = os.path.join(self.craneg_release_dir, os.path.basename(craneg_version_file))
 
+            self.send_release_email_1(version_file, craneg_version_file, cus_version_file, cus_1_version_file)
 
-            self.send_release_email(version_file, cus_version_file, craneg_version_file)
+            # self.send_release_email(version_file, cus_version_file, craneg_version_file)
 
             # trigger dailybuild test
             self.trigger_auto_test(version_file)
@@ -222,7 +337,7 @@ class autoRelease(ThreadBase):
 
             self.trigger_auto_test(version_file, "crane_evb_z2_dcxo", "crane_evb_z2_dcxo")
 
-            self.trigger_auto_test(cus_version_file, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
+            # self.trigger_auto_test(cus_version_file, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
 
 
             # self.ftp_upload(version_file)
@@ -236,6 +351,12 @@ class autoPush(ThreadBase):
         self.log = MyLogger(self.__class__.__name__)
     def add_git_push(self, git_obj):
         self.git_list.append(git_obj)
+
+    def get_git_push_list(self):
+        return self.git_list
+
+    def clean_git_push_list(self):
+        self.git_lis = []
 
     def run(self):
         self.log.info(self.__class__.__name__, "start...")
@@ -430,12 +551,18 @@ if __name__ == "__main__":
     r2_rc_repo = cusR2RCRepo()
     auto_r2_rc_cls = CusR2RCSDKBuild(r2_rc_repo)
     auto_build_task.add_build(auto_r2_rc_cls)
-    auto_clean_overdue_dir_task.add_repo(auto_r2_rc_cls)
+    auto_clean_overdue_dir_task.add_repo(r2_rc_repo)
 
     # craneg rc
     # cus_craneg_repo = cusCraneGRepo()
     # auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
     # auto_build_task.add_build(auto_cus_craneg_build_cls)
+
+    # crane rc sdk009
+    repo_cus_sdk009 = CusMasterSDK009Repo()
+    auto_cus_sdk009_build_cls = CusSDK009Build(repo_cus_sdk009)
+    auto_build_task.add_build(auto_cus_sdk009_build_cls)
+    auto_clean_overdue_dir_task.add_repo(repo_cus_sdk009)
 
     # crane rc
     repo_cus = CusMasterRepo()
@@ -468,6 +595,10 @@ if __name__ == "__main__":
     cus_sdk_cls = gitPushCusSDK()
     auto_push_task.add_git_push(cus_sdk_cls)
 
+    # crane rc sdk009 auto push
+    cus_sdk009_cls = gitPushCusSDK009()
+    auto_push_task.add_git_push(cus_sdk009_cls)
+
     # crane rc sdk auto push
     cus_R2_RC_SDK_cls = gitPushR2RCSDK()
     auto_push_task.add_git_push(cus_R2_RC_SDK_cls)
@@ -497,14 +628,8 @@ if __name__ == "__main__":
     auto_release_task = autoRelease(cfg, RELEASE_EVENT)
     # =====================================================
 
-    cus_R2_RC_SDK_cls.git_push_start()
-    cp_sdk_cls.git_push_start()
-    craneg_sdk_cls.git_push_start()
-    cus_r1_rc_sdk_cls.git_push_start()
-    cus_sdk_cls.git_push_start()
-    # crane_dsp_dcxo_cls.git_push_start()
-    craneg_dsp_cls.git_push_start()
-    crane_dsp_cls.git_push_start()
+    for _git_push_obj in auto_push_task.get_git_push_list():
+        _git_push_obj.git_push_start()
 
     # task start
     task_list = []

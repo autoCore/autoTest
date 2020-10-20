@@ -28,8 +28,12 @@ class BuildController(object):
         self.compile_log_dir = os.path.join(self.root_dir, 'tmp', 'compile_log')
         self.zip_tool = zipTool()
 
-    def build(self, cur_dir, build_dir='crane_evb_z2', compile_log='', cmd=''):
+    def build(self, cur_dir, compile_log='', cmd='', build_dir='crane_evb_z2'):
         os.chdir(cur_dir)
+        self.gui_build_log = os.path.join(cur_dir, 'build', build_dir, r'gui_build.log')
+        self.hal_build_log = os.path.join(cur_dir, 'build', build_dir, r'hal_build.log')
+        self.cp_build_log = os.path.join(cur_dir, 'build', build_dir, r'cp_build.log')
+        self.link_log = os.path.join(cur_dir, 'build', build_dir, r'fp_link_build.log')
         self.log.info("%s build start..." % cur_dir)
         # cmd = "autobuild.bat %s> %s"%(build_dir,compile_log)
         if not cmd:
@@ -61,8 +65,10 @@ class BuildController(object):
     def send_email(self, cur_dir, owner, external_dir, board="crane_evb_z2"):
         os.chdir(cur_dir)
         if self.build_res in "FAIL":
-            att_file = '@'.join(
-                [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log, self.compile_log])
+            att_file_list = [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log]
+            att_file_list = [os.path.join(cur_dir,_file) for _file in att_file_list]
+            # att_file_list.append(self.compile_log)
+            att_file = '@'.join(att_file_list)
             subject = r"%s %s build result: fail" % (self.__class__.__name__, board)
             # msg = r"Hi %s, your patch build fail! Pls check attachment log" % (owner.split("@")[0])
             msg = r"Hi All, %s build fail! Pls check attachment log" % (board)
@@ -72,6 +78,7 @@ class BuildController(object):
             subject = r"%s %s build result: pass" % (self.__class__.__name__, board)
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
             to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
+        self.log.info(att_file)
         send_email_tool(to_address, subject, msg, att_file)
         self.log.info("send email done")
 
@@ -137,7 +144,7 @@ class BuildBase(object):
         for board in self.board_list:
             self.loacal_build_dir_d[board] = os.path.join(version_dir, board)
             os.mkdir(self.loacal_build_dir_d[board])
-            if board == "no_ui_crane_lib":
+            if board in ["mHAL"]:
                 continue
             self.download_tool_dir_d[board] = os.path.join(version_dir, board, "download_tool")
             os.mkdir(self.download_tool_dir_d[board])
@@ -359,23 +366,27 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 self.log.info("build cmd  :", build_cmd)
                 self.log.info("-" * 80)
                 _root_dir = self.build_root_dir
-                if board == "no_ui_crane_lib":
-                    _rel_dir = os.path.join(self.build_root_dir,"build","rel")
+                if board in ["mHAL"]:
+                    _rel_dir = os.path.join(_root_dir,"build","rel")
                     if os.path.exists(_rel_dir):
                         _root_dir = _rel_dir
-                self.build(_root_dir, cmd=build_cmd)
-            if self.build_res in "FAIL":
-                self.send_email(self.build_root_dir, owner, self.release_dist, board)
+                compile_log_file = os.path.join(self.compile_log_dir, os.path.basename(self.git_version_dir) + "_compile_"+board+".txt")
+                self.build(_root_dir, compile_log=compile_log_file, cmd=build_cmd)
+                if self.build_res in "FAIL":
+                    self.send_email(_root_dir, owner, self.release_dist, board)
+                    break
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in self.board_list[:5] and self.build_res in "FAIL":
+            if board in ["crane_evb_z2", "crane_evb_z2_dcxo", "bird_phone",\
+                            "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp",\
+                                        "craneg_evb","craneg_evb_dcxo","xinxiang_phone"] and self.build_res in "FAIL":
                 self.log.error(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
             elif self.build_res in "FAIL":
                 continue
 
-            if board == "no_ui_crane_lib":
+            if board in ["mHAL"]:
                 try:
                     self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
                 except Exception,e:
@@ -445,12 +456,12 @@ class CraneDailyBuild(MyDailyBuildBase):
                     info_bak = _match[0]
                 else:
                     continue
-                self.log.info(info_bak.split("##"))
+                # self.log.info(info_bak.split("##"))
                 for _info in info_bak.split("##")[:-1]:
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb/img4LWG/dsp.bin") or _info.startswith("cpLWG") or _info.startswith(".../"):
+                    if _info.startswith("cus/evb_g/images/dsp.bin") or _info.startswith("cpLWG") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -495,12 +506,12 @@ class CraneGDailyBuild(MyDailyBuildBase):
                     info_bak = _match[0]
                 else:
                     continue
-                self.log.info(info_bak.split("##"))
+                # self.log.info(info_bak.split("##"))
                 for _info in info_bak.split("##")[:-1]:
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if "cus/evb/images/dsp.bin" in _info:
+                    if _info.startswith("cus/evb/images/dsp.bin") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -520,11 +531,11 @@ class CusBuild(MyDailyBuildBase):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = self.config_d["boards"][:6]
+        self.board_list = self.config_d["boards"][:7]
 
     def config(self):
-        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK\ReleaseNotes.xlsx"
-        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20201006_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20201006_SDK"
 
     def find_newest_notes(self):
         _root_dir = os.path.join(self.git_root_dir, "note")
@@ -576,7 +587,26 @@ class CusBuild(MyDailyBuildBase):
             send_email_tool(to_address, subject.upper(), msg)
         self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo_rc", "crane_evb_z2_dcxo")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
         self.git_clean()
+
+
+class CusSDK009Build(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CusSDK009Build, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def config(self):
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK"
+
+    def get_config(self):
+        self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane_sdk009"]
+        self.board_list = self.config_d["boards"][:]
+
 
 
 class CusR2RCSDKBuild(CusBuild):
@@ -643,13 +673,15 @@ class CusR2RCSDKBuild(CusBuild):
                 self.log.info("build cmd  :", build_cmd)
                 self.log.info("-" * 80)
                 _root_dir = self.build_root_dir
-                if board == "no_ui_crane_lib":
-                    _rel_dir = os.path.join(self.build_root_dir,"build","rel")
+                if board in ["mHAL"]:
+                    _rel_dir = os.path.join(_root_dir,"build","rel")
                     if os.path.exists(_rel_dir):
                         _root_dir = _rel_dir
-                self.build(_root_dir, cmd=build_cmd)
-            if self.build_res in "FAIL":
-                self.send_email(self.build_root_dir, owner, self.release_dist, board)
+                compile_log_file = os.path.join(self.compile_log_dir, os.path.basename(self.git_version_dir) + "_compile_"+board+".txt")
+                self.build(_root_dir, compile_log=compile_log_file, cmd=build_cmd)
+                if self.build_res in "FAIL":
+                    self.send_email(_root_dir, owner, self.release_dist, board)
+                    break
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
@@ -657,7 +689,7 @@ class CusR2RCSDKBuild(CusBuild):
                 self.log.info(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
 
-            if board == "no_ui_crane_lib":
+            if board in ["mHAL"]:
                 try:
                     self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
                 except Exception,e:
@@ -798,7 +830,8 @@ class CusR1RCBuild(CusBuild):
             self.log.info("board name :", board)
             self.log.info("build cmd  :", build_cmd)
             self.log.info("-" * 80)
-            self.build(self.build_root_dir, cmd=build_cmd)
+            compile_log_file = os.path.join(self.compile_log_dir, os.path.basename(self.git_version_dir) + "_compile_"+board+".txt")
+            self.build(self.build_root_dir, compile_log=compile_log_file, cmd=build_cmd)
             if self.build_res in "FAIL":
                 self.send_email(self.build_root_dir, owner, self.release_dist, board)
 

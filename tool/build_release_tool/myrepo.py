@@ -433,7 +433,7 @@ class CusRepo(RepoBase):
         json_str = load_json(json_file)
         self.config_d = json_str["cus_crane_info"]
         self.branch_name = "master"
-
+    '''
     def checkout_branch(self):
         _path = os.path.join(self.git_root_dir, '.')
         _git = git.Repo(_path).git
@@ -443,7 +443,7 @@ class CusRepo(RepoBase):
         # _git.config("--global","user.email","binwu@asrmicro.com")
 
         _git.checkout(self.branch_name)
-
+    '''
 
 class CusMasterRepo(CusRepo):
     def __init__(self):
@@ -468,6 +468,17 @@ class CusMasterRepo(CusRepo):
             obj.write(version_info)
         return version_info
  
+
+class CusMasterSDK009Repo(CusMasterRepo):
+    def __init__(self):
+        super(CusMasterSDK009Repo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_crane_info"]
+        self.branch_name = "master_sdk009"
 
 class cusR1RCRepo(CusRepo):
     def __init__(self):
