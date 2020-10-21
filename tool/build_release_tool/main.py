@@ -82,9 +82,13 @@ CRANEG FP DAILY:
     SDK VERSION: {5}
     DSP VERSION: {6}
 
-    EVB VERSION:
-    binary + debug object: {7}\craneg_evb
-    download tool: {7}\craneg_evb\download_tool
+    EVB Z2 VERSION:
+    binary + debug object: {7}\craneg_evb_z2
+    download tool: {7}\craneg_evb_z2\download_tool
+
+    EVB A0 VERSION:
+    binary + debug object: {7}\craneg_evb_a0
+    download tool: {7}\craneg_evb_a0\download_tool
 
     XINGXIANG PHONE VERSION:
     binary + debug object: {7}\xinxiang_phone
@@ -359,7 +363,7 @@ class autoPush(ThreadBase):
         self.git_lis = []
 
     def run(self):
-        self.log.info(self.__class__.__name__, "start...")
+        self.log.info(self.__class__.__name__)
         while self._running:
             for git_obj in self.git_list:
                 try:

@@ -695,6 +695,7 @@ class gitPushDownloadTool(GitPushBase):
         self.downloadtool_dir = os.path.join(self.root_dir, self.config_d["local_dir"])
         self.version_file = self.config_d["verson_file"]
         self.release_target = self.config_d["release_target"]
+        self.clean_bin_list = self.config_d["clean_bin_list"]
 
         self.partition_config = os.path.join(self.root_dir, self.config_d["partition_config"])
         self.template_config = os.path.join(self.root_dir, self.config_d["template_config"])
@@ -735,8 +736,9 @@ class gitPushDownloadTool(GitPushBase):
                 self.log.warning("%s not exists" % download_tool_dir)
                 continue
             dist_dir = os.path.join(self.target_dist_dir, download_tool_dir,"images")
-            dist_bin_l = [os.path.join(dist_dir, _file) for _file in os.listdir(dist_dir) if os.path.isfile(os.path.join(dist_dir, _file))]
-            for _file in dist_bin_l:
+            # dist_bin_l = [os.path.join(dist_dir, _file) for _file in os.listdir(dist_dir) if os.path.isfile(os.path.join(dist_dir, _file))]
+            clean_bin_l = [os.path.join(dist_dir, _file) for _file in self.clean_bin_list]
+            for _file in clean_bin_l:
                 if os.path.exists(_file):
                     os.remove(_file)
             if os.path.isdir(self.partition_config):

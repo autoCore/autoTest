@@ -97,6 +97,7 @@
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\Crane\\Tools\\AbootTools",
         "release_target": "aboot-tools-",
+        "clean_bin_list":["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin"],
         "target_dir": "E:\\daily_auto_push\\tool\\downloadtool",
         "local_dir": ".\\download_tool_dir",
         "git_push_root_dir": "E:\\daily_auto_push\\tool",
