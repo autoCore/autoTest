@@ -353,7 +353,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
         self.update_download_tool()
 
         for board in self.board_list:
-            if board in ["crane_evb_z2_dcxo", "craneg_evb_z2_dcxo"]:
+            if board in ["crane_evb_z2_dcxo", "craneg_evb_z2_dcxo","craneg_evb_z2_from_crane_dcxo"]:
                 continue
             self.git_clean()
             build_cmd_str = self.board_info.get(board, {}).get("build_cmd",'')
@@ -409,7 +409,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 self.prepare_download_tool(_images)
                 self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                       dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
-                if board in ["crane_evb_z2","craneg_evb_z2"]:
+                if board in ["crane_evb_z2", "craneg_evb_z2","craneg_evb_z2_from_crane"]:
                     board = board+"_dcxo"
                     self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
                     self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)

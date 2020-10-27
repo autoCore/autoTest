@@ -335,17 +335,17 @@ class autoRelease(ThreadBase):
             # trigger dailybuild test
             self.trigger_auto_test(version_file)
 
-            self.trigger_auto_test(craneg_version_file, "craneg_evb", "craneg_evb")
+            self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2")
 
-            self.trigger_auto_test(version_file, "crane_evb_z2_fwp", "crane_evb_z2_fwp")
+            self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0")
 
-            self.trigger_auto_test(version_file, "crane_evb_z2_dcxo", "crane_evb_z2_dcxo")
+            self.trigger_auto_test(version_file, project_name="crane_evb_z2_fwp",  board="crane_evb_z2_fwp")
 
-            # self.trigger_auto_test(cus_version_file, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
+            self.trigger_auto_test(version_file, project_name="crane_evb_z2_dcxo",  board="crane_evb_z2_dcxo")
 
+            # self.trigger_auto_test(cus_version_file, project_name="crane_evb_z2_fwp_rc",  board="crane_evb_z2_fwp")
 
             # self.ftp_upload(version_file)
-
 
 
 class autoPush(ThreadBase):

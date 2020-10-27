@@ -538,27 +538,6 @@
                     ".\\cus\\cus_x\\images\\ReliableData.bin"
                 ],
                 "build_cmd":"autobuild -f crane_evb_z2_custom_X.conf"
-            },
-            "mHAL":
-            {
-                "mdb_file_dir": "CAN_NOT_COPY",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
-                "build_images":
-                [
-                    ".\\build\\rel\\build\\crane_evb_z2\\libhalrel.a"
-                ],
-                "release_bin":
-                [
-                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
-                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
-                    ".\\build\\crane_evb_z2\\crane_evb.bin",
-                    ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
-                    ".\\cp\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
-                    ".\\cus\\evb\\images\\dsp.bin",
-                    ".\\cus\\evb\\images\\rf.bin",
-                    ".\\cus\\evb\\images\\ReliableData.bin"
-                ],
-                "build_cmd":"autobuild.bat -f craneg_gen_rel.conf -t gen_rel@autobuild.bat -f craneg_bld_rel.conf -t bld_rel"
             }
         }
     }
