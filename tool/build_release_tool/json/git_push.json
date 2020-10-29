@@ -26,6 +26,7 @@
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANEG",
         "release_target": "CraneG_lzma_dsp.bin",
         "target_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_g\\images",
+        "a0_rf_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_g_a0\\images",
         "local_dir": ".\\dsp_rf_rbd_bin",
         "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
         "verson_file": "E:\\daily_auto_push\\crane-dev\\cus\\evb_g\\images\\dsp.bin",

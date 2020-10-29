@@ -635,7 +635,44 @@ class gitPushCraneGDsp(GitPushDspBase):
         root_dir = os.path.dirname(self.release_dsp_bin)
         self.release_rf_bin = os.path.join(root_dir,"Z2_PM813","rf.bin")
         self.release_rf_verson_file = os.path.join(root_dir,"Z2_PM813","RF_Version.txt")
+        self.release_a0_rf_bin = os.path.join(root_dir,"A0_PM813S","rf.bin")
+        self.release_a0_rf_verson_file = os.path.join(root_dir,"A0_PM813S","RF_Version.txt")
 
+    def git_push_start(self):
+        if not self.condition():
+            time.sleep(10)
+            return
+
+        self.log.info("wait for dsp copy...")
+        time.sleep(30)
+        a0_rf_bin = os.path.join(self.config_d["a0_rf_dir"], "rf.bin")
+        a0_rf_verson_file = os.path.join(self.config_d["a0_rf_dir"], "RF_Version.txt")
+        local_bin_l = [self.local_dsp_bin, self.local_rf_bin, self.local_rf_verson_file, a0_rf_bin, a0_rf_verson_file]
+        release_bin_l = [self.release_dsp_bin, self.release_rf_bin, self.release_rf_verson_file, self.release_a0_rf_bin, self.release_a0_rf_verson_file]
+        for release_bin,local_bin in zip(release_bin_l,local_bin_l):
+            if os.path.exists(release_bin):
+                if os.path.exists(local_bin):
+                    os.remove(local_bin)
+                shutil.copy2(release_bin,local_bin)
+
+        self.log.info("=" * 50)
+        self.log.info("git push dsp...")
+        try:
+            self.git_add(self.local_dsp_bin, self.local_rf_bin, self.local_rf_verson_file)
+            match = re.findall(self.dsp_version_pattern, self.dsp_version)
+            if match:
+                dsp_version = match[0]
+            else:
+                dsp_version = str(time.asctime())
+            commit_info = "update dsp dailybuild %s" % dsp_version
+            self.git_commit(commit_info)
+            self.git_push()
+            return True
+        except Exception,e:
+            self.log.error(e)
+            self.log.error("git push error")
+            self.git.git_clean()
+            return None
 
 
 class gitPushCraneDCXODsp(GitPushDspBase):

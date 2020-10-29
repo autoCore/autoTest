@@ -483,7 +483,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg"]
-        self.board_list = self.config_d["boards"]
+        self.board_list = ["craneg_evb_z2_from_crane","craneg_evb_z2_from_crane_dcxo","craneg_evb_a0_from_crane","xinxiang_phone"]#self.config_d["boards"]
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
@@ -497,8 +497,8 @@ class CraneGDailyBuild(MyDailyBuildBase):
         for storage, info in info_d.items():
             if "Already up to date." in info:
                 continue
-            if storage == "cp":
-                continue
+            # if storage == "cp":
+                # continue
             if storage == ".":
                 info_bak = info.replace("\n","##")
                 _match = re.findall("Fast-forward(.*?)deletion", info_bak)
