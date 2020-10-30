@@ -1,0 +1,55 @@
+CRANE FP DAILY:
+    mUI VERSION: {0}
+    SDK VERSION: {1}
+    DSP VERSION: {2}
+
+    EVB VERSION:
+    binary + debug object: {3}\crane_evb_z2
+    download tool: {3}\crane_evb_z2\download_tool
+
+    BIRD PHONE VERSION:
+    binary + debug object: {3}\bird_phone
+    download tool: {3}\bird_phone\download_tool
+
+    VISENK PHONE VERSION:
+    binary + debug object: {3}\visenk_phone
+    download tool: {3}\visenk_phone\download_tool
+
+CRANEG FP DAILY:
+    mUI VERSION: {4}
+    SDK VERSION: {5}
+    DSP VERSION: {6}
+
+    EVB Z2 VERSION:
+    binary + debug object: {7}\craneg_evb_z2_from_crane
+    download tool: {7}\craneg_evb_z2_from_crane\download_tool
+
+    EVB A0 VERSION:
+    binary + debug object: {7}\craneg_evb_a0_from_crane
+    download tool: {7}\craneg_evb_a0_from_crane\download_tool
+
+    XINGXIANG PHONE VERSION:
+    binary + debug object: {7}\xinxiang_phone
+    download tool: {7}\xinxiang_phone\download_tool
+
+CUSTOMER VERSION RELEASE:
+    mUI VERSION: {8}
+    SDK VERSION: {9}
+    DSP VERSION: {10}
+    RELEASE DIR: {11}
+
+    mUI VERSION: {12}
+    SDK VERSION: {13}
+    DSP VERSION: {14}
+    RELEASE DIR: {15}
+
+********************************************************************************************************************************
+
+CRANE FWP DAILY:
+    mUI VERSION: {0}
+    SDK VERSION: {1}
+    DSP VERSION: {2}
+
+    EVB VERSION:
+    binary + debug object: {3}\crane_evb_z2_fwp
+    download tool: {3}\crane_evb_z2_fwp\download_tool

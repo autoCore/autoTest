@@ -28,7 +28,7 @@ class ManagerVersionBase(object):
         self.log = MyLogger(self.__class__.__name__)
         self.verion_name = ''
         self.cur_version = ''
-
+        self.chip_ID = None
         self.decompress_tool = zipTool()
 
         self.dsp_version_pattern = re.compile(r"(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9]|CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])")
@@ -94,7 +94,7 @@ class ManagerVersionBase(object):
         assert os.path.exists(cp_version_file), "%s not exists" % cp_version_file
         SYSTEM_CUST_SKU = "MINIGUI"
         SYSTEM_SKU_REVERSION = "SDK"
-        if "LWG" in cp_version_file:
+        if self.chip_ID == "craneG":
             SYSTEM_PS_MODE = "LWG"
         else:
             SYSTEM_PS_MODE = "LTEGSM"
@@ -390,7 +390,7 @@ class craneGRepo(RepoBase):
     def __init__(self):
         super(craneGRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-
+        self.chip_ID = "craneG"
         self.log.info("create repo done")
 
 

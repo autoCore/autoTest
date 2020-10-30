@@ -380,7 +380,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
             if board in ["crane_evb_z2", "crane_evb_z2_dcxo", "bird_phone",\
                             "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp",\
-                             "craneg_evb_z2","craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"] and self.build_res in "FAIL":
+                             '''"craneg_evb_z2","craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"'''] and self.build_res in "FAIL":
                 self.log.error(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
             elif self.build_res in "FAIL":

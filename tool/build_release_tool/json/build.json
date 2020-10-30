@@ -621,7 +621,7 @@
             },
             "xinxiang_phone":
             {
-                "mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
                 "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_16+8MB.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin"],
                 "build_images":
@@ -634,8 +634,8 @@
                 ],
                 "release_bin":
                 [
-                    ".\\cpLWG\\tavor\\Arbel\\build\\apn.bin",
-                    ".\\cpLWG\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
                     ".\\build\\crane_evb_z2\\crane_evb.bin",
                     ".\\cus\\cus_x\\images\\logo.bin",
                     ".\\cus\\cus_x\\images\\updater.bin",

@@ -83,12 +83,12 @@ CRANEG FP DAILY:
     DSP VERSION: {6}
 
     EVB Z2 VERSION:
-    binary + debug object: {7}\craneg_evb_z2
-    download tool: {7}\craneg_evb_z2\download_tool
+    binary + debug object: {7}\craneg_evb_z2_from_crane
+    download tool: {7}\craneg_evb_z2_from_crane\download_tool
 
     EVB A0 VERSION:
-    binary + debug object: {7}\craneg_evb_a0
-    download tool: {7}\craneg_evb_a0\download_tool
+    binary + debug object: {7}\craneg_evb_a0_from_crane
+    download tool: {7}\craneg_evb_a0_from_crane\download_tool
 
     XINGXIANG PHONE VERSION:
     binary + debug object: {7}\xinxiang_phone
@@ -125,6 +125,8 @@ class autoRelease(ThreadBase):
         self.cur_crane = repo.git_root_dir#_cfg.cur_crane
         self.dist_dir = repo.release_dist_dir#_cfg.dist_dir
 
+        self.root_dir = os.getcwd()
+        self.email_massage_file = os.path.join(self.root_dir,"email_massage.txt")
         self.tmp = _cfg.tmp_dir
 
         self.cur_crane_cus = repo_cus.git_root_dir#_cfg.cur_crane_cus
@@ -253,7 +255,8 @@ class autoRelease(ThreadBase):
         dsp_version_file = os.path.join(customer_file_1, "version_info", "release_dsp_version.txt")
         cus_1_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
 
-
+        with open(self.email_massage_file) as obj:
+            email_msg_with_cus_1 = obj.read()
         msg = email_msg_with_cus_1.format(crane_ap_version.upper(), crane_sdk_version, crane_dsp_version, version_file,\
                                           craneg_ap_version.upper(), craneg_sdk_version, craneg_dsp_version, craneg_file,\
                                           cus_ap_version.upper(), cus_crane_sdk_version, cus_crane_dsp_version, customer_file,\
@@ -335,9 +338,11 @@ class autoRelease(ThreadBase):
             # trigger dailybuild test
             self.trigger_auto_test(version_file)
 
-            self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2")
+            # self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2")
+            self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2_from_crane")
 
-            self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0")
+            # self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0")
+            self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0_from_crane")
 
             self.trigger_auto_test(version_file, project_name="crane_evb_z2_fwp",  board="crane_evb_z2_fwp")
 
@@ -592,8 +597,8 @@ if __name__ == "__main__":
     auto_push_task.add_git_push(cp_sdk_cls)
 
     # craneg dailay sdk auto push
-    craneg_sdk_cls = gitPushCraneGSDK()
-    auto_push_task.add_git_push(craneg_sdk_cls)
+    # craneg_sdk_cls = gitPushCraneGSDK()
+    # auto_push_task.add_git_push(craneg_sdk_cls)
 
     # crane rc sdk auto push
     cus_sdk_cls = gitPushCusSDK()
