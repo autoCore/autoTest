@@ -608,6 +608,10 @@ if __name__ == "__main__":
     cus_sdk009_cls = gitPushCusSDK009()
     auto_push_task.add_git_push(cus_sdk009_cls)
 
+    # crane r2_rc sdk009 auto push
+    cus_r2_rc_sdk009_cls = gitPushR2RCSDK009()
+    auto_push_task.add_git_push(cus_r2_rc_sdk009_cls)
+
     # crane rc sdk auto push
     cus_R2_RC_SDK_cls = gitPushR2RCSDK()
     auto_push_task.add_git_push(cus_R2_RC_SDK_cls)

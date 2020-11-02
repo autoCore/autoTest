@@ -205,7 +205,7 @@ class myRepo(object):
             _path = os.path.join(self.git_root_dir, storage)
             _repo = git.Repo(_path)
             _git = _repo.git
-            # _git.config("--global", "core.autocrlf", "false")
+            _git.config("--global", "core.autocrlf", "false")
             try:
                 info = _git.pull()
                 # self.log.info("%-4s %s"%(storage,info.split))

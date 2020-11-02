@@ -305,7 +305,8 @@ class gitPushCusSDK(gitPushSDKBase):
         super(gitPushCusSDK, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-        self.git.checkout("master")
+        self.branch_name = "master"
+        # self.git.checkout("master")
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
@@ -329,7 +330,7 @@ class gitPushCusSDK009(gitPushCusSDK):
         self.log = MyLogger(self.__class__.__name__)
 
         self.branch_name = "master"
-        self.git.checkout(self.branch_name)
+        # self.git.checkout(self.branch_name)
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
@@ -346,13 +347,29 @@ class gitPushCusSDK009(gitPushCusSDK):
                 self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_sdk009","images")
                 break
 
+
+class gitPushR2RCSDK009(gitPushCusSDK009):
+    def __init__(self):
+        super(gitPushR2RCSDK009, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+        self.branch_name = "r2_rc"
+        # self.git.checkout(self.branch_name)
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_r2_rc_sdk009"]
+
+
+
 class gitPushR1RCSDK(gitPushSDKBase):
     def __init__(self):
         super(gitPushR1RCSDK, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
         self.branch_name = "r1_rc"
-        self.git.checkout(self.branch_name)
+        # self.git.checkout(self.branch_name)
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
@@ -365,7 +382,7 @@ class gitPushR2RCSDK(gitPushSDKBase):
         self.log = MyLogger(self.__class__.__name__)
 
         self.branch_name = "r2_rc"
-        self.git.checkout(self.branch_name)
+        # self.git.checkout(self.branch_name)
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
