@@ -43,6 +43,11 @@ CUSTOMER VERSION RELEASE:
     DSP VERSION: {14}
     RELEASE DIR: {15}
 
+    mUI VERSION: {16}
+    SDK VERSION: {17}
+    DSP VERSION: {18}
+    RELEASE DIR: {19}
+
 ********************************************************************************************************************************
 
 CRANE FWP DAILY:

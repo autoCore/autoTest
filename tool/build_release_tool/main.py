@@ -135,6 +135,9 @@ class autoRelease(ThreadBase):
         self.cur_crane_cus_1 = repo_cus_sdk009.git_root_dir
         self.cur_crane_cus_1_release_dist_dir = repo_cus_sdk009.release_dist_dir
 
+        self.cur_crane_cus_2 = r2_rc_repo.git_root_dir
+        self.cur_crane_cus_2_release_dist_dir = r2_rc_repo.release_dist_dir
+
         # self.craneg_build_dir = r"D:\craneg_dailybuild\crane"
         # self.craneg_release_dir = r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
         self.craneg_build_dir = craneg_repo.git_root_dir #r"D:\craneg_dailybuild\crane"
@@ -216,51 +219,77 @@ class autoRelease(ThreadBase):
         self.log.info(msg)
         send_email_tool(to_address, subject, msg)
 
-    def send_release_email_1(self, version_file, craneg_file, customer_file,customer_file_1):
+    def send_release_email_1(self, version_file, craneg_file, customer_file,customer_file_1,customer_file_2):
         to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
                      "crane_sw_mmi_group@asrmicro.com "
         # to_address = "binwu@asrmicro.com"
+        massage_format_list = []
         version_fname = os.path.basename(version_file)
         subject = email_subject % version_fname.upper()
 
         crane_ap_version = self.get_ap_version(os.path.basename(version_file))
+        massage_format_list.append(crane_ap_version.upper()) #{0}
 
         sdk_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
         crane_sdk_version = self.get_version(sdk_version_file)
+        massage_format_list.append(crane_sdk_version) #{1}
 
         dsp_version_file = os.path.join(version_file, "version_info", "dsp_version.txt")
         crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+        massage_format_list.append(crane_dsp_version) #{2}
+        massage_format_list.append(version_file) #{3}
 
         craneg_ap_version = self.get_ap_version(os.path.basename(craneg_file))
+        massage_format_list.append(craneg_ap_version.upper()) #{4}
 
         sdk_version_file = os.path.join(craneg_file, "version_info", "crang_cp_version.txt")
         craneg_sdk_version = self.get_version(sdk_version_file)
+        massage_format_list.append(craneg_sdk_version) #{5}
 
         dsp_version_file = os.path.join(craneg_file, "version_info", "crang_dsp_version.txt")
         craneg_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+        massage_format_list.append(craneg_dsp_version) #{6}
+        massage_format_list.append(craneg_file) #{7}
 
         cus_ap_version = self.get_ap_version(os.path.basename(customer_file))
+        massage_format_list.append(cus_ap_version.upper()) #{8}
 
         sdk_version_file = os.path.join(customer_file, "version_info", "release_cp_version.txt")
         cus_crane_sdk_version = self.get_version(sdk_version_file)
+        massage_format_list.append(cus_crane_sdk_version) #{9}
 
         dsp_version_file = os.path.join(customer_file, "version_info", "release_dsp_version.txt")
         cus_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+        massage_format_list.append(cus_crane_dsp_version) #{10}
+        massage_format_list.append(customer_file) #{11}
 
         cus_1_ap_version = self.get_ap_version(os.path.basename(customer_file_1))
+        massage_format_list.append(cus_1_ap_version.upper()) #{12}
 
         sdk_version_file = os.path.join(customer_file_1, "version_info", "release_cp_version.txt")
         cus_1_crane_sdk_version = self.get_version(sdk_version_file)
+        massage_format_list.append(cus_1_crane_sdk_version) #{13}
 
         dsp_version_file = os.path.join(customer_file_1, "version_info", "release_dsp_version.txt")
         cus_1_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+        massage_format_list.append(cus_1_crane_dsp_version) #{14}
+        massage_format_list.append(customer_file_1) #{15}
+
+        cus_2_ap_version = self.get_ap_version(os.path.basename(customer_file_2))
+        massage_format_list.append(cus_2_ap_version.upper()) #{16}
+
+        sdk_version_file = os.path.join(customer_file_2, "version_info", "release_cp_version.txt")
+        cus_2_crane_sdk_version = self.get_version(sdk_version_file)
+        massage_format_list.append(cus_2_crane_sdk_version) #{17}
+
+        dsp_version_file = os.path.join(customer_file_2, "version_info", "release_dsp_version.txt")
+        cus_2_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
+        massage_format_list.append(cus_2_crane_dsp_version) #{18}
+        massage_format_list.append(customer_file_2) #{19}
 
         with open(self.email_massage_file) as obj:
             email_msg_with_cus_1 = obj.read()
-        msg = email_msg_with_cus_1.format(crane_ap_version.upper(), crane_sdk_version, crane_dsp_version, version_file,\
-                                          craneg_ap_version.upper(), craneg_sdk_version, craneg_dsp_version, craneg_file,\
-                                          cus_ap_version.upper(), cus_crane_sdk_version, cus_crane_dsp_version, customer_file,\
-                                          cus_1_ap_version.upper(), cus_1_crane_sdk_version, cus_1_crane_dsp_version, customer_file_1)
+        msg = email_msg_with_cus_1.format(*massage_format_list)
         self.log.info(subject)
         self.log.info(msg)
         send_email_tool(to_address, subject, msg)
@@ -328,10 +357,13 @@ class autoRelease(ThreadBase):
             cus_1_version_file = self.get_release_version(self.cur_crane_cus_1, self.cur_crane_cus_1_release_dist_dir, "crane_rc_sdk009")
             self.log.info(cus_1_version_file)
 
+            cus_2_version_file = self.get_release_version(self.cur_crane_cus_2, self.cur_crane_cus_2_release_dist_dir, "crane_r2_rc")
+            self.log.info(cus_2_version_file)
+
             craneg_version_file = self.get_release_version(self.craneg_build_dir, self.craneg_release_dir, "craneg_d_")
             self.log.info(craneg_version_file)
 
-            self.send_release_email_1(version_file, craneg_version_file, cus_version_file, cus_1_version_file)
+            self.send_release_email_1(version_file, craneg_version_file, cus_version_file, cus_1_version_file, cus_2_version_file)
 
             # self.send_release_email(version_file, cus_version_file, craneg_version_file)
 
@@ -436,7 +468,7 @@ class autoCleanOverdueDir(ThreadBase):
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20', isdir=False)
 
                     for _repo in self._repo_list:
-                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 24, target_dir=_repo.verion_name)
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 21, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
@@ -556,7 +588,7 @@ if __name__ == "__main__":
     auto_build_task.add_build(auto_r1_rc_build_cls)
     auto_clean_overdue_dir_task.add_repo(r1_rc_repo)
 
-    # crane r1_rc
+    # crane r2_rc
     r2_rc_repo = cusR2RCRepo()
     auto_r2_rc_cls = CusR2RCSDKBuild(r2_rc_repo)
     auto_build_task.add_build(auto_r2_rc_cls)

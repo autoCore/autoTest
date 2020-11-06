@@ -1,7 +1,7 @@
 {
     "crane":
     {
-        "boards": ["crane_evb_z2", "crane_evb_z2_dcxo", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp", "mHAL","crane_evb_z2_fwp_128x64","crane_evb_z2_fp_320x240","crane_evb_z2_176x220","miniphone"],
+        "boards": ["crane_evb_z2", "crane_evb_z2_dcxo", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp", "mHAL","crane_evb_z2_fwp_128x64","crane_evb_z2_176x220","miniphone"],
         "compile_log_dir": ".\\tmp\\compile_log",
         "boards_info":
         {
