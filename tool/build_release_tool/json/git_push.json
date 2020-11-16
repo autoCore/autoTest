@@ -33,7 +33,18 @@
         "version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
-
+    "cranem_dsp":
+    {
+        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CAT1",
+        "release_target": "craneM_lzma_a0.bin",
+        "target_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_m\\images",
+        "a0_rf_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_m\\images",
+        "local_dir": ".\\dsp_rf_rbd_bin",
+        "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
+        "verson_file": "E:\\daily_auto_push\\crane-dev\\cus\\evb_m\\images\\dsp.bin",
+        "version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
+    },
     "crane_sdk":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture",

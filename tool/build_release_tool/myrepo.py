@@ -345,12 +345,8 @@ class RepoBase(myRepo, ManagerVersionBase):
         self.sdk_version_file = os.path.join(self.build_root_dir, self.config_d["branch_info"][self.branch_name]["sdk_version_file"])
         self.dsp_version_file = os.path.join(self.build_root_dir, self.config_d["branch_info"][self.branch_name]["dsp_version_file"])
 
-
-
         # self.checkout_branch()
-
         self._get_verion_name()
-
 
 
 class CraneRepo(RepoBase):
@@ -365,24 +361,6 @@ class CraneRepo(RepoBase):
         json_str = load_json(json_file)
         self.config_d = json_str["crane_info"]
         self.branch_name = "master"
-
-    def get_dsp_version(self, dsp_bin, dsp_version_log_file):
-        """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
-        dsp_version_file = os.path.join(self.root_dir, "tmp","dsp_version.bin")
-        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file, "lzma")
-        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
-        with open(dsp_version_file, "rb") as fob:
-            text = fob.read()
-        match = self.dsp_version_pattern.findall(text)
-        if match:
-            version_info = match[0]
-            # self.log.debug(version_info)
-            self.dsp_version = version_info
-        else:
-            version_info = "can not match dsp version".upper()
-        with open(dsp_version_log_file, "w") as obj:
-            obj.write(version_info)
-        return version_info
 
 
 
@@ -400,23 +378,20 @@ class craneGRepo(RepoBase):
         self.config_d = json_str["craneg_info"]
         self.branch_name = "master"
 
-    def get_dsp_version(self, dsp_bin, dsp_version_log_file):
-        """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
-        dsp_version_file = os.path.join(self.root_dir, "tmp","dsp_version.bin")
-        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file, "lzma")
-        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
-        with open(dsp_version_file, "rb") as fob:
-            text = fob.read()
-        match = self.dsp_version_pattern.findall(text)
-        if match:
-            version_info = match[0]
-            # self.log.debug(version_info)
-            self.dsp_version = version_info
-        else:
-            version_info = "can not match dsp version".upper()
-        with open(dsp_version_log_file, "w") as obj:
-            obj.write(version_info)
-        return version_info
+
+class craneMRepo(RepoBase):
+    def __init__(self):
+        super(craneMRepo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+        self.chip_ID = "craneM"
+        self.log.info("create repo done")
+
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cranem_info"]
+        self.branch_name = "master"
 
 
 class CusRepo(RepoBase):
@@ -433,43 +408,15 @@ class CusRepo(RepoBase):
         json_str = load_json(json_file)
         self.config_d = json_str["cus_crane_info"]
         self.branch_name = "master"
-    '''
-    def checkout_branch(self):
-        _path = os.path.join(self.git_root_dir, '.')
-        _git = git.Repo(_path).git
 
-        # _git.config("--global","core.autocrlf","false")
-        # _git.config("--global","user.name","binwu")
-        # _git.config("--global","user.email","binwu@asrmicro.com")
-
-        _git.checkout(self.branch_name)
-    '''
 
 class CusMasterRepo(CusRepo):
     def __init__(self):
         super(CusMasterRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-    def get_dsp_version(self, dsp_bin, dsp_version_log_file):
-        """!CRANE_CAT1GSM_L1_1.043.000 , Dec 13 2019 03:30:56"""
-        dsp_version_file = os.path.join(self.root_dir, "tmp","dsp_version.bin")
-        self.decompress_tool.decompress_bin(dsp_bin, dsp_version_file, "lzma")
-        assert os.path.exists(dsp_version_file), "can not find {}".format(dsp_version_file)
-        with open(dsp_version_file, "rb") as fob:
-            text = fob.read()
-        match = self.dsp_version_pattern.findall(text)
-        if match:
-            version_info = match[0]
-            # self.log.debug(version_info)
-            self.dsp_version = version_info
-        else:
-            version_info = "can not match dsp version".upper()
-        with open(dsp_version_log_file, "w") as obj:
-            obj.write(version_info)
-        return version_info
- 
 
-class CusMasterSDK009Repo(CusMasterRepo):
+class CusMasterSDK009Repo(CusRepo):
     def __init__(self):
         super(CusMasterSDK009Repo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
@@ -492,11 +439,11 @@ class cusR1RCRepo(CusRepo):
         self.config_d = json_str["cus_crane_info"]
         self.branch_name = "r1_rc"
 
+
 class cusR2RCRepo(CusRepo):
     def __init__(self):
         super(cusR2RCRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")

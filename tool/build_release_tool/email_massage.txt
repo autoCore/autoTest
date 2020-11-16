@@ -7,10 +7,6 @@ CRANE FP DAILY:
     binary + debug object: {3}\crane_evb_z2
     download tool: {3}\crane_evb_z2\download_tool
 
-    BIRD PHONE VERSION:
-    binary + debug object: {3}\bird_phone
-    download tool: {3}\bird_phone\download_tool
-
     VISENK PHONE VERSION:
     binary + debug object: {3}\visenk_phone
     download tool: {3}\visenk_phone\download_tool

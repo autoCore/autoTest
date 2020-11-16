@@ -7,7 +7,7 @@ import shutil
 import threading
 import re
 
-from util import MyLogger, copy, kill_win_process, zipTool, load_json, create_cp_framework
+from util import MyLogger, copy, kill_win_process, zipTool, load_json, create_cp_framework,ziptool_mutex
 from send_email import send_email_tool
 from ftp import ftp_upload_file
 from TriggerTest import trigger_test
@@ -62,20 +62,26 @@ class BuildController(object):
             self.log.warning("%s build fail" % cur_dir)
             self.build_res = "FAIL"
 
-    def send_email(self, cur_dir, owner, external_dir, board="crane_evb_z2"):
+    def send_email(self, cur_dir, owner, external_dir, board="crane_evb_z2", subject_str = None):
         os.chdir(cur_dir)
         if self.build_res in "FAIL":
             att_file_list = [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log]
             att_file_list = [os.path.join(cur_dir,_file) for _file in att_file_list]
             # att_file_list.append(self.compile_log)
             att_file = '@'.join(att_file_list)
-            subject = r"%s %s build result: fail" % (self.__class__.__name__, board)
+            if subject_str:
+                subject = subject_str
+            else:
+                subject = r"%s %s build result: fail" % (self.__class__.__name__, board)
             # msg = r"Hi %s, your patch build fail! Pls check attachment log" % (owner.split("@")[0])
             msg = r"Hi All, %s build fail! Pls check attachment log" % (board)
             to_address = "SW_CV@asrmicro.com"
         else:
             att_file = None
-            subject = r"%s %s build result: pass" % (self.__class__.__name__, board)
+            if subject_str:
+                subject = subject_str
+            else:
+                subject = r"%s %s build result: pass" % (self.__class__.__name__, board)
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
             to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
         self.log.info(att_file)
@@ -184,7 +190,8 @@ class BuildBase(object):
         src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
         dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.images]
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
-            copy(src_bin, dist_bin)
+            if os.path.exists(src_bin):
+                copy(src_bin, dist_bin)
 
     def update_download_tool(self):
         # self.download_controller.update_download_tool()
@@ -378,8 +385,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in ["crane_evb_z2", "crane_evb_z2_dcxo", "bird_phone",\
-                            "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp",\
+            if board in ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone",\
+                            '''"bird_phone", "crane_evb_z2_128x160", "crane_evb_z2_fwp"''',\
                              '''"craneg_evb_z2","craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"'''] and self.build_res in "FAIL":
                 self.log.error(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
@@ -421,7 +428,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
         copy(self.loacal_dist_dir, self.release_dist)
         self.record_version()
-        self.send_email(self.build_root_dir, owner, self.release_dist, board)
+        self.build_res = "SUCCESS"
+        self.send_email(self.build_root_dir, owner, self.release_dist, subject_str = r"%s %s build done" % (self.__class__.__name__, self.ap_version.upper()))
         self.close_build()
 
 
@@ -464,7 +472,7 @@ class CraneDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb_g/images/dsp.bin") or _info.startswith("cpLWG") or _info.startswith(".../"):
+                    if _info.startswith("cus/evb_g") or _info.startswith("cus/evb_m") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -516,7 +524,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb/images/dsp.bin") or _info.startswith(".../"):
+                    if _info.startswith("cus/evb") or _info.startswith(".../") or _info.startswith("cus/evb_m"):
                         continue
                     else:
                         return True
@@ -524,6 +532,53 @@ class CraneGDailyBuild(MyDailyBuildBase):
             if "Already up to date." not in info:
                 return True
         return False
+
+class CraneMDailyBuild(MyDailyBuildBase):
+    def __init__(self, _repo):
+        super(CraneMDailyBuild, self).__init__(_repo)
+        super(BuildBase, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cranem"]
+        self.board_list = self.config_d["boards"]
+
+    @property
+    def condition(self):
+        self.update()
+        info_d = self._repo.sync()
+        for storage, info in info_d.items():
+            if "Already up to date." in info:
+                continue
+
+            if storage == ".":
+                info_bak = info.replace("\n","##")
+                _match = re.findall("Fast-forward(.*?) file.*?changed,", info_bak)
+                if _match:
+                    info_bak = _match[0]
+                else:
+                    continue
+                # self.log.info(info_bak.split("##"))
+                for _info in info_bak.split("##")[:-1]:
+                    _info = _info.strip()
+                    if not _info:
+                        continue
+                    if _info.startswith("cus/evb") or _info.startswith(".../") or _info.startswith("cus/evb_g"):
+                        continue
+                    else:
+                        return True
+                continue
+            if "Already up to date." not in info:
+                return True
+        return False
+
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            self.sdk_update_flag.set()
+        self.git_clean()
 
 
 class CusBuild(MyDailyBuildBase):
@@ -536,7 +591,7 @@ class CusBuild(MyDailyBuildBase):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = self.config_d["boards"][:7]
+        self.board_list = self.config_d["boards"][:6]
 
     def config(self):
         self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20201006_SDK\ReleaseNotes.xlsx"
@@ -624,7 +679,8 @@ class CusR2RCSDKBuild(CusBuild):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = ["crane_evb_z2", "crane_evb_z2_dcxo", "bird_phone", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64","sdk009_crane_evb_z2","sdk009_crane_evb_z2_dcxo"]
+        self.board_list = ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64","sdk009_crane_evb_z2","sdk009_crane_evb_z2_dcxo"]
+        self.config_d["boards_info"]["visenk_phone"]["build_cmd"] = "autobuild.bat -f crane_evb_z2_custom_V.conf -s cp009"
 
     def config(self):
         self.release_branch = "r2_rc"
@@ -639,6 +695,8 @@ class CusR2RCSDKBuild(CusBuild):
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
         self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
+        self.trigger_auto_test(self.release_dist, "evb_customer", "sdk009_crane_evb_z2")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo_rc", "sdk009_crane_evb_z2_dcxo")
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
         self.git_clean()
 
@@ -724,7 +782,8 @@ class CusR1RCBuild(CusBuild):
         for _dir in release_downlaod_tool_l:
             copy(self.build_zip_file, _dir)
         dist = os.path.join(dist_dir,release_file_name)
-        self.zip_tool.make_archive_e(dist,"zip",release_dir)
+        with ziptool_mutex:
+            self.zip_tool.make_archive_e(dist,"zip",release_dir)
         shutil.rmtree(release_dir)
 
     def start(self):
@@ -775,7 +834,8 @@ class CusR1RCBuild(CusBuild):
             except Exception,e:
                 self.log.error(e)
                 dist_dir = self.download_tool_images_dir_d[board]
-                self.zip_tool.unpack_files_from_archive(self.build_zip_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
+                with ziptool_mutex:
+                    self.zip_tool.unpack_files_from_archive(self.build_zip_file, dist_dir, "dsp.bin", "rf.bin", "ReliableData.bin", "logo.bin", "updater.bin")
 
             if self.build_res == "SUCCESS":
                 self.create_download_tool(os.path.basename(self.loacal_dist_dir), board, dist_dir=self.download_tool_dir_d[board])

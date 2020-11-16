@@ -1,0 +1,33 @@
+mUI VERSION: {0}
+SDK VERSION: {1}
+DSP VERSION: {2}
+
+NORMAL VERSION(SINGLE and DUAL SIM):
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2\download_tool
+
+BIRD PHONE VERSION:
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone\download_tool
+
+VISENK PHONE VERSION:
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone\download_tool
+
+FWP VERSION:
+binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_fwp
+download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_fwp\download_tool
+
+
+CUSTOMER VERSION RELEASE:
+SDK VERSION: {4}
+DSP VERSION: {5}
+
+RELEASE VERSION: {6}
+
+
+CRANEG VERSION RELEASE:
+SDK VERSION: {7}
+DSP VERSION: {8}
+
+RELEASE VERSION: {9}

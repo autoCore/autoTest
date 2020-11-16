@@ -21,102 +21,7 @@ from download_tool import DownloadToolController
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-email_subject = "CRANE PHONE: AUTO RELEASE %s"
-email_msg_with_cus = r"""
-mUI VERSION: {0}
-SDK VERSION: {1}
-DSP VERSION: {2}
-
-NORMAL VERSION(SINGLE and DUAL SIM):
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2\download_tool
-
-BIRD PHONE VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\bird_phone\download_tool
-
-VISENK PHONE VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\visenk_phone\download_tool
-
-FWP VERSION:
-binary + debug object: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_fwp
-download tool: \\sh2-filer02\Data\FP_RLS\crane_dailybuild\{3}\crane_evb_z2_fwp\download_tool
-
-
-CUSTOMER VERSION RELEASE:
-SDK VERSION: {4}
-DSP VERSION: {5}
-
-RELEASE VERSION: {6}
-
-
-CRANEG VERSION RELEASE:
-SDK VERSION: {7}
-DSP VERSION: {8}
-
-RELEASE VERSION: {9}
-
-"""
-
-email_msg_with_cus_1 = r"""
-CRANE FP DAILY:
-    mUI VERSION: {0}
-    SDK VERSION: {1}
-    DSP VERSION: {2}
-
-    EVB VERSION:
-    binary + debug object: {3}\crane_evb_z2
-    download tool: {3}\crane_evb_z2\download_tool
-
-    BIRD PHONE VERSION:
-    binary + debug object: {3}\bird_phone
-    download tool: {3}\bird_phone\download_tool
-
-    VISENK PHONE VERSION:
-    binary + debug object: {3}\visenk_phone
-    download tool: {3}\visenk_phone\download_tool
-
-CRANEG FP DAILY:
-    mUI VERSION: {4}
-    SDK VERSION: {5}
-    DSP VERSION: {6}
-
-    EVB Z2 VERSION:
-    binary + debug object: {7}\craneg_evb_z2_from_crane
-    download tool: {7}\craneg_evb_z2_from_crane\download_tool
-
-    EVB A0 VERSION:
-    binary + debug object: {7}\craneg_evb_a0_from_crane
-    download tool: {7}\craneg_evb_a0_from_crane\download_tool
-
-    XINGXIANG PHONE VERSION:
-    binary + debug object: {7}\xinxiang_phone
-    download tool: {7}\xinxiang_phone\download_tool
-
-CUSTOMER VERSION RELEASE:
-    mUI VERSION: {8}
-    SDK VERSION: {9}
-    DSP VERSION: {10}
-    RELEASE DIR: {11}
-
-    mUI VERSION: {12}
-    SDK VERSION: {13}
-    DSP VERSION: {14}
-    RELEASE DIR: {15}
-
-********************************************************************************************************************************
-
-CRANE FWP DAILY:
-    mUI VERSION: {0}
-    SDK VERSION: {1}
-    DSP VERSION: {2}
-
-    EVB VERSION:
-    binary + debug object: {3}\crane_evb_z2_fwp
-    download tool: {3}\crane_evb_z2_fwp\download_tool
-
-"""
+email_subject = "CRANE PHONE AUTO RELEASE"
 
 class autoRelease(ThreadBase):
     def __init__(self, _cfg, release_event):
@@ -187,7 +92,7 @@ class autoRelease(ThreadBase):
         to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
                      "crane_sw_mmi_group@asrmicro.com "
         version_fname = os.path.basename(version_file)
-        subject = email_subject % version_fname.upper()
+        subject = email_subject
         _match = re.findall(repo.verion_name + "[0-9]+", version_fname)
         assert _match, "file name can not match"
         version = _match[0]
@@ -210,7 +115,8 @@ class autoRelease(ThreadBase):
         dsp_version_file = os.path.join(craneg_file, "version_info", "crang_dsp_version.txt")
         craneg_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
 
-
+        with open(self.email_massage_file) as obj:
+            email_msg_with_cus = obj.read()
         msg = email_msg_with_cus.format(version.upper(), crane_sdk_version, crane_dsp_version, version_fname,\
                                         cus_crane_sdk_version, cus_crane_dsp_version, customer_file,\
                                         craneg_sdk_version, craneg_dsp_version, craneg_file)
@@ -225,7 +131,7 @@ class autoRelease(ThreadBase):
         # to_address = "binwu@asrmicro.com"
         massage_format_list = []
         version_fname = os.path.basename(version_file)
-        subject = email_subject % version_fname.upper()
+        subject = email_subject
 
         crane_ap_version = self.get_ap_version(os.path.basename(version_file))
         massage_format_list.append(crane_ap_version.upper()) #{0}
@@ -324,7 +230,8 @@ class autoRelease(ThreadBase):
             lib_src = os.path.join(_version_file, "crane_evb_z2", "rel_lib")
             self.log.info(lib_src, os.path.basename(_version_file))
             dist_dir = os.path.join(self.tmp, "rel_lib")
-            self.zip_tool.make_archive_e(dist_dir, "zip", lib_src)
+            with ziptool_mutex:
+                self.zip_tool.make_archive_e(dist_dir, "zip", lib_src)
             ftp_upload_file(dist_dir + ".zip", os.path.basename(_version_file))
         except Exception, e:
             self.log.info(e)
@@ -468,7 +375,7 @@ class autoCleanOverdueDir(ThreadBase):
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20', isdir=False)
 
                     for _repo in self._repo_list:
-                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 21, target_dir=_repo.verion_name)
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 18, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
@@ -499,7 +406,9 @@ class autoBuild(ThreadBase):
                 self.terminate()
             except Exception, e:
                 self.log.error(e)
-
+            finally:
+                kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
+        kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
 def prepare_system_start():
 
@@ -617,6 +526,12 @@ if __name__ == "__main__":
     auto_build_task.add_build(craneg_build_cls)
     auto_clean_overdue_dir_task.add_repo(craneg_repo)
 
+    # cranem dailay
+    cranem_repo = craneMRepo()
+    cranem_build_cls = CraneMDailyBuild(cranem_repo)
+    auto_build_task.add_build(cranem_build_cls)
+    auto_clean_overdue_dir_task.add_repo(cranem_repo)
+
     # crane dailay
     repo = CraneRepo()
     auto_daily_build_cls = CraneDailyBuild(repo)
@@ -663,6 +578,10 @@ if __name__ == "__main__":
     # craneg dailay dsp auto push
     craneg_dsp_cls = gitPushCraneGDsp()
     auto_push_task.add_git_push(craneg_dsp_cls)
+
+    # cranem dailay dsp auto push
+    cranem_dsp_cls = gitPushCraneMDsp()
+    auto_push_task.add_git_push(cranem_dsp_cls)
 
     # download tool auto push
     download_tool = gitPushDownloadTool()

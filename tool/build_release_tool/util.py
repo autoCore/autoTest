@@ -118,7 +118,7 @@ def copy(src, dist):
 
 
 def load_json(json_file):
-    assert os.path.exists(json_file),"%s no exists" % json_files
+    assert os.path.exists(json_file),"%s no exists" % json_file
     with open(json_file) as f:
         json_str = json.load(f)
     return json_str
@@ -265,6 +265,7 @@ class config:
             _list.append("%s=%s" % item)
         return "\n".join(_list)
 
+ziptool_mutex = threading.Lock()
 
 class zipTool(object):
     _mutex = threading.Lock()
@@ -274,9 +275,17 @@ class zipTool(object):
         self._external_tool = os.path.join(work_dir, "unzip_tool", "7z.exe")
         self._decompress_tool = os.path.join(work_dir, "unzip_tool", "asr_lzop.exe")
         self._decompress_tool_lzma = os.path.join(work_dir, "unzip_tool", "asr_lzma.exe")
-
+        self.dsp_magic_list = ['\x89','L','Z','O']
     def decompress_bin(self, src_bin, out_bin, _type = "lzop"):
         assert os.path.exists(src_bin),"%s no exists" % src_bin
+        obj = open(src_bin)
+        for i in range(4):
+            magic = obj.read(1)
+            # print i, "%r"%magic
+            if magic != self.dsp_magic_list[i]:
+                _type = "lzma"
+                break
+        # print "dsp version: %s"%_type
         if _type == "lzop":
             decompress_cmd = "{0} -d -f {1} -o{2}".format(self._decompress_tool, src_bin, out_bin)
         elif _type == "lzma":
@@ -339,4 +348,3 @@ class zipTool(object):
         self.make_archive(base_name, _format, root_dir)
         # self.make_archive_e(base_name, format, root_dir)
         shutil.rmtree(root_dir)
-
