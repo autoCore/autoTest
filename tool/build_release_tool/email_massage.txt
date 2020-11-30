@@ -54,3 +54,25 @@ CRANE FWP DAILY:
     EVB VERSION:
     binary + debug object: {3}\crane_evb_z2_fwp
     download tool: {3}\crane_evb_z2_fwp\download_tool
+
+********************************************************************************************************************************
+
+CRANEM FP_SDK DAILY:
+    mUI VERSION: {20}
+    SDK VERSION: {21}
+    DSP VERSION: {22}
+
+    EVB VERSION:
+    binary + debug object: {23}\cranem_evb_a0
+    download tool: {23}\cranem_evb_a0\download_tool
+
+********************************************************************************************************************************
+
+CRANEM DM_SDK DAILY:
+    mUI VERSION: {24}
+    SDK VERSION: {25}
+    DSP VERSION: {26}
+
+    EVB VERSION:
+    binary + debug object: {27}\cranem_dm_evb_a0
+    download tool: {27}\cranem_dm_evb_a0\download_tool

@@ -393,6 +393,20 @@ class craneMRepo(RepoBase):
         self.config_d = json_str["cranem_info"]
         self.branch_name = "master"
 
+class craneMDMRepo(RepoBase):
+    def __init__(self):
+        super(craneMDMRepo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+        self.chip_ID = "craneM_DM"
+        self.log.info("create repo done")
+
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cranem_dm_info"]
+        self.branch_name = "master"
+
 
 class CusRepo(RepoBase):
     def __init__(self):
@@ -462,7 +476,7 @@ class cusCraneGRepo(CusRepo):
         json_file = os.path.join(self.root_dir,"json","repo.json")
         json_str = load_json(json_file)
         self.config_d = json_str["cus_craneg_info"]
-        self.branch_name = "master"
+        self.branch_name = "r2_rc"
 
 
 class cusR1Repo(CusRepo):

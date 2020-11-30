@@ -196,7 +196,7 @@ class BuildBase(object):
     def update_download_tool(self):
         # self.download_controller.update_download_tool()
         download_tool_dir = os.path.join(self.build_root_dir, "tool", "downloadtool")
-        self.download_tool_l = [os.path.join(download_tool_dir, _tool) for _tool in os.listdir(download_tool_dir)]
+        self.download_tool_l = [os.path.join(download_tool_dir, _tool) for _tool in os.listdir(download_tool_dir) if re.match("aboot-tools-.*?-win-x[0-9][0-9]",_tool)]
         for _tool in self.download_tool_l:
             self.log.info(_tool)
 
@@ -385,9 +385,10 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone",\
-                            '''"bird_phone", "crane_evb_z2_128x160", "crane_evb_z2_fwp"''',\
-                             '''"craneg_evb_z2","craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"'''] and self.build_res in "FAIL":
+            if board in ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone","craneg_evb_a0_from_crane",\
+                         "cranem_evb_a0","cranem_dm_evb_a0","crane_evb_z2_fwp","craneg_evb_z2",\
+                            '''"bird_phone", "crane_evb_z2_128x160" ''',\
+                             '''"craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"'''] and self.build_res in "FAIL":
                 self.log.error(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
             elif self.build_res in "FAIL":
@@ -418,6 +419,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
                                                       dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
                 if board in ["crane_evb_z2", "craneg_evb_z2","craneg_evb_z2_from_crane","sdk009_crane_evb_z2"]:
                     board = board+"_dcxo"
+                    if board not in self.board_list:
+                        continue
                     self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
                     self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
                     _root_dir = self.download_tool_images_dir_d[board]
@@ -494,7 +497,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg"]
-        self.board_list = ["craneg_evb_z2_from_crane","craneg_evb_z2_from_crane_dcxo","craneg_evb_a0_from_crane","xinxiang_phone"]#self.config_d["boards"]
+        self.board_list = self.config_d["boards"]
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
@@ -567,6 +570,63 @@ class CraneMDailyBuild(MyDailyBuildBase):
                     if not _info:
                         continue
                     if _info.startswith("cus/evb") or _info.startswith(".../") or _info.startswith("cus/evb_g"):
+                        continue
+                    else:
+                        return True
+                continue
+            if "Already up to date." not in info:
+                return True
+        return False
+
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            self.sdk_update_flag.set()
+        self.git_clean()
+        self.trigger_auto_test(self.release_dist, "cranem_evb", board="cranem_evb_a0")
+
+
+class CraneMDMDailyBuild(MyDailyBuildBase):
+    def __init__(self, _repo):
+        super(CraneMDMDailyBuild, self).__init__(_repo)
+        super(BuildBase, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cranem_dm"]
+        self.board_list = self.config_d["boards"]
+
+    def update_download_tool(self):
+        # self.download_controller.update_download_tool()
+        download_tool_dir = os.path.join(self.build_root_dir, "tool", "downloadtool")
+        self.download_tool_l = [os.path.join(download_tool_dir, _tool) for _tool in os.listdir(download_tool_dir) if re.match("aboot-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-x[0-9][0-9]",_tool)]
+        for _tool in self.download_tool_l:
+            self.log.info(_tool)
+
+    @property
+    def condition(self):
+        self.update()
+        info_d = self._repo.sync()
+        for storage, info in info_d.items():
+            if "Already up to date." in info:
+                continue
+            if storage == "cp":
+                continue
+            if storage == ".":
+                info_bak = info.replace("\n","##")
+                _match = re.findall("Fast-forward(.*?) file.*?changed,", info_bak)
+                if _match:
+                    info_bak = _match[0]
+                else:
+                    continue
+                # self.log.info(info_bak.split("##"))
+                for _info in info_bak.split("##")[:-1]:
+                    _info = _info.strip()
+                    if not _info:
+                        continue
+                    if _info.startswith("cus/evb/") or _info.startswith(".../") or _info.startswith("cus/evb_g"):
                         continue
                     else:
                         return True
@@ -679,8 +739,9 @@ class CusR2RCSDKBuild(CusBuild):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["crane"]
-        self.board_list = ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64","sdk009_crane_evb_z2","sdk009_crane_evb_z2_dcxo"]
-        self.config_d["boards_info"]["visenk_phone"]["build_cmd"] = "autobuild.bat -f crane_evb_z2_custom_V.conf -s cp009"
+        # self.board_list = ["crane_evb_z2", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64","sdk009_crane_evb_z2","sdk009_crane_evb_z2_dcxo"]
+        self.board_list = ["crane_evb_z2","crane_evb_z2_dcxo", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64"]
+        # self.config_d["boards_info"]["visenk_phone"]["build_cmd"] = "autobuild.bat -f crane_evb_z2_custom_V.conf -s cp009"
 
     def config(self):
         self.release_branch = "r2_rc"
@@ -707,14 +768,14 @@ class CusCraneGBuild(CusBuild):
         self.log = MyLogger(self.__class__.__name__)
 
     def get_config(self):
-        self.release_branch = "master"
+        self.release_branch = "r2_rc"
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg"]
-        self.board_list = self.config_d["boards"][:1]
+        self.board_list = self.config_d["boards"]
 
     def config(self):
-        self.release_branch = "master"
+        self.release_branch = "r2_rc"
         self.sdk_release_notes_file = "NO_FILE"
         self.sdk_release_notes_dir = "NO_DIR"
 
@@ -725,7 +786,8 @@ class CusCraneGBuild(CusBuild):
             subject = "%s RELEASE" % self.cp_version
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
-        self.trigger_auto_test(self.release_dist, "craneg_evb_release", "craneg_evb")
+        self.trigger_auto_test(self.release_dist, "craneg_evb", board="craneg_evb_z2_from_crane")
+        self.trigger_auto_test(self.release_dist, "craneg_a0_evb", board="craneg_evb_a0_from_crane")
         self.git_clean()
 
 

@@ -529,7 +529,7 @@
     },
     "craneg":
     {
-        "boards": ["craneg_evb_z2","craneg_evb_z2_dcxo","craneg_evb_z2_from_crane","craneg_evb_z2_from_crane_dcxo","craneg_evb_a0","craneg_evb_a0_from_crane","xinxiang_phone"],
+        "boards": ["craneg_evb_z2_from_crane","craneg_evb_z2_from_crane_dcxo","craneg_evb_a0_from_crane","xinxiang_phone"],
         "compile_log_dir": ".\\tmp\\compile_log",
         "boards_info":
         {
@@ -736,7 +736,7 @@
         {
             "cranem_evb_a0":
             {
-                "mdb_file_dir": ".\\cpLWG\\tavor\\Arbel\\bin",
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
                 "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16MB.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
@@ -761,6 +761,41 @@
                     ".\\build\\crane_evb_z2\\uirespkg.bin"
                 ],
                 "build_cmd":"autobuild.bat -f cranem_evb_miniphone.conf"
+            }
+        }
+    },
+    "cranem_dm":
+    {
+        "boards": ["cranem_dm_evb_a0"],
+        "compile_log_dir": ".\\tmp\\compile_log",
+        "boards_info":
+        {
+            "cranem_dm_evb_a0":
+            {
+                "mdb_file_dir": ".\\cp_dm\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_8MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\rel_lib"
+                ],
+                "release_bin":
+                [
+                    ".\\cp_dm\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cus\\evb_dm\\images\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cus\\evb_dm\\images\\logo.bin",
+                    ".\\cus\\evb_dm\\images\\updater.bin",
+                    ".\\cus\\evb_dm\\images\\dsp.bin",
+                    ".\\cus\\evb_dm\\images\\rf.bin",
+                    ".\\cus\\evb_dm\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":"autobuild.bat -f cranem_evb_miniphone_dm.conf"
             }
         }
     }

@@ -514,7 +514,7 @@ class GitPushDspBase(GitPushBase):
         except Exception,e:
             self.log.error(e)
             self.log.error("git push error")
-            self.git.git_clean()
+            self.git_clean()
             return None
 
 
@@ -659,7 +659,7 @@ class gitPushCraneGDsp(GitPushDspBase):
         except Exception,e:
             self.log.error(e)
             self.log.error("git push error")
-            self.git.git_clean()
+            self.git_clean()
             return None
 
 
@@ -854,7 +854,8 @@ class gitPushDownloadTool(GitPushBase):
     def prepare_git_push(self):
         self.prepare_download_tool()
         for _tool in os.listdir(self.target_dist_dir):
-            shutil.rmtree(os.path.join(self.target_dist_dir, _tool))
+            if re.match("aboot-tools-.*?-win-x[0-9][0-9]",_tool):
+                shutil.rmtree(os.path.join(self.target_dist_dir, _tool))
         for _tool in self.downloadtool_list:
             shutil.copytree(_tool, os.path.join(self.target_dist_dir,os.path.basename(_tool)))
 

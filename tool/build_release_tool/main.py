@@ -27,26 +27,12 @@ class autoRelease(ThreadBase):
     def __init__(self, _cfg, release_event):
         super(autoRelease, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
-        self.cur_crane = repo.git_root_dir#_cfg.cur_crane
-        self.dist_dir = repo.release_dist_dir#_cfg.dist_dir
 
         self.root_dir = os.getcwd()
         self.email_massage_file = os.path.join(self.root_dir,"email_massage.txt")
         self.tmp = _cfg.tmp_dir
 
-        self.cur_crane_cus = repo_cus.git_root_dir#_cfg.cur_crane_cus
-        self.release_dist_dir = repo_cus.release_dist_dir#_cfg.release_dist_dir
-
-        self.cur_crane_cus_1 = repo_cus_sdk009.git_root_dir
-        self.cur_crane_cus_1_release_dist_dir = repo_cus_sdk009.release_dist_dir
-
-        self.cur_crane_cus_2 = r2_rc_repo.git_root_dir
-        self.cur_crane_cus_2_release_dist_dir = r2_rc_repo.release_dist_dir
-
-        # self.craneg_build_dir = r"D:\craneg_dailybuild\crane"
-        # self.craneg_release_dir = r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
-        self.craneg_build_dir = craneg_repo.git_root_dir #r"D:\craneg_dailybuild\crane"
-        self.craneg_release_dir = craneg_repo.release_dist_dir #r"\\sh2-filer02\Data\FP_RLS\craneG_dailybuild"
+        self.repo_list = [repo, craneg_repo, repo_cus, repo_cus_sdk009, r2_rc_repo, cranem_repo, cranem_dm_repo]
 
         self.zip_tool = zipTool()
         self.today_release_flag = threading.Event()
@@ -87,111 +73,25 @@ class autoRelease(ThreadBase):
         assert _match, "file name can not match"
         return _match[0]
 
-
-    def send_release_email(self, version_file, customer_file, craneg_file):
-        to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
-                     "crane_sw_mmi_group@asrmicro.com "
-        version_fname = os.path.basename(version_file)
-        subject = email_subject
-        _match = re.findall(repo.verion_name + "[0-9]+", version_fname)
-        assert _match, "file name can not match"
-        version = _match[0]
-
-        sdk_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
-        crane_sdk_version = self.get_version(sdk_version_file)
-
-        dsp_version_file = os.path.join(version_file, "version_info", "dsp_version.txt")
-        crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-
-        sdk_version_file = os.path.join(customer_file, "version_info", "release_cp_version.txt")
-        cus_crane_sdk_version = self.get_version(sdk_version_file)
-
-        dsp_version_file = os.path.join(customer_file, "version_info", "release_dsp_version.txt")
-        cus_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-
-        sdk_version_file = os.path.join(craneg_file, "version_info", "crang_cp_version.txt")
-        craneg_sdk_version = self.get_version(sdk_version_file)
-
-        dsp_version_file = os.path.join(craneg_file, "version_info", "crang_dsp_version.txt")
-        craneg_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-
-        with open(self.email_massage_file) as obj:
-            email_msg_with_cus = obj.read()
-        msg = email_msg_with_cus.format(version.upper(), crane_sdk_version, crane_dsp_version, version_fname,\
-                                        cus_crane_sdk_version, cus_crane_dsp_version, customer_file,\
-                                        craneg_sdk_version, craneg_dsp_version, craneg_file)
-
-        self.log.info(subject)
-        self.log.info(msg)
-        send_email_tool(to_address, subject, msg)
-
-    def send_release_email_1(self, version_file, craneg_file, customer_file,customer_file_1,customer_file_2):
+    def send_release_email(self, *release_files):
         to_address = "GR-Modem-SV-Report@asrmicro.com,SW_QA@asrmicro.com,SW_Managers@asrmicro.com,SW_CV@asrmicro.com," \
                      "crane_sw_mmi_group@asrmicro.com "
         # to_address = "binwu@asrmicro.com"
         massage_format_list = []
-        version_fname = os.path.basename(version_file)
         subject = email_subject
 
-        crane_ap_version = self.get_ap_version(os.path.basename(version_file))
-        massage_format_list.append(crane_ap_version.upper()) #{0}
+        for version_file in release_files:
+            ap_version_file = os.path.join(version_file, "version_info", "ap_version.txt")
+            massage_format_list.append(self.get_version(ap_version_file)) #{0}
 
-        sdk_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
-        crane_sdk_version = self.get_version(sdk_version_file)
-        massage_format_list.append(crane_sdk_version) #{1}
+            sdk_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
+            crane_sdk_version = self.get_version(sdk_version_file)
+            massage_format_list.append(self.get_version(sdk_version_file)) #{1}
 
-        dsp_version_file = os.path.join(version_file, "version_info", "dsp_version.txt")
-        crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-        massage_format_list.append(crane_dsp_version) #{2}
-        massage_format_list.append(version_file) #{3}
+            dsp_version_file = os.path.join(version_file, "version_info", "dsp_version.txt")
+            massage_format_list.append(self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))) #{2}
 
-        craneg_ap_version = self.get_ap_version(os.path.basename(craneg_file))
-        massage_format_list.append(craneg_ap_version.upper()) #{4}
-
-        sdk_version_file = os.path.join(craneg_file, "version_info", "crang_cp_version.txt")
-        craneg_sdk_version = self.get_version(sdk_version_file)
-        massage_format_list.append(craneg_sdk_version) #{5}
-
-        dsp_version_file = os.path.join(craneg_file, "version_info", "crang_dsp_version.txt")
-        craneg_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-        massage_format_list.append(craneg_dsp_version) #{6}
-        massage_format_list.append(craneg_file) #{7}
-
-        cus_ap_version = self.get_ap_version(os.path.basename(customer_file))
-        massage_format_list.append(cus_ap_version.upper()) #{8}
-
-        sdk_version_file = os.path.join(customer_file, "version_info", "release_cp_version.txt")
-        cus_crane_sdk_version = self.get_version(sdk_version_file)
-        massage_format_list.append(cus_crane_sdk_version) #{9}
-
-        dsp_version_file = os.path.join(customer_file, "version_info", "release_dsp_version.txt")
-        cus_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-        massage_format_list.append(cus_crane_dsp_version) #{10}
-        massage_format_list.append(customer_file) #{11}
-
-        cus_1_ap_version = self.get_ap_version(os.path.basename(customer_file_1))
-        massage_format_list.append(cus_1_ap_version.upper()) #{12}
-
-        sdk_version_file = os.path.join(customer_file_1, "version_info", "release_cp_version.txt")
-        cus_1_crane_sdk_version = self.get_version(sdk_version_file)
-        massage_format_list.append(cus_1_crane_sdk_version) #{13}
-
-        dsp_version_file = os.path.join(customer_file_1, "version_info", "release_dsp_version.txt")
-        cus_1_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-        massage_format_list.append(cus_1_crane_dsp_version) #{14}
-        massage_format_list.append(customer_file_1) #{15}
-
-        cus_2_ap_version = self.get_ap_version(os.path.basename(customer_file_2))
-        massage_format_list.append(cus_2_ap_version.upper()) #{16}
-
-        sdk_version_file = os.path.join(customer_file_2, "version_info", "release_cp_version.txt")
-        cus_2_crane_sdk_version = self.get_version(sdk_version_file)
-        massage_format_list.append(cus_2_crane_sdk_version) #{17}
-
-        dsp_version_file = os.path.join(customer_file_2, "version_info", "release_dsp_version.txt")
-        cus_2_crane_dsp_version = self.CHECK_DSP_VERSION(self.get_version(dsp_version_file))
-        massage_format_list.append(cus_2_crane_dsp_version) #{18}
-        massage_format_list.append(customer_file_2) #{19}
+            massage_format_list.append(version_file) #{3}
 
         with open(self.email_massage_file) as obj:
             email_msg_with_cus_1 = obj.read()
@@ -241,39 +141,19 @@ class autoRelease(ThreadBase):
         while self._running:
             self.release_event.wait()
             self.release_event.clear()
-            version_file = self.get_release_version(self.cur_crane, self.dist_dir, "crane_d_")
-            if not version_file:
-                continue
-            self.log.info(version_file)
-            cp_version_file = os.path.join(version_file, "version_info", "cp_version.txt")
-            with open(cp_version_file) as obj:
-                cp_version = obj.read()
-            ap_version_file = os.path.join(version_file, "version_info", "ap_version.txt")
-            with open(ap_version_file) as obj:
-                ap_version = obj.read()
-            _match = re.findall("MINIGUI_SDK_[0-9]+", cp_version)
-            assert _match, "cp_version can not match"
-            cp_version_sdk = _match[0]
-            release_name = "_".join([cp_version_sdk, ap_version])
 
             self.today_release_flag.set()
 
-            cus_version_file = self.get_release_version(self.cur_crane_cus, self.release_dist_dir, "crane_rc_")
-            self.log.info(cus_version_file)
+            release_files = []
+            for _repo in self.repo_list:
+                _version_file = self.get_release_version(_repo.git_root_dir, _repo.release_dist_dir,_repo.verion_name)
+                self.log.info(_version_file)
+                release_files.append(_version_file)
 
-            cus_1_version_file = self.get_release_version(self.cur_crane_cus_1, self.cur_crane_cus_1_release_dist_dir, "crane_rc_sdk009")
-            self.log.info(cus_1_version_file)
+            self.send_release_email(*release_files)
 
-            cus_2_version_file = self.get_release_version(self.cur_crane_cus_2, self.cur_crane_cus_2_release_dist_dir, "crane_r2_rc")
-            self.log.info(cus_2_version_file)
-
-            craneg_version_file = self.get_release_version(self.craneg_build_dir, self.craneg_release_dir, "craneg_d_")
-            self.log.info(craneg_version_file)
-
-            self.send_release_email_1(version_file, craneg_version_file, cus_version_file, cus_1_version_file, cus_2_version_file)
-
-            # self.send_release_email(version_file, cus_version_file, craneg_version_file)
-
+            version_file = release_files[0]
+            craneg_version_file = release_files[1]
             # trigger dailybuild test
             self.trigger_auto_test(version_file)
 
@@ -375,7 +255,7 @@ class autoCleanOverdueDir(ThreadBase):
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20', isdir=False)
 
                     for _repo in self._repo_list:
-                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 18, target_dir=_repo.verion_name)
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 16, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
@@ -503,11 +383,6 @@ if __name__ == "__main__":
     auto_build_task.add_build(auto_r2_rc_cls)
     auto_clean_overdue_dir_task.add_repo(r2_rc_repo)
 
-    # craneg rc
-    # cus_craneg_repo = cusCraneGRepo()
-    # auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
-    # auto_build_task.add_build(auto_cus_craneg_build_cls)
-
     # crane rc sdk009
     repo_cus_sdk009 = CusMasterSDK009Repo()
     auto_cus_sdk009_build_cls = CusSDK009Build(repo_cus_sdk009)
@@ -531,6 +406,12 @@ if __name__ == "__main__":
     cranem_build_cls = CraneMDailyBuild(cranem_repo)
     auto_build_task.add_build(cranem_build_cls)
     auto_clean_overdue_dir_task.add_repo(cranem_repo)
+ 
+    # cranem dailay
+    cranem_dm_repo = craneMDMRepo()
+    cranem_dm_build_cls = CraneMDMDailyBuild(cranem_dm_repo)
+    auto_build_task.add_build(cranem_dm_build_cls)
+    auto_clean_overdue_dir_task.add_repo(cranem_dm_repo)
 
     # crane dailay
     repo = CraneRepo()
@@ -611,12 +492,14 @@ if __name__ == "__main__":
             if now.hour == 0 and now.minute == 0 and now.second == 0:
                 auto_daily_build_cls.sdk_update_flag.clear()
                 craneg_build_cls.sdk_update_flag.clear()
+                cranem_build_cls.sdk_update_flag.clear()
                 auto_release_task.today_release_flag.clear()
                 time.sleep(1)
 
-            if auto_daily_build_cls.sdk_update_flag.is_set() and craneg_build_cls.sdk_update_flag.is_set():
+            if auto_daily_build_cls.sdk_update_flag.is_set() and craneg_build_cls.sdk_update_flag.is_set() and cranem_build_cls.sdk_update_flag.is_set():
                 auto_daily_build_cls.sdk_update_flag.clear()
                 craneg_build_cls.sdk_update_flag.clear()
+                cranem_build_cls.sdk_update_flag.clear()
                 RELEASE_EVENT.set()
 
             if now.hour == 9 and now.minute == 15 and now.second == 0:
