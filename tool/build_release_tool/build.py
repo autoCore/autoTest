@@ -475,7 +475,7 @@ class CraneDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb_g") or _info.startswith("cus/evb_m") or _info.startswith(".../"):
+                    if _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_m/") or _info.startswith("cus/evb_g_a0/") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -527,7 +527,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb") or _info.startswith(".../") or _info.startswith("cus/evb_m"):
+                    if _info.startswith("cus/evb/") or _info.startswith(".../") or _info.startswith("cus/evb_m/"):
                         continue
                     else:
                         return True
@@ -569,7 +569,7 @@ class CraneMDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb") or _info.startswith(".../") or _info.startswith("cus/evb_g"):
+                    if _info.startswith("cus/evb/") or _info.startswith(".../") or _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_g_a0/"):
                         continue
                     else:
                         return True
@@ -626,7 +626,7 @@ class CraneMDMDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb/") or _info.startswith(".../") or _info.startswith("cus/evb_g"):
+                    if _info.startswith("cus/evb/") or _info.startswith("cus/evb_m/") or _info.startswith(".../") or _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_g_a0/"):
                         continue
                     else:
                         return True
@@ -756,8 +756,65 @@ class CusR2RCSDKBuild(CusBuild):
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
         self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
-        self.trigger_auto_test(self.release_dist, "evb_customer", "sdk009_crane_evb_z2")
-        self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo_rc", "sdk009_crane_evb_z2_dcxo")
+        # self.trigger_auto_test(self.release_dist, "evb_customer", "sdk009_crane_evb_z2")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo_rc", "crane_evb_z2_dcxo")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
+        self.git_clean()
+
+class CusR2RCSDK008Build(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CusR2RCSDK008Build, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "r2_rc"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane"]
+        self.board_list = ["crane_evb_z2","visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64"]
+
+    def config(self):
+        self.release_branch = "r2_rc"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200425_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200425_SDK"
+
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            # to_address = 'yuanzhizheng@asrmicro.com'
+            to_address = ",".join(['yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
+            subject = "%s RELEASE" % self.cp_version
+            msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
+            send_email_tool(to_address, subject.upper(), msg)
+        self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
+        self.git_clean()
+
+class CusR2RCSDK009Build(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CusR2RCSDK009Build, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "r2_rc"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane"]
+        self.board_list = ["crane_evb_z2","crane_evb_z2_dcxo", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp","crane_evb_z2_fwp_128x64"]
+
+    def config(self):
+        self.release_branch = "r2_rc"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK"
+
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            # to_address = 'yuanzhizheng@asrmicro.com'
+            to_address = ",".join(['yuanzhizheng@asrmicro.com','miantianyu@asrmicro.com'])
+            subject = "%s RELEASE" % self.cp_version
+            msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
+            send_email_tool(to_address, subject.upper(), msg)
+        self.trigger_auto_test(self.release_dist, "evb_customer", "crane_evb_z2")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo_rc", "crane_evb_z2_dcxo")
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
         self.git_clean()
 
@@ -776,8 +833,8 @@ class CusCraneGBuild(CusBuild):
 
     def config(self):
         self.release_branch = "r2_rc"
-        self.sdk_release_notes_file = "NO_FILE"
-        self.sdk_release_notes_dir = "NO_DIR"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20201127_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20201127_SDK"
 
     def close_build(self):
         if self.cp_version not in self.old_cp_version:
