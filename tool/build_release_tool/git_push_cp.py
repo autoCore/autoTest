@@ -233,7 +233,12 @@ class gitPushSDKBase(GitPushBase):
         self.log.info("wait for sdk copy...")
         time.sleep(60)
         self.copy_sdk()
-        self.unzip_sdk()
+        try:
+            self.unzip_sdk()
+        except Exception,e:
+            self.log.error(e)
+            os.remove(os.path.join(self.cp_sdk_dir,self.cp_sdk))
+            return None
         self.log.info(self.cp_sdk_root_dir)
 
 
@@ -350,12 +355,12 @@ class gitPushCusSDK009(gitPushCusSDK):
                 break
 
 
-class gitPushR2RCSDK009(gitPushCusSDK009):
+class gitPushR2RCSDK009(gitPushCusSDK):
     def __init__(self):
         super(gitPushR2RCSDK009, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
 
-        self.branch_name = "r2_rc"
+        self.branch_name = "r2_rc_sdk_1.009"
         # self.git.checkout(self.branch_name)
 
     def get_config(self):
@@ -363,6 +368,38 @@ class gitPushR2RCSDK009(gitPushCusSDK009):
         json_str = load_json(json_file)
         self.config_d = json_str["cus_r2_rc_sdk009"]
 
+    def get_dsp_rf_dir(self, root_dir):
+        for root,dirs,files in os.walk(root_dir,topdown=False):
+            if "DSP" in dirs:
+                self.dsp_rf_root_dir = os.path.join(root,"DSP")
+                self.dsp_bin = os.path.join(self.dsp_rf_root_dir,"dsp.bin")
+                self.rf_bin = os.path.join(self.dsp_rf_root_dir,"rf.bin")
+                self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
+                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                break
+
+class gitPushR2RCSDK008(gitPushCusSDK):
+    def __init__(self):
+        super(gitPushR2RCSDK008, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+        self.branch_name = "r2_rc_sdk_1.008"
+        # self.git.checkout(self.branch_name)
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_r2_rc_sdk008"]
+
+    def get_dsp_rf_dir(self, root_dir):
+        for root,dirs,files in os.walk(root_dir,topdown=False):
+            if "DSP" in dirs:
+                self.dsp_rf_root_dir = os.path.join(root,"DSP")
+                self.dsp_bin = os.path.join(self.dsp_rf_root_dir,"dsp.bin")
+                self.rf_bin = os.path.join(self.dsp_rf_root_dir,"rf.bin")
+                self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
+                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                break
 
 
 class gitPushR1RCSDK(gitPushSDKBase):
@@ -385,11 +422,71 @@ class gitPushR2RCSDK(gitPushSDKBase):
 
         self.branch_name = "r2_rc"
         # self.git.checkout(self.branch_name)
+        self.git_push_dsp_rf_list = []
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
         json_str = load_json(json_file)
         self.config_d = json_str["cus_r2_rc_sdk"]
+
+    def get_dsp_rf_dir(self, root_dir):
+        for root,dirs,files in os.walk(root_dir,topdown=False):
+            if "DSP" in dirs:
+                self.dsp_rf_root_dir = os.path.join(root,"DSP")
+                self.dsp_bin = os.path.join(self.dsp_rf_root_dir,"CRANE","CAT1GSM","dsp.bin")
+                self.rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANE","CAT1GSM","rf.bin")
+                self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
+                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+
+                self.git_push_dsp_rf_list.append((self.dsp_bin,self.git_push_dsp_dir))
+                self.git_push_dsp_rf_list.append((self.rf_bin,self.git_push_dsp_dir))
+
+                dsp_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1WCDMAGSM","dsp.bin")
+                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1WCDMAGSM","Z2_PM813","rf.bin")
+                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_g","images")
+
+                self.git_push_dsp_rf_list.append((dsp_bin,self.git_push_dsp_dir))
+                self.git_push_dsp_rf_list.append((rf_bin,self.git_push_dsp_dir))
+
+                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1WCDMAGSM","A0_PM813S","rf.bin")
+                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_g_a0","images")
+                self.git_push_dsp_rf_list.append((rf_bin,self.git_push_dsp_dir))
+                self.log.info(self.git_push_dsp_rf_list)
+                break
+
+    def copy_sdk_to_git_push_cp(self,cp_sdk):
+        try:
+            root_dir = os.path.join(self.cp_sdk_dir,cp_sdk)
+            for _file in os.listdir(root_dir):
+                fname = os.path.join(root_dir,_file)
+                if os.path.isfile(fname):
+                    shutil.copy2(fname,os.path.join(self.target_dist_dir,_file))
+                elif os.path.isdir(fname):
+                    shutil.copytree(fname,os.path.join(self.target_dist_dir,_file))
+                else:
+                    self.log.warning("%s" % fname)
+
+            self.log.info("%s" % self.dsp_rf_root_dir)
+            if os.path.exists(self.dsp_rf_root_dir):
+                dir_path = os.path.dirname(self.dsp_rf_root_dir)
+                self.log.info("%s" % dir_path)
+                dist_dir = os.path.join(self.target_dist_dir,os.path.basename(dir_path))
+                self.log.info("%s" % dist_dir)
+                if os.path.exists(dist_dir):
+                    shutil.rmtree(dist_dir)
+                shutil.copytree(dir_path,dist_dir)
+                for src_file, dist in self.git_push_dsp_rf_list:
+                    # dist_file = os.path.join(self.git_push_dsp_dir, os.path.basename(src_file))
+                    if os.path.exists(dist):
+                        if os.path.isfile(src_file):
+                            shutil.copy2(src_file, dist)
+                        else:
+                            self.log.warning("%s" % src_file)
+            self.log.info("copy_sdk_to_git_push_cp done.")
+        except Exception,e:
+            self.log.error(e)
+            self.log.error("copy_sdk_to_git_push_cp error")
+            raise Exception,"copy_sdk_to_git_push_cp error"
 
 
 class GitPushDspBase(GitPushBase):
