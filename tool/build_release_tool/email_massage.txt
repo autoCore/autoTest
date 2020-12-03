@@ -24,7 +24,7 @@ CRANEG FP DAILY:
     binary + debug object: {7}\craneg_evb_a0_from_crane
     download tool: {7}\craneg_evb_a0_from_crane\download_tool
 
-    XINGXIANG PHONE VERSION:
+    XINXIANG PHONE VERSION:
     binary + debug object: {7}\xinxiang_phone
     download tool: {7}\xinxiang_phone\download_tool
 
@@ -44,6 +44,16 @@ CUSTOMER VERSION RELEASE:
     DSP VERSION: {18}
     RELEASE DIR: {19}
 
+    mUI VERSION: {20}
+    SDK VERSION: {21}
+    DSP VERSION: {22}
+    RELEASE DIR: {23}
+
+    mUI VERSION: {24}
+    SDK VERSION: {25}
+    DSP VERSION: {26}
+    RELEASE DIR: {27}
+
 ********************************************************************************************************************************
 
 CRANE FWP DAILY:
@@ -58,21 +68,21 @@ CRANE FWP DAILY:
 ********************************************************************************************************************************
 
 CRANEM FP_SDK DAILY:
-    mUI VERSION: {20}
-    SDK VERSION: {21}
-    DSP VERSION: {22}
+    mUI VERSION: {28}
+    SDK VERSION: {29}
+    DSP VERSION: {30}
 
     EVB VERSION:
-    binary + debug object: {23}\cranem_evb_a0
-    download tool: {23}\cranem_evb_a0\download_tool
+    binary + debug object: {31}\cranem_evb_a0
+    download tool: {31}\cranem_evb_a0\download_tool
 
 ********************************************************************************************************************************
 
 CRANEM DM_SDK DAILY:
-    mUI VERSION: {24}
-    SDK VERSION: {25}
-    DSP VERSION: {26}
+    mUI VERSION: {32}
+    SDK VERSION: {33}
+    DSP VERSION: {34}
 
     EVB VERSION:
-    binary + debug object: {27}\cranem_dm_evb_a0
-    download tool: {27}\cranem_dm_evb_a0\download_tool
+    binary + debug object: {35}\cranem_dm_evb_a0
+    download tool: {35}\cranem_dm_evb_a0\download_tool

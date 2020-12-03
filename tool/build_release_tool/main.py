@@ -32,7 +32,7 @@ class autoRelease(ThreadBase):
         self.email_massage_file = os.path.join(self.root_dir,"email_massage.txt")
         self.tmp = _cfg.tmp_dir
 
-        self.repo_list = [repo, craneg_repo, repo_cus, repo_cus_sdk009, r2_rc_repo, cranem_repo, cranem_dm_repo]
+        self.repo_list = [repo, craneg_repo, cus_craneg_repo, r2_rc_repo, r2_rc_sdk009_repo, r2_rc_sdk008_repo, r1_rc_repo, cranem_repo, cranem_dm_repo]
 
         self.zip_tool = zipTool()
         self.today_release_flag = threading.Event()
@@ -377,6 +377,24 @@ if __name__ == "__main__":
     auto_build_task.add_build(auto_r1_rc_build_cls)
     auto_clean_overdue_dir_task.add_repo(r1_rc_repo)
 
+    # crane r2_rc_sdk008
+    r2_rc_sdk008_repo = cusR2RCSDK008Repo()
+    auto_r2_rc_sdk008_cls = CusR2RCSDK008Build(r2_rc_sdk008_repo)
+    auto_build_task.add_build(auto_r2_rc_sdk008_cls)
+    auto_clean_overdue_dir_task.add_repo(r2_rc_sdk008_repo)
+
+    # crane r2_rc_sdk009
+    r2_rc_sdk009_repo = cusR2RCSDK009Repo()
+    auto_r2_rc_sdk009_cls = CusR2RCSDK009Build(r2_rc_sdk009_repo)
+    auto_build_task.add_build(auto_r2_rc_sdk009_cls)
+    auto_clean_overdue_dir_task.add_repo(r2_rc_sdk009_repo)
+
+    # craneg r2_rc
+    cus_craneg_repo = cusCraneGRepo()
+    auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
+    auto_build_task.add_build(auto_cus_craneg_build_cls)
+
+
     # crane r2_rc
     r2_rc_repo = cusR2RCRepo()
     auto_r2_rc_cls = CusR2RCSDKBuild(r2_rc_repo)
@@ -384,16 +402,16 @@ if __name__ == "__main__":
     auto_clean_overdue_dir_task.add_repo(r2_rc_repo)
 
     # crane rc sdk009
-    repo_cus_sdk009 = CusMasterSDK009Repo()
-    auto_cus_sdk009_build_cls = CusSDK009Build(repo_cus_sdk009)
-    auto_build_task.add_build(auto_cus_sdk009_build_cls)
-    auto_clean_overdue_dir_task.add_repo(repo_cus_sdk009)
+    # repo_cus_sdk009 = CusMasterSDK009Repo()
+    # auto_cus_sdk009_build_cls = CusSDK009Build(repo_cus_sdk009)
+    # auto_build_task.add_build(auto_cus_sdk009_build_cls)
+    # auto_clean_overdue_dir_task.add_repo(repo_cus_sdk009)
 
     # crane rc
-    repo_cus = CusMasterRepo()
-    auto_cus_build_cls = CusBuild(repo_cus)
-    auto_build_task.add_build(auto_cus_build_cls)
-    auto_clean_overdue_dir_task.add_repo(repo_cus)
+    # repo_cus = CusMasterRepo()
+    # auto_cus_build_cls = CusBuild(repo_cus)
+    # auto_build_task.add_build(auto_cus_build_cls)
+    # auto_clean_overdue_dir_task.add_repo(repo_cus)
 
     # craneg dailay
     craneg_repo = craneGRepo()
@@ -429,12 +447,16 @@ if __name__ == "__main__":
     # auto_push_task.add_git_push(craneg_sdk_cls)
 
     # crane rc sdk auto push
-    cus_sdk_cls = gitPushCusSDK()
-    auto_push_task.add_git_push(cus_sdk_cls)
+    # cus_sdk_cls = gitPushCusSDK()
+    # auto_push_task.add_git_push(cus_sdk_cls)
 
     # crane rc sdk009 auto push
-    cus_sdk009_cls = gitPushCusSDK009()
-    auto_push_task.add_git_push(cus_sdk009_cls)
+    # cus_sdk009_cls = gitPushCusSDK009()
+    # auto_push_task.add_git_push(cus_sdk009_cls)
+
+    # crane r2_rc sdk008 auto push
+    cus_r2_rc_sdk008_cls = gitPushR2RCSDK008()
+    auto_push_task.add_git_push(cus_r2_rc_sdk008_cls)
 
     # crane r2_rc sdk009 auto push
     cus_r2_rc_sdk009_cls = gitPushR2RCSDK009()
