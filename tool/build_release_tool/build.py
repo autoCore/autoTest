@@ -829,7 +829,7 @@ class CusCraneGBuild(CusBuild):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg"]
-        self.board_list = self.config_d["boards"]
+        self.board_list = ["craneg_evb_a0_from_crane","xinxiang_phone"] #self.config_d["boards"]
 
     def config(self):
         self.release_branch = "r2_rc"
@@ -843,7 +843,7 @@ class CusCraneGBuild(CusBuild):
             subject = "%s RELEASE" % self.cp_version
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
-        self.trigger_auto_test(self.release_dist, "craneg_evb", board="craneg_evb_z2_from_crane")
+        # self.trigger_auto_test(self.release_dist, "craneg_evb", board="craneg_evb_z2_from_crane")
         self.trigger_auto_test(self.release_dist, "craneg_a0_evb", board="craneg_evb_a0_from_crane")
         self.git_clean()
 

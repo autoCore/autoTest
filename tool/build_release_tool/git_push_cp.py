@@ -433,24 +433,22 @@ class gitPushR2RCSDK(gitPushSDKBase):
         for root,dirs,files in os.walk(root_dir,topdown=False):
             if "DSP" in dirs:
                 self.dsp_rf_root_dir = os.path.join(root,"DSP")
-                self.dsp_bin = os.path.join(self.dsp_rf_root_dir,"CRANE","CAT1GSM","dsp.bin")
-                self.rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANE","CAT1GSM","rf.bin")
                 self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
-                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
 
-                self.git_push_dsp_rf_list.append((self.dsp_bin,self.git_push_dsp_dir))
-                self.git_push_dsp_rf_list.append((self.rf_bin,self.git_push_dsp_dir))
+                dsp_bin = os.path.join(self.dsp_rf_root_dir,"CRANE","CAT1GSM","dsp.bin")
+                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANE","CAT1GSM","rf.bin")
+
+                crane_dsp_rf_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                self.git_push_dsp_rf_list.append((dsp_bin, crane_dsp_rf_dir))
+                self.git_push_dsp_rf_list.append((rf_bin, crane_dsp_rf_dir))
 
                 dsp_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1WCDMAGSM","dsp.bin")
-                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1WCDMAGSM","Z2_PM813","rf.bin")
-                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_g","images")
+                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1WCDMAGSM","rf.bin")
 
-                self.git_push_dsp_rf_list.append((dsp_bin,self.git_push_dsp_dir))
-                self.git_push_dsp_rf_list.append((rf_bin,self.git_push_dsp_dir))
+                craneg_a0_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_g_a0","images")
+                self.git_push_dsp_rf_list.append((dsp_bin, craneg_a0_dir))
+                self.git_push_dsp_rf_list.append((rf_bin, craneg_a0_dir))
 
-                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1WCDMAGSM","A0_PM813S","rf.bin")
-                self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_g_a0","images")
-                self.git_push_dsp_rf_list.append((rf_bin,self.git_push_dsp_dir))
                 self.log.info(self.git_push_dsp_rf_list)
                 break
 
@@ -477,6 +475,8 @@ class gitPushR2RCSDK(gitPushSDKBase):
                 shutil.copytree(dir_path,dist_dir)
                 for src_file, dist in self.git_push_dsp_rf_list:
                     # dist_file = os.path.join(self.git_push_dsp_dir, os.path.basename(src_file))
+                    self.log.info(src_file)
+                    self.log.info(dist)
                     if os.path.exists(dist):
                         if os.path.isfile(src_file):
                             shutil.copy2(src_file, dist)
