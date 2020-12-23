@@ -29,6 +29,8 @@ class ManagerVersionBase(object):
         self.verion_name = ''
         self.cur_version = ''
         self.chip_ID = None
+        self.OS_type = None
+        self.ps_mode = None
         self.decompress_tool = zipTool()
 
         self.dsp_version_pattern = re.compile(r"(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9]|CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])")
@@ -94,11 +96,14 @@ class ManagerVersionBase(object):
         assert os.path.exists(cp_version_file), "%s not exists" % cp_version_file
         SYSTEM_CUST_SKU = "MINIGUI"
         SYSTEM_SKU_REVERSION = "SDK"
-        if self.chip_ID == "craneG":
-            SYSTEM_PS_MODE = "LWG"
+        if self.ps_mode:
+            SYSTEM_PS_MODE = self.ps_mode
         else:
             SYSTEM_PS_MODE = "LTEGSM"
-        SYSTEM_TARGET_OS = "TX"
+        if self.OS_type:
+            SYSTEM_TARGET_OS = self.OS_type
+        else:
+            SYSTEM_TARGET_OS = "TX"
         APPEND_REVERSION = "_".join([SYSTEM_CUST_SKU, SYSTEM_SKU_REVERSION])
         file_obj = open(cp_version_file)
         SYSTEM_VERSION = ''
@@ -362,6 +367,19 @@ class CraneRepo(RepoBase):
         self.config_d = json_str["crane_info"]
         self.branch_name = "master"
 
+class CraneAliOSRepo(RepoBase):
+    def __init__(self):
+        super(CraneAliOSRepo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+        self.OS_type = "ALIOS"
+        self.log.info("create repo done")
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane_AliOS_info"]
+        self.branch_name = "master"
+
 
 
 class craneGRepo(RepoBase):
@@ -369,6 +387,7 @@ class craneGRepo(RepoBase):
         super(craneGRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
         self.chip_ID = "craneG"
+        self.ps_mode = "LWG"
         self.log.info("create repo done")
 
 
@@ -493,6 +512,7 @@ class cusCraneGRepo(CusRepo):
         super(cusCraneGRepo, self).__init__()
         self.log = MyLogger(self.__class__.__name__)
         self.chip_ID = "craneG"
+        self.ps_mode = "LWG"
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","repo.json")

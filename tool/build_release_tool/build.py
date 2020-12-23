@@ -449,12 +449,12 @@ class CraneDailyBuild(MyDailyBuildBase):
         self.board_list = self.config_d["boards"]
 
     def close_build(self):
-        if self.cp_version not in self.old_cp_version:
-            self.sdk_update_flag.set()
         self.git_clean()
         self.trigger_auto_test(self.release_dist, None, "crane_evb_z2")
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp",  board="crane_evb_z2_fwp")
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo",  board="crane_evb_z2_dcxo")
+        if self.cp_version not in self.old_cp_version:
+            self.sdk_update_flag.set()
 
     @property
     def condition(self):
@@ -484,6 +484,25 @@ class CraneDailyBuild(MyDailyBuildBase):
                 return True
         return False
 
+
+class CraneAliOSDailyBuild(CraneDailyBuild):
+    def __init__(self, _repo):
+        super(CraneAliOSDailyBuild, self).__init__(_repo)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane_alios"]
+        self.board_list = self.config_d["boards"]
+
+    def close_build(self):
+        if self.cp_version not in self.old_cp_version:
+            self.sdk_update_flag.set()
+        self.git_clean()
+        self.trigger_auto_test(self.release_dist, None, "crane_evb_z2")
+        self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo",  board="crane_evb_z2_dcxo")
 
 
 class CraneGDailyBuild(MyDailyBuildBase):
@@ -530,6 +549,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
                     if _info.startswith("cus/evb/") or _info.startswith(".../") or _info.startswith("cus/evb_m/"):
                         continue
                     else:
+                        self.log.info(_info)
                         return True
                 continue
             if "Already up to date." not in info:

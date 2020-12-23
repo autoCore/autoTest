@@ -413,6 +413,12 @@ if __name__ == "__main__":
     # auto_build_task.add_build(auto_cus_build_cls)
     # auto_clean_overdue_dir_task.add_repo(repo_cus)
 
+    # crane AliOS dailay
+    alios_repo = CraneAliOSRepo()
+    auto_alios_daily_build_cls = CraneAliOSDailyBuild(alios_repo)
+    auto_build_task.add_build(auto_alios_daily_build_cls)
+    auto_clean_overdue_dir_task.add_repo(alios_repo)
+
     # craneg dailay
     craneg_repo = craneGRepo()
     craneg_build_cls = CraneGDailyBuild(craneg_repo)
@@ -436,7 +442,6 @@ if __name__ == "__main__":
     auto_daily_build_cls = CraneDailyBuild(repo)
     auto_build_task.add_build(auto_daily_build_cls)
     auto_clean_overdue_dir_task.add_repo(repo)
-
 
     # crane dailay sdk auto push
     cp_sdk_cls = gitPushCraneSDK()

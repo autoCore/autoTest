@@ -170,16 +170,21 @@ class gitPushSDKBase(GitPushBase):
     def unzip_sdk(self):
         fname,_ = os.path.splitext(self.cp_sdk)
         root_dir = os.path.join(self.cp_sdk_dir,fname)
-        with ziptool_mutex:
-            self.zip_tool.unpack_archive(os.path.join(self.cp_sdk_dir,self.cp_sdk),root_dir)
-        assert os.path.exists(root_dir),"can not find %s" % root_dir
-        for root,dirs,files in os.walk(root_dir,topdown=False):
-            if "3g_ps" in dirs:
-                self.cp_sdk_root_dir = root
-                break
-        assert os.path.exists(self.cp_sdk_root_dir),"can not find %s" % self.cp_sdk_root_dir
-
-        self.get_dsp_rf_dir(root_dir)
+        while True:
+            try:
+                with ziptool_mutex:
+                    self.zip_tool.unpack_archive(os.path.join(self.cp_sdk_dir,self.cp_sdk),root_dir)
+                assert os.path.exists(root_dir),"can not find %s" % root_dir
+                for root,dirs,files in os.walk(root_dir,topdown=False):
+                    if "3g_ps" in dirs:
+                        self.cp_sdk_root_dir = root
+                        break
+                assert os.path.exists(self.cp_sdk_root_dir),"can not find %s" % self.cp_sdk_root_dir
+                self.get_dsp_rf_dir(root_dir)
+                return
+            except Exception,e:
+                time.sleep(10)
+                self.log.error(e)
 
 
     def delete_gui_lib(self,path_dir):
@@ -216,6 +221,7 @@ class gitPushSDKBase(GitPushBase):
         return CRANE_CUST_VER_INFO
 
     def condition(self):
+        self.update()
         self.find_new_cp_sdk()
         self.git_clean()
         if os.path.exists(os.path.join(self.cp_sdk_dir,self.cp_sdk)):
@@ -567,6 +573,7 @@ class GitPushDspBase(GitPushBase):
         self.release_rf_excel_file = os.path.join(root_dir,"PM813","rf.xlsm")
 
     def condition(self):
+        self.update()
         self.git_clean()
         local_dsp_version = self.get_dsp_version()
         self.get_release_dsp_rf()
@@ -708,7 +715,7 @@ class gitPushCraneGDsp(GitPushDspBase):
             self.log.debug(release_dir)
             for root,dirs,files in os.walk(release_dir,topdown=False):
                 if self.release_target_file in files:
-                    rf = os.path.join(root,"Z2_PM813","rf.bin")
+                    rf = os.path.join(root,"A0_PM813S","rf.bin")
                     if os.path.exists(rf):
                         dsp_release_bin_l.append(os.path.join(root,self.release_target_file))
         dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
