@@ -114,6 +114,13 @@
     },
     {
       "command": "flash",
+      "name": "uirespkg",
+      "type": "image",
+      "partition": "uirespkg",
+      "group": "2"
+    },
+    {
+      "command": "flash",
       "name": "updater",
       "type": "image",
       "partition": "updater",
@@ -200,6 +207,12 @@
     {
       "name": "logo",
       "image": "logo.bin",
+      "io": "in",
+      "format": "raw"
+    },
+    {
+      "name": "uirespkg",
+      "image": "uirespkg.bin",
       "io": "in",
       "format": "raw"
     },
@@ -292,6 +305,15 @@
       }
     },
     {
+      "name": "boot33_lzma",
+      "image": "boot33.lzma",
+      "io": "out",
+      "format": "lzma",
+      "lzma": {
+        "image": "boot33"
+      }
+    },
+    {
       "name": "bootloader_img",
       "image": "bootloader.img",
       "io": "out",
@@ -304,7 +326,7 @@
           },
           {
             "id": "BL33_IMAGE_ID",
-            "image": "boot33"
+            "image": "boot33_lzma"
           }
         ],
         "callBoot2": true,

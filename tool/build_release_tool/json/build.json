@@ -188,7 +188,7 @@
                     ".\\cus\\evb\\images\\ReliableData.bin",
                     ".\\build\\crane_evb_z2\\uirespkg.bin"
                 ],
-                "build_cmd":"autobuild.bat -f crane_evb_z2_gen_rel.conf -t gen_rel@autobuild.bat -f crane_evb_z2_bld_rel.conf -t bld_rel"
+                "build_cmd":"autobuild.bat -f crane_evb_z2_gen_rel.conf -t gen_rel@autobuild.bat -f crane_evb_z2_bld_rel.conf -t framework"
             },
             "crane_evb_z2_fwp_128x64":
             {
@@ -754,7 +754,7 @@
                     ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
                     ".\\build\\crane_evb_z2\\crane_evb.bin",
                     ".\\cus\\evb_m\\images\\logo.bin",
-                    ".\\cp\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
+                    ".\\cus\\evb_m\\images\\updater.bin",
                     ".\\cus\\evb_m\\images\\dsp.bin",
                     ".\\cus\\evb_m\\images\\rf.bin",
                     ".\\cus\\evb_m\\images\\ReliableData.bin",
@@ -796,6 +796,68 @@
                     ".\\build\\crane_evb_z2\\uirespkg.bin"
                 ],
                 "build_cmd":"autobuild.bat -f cranem_evb_miniphone_dm.conf"
+            }
+        }
+    },
+    "crane_alios":
+    {
+        "boards": ["crane_evb_z2", "crane_evb_z2_dcxo"],
+        "compile_log_dir": ".\\tmp\\compile_log",
+        "boards_info":
+        {
+            "crane_evb_z2":
+            {
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\rel_lib"
+                ],
+                "release_bin":
+                [
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
+                    ".\\cus\\evb_alios\\images\\updater.bin",
+                    ".\\cus\\evb\\images\\dsp.bin",
+                    ".\\cus\\evb\\images\\rf.bin",
+                    ".\\cus\\evb_alios\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":"autobuild.bat -f crane_evb_z2_alios.conf"
+            },
+            "crane_evb_z2_dcxo":
+            {
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin","uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                ],
+                "release_bin":
+                [
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
+                    ".\\cus\\evb_alios\\images\\updater.bin",
+                    ".\\cus\\evb\\images\\dsp.bin",
+                    ".\\cus\\evb\\images\\rf.bin",
+                    ".\\cus\\evb_alios_dcxo\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":""
             }
         }
     }

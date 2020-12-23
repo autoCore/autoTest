@@ -25,8 +25,28 @@ class BuildController(object):
         self.hal_build_log = os.path.join(".", 'build', 'crane_evb_z2', r'hal_build.log')
         self.cp_build_log = os.path.join(".", 'build', 'crane_evb_z2', r'cp_build.log')
         self.link_log = os.path.join(".", 'build', 'crane_evb_z2', r'fp_link_build.log')
+        self.release_log = os.path.join(".", 'build', 'crane_evb_z2', r'arelease.log')
         self.compile_log_dir = os.path.join(self.root_dir, 'tmp', 'compile_log')
         self.zip_tool = zipTool()
+        self.release_zip_file = ''
+
+    def check_build_result(self,cur_dir, build_dir):
+        if "rel" in cur_dir:
+            if os.path.exists(r"%s\build\%s\libhal.a" % (cur_dir, build_dir)):
+                self.log.info("%s build done" % cur_dir)
+                self.build_res = "SUCCESS"
+            else:
+                self.log.warning("%s build fail" % cur_dir)
+                self.build_res = "FAIL"
+        else:
+            if os.path.exists(r"%s\build\%s\crane_evb.elf" % (cur_dir, build_dir)) and os.path.exists(
+                    r"%s\build\%s\crane_evb.bin" % (cur_dir, build_dir)) and \
+                    os.path.exists(r"%s\%s"%(cur_dir,self.release_zip_file)):
+                self.log.info("%s build done" % cur_dir)
+                self.build_res = "SUCCESS"
+            else:
+                self.log.warning("%s build fail" % cur_dir)
+                self.build_res = "FAIL"
 
     def build(self, cur_dir, compile_log='', cmd='', build_dir='crane_evb_z2'):
         os.chdir(cur_dir)
@@ -34,6 +54,7 @@ class BuildController(object):
         self.hal_build_log = os.path.join(cur_dir, 'build', build_dir, r'hal_build.log')
         self.cp_build_log = os.path.join(cur_dir, 'build', build_dir, r'cp_build.log')
         self.link_log = os.path.join(cur_dir, 'build', build_dir, r'fp_link_build.log')
+        self.release_log = os.path.join(cur_dir, 'build', build_dir, r'arelease.log')
         self.log.info("%s build start..." % cur_dir)
         # cmd = "autobuild.bat %s> %s"%(build_dir,compile_log)
         if not cmd:
@@ -54,18 +75,15 @@ class BuildController(object):
             self.build_res = "FAIL"
             return
         time.sleep(5)
-        if os.path.exists(r"%s\build\%s\crane_evb.elf" % (cur_dir, build_dir)) and os.path.exists(
-                r"%s\build\%s\crane_evb.bin" % (cur_dir, build_dir)):
-            self.log.info("%s build done" % cur_dir)
-            self.build_res = "SUCCESS"
+        if "autobuild.bat -f crane_evb_z2_gen_rel.conf -t gen_rel" in cmd:
+            pass
         else:
-            self.log.warning("%s build fail" % cur_dir)
-            self.build_res = "FAIL"
+            self.check_build_result(cur_dir, build_dir)
 
     def send_email(self, cur_dir, owner, external_dir, board="crane_evb_z2", subject_str = None):
         os.chdir(cur_dir)
         if self.build_res in "FAIL":
-            att_file_list = [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log]
+            att_file_list = [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log,self.release_log]
             att_file_list = [os.path.join(cur_dir,_file) for _file in att_file_list]
             # att_file_list.append(self.compile_log)
             att_file = '@'.join(att_file_list)
@@ -172,8 +190,8 @@ class BuildBase(object):
 
         _zip_file = self.board_info.get(board, {}).get("build_zip_file","")
         self.build_zip_file = os.path.join(self.build_root_dir, _zip_file)
-        if os.path.exists(self.build_zip_file):
-            copy(self.build_zip_file, os.path.join(dist_dir, os.path.basename(_zip_file)))
+        # if os.path.exists(self.build_zip_file):
+        copy(self.build_zip_file, os.path.join(dist_dir, os.path.basename(_zip_file)))
 
         _mdb_file_dir = self.board_info.get(board, {}).get("mdb_file_dir","")
         self.mdb_file_dir = os.path.join(self.build_root_dir, _mdb_file_dir)
@@ -186,8 +204,15 @@ class BuildBase(object):
     def copy_sdk_files_to_release_dir(self, dist_dir, board="crane_evb_z2", src_dir=None):
         src_dir = self.build_root_dir
         self.images = self.board_info.get(board, {}).get("images",[])
-        src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
-        src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
+        # src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
+        # src_bin_l = [os.path.join(src_dir, _file) for _file in src_bin_l]
+        for _tool in self.download_tool_l:
+            if _tool.endswith("x64"):
+                self.log.info(_tool)
+                download_tool = _tool
+                break
+        download_tool_images_dir = os.path.join(download_tool,"images")
+        src_bin_l = [os.path.join(download_tool_images_dir, _file) for _file in self.images]
         dist_bin_l = [os.path.join(dist_dir, _file) for _file in self.images]
         for src_bin, dist_bin in zip(src_bin_l, dist_bin_l):
             if os.path.exists(src_bin):
@@ -363,6 +388,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
             if board in ["crane_evb_z2_dcxo", "craneg_evb_z2_dcxo","craneg_evb_z2_from_crane_dcxo","sdk009_crane_evb_z2_dcxo"]:
                 continue
             self.git_clean()
+            self.release_zip_file = self.board_info.get(board, {}).get("build_zip_file","")
             build_cmd_str = self.board_info.get(board, {}).get("build_cmd",'')
             for build_cmd in build_cmd_str.split("@"):
                 assert build_cmd,"%s no build cmd" % board
@@ -404,8 +430,13 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
                 continue
             else:
-                self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
-
+                try:
+                    self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+                except Exception,e:
+                    self.log.error(e)
+                    self.build_res = "FAIL"
+                    self.send_email(_root_dir, owner, self.release_dist, board)
+                    return self.loacal_dist_dir
             try:
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
@@ -947,6 +978,7 @@ class CusR1RCBuild(CusBuild):
 
         for board in self.board_list:
             self.git_clean()
+            self.release_zip_file = self.board_info.get(board, {}).get("build_zip_file","")
             build_cmd = self.board_info.get(board, {}).get("build_cmd",'')
             assert build_cmd,"%s no build cmd" % board
             self.log.info("-" * 80)

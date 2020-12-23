@@ -55,6 +55,11 @@
               "name": "logo",
               "format": "raw",
               "size": "0"
+            },
+            {
+              "name": "uirespkg",
+              "format": "raw",
+              "size": "0"
             }
           ]
         },

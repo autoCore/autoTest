@@ -42,7 +42,7 @@
         "local_dir": ".\\dsp_rf_rbd_bin",
         "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
         "verson_file": "E:\\daily_auto_push\\crane-dev\\cus\\evb_m\\images\\dsp.bin",
-        "version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "version_pattern": "(CRANE.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
     "crane_sdk":
@@ -115,7 +115,7 @@
         "verson_file": "E:\\cus_auto_push\\cus_r2_rc\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
         "git_push_cmd": ["origin","r2_rc"]
     },
-	"cus_r2_rc_sdk008":
+    "cus_r2_rc_sdk008":
     {
         "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200415_SDK",
         "release_target": "ASR3601_MINIGUI_",
