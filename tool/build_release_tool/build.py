@@ -467,7 +467,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
                     if board not in self.board_list:
                         continue
                     self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
-                    self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir,board = board)
+                    self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
                     _root_dir = self.download_tool_images_dir_d[board]
                     _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
                     self.prepare_download_tool(_images)
