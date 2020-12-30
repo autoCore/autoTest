@@ -223,8 +223,8 @@
                 "version_file":".\\version_file_dir\\version_r2_rc_sdk009.log",
                 "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
                 "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
-                "git": "E:\\cus_r2_rc_sdk009\\crane-phone-rls",
-                "build": "E:\\cus_r2_rc_sdk009\\crane-phone-rls\\evb\\src"
+                "git": "E:\\sdk009\\crane-phone-rls",
+                "build": "E:\\sdk009\\crane-phone-rls\\evb\\src"
             },
             "r2_rc_sdk008":
             {
@@ -232,8 +232,8 @@
                 "version_file":".\\version_file_dir\\version_r2_rc_sdk008.log",
                 "dsp_version_file": ".\\cus\\evb\\images\\dsp.bin",
                 "sdk_version_file": ".\\cp\\tavor\\env\\inc\\sys_version.h",
-                "git": "E:\\cus_r2_rc_sdk008\\crane-phone-rls",
-                "build": "E:\\cus_r2_rc_sdk008\\crane-phone-rls\\evb\\src"
+                "git": "E:\\sdk008\\crane-phone-rls",
+                "build": "E:\\sdk008\\crane-phone-rls\\evb\\src"
             }
         },
         "version_info_log":

@@ -277,7 +277,12 @@ class gitPushSDKBase(GitPushBase):
             self.delete_gui_lib(gui_lib)
             self.copy_sdk_to_git_push_cp(self.cp_sdk_root_dir)
             self.git_add()
-            commit_info = "%s" % self.cp_sdk
+            commit_version_info = re.findall("\[(.*?\..*?\..*?)\]",release_sdk_version)
+            if commit_version_info:
+                commit_version_info = commit_version_info[0]
+            else:
+                commit_version_info = " "
+            commit_info = "%s version info: %s" % (self.cp_sdk, commit_version_info)
             self.git_commit(commit_info)
             self.git_push()
             return True

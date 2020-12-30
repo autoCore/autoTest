@@ -16,10 +16,6 @@ CRANEG FP DAILY:
     SDK VERSION: {5}
     DSP VERSION: {6}
 
-    EVB Z2 VERSION:
-    binary + debug object: {7}\craneg_evb_z2_from_crane
-    download tool: {7}\craneg_evb_z2_from_crane\download_tool
-
     EVB A0 VERSION:
     binary + debug object: {7}\craneg_evb_a0_from_crane
     download tool: {7}\craneg_evb_a0_from_crane\download_tool

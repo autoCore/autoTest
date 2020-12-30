@@ -1,7 +1,7 @@
 {
     "crane":
     {
-        "boards": ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp", "mHAL","crane_evb_z2_fwp_128x64","crane_evb_z2_176x220","miniphone"],
+        "boards": ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone","crane_evb_z2_128x160", "crane_evb_z2_fwp", "mHAL","crane_evb_z2_fwp_128x64","crane_evb_z2_176x220"],
         "compile_log_dir": ".\\tmp\\compile_log",
         "boards_info":
         {
@@ -17,7 +17,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -44,7 +45,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip"
                 ],
                 "release_bin":
                 [
@@ -71,7 +73,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -98,7 +101,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -117,7 +121,7 @@
             "crane_evb_z2_128x160":
             {
                 "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
@@ -125,7 +129,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -144,7 +149,7 @@
             "crane_evb_z2_fwp":
             {
                 "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
@@ -152,7 +157,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -171,10 +177,10 @@
             "mHAL":
             {
                 "mdb_file_dir": "CAN_NOT_COPY",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\rel\\build\\crane_evb_z2\\libhal.a",
                 "build_images":
                 [
-                    ".\\build\\rel\\build\\crane_evb_z2\\libhalrel.a"
+                    ".\\build\\rel\\build\\crane_evb_z2\\libhal.a"
                 ],
                 "release_bin":
                 [
@@ -193,7 +199,7 @@
             "crane_evb_z2_fwp_128x64":
             {
                 "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
@@ -201,7 +207,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -220,7 +227,7 @@
             "crane_evb_z2_fp_320x240":
             {
                 "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
@@ -228,7 +235,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -247,7 +255,7 @@
             "crane_evb_z2_176x220":
             {
                 "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
@@ -255,7 +263,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -283,7 +292,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -311,7 +321,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -338,7 +349,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip"
                 ],
                 "release_bin":
                 [
@@ -374,7 +386,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -401,7 +414,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip"
                 ],
                 "release_bin":
                 [
@@ -428,7 +442,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -455,7 +470,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -474,7 +490,7 @@
             "crane_evb_z2_128x160":
             {
                 "mdb_file_dir": ".\\cp009\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
@@ -482,7 +498,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -501,7 +518,7 @@
             "crane_evb_z2_fwp":
             {
                 "mdb_file_dir": ".\\cp009\\tavor\\Arbel\\bin",
-                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
@@ -509,7 +526,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -529,7 +547,7 @@
     },
     "craneg":
     {
-        "boards": ["craneg_evb_z2_from_crane","craneg_evb_z2_from_crane_dcxo","craneg_evb_a0_from_crane","xinxiang_phone"],
+        "boards": ["craneg_evb_a0_from_crane","xinxiang_phone"],
         "compile_log_dir": ".\\tmp\\compile_log",
         "boards_info":
         {
@@ -545,7 +563,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_32+8MB.zip"
                 ],
                 "release_bin":
                 [
@@ -572,7 +591,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_32+8MB_DCXO.zip"
                 ],
                 "release_bin":
                 [
@@ -600,7 +620,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_32+8MB.zip"
                 ],
                 "release_bin":
                 [
@@ -627,7 +648,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEG_Z2_32+8MB_DCXO.zip"
                 ],
                 "release_bin":
                 [
@@ -655,7 +677,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip"
                 ],
                 "release_bin":
                 [
@@ -683,7 +706,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip"
                 ],
                 "release_bin":
                 [
@@ -710,7 +734,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip"
                 ],
                 "release_bin":
                 [
@@ -746,7 +771,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
                     ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -781,7 +807,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_8MB.zip"
                 ],
                 "release_bin":
                 [
@@ -816,7 +843,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\rel_lib"
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
@@ -843,7 +871,8 @@
                     ".\\build\\crane_evb_z2\\crane_evb.elf",
                     ".\\build\\crane_evb_z2\\crane_evb.map",
                     ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
-                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt"
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB_DCXO.zip"
                 ],
                 "release_bin":
                 [
