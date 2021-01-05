@@ -201,7 +201,8 @@ class BuildBase(object):
                     break
 
     def copy_sdk_files_to_release_dir(self, dist_dir, board="crane_evb_z2", src_dir=None):
-        src_dir = self.build_root_dir
+        if not src_dir:
+            src_dir = self.build_root_dir
         self.images = self.board_info.get(board, {}).get("images",[])
 
         # src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
@@ -972,7 +973,8 @@ class CusR1RCBuild(CusBuild):
         shutil.rmtree(release_dir)
 
     def copy_sdk_files_to_release_dir(self, dist_dir, board="crane_evb_z2", src_dir=None):
-        src_dir = self.build_root_dir
+        if not src_dir:
+            src_dir = self.build_root_dir
         self.images = self.board_info.get(board, {}).get("images",[])
 
         src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
