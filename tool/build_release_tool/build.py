@@ -316,6 +316,9 @@ class BuildBase(object):
         self.dsp_version = self._repo.get_dsp_version(dsp_bin, self.dsp_version_log)
         return self.dsp_version
 
+    def get_dsp_version_from_bin_to_file(self, dsp_bin, version_file):
+        self._repo.get_dsp_version(dsp_bin, version_file)
+
     def record_ap_version(self, version):
         with open(self.ap_version_log, 'w') as _obj:
             _obj.write(version.upper())
@@ -457,8 +460,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
             if self.build_res == "SUCCESS":
                 _root_dir = self.download_tool_images_dir_d[board]
                 _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
-                self.prepare_download_tool(_images)
                 try:
+                    self.prepare_download_tool(_images)
                     self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
                                                           dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
                 except Exception,e:
@@ -886,6 +889,38 @@ class CusR2RCSDK009Build(CusBuild):
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp_rc", "crane_evb_z2_fwp")
         self.git_clean()
 
+class CusFTBuild(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CusFTBuild, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "crane_ft"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane_ft"]
+        self.board_list = self.config_d["boards"][:]
+
+    def copy_version_file_to_release_dir(self):
+        for _file in [self.xml_file, self.ap_version_log, self.cp_version_log, self.massage_file]:
+            if os.path.exists(_file):
+                copy(_file, os.path.join(self.loacal_dist_dir, "version_info", os.path.basename(_file)))
+
+        for board in self.board_list:
+            dsp_bin = None
+            dsp_version_file = os.path.join(self.version_info_dir, board+"_dsp_version.txt")
+            src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
+            for _file in src_bin_l:
+                if "dsp.bin" in _file:
+                    dsp_bin = os.path.join(self.build_root_dir, _file)
+                    break
+            self.get_dsp_version_from_bin_to_file(dsp_bin,dsp_version_file)
+
+    def close_build(self):
+        self.trigger_auto_test(self.release_dist, "crane_ft_d_visenk", "visenk_phone")
+        self.trigger_auto_test(self.release_dist, "crane_ft_d_xinxiang", "xinxiang_phone")
+        self.git_clean()
+
 
 class CusCraneGBuild(CusBuild):
     def __init__(self, _repo_cus):
@@ -897,7 +932,7 @@ class CusCraneGBuild(CusBuild):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["craneg"]
-        self.board_list = ["craneg_evb_a0_from_crane","xinxiang_phone"] #self.config_d["boards"]
+        self.board_list = self.config_d["boards"]
 
     def config(self):
         self.release_branch = "r2_rc"

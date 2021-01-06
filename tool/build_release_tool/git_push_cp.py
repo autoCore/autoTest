@@ -882,6 +882,7 @@ class gitPushDownloadTool(GitPushBase):
         self.downloadtool_dir = os.path.join(self.root_dir, self.config_d["local_dir"])
         self.version_file = self.config_d["verson_file"]
         self.release_target = self.config_d["release_target"]
+        self.release_tool_pattern = self.config_d["release_tool_pattern"]
         self.clean_bin_list = self.config_d["clean_bin_list"]
 
         self.partition_config = os.path.join(self.root_dir, self.config_d["partition_config"])
@@ -892,7 +893,7 @@ class gitPushDownloadTool(GitPushBase):
         self.win_type = self.config_d["win_type"]
 
     def find_new_tool(self):
-        tool_list = [_file for _file in os.listdir(self.downloadtool_release_dir) if self.win_type in _file and _file.endswith(".exe") and _file.startswith(self.release_target)]
+        tool_list = [_file for _file in os.listdir(self.downloadtool_release_dir) if re.match(self.release_tool_pattern, _file)]
         tool_list.sort(key=lambda fn: os.path.getmtime(os.path.join(self.downloadtool_release_dir,fn)))
         assert tool_list,"can not find downloadtool"
         self.downloadtool_name = tool_list[-1]

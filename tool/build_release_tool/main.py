@@ -377,6 +377,12 @@ if __name__ == "__main__":
     auto_build_task.add_build(auto_r1_rc_build_cls)
     auto_clean_overdue_dir_task.add_repo(r1_rc_repo)
 
+    # crane ft
+    ft_repo = cusFTRepo()
+    auto_ft_cls = CusFTBuild(ft_repo)
+    auto_build_task.add_build(auto_ft_cls)
+    auto_clean_overdue_dir_task.add_repo(ft_repo)
+
     # crane r2_rc_sdk008
     r2_rc_sdk008_repo = cusR2RCSDK008Repo()
     auto_r2_rc_sdk008_cls = CusR2RCSDK008Build(r2_rc_sdk008_repo)
@@ -527,9 +533,10 @@ if __name__ == "__main__":
                 auto_daily_build_cls.sdk_update_flag.clear()
                 craneg_build_cls.sdk_update_flag.clear()
                 cranem_build_cls.sdk_update_flag.clear()
-                RELEASE_EVENT.set()
+                if not auto_release_task.today_release_flag.is_set(): 
+                    RELEASE_EVENT.set()
 
-            if now.hour == 9 and now.minute == 15 and now.second == 0:
+            if now.hour == 10 and now.minute == 0 and now.second == 0:
                 if not auto_release_task.today_release_flag.is_set():
                     RELEASE_EVENT.set()
                     time.sleep(1)

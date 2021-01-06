@@ -547,7 +547,7 @@
     },
     "craneg":
     {
-        "boards": ["craneg_evb_a0_from_crane","xinxiang_phone"],
+        "boards": ["craneg_evb_a0_from_crane","xinxiang_phone","craneg_evb_a0_128x160","craneg_evb_a0_176x220","craneg_evb_a0_fwp"],
         "compile_log_dir": ".\\tmp\\compile_log",
         "boards_info":
         {
@@ -687,7 +687,7 @@
                     ".\\build\\crane_evb_z2\\crane_evb.bin",
                     ".\\cpLWG\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
                     ".\\cpLWG\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
-                    ".\\cus\\evb_g\\images\\dsp.bin",
+                    ".\\cus\\evb_g_a0\\images\\dsp.bin",
                     ".\\cus\\evb_g_a0\\images\\rf.bin",
                     ".\\cus\\evb_g_a0\\images\\ReliableData.bin",
                     ".\\build\\crane_evb_z2\\uirespkg.bin"
@@ -716,12 +716,99 @@
                     ".\\build\\crane_evb_z2\\crane_evb.bin",
                     ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
                     ".\\cp\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
-                    ".\\cus\\evb_g\\images\\dsp.bin",
+                    ".\\cus\\evb_g_a0\\images\\dsp.bin",
                     ".\\cus\\evb_g_a0\\images\\rf.bin",
                     ".\\cus\\evb_g_a0\\images\\ReliableData.bin",
                     ".\\build\\crane_evb_z2\\uirespkg.bin"
                 ],
                 "build_cmd":"autobuild -f craneg_evb_a0_bld_lwg_from_crane.conf"
+            },
+            "craneg_evb_a0_128x160":
+            {
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip"
+                ],
+                "release_bin":
+                [
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
+                    ".\\cus\\evb_g_a0\\images\\dsp.bin",
+                    ".\\cus\\evb_g_a0\\images\\rf.bin",
+                    ".\\cus\\evb_g_a0\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":"autobuild -f craneg_evb_a0_lcd128x160.conf"
+            },
+            "craneg_evb_a0_176x220":
+            {
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip"
+                ],
+                "release_bin":
+                [
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
+                    ".\\cus\\evb_g_a0\\images\\dsp.bin",
+                    ".\\cus\\evb_g_a0\\images\\rf.bin",
+                    ".\\cus\\evb_g_a0\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":"autobuild -f craneg_evb_a0_lcd176x220.conf"
+            },
+            "craneg_evb_a0_fwp":
+            {
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\rel_lib",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip"
+                ],
+                "release_bin":
+                [
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\logo_lcd_adapt.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\updater_lcd_adapt_adups.bin",
+                    ".\\cus\\evb_g_a0\\images\\dsp.bin",
+                    ".\\cus\\evb_g_a0\\images\\rf.bin",
+                    ".\\cus\\evb_g_a0\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":"autobuild -f craneg_evb_a0_lcd320x240_FWP.conf"
             },
             "xinxiang_phone":
             {
@@ -744,7 +831,7 @@
                     ".\\build\\crane_evb_z2\\crane_evb.bin",
                     ".\\cus\\cus_x\\images\\logo.bin",
                     ".\\cus\\cus_x\\images\\updater.bin",
-                    ".\\cus\\evb_g\\images\\dsp.bin",
+                    ".\\cus\\evb_g_a0\\images\\dsp.bin",
                     ".\\cus\\cus_x\\images\\rf.bin",
                     ".\\cus\\cus_x\\images\\ReliableData.bin",
                     ".\\build\\crane_evb_z2\\uirespkg.bin"
@@ -887,6 +974,70 @@
                     ".\\build\\crane_evb_z2\\uirespkg.bin"
                 ],
                 "build_cmd":""
+            }
+        }
+    },
+    "crane_ft":
+    {
+        "boards": ["visenk_phone", "xinxiang_phone"],
+        "compile_log_dir": ".\\tmp\\compile_log",
+        "boards_info":
+        {
+            "visenk_phone":
+            {
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANE_A0_16MB.zip"
+                ],
+                "release_bin":
+                [
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cus\\cus_v\\images\\logo.bin",
+                    ".\\cus\\cus_v\\images\\updater.bin",
+                    ".\\cus\\evb\\images\\dsp.bin",
+                    ".\\cus\\cus_v\\images\\rf.bin",
+                    ".\\cus\\cus_v\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":"autobuild.bat -f crane_evb_z2_custom_V.conf"
+            },
+            "xinxiang_phone":
+            {
+                "mdb_file_dir": ".\\cp\\tavor\\Arbel\\bin",
+                "build_zip_file": ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip",
+                "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
+                "build_images":
+                [
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.elf",
+                    ".\\build\\crane_evb_z2\\crane_evb.map",
+                    ".\\build\\crane_evb_z2\\hsiupdlibdev.i",
+                    ".\\build\\crane_evb_z2\\Arbel_PMD2NONE_MDB.txt",
+                    ".\\build\\crane_evb_z2\\ASR_CRANE_EVB_CRANEGM_A0_16+8MB.zip"
+                ],
+                "release_bin":
+                [
+                    ".\\cp\\tavor\\Arbel\\build\\apn.bin",
+                    ".\\cp\\tavor\\Arbel\\build\\boot33.bin",
+                    ".\\build\\crane_evb_z2\\crane_evb.bin",
+                    ".\\cus\\cus_x\\images\\logo.bin",
+                    ".\\cus\\cus_x\\images\\updater.bin",
+                    ".\\cus\\evb_g_a0\\images\\dsp.bin",
+                    ".\\cus\\cus_x\\images\\rf.bin",
+                    ".\\cus\\cus_x\\images\\ReliableData.bin",
+                    ".\\build\\crane_evb_z2\\uirespkg.bin"
+                ],
+                "build_cmd":"autobuild -f crane_evb_a0_custom_X_from_crane.conf"
             }
         }
     }
