@@ -139,37 +139,42 @@ class autoRelease(ThreadBase):
     def run(self):
         self.log.info(self.__class__.__name__, "start...")
         while self._running:
-            self.release_event.wait()
-            self.release_event.clear()
+            try:
+                self.release_event.wait()
+                self.release_event.clear()
 
-            self.today_release_flag.set()
+                release_files = []
+                for _repo in self.repo_list:
+                    _version_file = self.get_release_version(_repo.git_root_dir, _repo.release_dist_dir,_repo.verion_name)
+                    self.log.info(_version_file)
+                    release_files.append(_version_file)
 
-            release_files = []
-            for _repo in self.repo_list:
-                _version_file = self.get_release_version(_repo.git_root_dir, _repo.release_dist_dir,_repo.verion_name)
-                self.log.info(_version_file)
-                release_files.append(_version_file)
+                self.send_release_email(*release_files)
 
-            self.send_release_email(*release_files)
+                version_file = release_files[0]
+                craneg_version_file = release_files[1]
+                # trigger dailybuild test
+                self.trigger_auto_test(version_file)
 
-            version_file = release_files[0]
-            craneg_version_file = release_files[1]
-            # trigger dailybuild test
-            self.trigger_auto_test(version_file)
+                # self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2")
+                self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2_from_crane")
 
-            # self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2")
-            self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2_from_crane")
+                # self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0")
+                self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0_from_crane")
 
-            # self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0")
-            self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0_from_crane")
+                self.trigger_auto_test(version_file, project_name="crane_evb_z2_fwp",  board="crane_evb_z2_fwp")
 
-            self.trigger_auto_test(version_file, project_name="crane_evb_z2_fwp",  board="crane_evb_z2_fwp")
+                self.trigger_auto_test(version_file, project_name="crane_evb_z2_dcxo",  board="crane_evb_z2_dcxo")
 
-            self.trigger_auto_test(version_file, project_name="crane_evb_z2_dcxo",  board="crane_evb_z2_dcxo")
+                # self.trigger_auto_test(cus_version_file, project_name="crane_evb_z2_fwp_rc",  board="crane_evb_z2_fwp")
 
-            # self.trigger_auto_test(cus_version_file, project_name="crane_evb_z2_fwp_rc",  board="crane_evb_z2_fwp")
-
-            # self.ftp_upload(version_file)
+                # self.ftp_upload(version_file)
+                self.today_release_flag.set()
+                self.release_event.clear()
+            except KeyboardInterrupt:
+                break
+            except Exception,e:
+                self.log.error(e)
 
 
 class autoPush(ThreadBase):
@@ -399,7 +404,7 @@ if __name__ == "__main__":
     cus_craneg_repo = cusCraneGRepo()
     auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
     auto_build_task.add_build(auto_cus_craneg_build_cls)
-
+    auto_clean_overdue_dir_task.add_repo(cus_craneg_repo)
 
     # crane r2_rc
     r2_rc_repo = cusR2RCRepo()

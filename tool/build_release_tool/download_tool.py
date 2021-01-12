@@ -130,7 +130,7 @@ class DownloadToolController(object):
         import time
         "borad : crane_evb_z2, bird_phone, crane_evb_dual_sim"
         date = time.strftime("%Y%m%d_%H%M%S")
-        release_file_name = "%s_%s_DOWNLOAD_TOOL_%s" % (release_name.upper(),borad.upper(),date)
+        release_file_name = "%s_%s_DOWNLOAD_TOOL" % (release_name.upper(),borad.upper())
         release_dir = os.path.join(self.download_tool_dir,release_file_name)
         os.mkdir(release_dir) if not os.path.exists(release_dir) else None
         self.log.info(release_file_name)

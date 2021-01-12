@@ -1,6 +1,6 @@
 {
     "tmp": ".\\tmp",
-    "download_tool_dir": ".\\download_tool_dir",
+    "download_tool_dir": "download_tool_dir",
     "download_tool_release_dir": "\\\\sh2-filer02\\Release\\LTE\\Crane\\Tools\\AbootTools",
     "download_tool_file_name": "",
     "partition_config": ".\\download_tool_config\\partition",
