@@ -998,4 +998,136 @@ class gitPushDownloadTool(GitPushBase):
             os.remove(os.path.join(self.downloadtool_dir,self.downloadtool_name))
             return None
 
+class GitPushDMSDK(gitPushR2RCSDK):
+    def __init__(self):
+        super(gitPushR2RCSDK, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
 
+        self.branch_name = "master"
+        # self.git.checkout(self.branch_name)
+        self.git_push_dsp_rf_list = []
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["dm_sdk"]
+
+    def get_dsp_rf_dir(self, root_dir):
+        self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
+        for root,dirs,files in os.walk(root_dir,topdown=False):
+            if "DSP" in dirs:
+                self.dsp_rf_root_dir = os.path.join(root,"DSP")
+
+                dsp_bin = os.path.join(self.dsp_rf_root_dir,"CRANEM","CAT1GSM","dsp.bin")
+                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANEM","CAT1GSM","PM803","rf.bin")
+
+                cranem_dm_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_dm","images")
+                self.git_push_dsp_rf_list.append((dsp_bin, cranem_dm_dir))
+                self.git_push_dsp_rf_list.append((rf_bin, cranem_dm_dir))
+
+                self.log.info(self.git_push_dsp_rf_list)
+
+            if "CP" in dirs:
+                cp_root_dir = os.path.join(root,"CP")
+
+                boot33_bin = os.path.join(cp_root_dir,"CAT1GSM","boot33.bin")
+                apn_bin = os.path.join(cp_root_dir,"CAT1GSM","apn.bin")
+
+                cranem_dm_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_dm","images")
+                self.git_push_dsp_rf_list.append((boot33_bin, cranem_dm_dir))
+                self.git_push_dsp_rf_list.append((apn_bin, cranem_dm_dir))
+
+                self.log.info(self.git_push_dsp_rf_list)
+                break
+
+
+    def find_new_cp_sdk(self):
+        cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if _file.startswith(self.release_target)]
+        cp_sdk_list.sort(key=lambda fn: os.path.getmtime(os.path.join(self.cp_sdk_release_dir,fn)))
+        assert cp_sdk_list,"can not find sdk"
+        self.cp_sdk = cp_sdk_list[-1]
+        self.log.debug("newest adk: %s" % self.cp_sdk)
+
+    def copy_sdk(self):
+        copy(os.path.join(self.cp_sdk_release_dir,self.cp_sdk),os.path.join(self.cp_sdk_dir,self.cp_sdk))
+        time.sleep(3)
+
+
+    def unzip_sdk(self):
+        fname,_ = os.path.splitext(self.cp_sdk)
+        root_dir = os.path.join(self.cp_sdk_dir,self.cp_sdk,"SDK")
+        sdk_zip = [ os.path.join(root_dir, _file) for _file in os.listdir(root_dir) if _file.startswith(self.release_target)]
+        assert sdk_zip,"can not find %s" % root_dir
+        sdk_zip = sdk_zip[-1]
+        while True:
+            try:
+                with ziptool_mutex:
+                    self.zip_tool.unpack_archive(sdk_zip, root_dir)
+                assert os.path.exists(root_dir),"can not find %s" % root_dir
+                for root,dirs,files in os.walk(root_dir,topdown=False):
+                    if "3g_ps" in dirs:
+                        self.cp_sdk_root_dir = root
+                        break
+                assert os.path.exists(self.cp_sdk_root_dir),"can not find %s" % self.cp_sdk_root_dir
+                self.get_dsp_rf_dir(os.path.join(self.cp_sdk_dir,self.cp_sdk))
+                return
+            except Exception,e:
+                time.sleep(10)
+                self.log.error(e)
+
+
+    def delete_gui_lib(self,path_dir):
+        pass
+
+    def get_sdk_version(self,cp_version_file):
+        '''#define SYSTEM_VERSION "SDK_1.011.009"'''
+        assert os.path.exists(cp_version_file),"%s not exists" % cp_version_file
+        SYSTEM_CUST_SKU = "MINIGUI"
+        SYSTEM_SKU_REVERSION = "SDK"
+        SYSTEM_PS_MODE = "LTEGSM"
+        SYSTEM_TARGET_OS = "TX"
+        APPEND_REVERSION = "_".join([SYSTEM_CUST_SKU,SYSTEM_SKU_REVERSION])
+        file_obj = open(cp_version_file)
+        for _line in file_obj:
+            format = '#define[ ]+SYSTEM_VERSION[ ]+"(.*?)"'
+            match = re.findall(format,_line)
+            if match:
+                SYSTEM_VERSION = match[0]
+        CRANE_CUST_VER_INFO = "[%s]" % (SYSTEM_VERSION)
+        self.log.debug(CRANE_CUST_VER_INFO)
+        return CRANE_CUST_VER_INFO
+
+    def condition(self):
+        self.update()
+        self.find_new_cp_sdk()
+        self.git_clean()
+        if os.path.exists(os.path.join(self.cp_sdk_dir,self.cp_sdk)):
+            release_sdk_time = os.path.getmtime(os.path.join(self.cp_sdk_release_dir,self.cp_sdk))
+            local_sdk_time = os.path.getmtime(os.path.join(self.cp_sdk_dir,self.cp_sdk))
+            # self.log.info("release_sdk_time: %r"%(release_sdk_time))
+            # self.log.info("local_sdk_time: %r"%(local_sdk_time))
+            if long(release_sdk_time) <= long(local_sdk_time):
+                self.log.debug("%s already exists" % self.cp_sdk)
+                return None
+            else:
+                self.log.info("release_sdk_time: %s" % time.asctime(time.localtime(release_sdk_time)))
+                self.log.info("local_sdk_time: %s" % time.asctime(time.localtime(local_sdk_time)))
+                os.remove(os.path.join(self.cp_sdk_dir,self.cp_sdk))
+        self.log.info("wait for sdk copy...")
+        time.sleep(60)
+        self.copy_sdk()
+        try:
+            self.unzip_sdk()
+        except Exception,e:
+            self.log.error(e)
+            os.remove(os.path.join(self.cp_sdk_dir,self.cp_sdk))
+            return None
+        self.log.info(self.cp_sdk_root_dir)
+
+
+        sdk_verion_file = [os.path.join(self.cp_sdk_root_dir,"tavor","env","inc","sys_version.h"),self.cp_version_file]
+        for version_file in sdk_verion_file:
+            if not os.path.exists(version_file):
+                self.log.error("can not file: %s" % version_file)
+                return None
+        return True

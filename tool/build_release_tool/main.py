@@ -454,6 +454,10 @@ if __name__ == "__main__":
     auto_build_task.add_build(auto_daily_build_cls)
     auto_clean_overdue_dir_task.add_repo(repo)
 
+    # dm_sdk auto push
+    dm_sdk = GitPushDMSDK()
+    auto_push_task.add_git_push(dm_sdk)
+
     # crane dailay sdk auto push
     cp_sdk_cls = gitPushCraneSDK()
     auto_push_task.add_git_push(cp_sdk_cls)

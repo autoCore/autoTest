@@ -32,7 +32,7 @@ class BuildController(object):
 
     def check_build_result(self,cur_dir, build_dir):
         if "rel" in cur_dir:
-            if os.path.exists(r"%s\build\%s\libhal.a" % (cur_dir, build_dir)):
+            if os.path.exists(os.path.join(cur_dir,self.release_zip_file)) or os.path.exists(r"%s\build\%s\libhal.a" % (cur_dir, build_dir)):
                 self.log.info("%s build done" % cur_dir)
                 self.build_res = "SUCCESS"
             else:
@@ -72,12 +72,15 @@ class BuildController(object):
         except Exception, e:
             self.log.error(e)
             self.build_res = "FAIL"
+            kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
             return
         time.sleep(5)
         if "autobuild.bat -f crane_evb_z2_gen_rel.conf -t gen_rel" in cmd:
-            pass
+            self.log.info("%s build done" % cur_dir)
+            self.build_res = "SUCCESS"
         else:
             self.check_build_result(cur_dir, build_dir)
+        kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
     def send_email(self, cur_dir, owner, external_dir, board="crane_evb_z2", subject_str = None):
         os.chdir(cur_dir)
@@ -167,8 +170,6 @@ class BuildBase(object):
         for board in self.board_list:
             self.loacal_build_dir_d[board] = os.path.join(version_dir, board)
             os.mkdir(self.loacal_build_dir_d[board])
-            if board in ["mHAL"]:
-                continue
             self.download_tool_dir_d[board] = os.path.join(version_dir, board, "download_tool")
             os.mkdir(self.download_tool_dir_d[board])
             self.download_tool_images_dir_d[board] = os.path.join(version_dir, board, "cp_images")
@@ -417,6 +418,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
                 if board in ["mHAL"]:
                     _rel_dir = os.path.join(_root_dir,"build","rel")
                     if os.path.exists(_rel_dir):
+                        os.chmod(_rel_dir,0o777)
                         _root_dir = _rel_dir
                 compile_log_file = os.path.join(self.compile_log_dir, os.path.basename(self.git_version_dir) + "_compile_"+board+".txt")
                 self.build(_root_dir, compile_log=compile_log_file, cmd=build_cmd)
@@ -435,27 +437,22 @@ class MyDailyBuildBase(BuildBase, BuildController):
             elif self.build_res in "FAIL":
                 continue
 
-            if board in ["mHAL"]:
-                try:
-                    self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
-                except Exception,e:
-                    self.log.error(e)
-                # create cp framework
-                hallib_dir = os.path.join(self.build_root_dir, self.release_zip_file)
-                create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
-                continue
-            else:
-                try:
-                    self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
-                except Exception,e:
-                    self.log.error(e)
-                    self.build_res = "FAIL"
-                    self.send_email(_root_dir, owner, self.release_dist, board)
-                    return self.loacal_dist_dir
+            try:
+                self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+            except Exception,e:
+                self.log.error(e)
+                self.build_res = "FAIL"
+                self.send_email(_root_dir, owner, self.release_dist, board)
+                return self.loacal_dist_dir
             try:
                 self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
             except Exception,e:
                 self.log.error(e)
+
+            if board in ["mHAL"]:
+                # create cp framework
+                hallib_dir = os.path.join(self.build_root_dir, self.release_zip_file)
+                create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
 
             if self.build_res == "SUCCESS":
                 _root_dir = self.download_tool_images_dir_d[board]

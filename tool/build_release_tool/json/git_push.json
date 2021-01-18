@@ -1,144 +1,154 @@
 {
     "crane_dsp":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CAT1",
+        "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
         "release_target": "crane_lzma_a0.bin",
-        "target_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb\\images",
-        "local_dir": ".\\dsp_rf_rbd_bin",
-        "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
-        "verson_file": "E:\\daily_auto_push\\crane-dev\\cus\\evb\\images\\dsp.bin",
+        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb/images",
+        "local_dir": "./dsp_rf_rbd_bin",
+        "git_push_root_dir": "E:/daily_auto_push/crane-dev",
+        "verson_file": "E:/daily_auto_push/crane-dev/cus/evb/images/dsp.bin",
         "version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
     "crane_dsp_dcxo":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CRANE\\CAT1",
+        "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CRANE/CAT1",
         "release_target": "crane_compress_a0_dcxo.bin",
-        "target_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb\\images",
-        "local_dir": ".\\dsp_rf_rbd_bin",
-        "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
-        "verson_file": "E:\\daily_auto_push\\crane-dev\\cus\\evb_dcxo\\images\\dsp.bin",
+        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb/images",
+        "local_dir": "./dsp_rf_rbd_bin",
+        "git_push_root_dir": "E:/daily_auto_push/crane-dev",
+        "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_dcxo/images/dsp.bin",
         "version_pattern": "(CRANE_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
     "craneg_dsp":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CAT1",
+        "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
         "release_target": "CraneG_lzma_dsp.bin",
-        "target_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_g\\images",
-        "a0_rf_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_g_a0\\images",
-        "local_dir": ".\\dsp_rf_rbd_bin",
-        "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
-        "verson_file": "E:\\daily_auto_push\\crane-dev\\cus\\evb_g\\images\\dsp.bin",
+        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_g/images",
+        "a0_rf_dir": "E:/daily_auto_push/crane-dev/cus/evb_g_a0/images",
+        "local_dir": "./dsp_rf_rbd_bin",
+        "git_push_root_dir": "E:/daily_auto_push/crane-dev",
+        "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_g/images/dsp.bin",
         "version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
     "cranem_dsp":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\dailybuild\\CAT1",
+        "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
         "release_target": "craneM_lzma_a0.bin",
-        "target_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_m\\images",
-        "a0_rf_dir": "E:\\daily_auto_push\\crane-dev\\cus\\evb_m\\images",
-        "local_dir": ".\\dsp_rf_rbd_bin",
-        "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
-        "verson_file": "E:\\daily_auto_push\\crane-dev\\cus\\evb_m\\images\\dsp.bin",
+        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_m/images",
+        "a0_rf_dir": "E:/daily_auto_push/crane-dev/cus/evb_m/images",
+        "local_dir": "./dsp_rf_rbd_bin",
+        "git_push_root_dir": "E:/daily_auto_push/crane-dev",
+        "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_m/images/dsp.bin",
         "version_pattern": "(CRANE.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
     "crane_sdk":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture",
         "release_target": "ASR3601_MINIGUI_",
-        "target_dir": "E:\\daily_auto_push\\cp",
-        "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "E:\\daily_auto_push\\cp",
-        "verson_file": "E:\\daily_auto_push\\cp\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/daily_auto_push/cp",
+        "local_dir": "./cp_sdk_dir",
+        "git_push_root_dir": "E:/daily_auto_push/cp",
+        "verson_file": "E:/daily_auto_push/cp/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/cp","HEAD:refs/heads/master"]
     },
     "craneg_sdk":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\CraneG\\FeaturePhone_Watch",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/CraneG/FeaturePhone_Watch",
         "release_target": "ASR3603_MINIGUI_",
-        "target_dir": "E:\\daily_auto_push\\crane-dev\\cpLWG",
-        "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "E:\\daily_auto_push\\crane-dev",
-        "verson_file": "E:\\daily_auto_push\\crane-dev\\cpLWG\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/daily_auto_push/crane-dev/cpLWG",
+        "local_dir": "./cp_sdk_dir",
+        "git_push_root_dir": "E:/daily_auto_push/crane-dev",
+        "verson_file": "E:/daily_auto_push/crane-dev/cpLWG/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master"]
     },
     "cus_master_sdk":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20201006_SDK",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture/ASR3601_MINIGUI_20201006_SDK",
         "release_target": "ASR3601_MINIGUI_",
-        "target_dir": "E:\\cus_auto_push\\cus_r1_master\\crane-phone-rls\\evb\\src\\cp",
-        "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "E:\\cus_auto_push\\cus_r1_master\\crane-phone-rls",
-        "verson_file": "E:\\cus_auto_push\\cus_r1_master\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/cus_auto_push/cus_r1_master/crane-phone-rls/evb/src/cp",
+        "local_dir": "./cp_sdk_dir",
+        "git_push_root_dir": "E:/cus_auto_push/cus_r1_master/crane-phone-rls",
+        "verson_file": "E:/cus_auto_push/cus_r1_master/crane-phone-rls/evb/src/cp/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls", "master"]
     },
     "cus_master_sdk009":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200803_SDK",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture/ASR3601_MINIGUI_20200803_SDK",
         "release_target": "ASR3601_MINIGUI_",
-        "target_dir": "E:\\cus_auto_push\\cus_r1_master\\crane-phone-rls\\evb\\src\\cp009",
-        "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "E:\\cus_auto_push\\cus_r1_master\\crane-phone-rls",
-        "verson_file": "E:\\cus_auto_push\\cus_r1_master\\crane-phone-rls\\evb\\src\\cp009\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/cus_auto_push/cus_r1_master/crane-phone-rls/evb/src/cp009",
+        "local_dir": "./cp_sdk_dir",
+        "git_push_root_dir": "E:/cus_auto_push/cus_r1_master/crane-phone-rls",
+        "verson_file": "E:/cus_auto_push/cus_r1_master/crane-phone-rls/evb/src/cp009/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["ssh://binwu@customsupport.asrmicro.com:29418/fp/crane-phone-rls", "master"]
     },
     "cus_r2_rc_sdk009":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200803_SDK",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture/ASR3601_MINIGUI_20200803_SDK",
         "release_target": "ASR3601_MINIGUI_",
-        "target_dir": "E:\\cus_auto_push\\cus_r2_rc_sdk009\\crane-phone-rls\\evb\\src\\cp",
-        "local_dir": ".\\cp_sdk_dir\\r2_rc",
-        "git_push_root_dir": "E:\\cus_auto_push\\cus_r2_rc_sdk009\\crane-phone-rls",
-        "verson_file": "E:\\cus_auto_push\\cus_r2_rc_sdk009\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/cus_auto_push/cus_r2_rc_sdk009/crane-phone-rls/evb/src/cp",
+        "local_dir": "./cp_sdk_dir/r2_rc",
+        "git_push_root_dir": "E:/cus_auto_push/cus_r2_rc_sdk009/crane-phone-rls",
+        "verson_file": "E:/cus_auto_push/cus_r2_rc_sdk009/crane-phone-rls/evb/src/cp/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["origin","r2_rc_sdk_1.009"]
     },
     "cus_r1_rc_sdk":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200225_SDK",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture/ASR3601_MINIGUI_20200225_SDK",
         "release_target": "ASR3601_MINIGUI_",
-        "target_dir": "E:\\cus_auto_push\\cus_r1_rc\\crane-phone-rls\\evb\\src\\cp",
-        "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "E:\\cus_auto_push\\cus_r1_rc\\crane-phone-rls",
-        "verson_file": "E:\\cus_auto_push\\cus_r1_rc\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/cus_auto_push/cus_r1_rc/crane-phone-rls/evb/src/cp",
+        "local_dir": "./cp_sdk_dir",
+        "git_push_root_dir": "E:/cus_auto_push/cus_r1_rc/crane-phone-rls",
+        "verson_file": "E:/cus_auto_push/cus_r1_rc/crane-phone-rls/evb/src/cp/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["origin","r1_rc"]
     },
     "cus_r2_rc_sdk":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20201127_SDK",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture/ASR3601_MINIGUI_20201127_SDK",
         "release_target": "ASR3601_MINIGUI_",
-        "target_dir": "E:\\cus_auto_push\\cus_r2_rc\\crane-phone-rls\\evb\\src\\cp",
-        "local_dir": ".\\cp_sdk_dir",
-        "git_push_root_dir": "E:\\cus_auto_push\\cus_r2_rc\\crane-phone-rls",
-        "verson_file": "E:\\cus_auto_push\\cus_r2_rc\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/cus_auto_push/cus_r2_rc/crane-phone-rls/evb/src/cp",
+        "local_dir": "./cp_sdk_dir",
+        "git_push_root_dir": "E:/cus_auto_push/cus_r2_rc/crane-phone-rls",
+        "verson_file": "E:/cus_auto_push/cus_r2_rc/crane-phone-rls/evb/src/cp/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["origin","r2_rc"]
     },
     "cus_r2_rc_sdk008":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\SDK\\Crane\\FeaturePhone\\Mixture\\ASR3601_MINIGUI_20200415_SDK",
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture/ASR3601_MINIGUI_20200415_SDK",
         "release_target": "ASR3601_MINIGUI_",
-        "target_dir": "E:\\cus_auto_push\\cus_r2_rc_sdk008\\crane-phone-rls\\evb\\src\\cp",
-        "local_dir": ".\\cp_sdk_dir\\r2_rc",
-        "git_push_root_dir": "E:\\cus_auto_push\\cus_r2_rc_sdk008\\crane-phone-rls",
-        "verson_file": "E:\\cus_auto_push\\cus_r2_rc_sdk008\\crane-phone-rls\\evb\\src\\cp\\tavor\\env\\inc\\sys_version.h",
+        "target_dir": "E:/cus_auto_push/cus_r2_rc_sdk008/crane-phone-rls/evb/src/cp",
+        "local_dir": "./cp_sdk_dir/r2_rc",
+        "git_push_root_dir": "E:/cus_auto_push/cus_r2_rc_sdk008/crane-phone-rls",
+        "verson_file": "E:/cus_auto_push/cus_r2_rc_sdk008/crane-phone-rls/evb/src/cp/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["origin","r2_rc_sdk_1.008"]
+    },
+    "dm_sdk":
+    {
+        "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/DataModule/DM_LTEGSM_SDK_1_011_XXX",
+        "release_target": "DM_LTEGSM_SDK_1_011_",
+        "target_dir": "E:/daily_auto_push/crane-dev/cp_dm",
+        "local_dir": "./cp_sdk_dir",
+        "git_push_root_dir": "E:/daily_auto_push/crane-dev",
+        "verson_file": "E:/daily_auto_push/crane-dev/cp_dm/tavor/env/inc/sys_version.h",
+        "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev","HEAD:refs/heads/master"]
     },
     "downloadtool":
     {
-        "release_dir": "\\\\sh2-filer02\\Release\\LTE\\Crane\\Tools\\AbootTools",
+        "release_dir": "//sh2-filer02/Release/LTE/Crane/Tools/AbootTools",
         "release_target": "aboot-tools-",
         "release_tool_pattern": "aboot-tools-.*?-win-x64.exe",
         "clean_bin_list":["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin"],
-        "target_dir": "E:\\daily_auto_push\\tool\\downloadtool",
-        "local_dir": ".\\download_tool_dir",
-        "git_push_root_dir": "E:\\daily_auto_push\\tool",
+        "target_dir": "E:/daily_auto_push/tool/downloadtool",
+        "local_dir": "./download_tool_dir",
+        "git_push_root_dir": "E:/daily_auto_push/tool",
         "verson_file": "",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/tool","HEAD:refs/heads/master"],
-        "partition_config": ".\\download_tool_config\\partition",
-        "template_config": ".\\download_tool_config\\template",
-        "product_config": ".\\download_tool_config\\product",
+        "partition_config": "./download_tool_config/partition",
+        "template_config": "./download_tool_config/template",
+        "product_config": "./download_tool_config/product",
         "win_type": "x64"
     }
 }
