@@ -141,7 +141,7 @@ class BuildBase(object):
     def update(self):
         self.get_config()
         self.board_info = self.config_d["boards_info"]
-        self.compile_log_dir = os.path.join(self.root_dir, self.config_d["compile_log_dir"])
+        self.compile_log_dir = os.path.normpath(os.path.join(self.root_dir, self.config_d["compile_log_dir"]))
 
         # self._repo.update(self.release_branch)
 
@@ -184,17 +184,17 @@ class BuildBase(object):
         src_dir = self.build_root_dir
         self.build_images = self.board_info.get(board, {}).get("build_images",[])
         for _file in self.build_images:
-            src = os.path.join(src_dir, _file)
-            dist = os.path.join(dist_dir, os.path.basename(_file))
+            src = os.path.normpath(os.path.join(src_dir, _file))
+            dist = os.path.normpath(os.path.join(dist_dir, os.path.basename(_file)))
             copy(src, dist)
 
         _zip_file = self.board_info.get(board, {}).get("build_zip_file","")
-        self.build_zip_file = os.path.join(self.build_root_dir, _zip_file)
+        self.build_zip_file = os.path.normpath(os.path.join(self.build_root_dir, _zip_file))
         if os.path.exists(self.build_zip_file):
             copy(self.build_zip_file, os.path.join(dist_dir, os.path.basename(_zip_file)))
 
         _mdb_file_dir = self.board_info.get(board, {}).get("mdb_file_dir","")
-        self.mdb_file_dir = os.path.join(self.build_root_dir, _mdb_file_dir)
+        self.mdb_file_dir = os.path.normpath(os.path.join(self.build_root_dir, _mdb_file_dir))
         if os.path.exists(self.mdb_file_dir):
             for _file in os.listdir(self.mdb_file_dir):
                 if "MDB.TXT" in _file.upper():
@@ -226,14 +226,16 @@ class BuildBase(object):
         src_rbd_bin = None
         for _bin in self.board_info.get(board, {}).get("release_bin",[]):
             if "ReliableData.bin" in _bin:
-                src_rbd_bin = os.path.join(src_dir, _bin)
+                src_rbd_bin = os.path.normpath(os.path.join(src_dir, _bin))
                 break
         if os.path.exists(src_rbd_bin):
             copy(src_rbd_bin, dist_dir)
 
-    def update_download_tool(self):
+    def update_download_tool(self, root_dir = None):
         # self.download_controller.update_download_tool()
-        download_tool_dir = os.path.join(self.build_root_dir, "tool", "downloadtool")
+        if not root_dir:
+            root_dir = self.build_root_dir
+        download_tool_dir = os.path.join(root_dir, "tool", "downloadtool")
         self.download_tool_l = [os.path.join(download_tool_dir, _tool) for _tool in os.listdir(download_tool_dir) if re.match("aboot-tools-.*?-win-x[0-9][0-9]",_tool)]
         for _tool in self.download_tool_l:
             self.log.info(_tool)
@@ -663,9 +665,11 @@ class CraneMDMDailyBuild(MyDailyBuildBase):
         self.config_d = json_str["cranem_dm"]
         self.board_list = self.config_d["boards"]
 
-    def update_download_tool(self):
+    def update_download_tool(self, root_dir=None):
         # self.download_controller.update_download_tool()
-        download_tool_dir = os.path.join(self.build_root_dir, "tool", "downloadtool")
+        if not root_dir:
+            root_dir = self.build_root_dir
+        download_tool_dir = os.path.join(root_dir, "tool", "downloadtool")
         self.download_tool_l = [os.path.join(download_tool_dir, _tool) for _tool in os.listdir(download_tool_dir) if re.match("aboot-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-x[0-9][0-9]",_tool)]
         for _tool in self.download_tool_l:
             self.log.info(_tool)
@@ -909,7 +913,7 @@ class CusFTBuild(CusBuild):
             src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
             for _file in src_bin_l:
                 if "dsp.bin" in _file:
-                    dsp_bin = os.path.join(self.build_root_dir, _file)
+                    dsp_bin = os.path.normpath(os.path.join(self.build_root_dir, _file))
                     break
             self.get_dsp_version_from_bin_to_file(dsp_bin,dsp_version_file)
 

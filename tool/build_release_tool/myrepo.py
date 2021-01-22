@@ -333,22 +333,22 @@ class RepoBase(myRepo, ManagerVersionBase):
 
         self.dsp_version_pattern = re.compile(self.config_d["dsp_version_pattern"])
         self.version_pattern = re.compile(self.config_d["version_pattern"])
-        self.manisest_xml_dir = os.path.join(self.root_dir, self.config_d["manisest_xml_dir"])
+        self.manisest_xml_dir = os.path.normpath(os.path.join(self.root_dir, self.config_d["manisest_xml_dir"]))
 
-        self.version_log = os.path.join(self.root_dir, self.config_d["branch_info"][self.branch_name]["version_file"])
-        self.release_dist_dir = self.config_d["branch_info"][self.branch_name]["release_dist_dir"]
+        self.version_log = os.path.normpath(os.path.join(self.root_dir, self.config_d["branch_info"][self.branch_name]["version_file"]))
+        self.release_dist_dir = os.path.normpath(self.config_d["branch_info"][self.branch_name]["release_dist_dir"])
 
-        self.build_root_dir = self.config_d["branch_info"][self.branch_name]["build"]
-        self.git_root_dir = self.config_d["branch_info"][self.branch_name]["git"]
+        self.build_root_dir = os.path.normpath(self.config_d["branch_info"][self.branch_name]["build"])
+        self.git_root_dir = os.path.normpath(self.config_d["branch_info"][self.branch_name]["git"])
 
 
 
-        self.ap_version_log = os.path.join(self.root_dir, self.config_d["version_info_log"]["ap_version_log"])
-        self.cp_version_log = os.path.join(self.root_dir, self.config_d["version_info_log"]["cp_version_log"])
-        self.dsp_version_log = os.path.join(self.root_dir, self.config_d["version_info_log"]["dsp_version_log"])
+        self.ap_version_log = os.path.normpath(os.path.join(self.root_dir, self.config_d["version_info_log"]["ap_version_log"]))
+        self.cp_version_log = os.path.normpath(os.path.join(self.root_dir, self.config_d["version_info_log"]["cp_version_log"]))
+        self.dsp_version_log = os.path.normpath(os.path.join(self.root_dir, self.config_d["version_info_log"]["dsp_version_log"]))
 
-        self.sdk_version_file = os.path.join(self.build_root_dir, self.config_d["branch_info"][self.branch_name]["sdk_version_file"])
-        self.dsp_version_file = os.path.join(self.build_root_dir, self.config_d["branch_info"][self.branch_name]["dsp_version_file"])
+        self.sdk_version_file = os.path.normpath(os.path.join(self.build_root_dir, self.config_d["branch_info"][self.branch_name]["sdk_version_file"]))
+        self.dsp_version_file = os.path.normpath(os.path.join(self.build_root_dir, self.config_d["branch_info"][self.branch_name]["dsp_version_file"]))
 
         # self.checkout_branch()
         self._get_verion_name()

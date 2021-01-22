@@ -58,6 +58,9 @@ class GitPushBase(object):
         for k, v in self.__dict__.items():
             print("{: <20}: {}".format(k,v))
 
+    def close_push(self):
+        pass
+
 
 class gitPushSDKBase(GitPushBase):
     def __init__(self):
@@ -255,6 +258,13 @@ class gitPushSDKBase(GitPushBase):
                 return None
         return True
 
+    def close_push(self):
+        to_address = ",".join(["binwu@asrmicro.conm"])
+        subject = "%s auto push" % self.cp_sdk_version
+        msg = r"Hi %s, %s auto push done!" % (to_address.split("@")[0], self.cp_sdk_version)
+        send_email_tool(to_address, subject.upper(), msg)
+
+
     def git_push_start(self):
         if not self.condition():
             time.sleep(10)
@@ -285,6 +295,7 @@ class gitPushSDKBase(GitPushBase):
             commit_info = "%s version info: %s" % (self.cp_sdk, commit_version_info)
             self.git_commit(commit_info)
             self.git_push()
+            self.close_push()
             return True
         except Exception,e:
             self.log.error(e)
@@ -591,6 +602,13 @@ class GitPushDspBase(GitPushBase):
             self.dsp_version = release_dsp_version
             return True
 
+    def close_push(self):
+        to_address = ",".join(["binwu@asrmicro.conm"])
+        subject = "%s auto push" % self.dsp_version
+        msg = r"Hi %s, %s auto push done!" % (to_address.split("@")[0], self.dsp_version)
+        send_email_tool(to_address, subject.upper(), msg)
+
+
     def git_push_start(self):
         if not self.condition():
             time.sleep(10)
@@ -619,6 +637,7 @@ class GitPushDspBase(GitPushBase):
             commit_info = "update dsp dailybuild %s" % dsp_version
             self.git_commit(commit_info)
             self.git_push()
+            self.close_push()
             return True
         except Exception,e:
             self.log.error(e)
@@ -764,6 +783,7 @@ class gitPushCraneGDsp(GitPushDspBase):
             commit_info = "update dsp dailybuild %s" % dsp_version
             self.git_commit(commit_info)
             self.git_push()
+            self.close_push()
             return True
         except Exception,e:
             self.log.error(e)
@@ -990,6 +1010,7 @@ class gitPushDownloadTool(GitPushBase):
             commit_info = "%s" % self.downloadtool_name
             self.git_commit(commit_info)
             self.git_push()
+            self.close_push()
             return True
         except Exception,e:
             self.log.error(e)
