@@ -75,6 +75,8 @@ class gitPushSDKBase(GitPushBase):
         self.dsp_rf_root_dir = ''
         self.git_push_dsp_dir = ''
 
+        self.git_push_dsp_rf_list = []
+
         self.dsp_bin = None
         self.rf_bin = None
 
@@ -88,11 +90,11 @@ class gitPushSDKBase(GitPushBase):
 
     def update(self):
         self.get_config()
-        self.cp_sdk_release_dir = self.config_d["release_dir"]
-        self.git_push_cp_dir = self.config_d["git_push_root_dir"]
+        self.cp_sdk_release_dir = os.path.normpath(self.config_d["release_dir"])
+        self.git_push_cp_dir = os.path.normpath(self.config_d["git_push_root_dir"])
         self.git_push_root_dir = self.git_push_cp_dir
-        self.target_dist_dir = self.config_d["target_dir"]
-        self.cp_sdk_dir = os.path.join(self.root_dir, self.config_d["local_dir"])
+        self.target_dist_dir = os.path.normpath(self.config_d["target_dir"])
+        self.cp_sdk_dir = os.path.normpath(os.path.join(self.root_dir, self.config_d["local_dir"]))
         self.cp_version_file = self.config_d["verson_file"]
         self.release_target = self.config_d["release_target"]
 
@@ -106,6 +108,8 @@ class gitPushSDKBase(GitPushBase):
                 self.rf_bin = os.path.join(self.dsp_rf_root_dir,"rf.bin")
                 self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
                 self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                self.git_push_dsp_rf_list.append((self.dsp_bin, self.git_push_dsp_dir))
+                self.git_push_dsp_rf_list.append((self.rf_bin, self.git_push_dsp_dir))
                 break
 
     def find_new_cp_sdk(self):
@@ -157,13 +161,16 @@ class gitPushSDKBase(GitPushBase):
                 if os.path.exists(dist_dir):
                     shutil.rmtree(dist_dir)
                 shutil.copytree(dir_path,dist_dir)
-                for src_file in [self.dsp_bin, self.rf_bin]:
-                    dist_file = os.path.join(self.git_push_dsp_dir, os.path.basename(src_file))
-                    if os.path.exists(self.git_push_dsp_dir):
+                while self.git_push_dsp_rf_list:
+                    src_file, dist = self.git_push_dsp_rf_list.pop()
+                    self.log.info(src_file)
+                    self.log.info(dist)
+                    if os.path.exists(dist):
                         if os.path.isfile(src_file):
-                            shutil.copy2(src_file, dist_file)
+                            shutil.copy2(src_file, dist)
                         else:
                             self.log.warning("%s" % src_file)
+
             self.log.info("copy_sdk_to_git_push_cp done.")
         except Exception,e:
             self.log.error(e)
@@ -259,7 +266,7 @@ class gitPushSDKBase(GitPushBase):
         return True
 
     def close_push(self):
-        to_address = ",".join(["binwu@asrmicro.conm"])
+        to_address = ",".join(["binwu@asrmicro.com"])
         subject = "%s auto push" % self.cp_sdk_version
         msg = r"Hi %s, %s auto push done!" % (to_address.split("@")[0], self.cp_sdk_version)
         send_email_tool(to_address, subject.upper(), msg)
@@ -350,6 +357,8 @@ class gitPushCusSDK(gitPushSDKBase):
                 self.rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANE","PM813","rf.bin")
                 self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
                 self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                self.git_push_dsp_rf_list.append((self.dsp_bin, self.git_push_dsp_dir))
+                self.git_push_dsp_rf_list.append((self.rf_bin, self.git_push_dsp_dir))
                 break
 
 
@@ -374,6 +383,8 @@ class gitPushCusSDK009(gitPushCusSDK):
                 self.rf_bin = os.path.join(self.dsp_rf_root_dir,"rf.bin")
                 self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
                 self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_sdk009","images")
+                self.git_push_dsp_rf_list.append((self.dsp_bin, self.git_push_dsp_dir))
+                self.git_push_dsp_rf_list.append((self.rf_bin, self.git_push_dsp_dir))
                 break
 
 
@@ -398,6 +409,8 @@ class gitPushR2RCSDK009(gitPushCusSDK):
                 self.rf_bin = os.path.join(self.dsp_rf_root_dir,"rf.bin")
                 self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
                 self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                self.git_push_dsp_rf_list.append((self.dsp_bin, self.git_push_dsp_dir))
+                self.git_push_dsp_rf_list.append((self.rf_bin, self.git_push_dsp_dir))
                 break
 
 class gitPushR2RCSDK008(gitPushCusSDK):
@@ -421,6 +434,8 @@ class gitPushR2RCSDK008(gitPushCusSDK):
                 self.rf_bin = os.path.join(self.dsp_rf_root_dir,"rf.bin")
                 self.git_push_dsp_dir = os.path.dirname(self.target_dist_dir)
                 self.git_push_dsp_dir = os.path.join(self.git_push_dsp_dir,"cus","evb","images")
+                self.git_push_dsp_rf_list.append((self.dsp_bin, self.git_push_dsp_dir))
+                self.git_push_dsp_rf_list.append((self.rf_bin, self.git_push_dsp_dir))
                 break
 
 
@@ -444,7 +459,6 @@ class gitPushR2RCSDK(gitPushSDKBase):
 
         self.branch_name = "r2_rc"
         # self.git.checkout(self.branch_name)
-        self.git_push_dsp_rf_list = []
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
@@ -474,42 +488,6 @@ class gitPushR2RCSDK(gitPushSDKBase):
                 self.log.info(self.git_push_dsp_rf_list)
                 break
 
-    def copy_sdk_to_git_push_cp(self,cp_sdk):
-        try:
-            root_dir = os.path.join(self.cp_sdk_dir,cp_sdk)
-            for _file in os.listdir(root_dir):
-                fname = os.path.join(root_dir,_file)
-                if os.path.isfile(fname):
-                    shutil.copy2(fname,os.path.join(self.target_dist_dir,_file))
-                elif os.path.isdir(fname):
-                    shutil.copytree(fname,os.path.join(self.target_dist_dir,_file))
-                else:
-                    self.log.warning("%s" % fname)
-
-            self.log.info("%s" % self.dsp_rf_root_dir)
-            if os.path.exists(self.dsp_rf_root_dir):
-                dir_path = os.path.dirname(self.dsp_rf_root_dir)
-                self.log.info("%s" % dir_path)
-                dist_dir = os.path.join(self.target_dist_dir,os.path.basename(dir_path))
-                self.log.info("%s" % dist_dir)
-                if os.path.exists(dist_dir):
-                    shutil.rmtree(dist_dir)
-                shutil.copytree(dir_path,dist_dir)
-                for src_file, dist in self.git_push_dsp_rf_list:
-                    # dist_file = os.path.join(self.git_push_dsp_dir, os.path.basename(src_file))
-                    self.log.info(src_file)
-                    self.log.info(dist)
-                    if os.path.exists(dist):
-                        if os.path.isfile(src_file):
-                            shutil.copy2(src_file, dist)
-                        else:
-                            self.log.warning("%s" % src_file)
-            self.log.info("copy_sdk_to_git_push_cp done.")
-        except Exception,e:
-            self.log.error(e)
-            self.log.error("copy_sdk_to_git_push_cp error")
-            raise Exception,"copy_sdk_to_git_push_cp error"
-
 
 class GitPushDspBase(GitPushBase):
     def __init__(self):
@@ -533,13 +511,13 @@ class GitPushDspBase(GitPushBase):
 
     def update(self):
         self.get_config()
-        self.release_dir = self.config_d["release_dir"]
-        self.target_dist_dir = self.config_d["target_dir"]
-        self.git_push_root_dir = self.config_d["git_push_root_dir"]
-        self.local_dsp_bin = self.config_d["verson_file"]
-        self.local_rf_bin = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin")
-        self.local_rf_verson_file = os.path.join(os.path.dirname(self.local_dsp_bin), "RF_Version.txt")
-        self.local_rf_excel_file = os.path.join(os.path.dirname(self.local_dsp_bin), "rf.xlsm")
+        self.release_dir = os.path.normpath(self.config_d["release_dir"])
+        self.target_dist_dir = os.path.normpath(self.config_d["target_dir"])
+        self.git_push_root_dir = os.path.normpath(self.config_d["git_push_root_dir"])
+        self.local_dsp_bin = os.path.normpath(self.config_d["verson_file"])
+        self.local_rf_bin = os.path.normpath(os.path.join(os.path.dirname(self.local_dsp_bin), "rf.bin"))
+        self.local_rf_verson_file = os.path.normpath(os.path.join(os.path.dirname(self.local_dsp_bin), "RF_Version.txt"))
+        self.local_rf_excel_file = os.path.normpath(os.path.join(os.path.dirname(self.local_dsp_bin), "rf.xlsm"))
         self.push_cmd = self.config_d["git_push_cmd"]
 
         self.dsp_version_pattern = re.compile(self.config_d["version_pattern"])
@@ -603,7 +581,7 @@ class GitPushDspBase(GitPushBase):
             return True
 
     def close_push(self):
-        to_address = ",".join(["binwu@asrmicro.conm"])
+        to_address = ",".join(["binwu@asrmicro.com"])
         subject = "%s auto push" % self.dsp_version
         msg = r"Hi %s, %s auto push done!" % (to_address.split("@")[0], self.dsp_version)
         send_email_tool(to_address, subject.upper(), msg)
@@ -896,18 +874,18 @@ class gitPushDownloadTool(GitPushBase):
 
     def update(self):
         self.get_config()
-        self.downloadtool_release_dir = self.config_d["release_dir"]
-        self.git_push_root_dir = self.config_d["git_push_root_dir"]
-        self.target_dist_dir = self.config_d["target_dir"]
-        self.downloadtool_dir = os.path.join(self.root_dir, self.config_d["local_dir"])
+        self.downloadtool_release_dir = os.path.normpath(self.config_d["release_dir"])
+        self.git_push_root_dir = os.path.normpath(self.config_d["git_push_root_dir"])
+        self.target_dist_dir = os.path.normpath(self.config_d["target_dir"])
+        self.downloadtool_dir = os.path.normpath(os.path.join(self.root_dir, self.config_d["local_dir"]))
         self.version_file = self.config_d["verson_file"]
         self.release_target = self.config_d["release_target"]
         self.release_tool_pattern = self.config_d["release_tool_pattern"]
         self.clean_bin_list = self.config_d["clean_bin_list"]
 
-        self.partition_config = os.path.join(self.root_dir, self.config_d["partition_config"])
-        self.template_config = os.path.join(self.root_dir, self.config_d["template_config"])
-        self.product_config = os.path.join(self.root_dir, self.config_d["product_config"])
+        self.partition_config = os.path.normpath(os.path.join(self.root_dir, self.config_d["partition_config"]))
+        self.template_config = os.path.normpath(os.path.join(self.root_dir, self.config_d["template_config"]))
+        self.product_config = os.path.normpath(os.path.join(self.root_dir, self.config_d["product_config"]))
 
         self.push_cmd = self.config_d["git_push_cmd"]
         self.win_type = self.config_d["win_type"]
@@ -989,6 +967,11 @@ class gitPushDownloadTool(GitPushBase):
         for _tool in self.downloadtool_list:
             shutil.copytree(_tool, os.path.join(self.target_dist_dir,os.path.basename(_tool)))
 
+    def close_push(self):
+        to_address = ",".join(["binwu@asrmicro.com"])
+        subject = "%s auto push" % self.downloadtool_name
+        msg = r"Hi %s, %s auto push done!" % (to_address.split("@")[0], self.downloadtool_name)
+        send_email_tool(to_address, subject.upper(), msg)
 
     def git_push_start(self):
         self.find_new_tool()
@@ -1026,7 +1009,6 @@ class GitPushDMSDK(gitPushR2RCSDK):
 
         self.branch_name = "master"
         # self.git.checkout(self.branch_name)
-        self.git_push_dsp_rf_list = []
 
     def get_config(self):
         json_file = os.path.join(self.root_dir,"json","git_push.json")
@@ -1046,8 +1028,6 @@ class GitPushDMSDK(gitPushR2RCSDK):
                 self.git_push_dsp_rf_list.append((dsp_bin, cranem_dm_dir))
                 self.git_push_dsp_rf_list.append((rf_bin, cranem_dm_dir))
 
-                self.log.info(self.git_push_dsp_rf_list)
-
             if "CP" in dirs:
                 cp_root_dir = os.path.join(root,"CP")
 
@@ -1058,9 +1038,15 @@ class GitPushDMSDK(gitPushR2RCSDK):
                 self.git_push_dsp_rf_list.append((boot33_bin, cranem_dm_dir))
                 self.git_push_dsp_rf_list.append((apn_bin, cranem_dm_dir))
 
-                self.log.info(self.git_push_dsp_rf_list)
                 break
-
+        cranem_dm_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_dm","build")
+        Crane_DS_miniPhone_h = os.path.join(cranem_dm_dir,"Crane_DS_miniPhone_16M_Ram_8M_Flash_XIP_CIPSRAM.h")
+        Crane_DS_miniPhone_sct = os.path.join(cranem_dm_dir,"Crane_DS_miniPhone_16M_Ram_8M_Flash_XIP_CIPSRAM.sct")
+        dist_dir = os.path.join(self.target_dist_dir,"csw","platform","dev_plat","build")
+        self.git_push_dsp_rf_list.append((Crane_DS_miniPhone_h, dist_dir))
+        self.git_push_dsp_rf_list.append((Crane_DS_miniPhone_sct, dist_dir))
+        for _item in self.git_push_dsp_rf_list:
+            self.log.info(_item)
 
     def find_new_cp_sdk(self):
         cp_sdk_list = [_file for _file in os.listdir(self.cp_sdk_release_dir) if _file.startswith(self.release_target)]

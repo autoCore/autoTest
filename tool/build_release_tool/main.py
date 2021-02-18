@@ -38,17 +38,14 @@ class autoRelease(ThreadBase):
         self.today_release_flag = threading.Event()
         self.release_event = release_event
 
-
     def get_release_version(self, _root_dir, dist_dir, target="crane_d"):
-        _root_dir = os.path.dirname(_root_dir)
-        dailybuild_list = [_file for _file in os.listdir(_root_dir) if _file.startswith(target)]
-        dailybuild_list.sort(key=lambda fn: os.path.getmtime(os.path.join(_root_dir,fn)))
+        dailybuild_list = [os.path.join(dist_dir,_file) for _file in os.listdir(dist_dir) if _file.startswith(target)]
+        dailybuild_list.sort(key=lambda fn: os.path.getmtime(fn))
         for file_name in dailybuild_list[::-1]:
             self.log.info(file_name)
-            dist = os.path.join(dist_dir, file_name)
-            if os.path.exists(dist):
-                self.log.info(dist)
-                return os.path.join(dist_dir,file_name)
+            if os.path.exists(file_name):
+                self.log.info(file_name)
+                return file_name
         else:
             return None
 
@@ -260,7 +257,7 @@ class autoCleanOverdueDir(ThreadBase):
                     self.clean_overdue_dir(cfg.cp_sdk_dir, 0, target_dir='ASR3603_MINIGUI_20', isdir=False)
 
                     for _repo in self._repo_list:
-                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 15, target_dir=_repo.verion_name)
+                        self.clean_overdue_dir(os.path.dirname(_repo.git_root_dir), 14, target_dir=_repo.verion_name)
                 time.sleep(10)
             except KeyboardInterrupt:
                 self.log.info('clean_overdue_dir exit')
