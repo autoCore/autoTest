@@ -6,6 +6,7 @@ import subprocess
 import shutil
 import threading
 import re
+import fileinput
 
 from util import MyLogger, copy, kill_win_process, zipTool, load_json, create_cp_framework,ziptool_mutex
 from send_email import send_email_tool
@@ -158,8 +159,10 @@ class BuildBase(object):
         self.dsp_bin = self._repo.dsp_version_file
 
         # self.release_branch = self._repo.branch_name
-
-        self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+        if os.path.exists(self.cp_version_file):
+            self._repo.update_cp_version(self.cp_version_file, self.cp_version_log)
+        else:
+            self.log.error("%s not exists"%self.cp_version_file)
 
 
     def prepare_release_dir(self, version_dir):
@@ -1086,3 +1089,230 @@ class CusR1RCBuild(CusBuild):
         self.send_email(self.build_root_dir, owner, self.release_dist, board)
         self.close_build()
 
+class ExternalBuild(CraneDailyBuild):
+    def __init__(self, _repo_cus):
+        super(ExternalBuild, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+        self.trigger_config = ""
+
+    def get_config(self):
+        self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["craneg"]
+        # self.board_list = self.config_d["boards"]
+        self.board_list = ["craneg_evb_a0_from_crane"]
+
+    # def config(self):
+        # self.board_list = ["craneg_evb_a0_from_crane"]
+
+    def record_config(self):
+        for _line in fileinput.input(self.trigger_config,inplace=1):
+            if "default" in _line:
+                print _line.replace("default",os.path.basename(self.release_dist)).rstrip()
+            elif "build_status" in _line:
+                print _line.replace("ongoing","done").rstrip()
+            else:
+                print _line.rstrip()
+
+    def prepare_build(self):
+        for _line in fileinput.input(self.trigger_config,inplace=1):
+            if "build_status" in _line and "start" in _line:
+                print _line.replace("start","ongoing").rstrip()
+            else:
+                print _line.rstrip()
+
+        self.clean_sdk()
+        self.copy_sdk()
+        self.config()
+
+        self.ap_version = self.get_ap_version()
+        self.record_ap_version(self.ap_version)
+
+        date = time.strftime("%Y%m%d_%H%M%S")
+        file_name = "%s_%s" % (self.ap_version, date)
+
+        self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
+        self.release_dist = os.path.join(self.release_dist_dir, file_name)
+
+        self.prepare_release_dir(self.loacal_dist_dir)
+
+        self.xml_file = self.ap_version + ".xml"
+        self.xml_file = os.path.join(self.manisest_xml_dir, self.xml_file)
+        self.get_manifest_xml()
+
+
+    def clean_sdk(self):
+        cp_dir = os.path.join(self.build_root_dir,"cp")
+        for _file in os.listdir(cp_dir):
+            if _file in [".git","X.bat"]:
+                continue
+            _file = os.path.join(cp_dir,_file)
+            if os.path.isfile(_file):
+                os.remove(_file)
+            else:
+                shutil.rmtree(_file)
+        self.log.info("clean cp done")
+
+    def delete_gui_lib(self,path_dir):
+        if not os.path.exists(path_dir):
+            assert ("%r not exists" % path_dir)
+        for _file in os.listdir(path_dir):
+            self.log.info(os.path.join(path_dir,_file))
+            if _file in ["libmgapollo.a","libmgngux.a","libmgminigui.a","libtarget.a","libthirdparty.a","libmgmgeff.a",
+                         "libhal.a","hal_init.o"]:
+                os.remove(os.path.join(path_dir,_file))
+        self.log.info("delete_gui_lib done.")
+
+    def copy_sdk(self):
+        root_dir = os.path.normpath(self.external_config_dict["sdk_src"])
+        target_dist_dir = os.path.normpath(os.path.join(self.build_root_dir,"cp"))
+        for root,dirs,files in os.walk(root_dir,topdown=False):
+            if "3g_ps" in dirs:
+                self.cp_sdk_root_dir = root
+                break
+        gui_lib = os.path.join(self.cp_sdk_root_dir,"tavor","Arbel","lib")
+        self.delete_gui_lib(gui_lib)
+        self.log.info("copy %s..." % self.cp_sdk_root_dir)
+        for _file in os.listdir(self.cp_sdk_root_dir):
+            fname = os.path.join(self.cp_sdk_root_dir,_file)
+            copy(fname, os.path.join(target_dist_dir,_file))
+        time.sleep(3)
+        self.log.info("copy done.")
+
+    def get_external_config(self):
+        external_config_dir = r"\\sh2-filer02\Data\FP_RLS\external_build\trigger_config"
+        self.release_dist_dir = r"\\sh2-filer02\Data\FP_RLS\external_build\release_dir"
+        config_list = [os.path.join(external_config_dir, _file) for _file in os.listdir(external_config_dir) if _file.endswith(".json")]
+        config_list.sort(key=lambda fn: os.path.getmtime(fn))
+        for _file in config_list:
+            json_config = load_json(_file)
+            if "start" in json_config["build_status"]:
+                self.trigger_config = _file
+                self.external_config_dict = json_config
+                self.log.info(self.trigger_config)
+                return True
+        return False
+
+    @property
+    def condition(self):
+        # self.update()
+        info_d = self._repo.sync()
+        return self.get_external_config()
+
+    def send_email_start_trigger(self):
+        to_address = self.external_config_dict["owner"]
+        subject = "EXTERNAL BUILD START"
+        msg = r"Hi %s, your trigger build start!" % (to_address.split("@")[0])
+        send_email_tool(to_address, subject.upper(), msg)
+
+    def close_build(self):
+        to_address = self.external_config_dict["owner"]
+        subject = "EXTERNAL BUILD RELEASE"
+        msg = r"Hi %s, your trigger build done! Binary dir: %s" % (to_address.split("@")[0], self.release_dist)
+        send_email_tool(to_address, subject.upper(), msg)
+        self.record_config()
+        # self.trigger_auto_test(self.release_dist, None, "crane_evb_z2")
+        # self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo", "crane_evb_z2_dcxo")
+        self.git_clean()
+
+    def start(self):
+        self.prepare_build()
+        self.old_cp_version = self.get_old_cp_version()
+        self.cp_version = self.update_cp_version()
+        self.get_dsp_version(self.dsp_bin)
+
+        owner, date = self.get_revion_owner()
+
+        self.log.info("=" * 80)
+        self.log.info("mUI version:", self.ap_version.upper())
+        self.log.info("sdk version:", self.cp_version)
+        self.log.info("dsp version:", self.dsp_version)
+        self.log.info("patch owner:", owner)
+        self.log.info("patch time :", date)
+        self.log.info("=" * 80)
+
+        self.get_commit_massages()
+
+        self.git_version_dir = self.loacal_dist_dir
+
+        self.copy_version_file_to_release_dir()
+
+        self.update_download_tool()
+
+        self.send_email_start_trigger()
+
+        for board in self.board_list:
+            if board in ["crane_evb_z2_dcxo", "craneg_evb_z2_dcxo","craneg_evb_z2_from_crane_dcxo","sdk009_crane_evb_z2_dcxo"]:
+                continue
+            self.git_clean()
+            self.release_zip_file = self.board_info.get(board, {}).get("build_zip_file","")
+            build_cmd_str = self.board_info.get(board, {}).get("build_cmd",'')
+            for build_cmd in build_cmd_str.split("@"):
+                assert build_cmd,"%s no build cmd" % board
+                self.log.info("-" * 80)
+                self.log.info("patch owner:", owner)
+                self.log.info("patch time :", date)
+                self.log.info("board name :", board)
+                self.log.info("build cmd  :", build_cmd)
+                self.log.info("-" * 80)
+                _root_dir = self.build_root_dir
+                if board in ["mHAL"]:
+                    _rel_dir = os.path.join(_root_dir,"build","rel")
+                    if os.path.exists(_rel_dir):
+                        os.chmod(_rel_dir,0o777)
+                        _root_dir = _rel_dir
+                compile_log_file = os.path.join(self.compile_log_dir, os.path.basename(self.git_version_dir) + "_compile_"+board+".txt")
+                self.build(_root_dir, compile_log=compile_log_file, cmd=build_cmd)
+                if self.build_res in "FAIL":
+                    self.send_email(_root_dir, owner, self.release_dist, board)
+                    break
+
+            kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
+
+            if board in ["crane_evb_z2", "crane_evb_z2_dcxo", "visenk_phone","craneg_evb_a0_from_crane",\
+                         "cranem_evb_a0","cranem_dm_evb_a0","crane_evb_z2_fwp","craneg_evb_z2",\
+                            '''"bird_phone", "crane_evb_z2_128x160" ''',\
+                             '''"craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"'''] and self.build_res in "FAIL":
+                self.log.error(self.loacal_dist_dir, "build fail")
+                return self.loacal_dist_dir
+            elif self.build_res in "FAIL":
+                continue
+
+            try:
+                self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+            except Exception,e:
+                self.log.error(e)
+                self.build_res = "FAIL"
+                self.send_email(_root_dir, owner, self.release_dist, board)
+                return self.loacal_dist_dir
+            try:
+                self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
+            except Exception,e:
+                self.log.error(e)
+
+            if self.build_res == "SUCCESS":
+                _root_dir = self.download_tool_images_dir_d[board]
+                _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+                try:
+                    self.prepare_download_tool(_images)
+                    self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
+                                                          dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
+                except Exception,e:
+                    self.log.error(e)
+                if board in ["crane_evb_z2", "craneg_evb_z2","craneg_evb_z2_from_crane","sdk009_crane_evb_z2"]:
+                    board = board+"_dcxo"
+                    if board not in self.board_list:
+                        continue
+                    self.copy_build_file_to_release_dir(self.loacal_build_dir_d[board], self.build_root_dir, board = board)
+                    self.copy_sdk_files_to_release_dir(self.download_tool_images_dir_d[board], board, self.build_root_dir)
+                    _root_dir = self.download_tool_images_dir_d[board]
+                    _images = [os.path.join(_root_dir,_file) for _file in os.listdir(_root_dir)]
+                    self.prepare_download_tool(_images)
+                    self.download_controller.release_download_tool(os.path.basename(self.loacal_dist_dir), board,
+                                                          dist_dir=self.download_tool_dir_d[board], download_tool_l = self.download_tool_l)
+
+        copy(self.loacal_dist_dir, self.release_dist)
+        self.record_version()
+        self.build_res = "SUCCESS"
+        self.close_build()

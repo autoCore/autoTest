@@ -51,6 +51,32 @@
             "dsp_version_log":"./tmp/dsp_version.txt"
         }
     },
+    "crane_external_info":
+    {
+        "branch_name": "master",
+        "manisest_xml_dir": "./tmp/manifest_xml",
+        "storage_list": [".", "cp", "gui", "tool"],
+        "dsp_version_pattern": "(CRANE.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "version_pattern": "(crane_.*?)([0-9][0-9][0-9][0-9])",
+        "branch_info":
+        {
+            "master":
+            {
+                "release_dist_dir": "//sh2-filer02/Data/FP_RLS/external_build/external_build",
+                "version_file":"./version_file_dir/crane_external_version.log",
+                "dsp_version_file": "./cus/evb/images/dsp.bin",
+                "sdk_version_file": "./cp/tavor/env/inc/sys_version.h",
+                "git": "E:/crane_external/crane",
+                "build": "E:/crane_external/crane"
+            }
+        },
+        "version_info_log":
+        {
+            "ap_version_log": "./tmp/ap_version.txt",
+            "cp_version_log": "./tmp/cp_version.txt",
+            "dsp_version_log":"./tmp/dsp_version.txt"
+        }
+    },
     "cranem_info":
     {
         "branch_name": "master",

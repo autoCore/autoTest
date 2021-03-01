@@ -380,6 +380,17 @@ class CraneAliOSRepo(RepoBase):
         self.config_d = json_str["crane_AliOS_info"]
         self.branch_name = "master"
 
+class CraneExternalSRepo(RepoBase):
+    def __init__(self):
+        super(CraneExternalSRepo, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+        self.log.info("create repo done")
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","repo.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["crane_external_info"]
+        self.branch_name = "master"
 
 
 class craneGRepo(RepoBase):

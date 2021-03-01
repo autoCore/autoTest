@@ -177,31 +177,31 @@
             "mHAL":
             {
                 "mdb_file_dir": "CAN_NOT_COPY",
-                "build_zip_file": "./build/rel/build/crane_evb_z2/ASR_CRANE_EVB_CRANE_A0_16MB.zip",
+                "build_zip_file": "./build/crane_evb_z2/ASR_CRANE_EVB_CRANE_A0_16MB.zip",
                 "images": ["apn.bin", "boot33.bin", "cp.bin", "logo.bin","updater.bin", "dsp.bin", "rf.bin", "ReliableData.bin", "uirespkg.bin"],
                 "build_images":
                 [
-                    "./build/rel/build/crane_evb_z2/libhal.a",
-                    "./build/rel/build/crane_evb_z2/crane_evb.bin",
-                    "./build/rel/build/crane_evb_z2/crane_evb.elf",
-                    "./build/rel/build/crane_evb_z2/crane_evb.map",
-                    "./build/rel/build/crane_evb_z2/hsiupdlibdev.i",
-                    "./build/rel/build/crane_evb_z2/Arbel_PMD2NONE_MDB.txt",
-                    "./build/rel/build/crane_evb_z2/ASR_CRANE_EVB_CRANE_A0_16MB.zip"
+                    "./build/crane_evb_z2/libhal.a",
+                    "./build/crane_evb_z2/crane_evb.bin",
+                    "./build/crane_evb_z2/crane_evb.elf",
+                    "./build/crane_evb_z2/crane_evb.map",
+                    "./build/crane_evb_z2/hsiupdlibdev.i",
+                    "./build/crane_evb_z2/Arbel_PMD2NONE_MDB.txt",
+                    "./build/crane_evb_z2/ASR_CRANE_EVB_CRANE_A0_16MB.zip"
                 ],
                 "release_bin":
                 [
-                    "./build/rel/cp/tavor/Arbel/build/apn.bin",
-                    "./build/rel/cp/tavor/Arbel/build/boot33.bin",
-                    "./build/rel/build/crane_evb_z2/crane_evb.bin",
-                    "./build/rel/cus/evb_mHal/images/logo.bin",
-                    "./build/rel/cus/evb_mHal/images/updater.bin",
-                    "./build/rel/cus/evb_mHal/images/dsp.bin",
-                    "./build/rel/cus/evb_mHal/images/rf.bin",
-                    "./build/rel/cus/evb_mHal/images/ReliableData.bin",
-                    "./build/rel/cus/evb_mHal/images/uirespkg.bin"
+                    "./cp/tavor/Arbel/build/apn.bin",
+                    "./cp/tavor/Arbel/build/boot33.bin",
+                    "./build/crane_evb_z2/crane_evb.bin",
+                    "./cus/evb_mHal/images/logo.bin",
+                    "./cus/evb_mHal/images/updater.bin",
+                    "./cus/evb_mHal/images/dsp.bin",
+                    "./cus/evb_mHal/images/rf.bin",
+                    "./cus/evb_mHal/images/ReliableData.bin",
+                    "./cus/evb_mHal/images/uirespkg.bin"
                 ],
-                "build_cmd":"autobuild.bat -f crane_evb_z2_gen_rel.conf -t gen_rel@autobuild.bat -f crane_evb_z2_hal_verify.conf -t no_ui@autobuild.bat -f crane_evb_z2_bld_rel.conf -t framework"
+                "build_cmd":"autobuild.bat -f crane_evb_z2_hal_verify.conf -t no_ui@autobuild.bat -f crane_evb_z2_gen_rel.conf -t gen_rel@autobuild.bat -f crane_evb_z2_bld_rel.conf -t framework"
             },
             "crane_evb_z2_fwp_128x64":
             {
