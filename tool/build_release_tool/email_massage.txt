@@ -4,8 +4,8 @@ CRANE FP DAILY:
     DSP VERSION: {2}
 
     EVB VERSION:
-    binary + debug object: {3}\crane_evb_z2
-    download tool: {3}\crane_evb_z2\download_tool
+    binary + debug object: {3}\crane_evb
+    download tool: {3}\crane_evb\download_tool
 
     VISENK PHONE VERSION:
     binary + debug object: {3}\visenk_phone
@@ -58,8 +58,8 @@ CRANE FWP DAILY:
     DSP VERSION: {2}
 
     EVB VERSION:
-    binary + debug object: {3}\crane_evb_z2_fwp
-    download tool: {3}\crane_evb_z2_fwp\download_tool
+    binary + debug object: {3}\crane_evb_fwp
+    download tool: {3}\crane_evb_fwp\download_tool
 
 ********************************************************************************************************************************
 
