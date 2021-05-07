@@ -33,6 +33,17 @@
         "version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
+    "cranec_dsp":
+    {
+        "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
+        "release_target": "CraneG_lzma_dsp.bin",
+        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_c/images",
+        "local_dir": "./dsp_rf_rbd_bin",
+        "git_push_root_dir": "E:/daily_auto_push/crane-dev",
+        "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_c/images/dsp.bin",
+        "version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
+        "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
+    },
     "cranem_dsp":
     {
         "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",

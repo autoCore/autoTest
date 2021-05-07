@@ -379,11 +379,13 @@ if __name__ == "__main__":
     auto_build_task.add_build(auto_r1_rc_build_cls)
     auto_clean_overdue_dir_task.add_repo(r1_rc_repo)
 
+    '''
     # crane ft
     ft_repo = cusFTRepo()
     auto_ft_cls = CusFTBuild(ft_repo)
     auto_build_task.add_build(auto_ft_cls)
     auto_clean_overdue_dir_task.add_repo(ft_repo)
+    '''
 
     # crane r2_rc_sdk008
     r2_rc_sdk008_repo = cusR2RCSDK008Repo()
@@ -397,6 +399,13 @@ if __name__ == "__main__":
     auto_build_task.add_build(auto_r2_rc_sdk009_cls)
     auto_clean_overdue_dir_task.add_repo(r2_rc_sdk009_repo)
 
+    # cranec r2_rc
+    cus_cranec_repo = craneCR2RCRepo()
+    auto_cus_cranec_build_cls = CraneCR2RCBuild(cus_cranec_repo)
+    auto_build_task.add_build(auto_cus_cranec_build_cls)
+    auto_clean_overdue_dir_task.add_repo(cus_cranec_repo)
+
+
     # craneg r2_rc
     cus_craneg_repo = cusCraneGRepo()
     auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
@@ -408,18 +417,6 @@ if __name__ == "__main__":
     auto_r2_rc_cls = CusR2RCSDKBuild(r2_rc_repo)
     auto_build_task.add_build(auto_r2_rc_cls)
     auto_clean_overdue_dir_task.add_repo(r2_rc_repo)
-
-    # crane rc sdk009
-    # repo_cus_sdk009 = CusMasterSDK009Repo()
-    # auto_cus_sdk009_build_cls = CusSDK009Build(repo_cus_sdk009)
-    # auto_build_task.add_build(auto_cus_sdk009_build_cls)
-    # auto_clean_overdue_dir_task.add_repo(repo_cus_sdk009)
-
-    # crane rc
-    # repo_cus = CusMasterRepo()
-    # auto_cus_build_cls = CusBuild(repo_cus)
-    # auto_build_task.add_build(auto_cus_build_cls)
-    # auto_clean_overdue_dir_task.add_repo(repo_cus)
 
     # crane AliOS dailay
     alios_repo = CraneAliOSRepo()
@@ -438,7 +435,13 @@ if __name__ == "__main__":
     cranem_build_cls = CraneMDailyBuild(cranem_repo)
     auto_build_task.add_build(cranem_build_cls)
     auto_clean_overdue_dir_task.add_repo(cranem_repo)
- 
+
+    # cranec dailay
+    cranec_repo = craneCRepo()
+    cranec_build_cls = CraneCDailyBuild(cranec_repo)
+    auto_build_task.add_build(cranec_build_cls)
+    auto_clean_overdue_dir_task.add_repo(cranec_repo)
+
     # cranem dailay
     cranem_dm_repo = craneMDMRepo()
     cranem_dm_build_cls = CraneMDMDailyBuild(cranem_dm_repo)
@@ -463,18 +466,6 @@ if __name__ == "__main__":
     cp_sdk_cls = gitPushCraneSDK()
     auto_push_task.add_git_push(cp_sdk_cls)
 
-    # craneg dailay sdk auto push
-    # craneg_sdk_cls = gitPushCraneGSDK()
-    # auto_push_task.add_git_push(craneg_sdk_cls)
-
-    # crane rc sdk auto push
-    # cus_sdk_cls = gitPushCusSDK()
-    # auto_push_task.add_git_push(cus_sdk_cls)
-
-    # crane rc sdk009 auto push
-    # cus_sdk009_cls = gitPushCusSDK009()
-    # auto_push_task.add_git_push(cus_sdk009_cls)
-
     # crane r2_rc sdk008 auto push
     cus_r2_rc_sdk008_cls = gitPushR2RCSDK008()
     auto_push_task.add_git_push(cus_r2_rc_sdk008_cls)
@@ -495,10 +486,6 @@ if __name__ == "__main__":
     crane_dsp_cls = gitPushCraneDsp()
     auto_push_task.add_git_push(crane_dsp_cls)
 
-    # crane dailay dsp_dcxo auto push
-    # crane_dsp_dcxo_cls = gitPushCraneDCXODsp()
-    # auto_push_task.add_git_push(crane_dsp_dcxo_cls)
-
     # craneg dailay dsp auto push
     craneg_dsp_cls = gitPushCraneGDsp()
     auto_push_task.add_git_push(craneg_dsp_cls)
@@ -506,6 +493,10 @@ if __name__ == "__main__":
     # cranem dailay dsp auto push
     cranem_dsp_cls = gitPushCraneMDsp()
     auto_push_task.add_git_push(cranem_dsp_cls)
+
+     # cranec dailay dsp auto push
+    cranec_dsp_cls = gitPushCraneCDsp()
+    auto_push_task.add_git_push(cranec_dsp_cls)
 
     # download tool auto push
     download_tool = gitPushDownloadTool()

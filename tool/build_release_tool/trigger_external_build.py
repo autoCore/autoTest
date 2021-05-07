@@ -180,9 +180,15 @@ if __name__ == "__main__":
     auto_build_task.add_build(external_daily_build_cls)
     auto_clean_overdue_dir_task.add_repo(external_repo)
 
+    # crane ft
+    ft_repo = cusFTRepo()
+    auto_ft_cls = CusFTBuild(ft_repo)
+    auto_build_task.add_build(auto_ft_cls)
+    auto_clean_overdue_dir_task.add_repo(ft_repo)
+
     # task start
     task_list = []
-    task_list.append(auto_clean_overdue_dir_task)
+    # task_list.append(auto_clean_overdue_dir_task)
     task_list.append(auto_build_task)
     for _task in task_list:
         _task.start()

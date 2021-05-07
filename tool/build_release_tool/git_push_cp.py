@@ -485,6 +485,13 @@ class gitPushR2RCSDK(gitPushSDKBase):
                 self.git_push_dsp_rf_list.append((dsp_bin, craneg_a0_dir))
                 self.git_push_dsp_rf_list.append((rf_bin, craneg_a0_dir))
 
+                dsp_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1GSM","dsp.bin")
+                rf_bin = os.path.join(self.dsp_rf_root_dir,"CRANEG","CAT1GSM","rf.bin")
+
+                cranec_dir = os.path.join(self.git_push_dsp_dir,"cus","evb_c","images")
+                self.git_push_dsp_rf_list.append((dsp_bin, cranec_dir))
+                self.git_push_dsp_rf_list.append((rf_bin, cranec_dir))
+
                 self.log.info(self.git_push_dsp_rf_list)
                 break
 
@@ -768,6 +775,37 @@ class gitPushCraneGDsp(GitPushDspBase):
             self.log.error("git push error")
             self.git_clean()
             return None
+
+class gitPushCraneCDsp(gitPushCraneDsp):
+    def __init__(self):
+        super(gitPushCraneCDsp, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cranec_dsp"]
+
+    def get_release_dsp_rf(self):
+        dsp_release_bin_l = []
+        release_dir_list = [os.path.join(self.release_dir,_dir) for _dir in os.listdir(self.release_dir) \
+                            if os.path.isdir(os.path.join(self.release_dir,_dir))]
+        release_dir_list.sort(key=lambda fn: os.path.getmtime(fn))
+        release_dir_list = [os.path.join(root_dir,"CAT1_L1","CRANEG","CAT1GSM") for root_dir in release_dir_list]
+        for release_dir in release_dir_list:
+            for root,dirs,files in os.walk(release_dir,topdown=False):
+                if self.release_target_file in files:
+                    rf = os.path.join(root,"A0_PM813S","rf.bin")
+                    if os.path.exists(rf):
+                        dsp_release_bin_l.append(os.path.join(root,self.release_target_file))
+        dsp_release_bin_l.sort(key=lambda fn: os.path.getmtime(fn))
+        self.log.debug("\n".join(dsp_release_bin_l))
+        self.release_dsp_bin = dsp_release_bin_l[-1]
+        root_dir = os.path.dirname(self.release_dsp_bin)
+        self.release_rf_bin = os.path.join(root_dir,"A0_PM813S","rf.bin")
+        self.release_rf_verson_file = os.path.join(root_dir,"A0_PM813S","RF_Version.txt")
+        self.release_rf_excel_file = os.path.join(root_dir,"A0_PM813S","rf.xlsm")
 
 
 class gitPushCraneMDsp(GitPushDspBase):

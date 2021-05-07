@@ -29,19 +29,20 @@ class BuildController(object):
         self.release_log = os.path.join(".", 'build', 'crane_evb', r'arelease.log')
         self.compile_log_dir = os.path.join(self.root_dir, 'tmp', 'compile_log')
         self.zip_tool = zipTool()
+        self.build_dirname = ""
         self.release_zip_file = ''
 
     def check_build_result(self,cur_dir, build_dir):
         if "rel" in cur_dir:
-            if os.path.exists(os.path.join(cur_dir,self.release_zip_file)) or os.path.exists(r"%s\build\%s\libhal.a" % (cur_dir, build_dir)):
+            if os.path.exists(os.path.join(cur_dir,self.release_zip_file)) or os.path.exists(os.path.join(cur_dir,self.build_dirname,"libhal.a")):
                 self.log.info("%s build done" % cur_dir)
                 self.build_res = "SUCCESS"
             else:
                 self.log.warning("%s build fail" % cur_dir)
                 self.build_res = "FAIL"
         else:
-            if os.path.exists(r"%s\build\%s\crane_evb.elf" % (cur_dir, build_dir)) and os.path.exists(
-                    r"%s\build\%s\crane_evb.bin" % (cur_dir, build_dir)):
+            if os.path.exists(os.path.join(cur_dir,self.build_dirname,"crane_evb.elf")) and os.path.exists(
+                    os.path.join(cur_dir,self.release_zip_file)):
                 self.log.info("%s build done" % cur_dir)
                 self.build_res = "SUCCESS"
             else:
@@ -50,11 +51,12 @@ class BuildController(object):
 
     def build(self, cur_dir, compile_log='', cmd='', build_dir='crane_evb'):
         os.chdir(cur_dir)
-        self.gui_build_log = os.path.join(cur_dir, 'build', build_dir, r'gui_build.log')
-        self.hal_build_log = os.path.join(cur_dir, 'build', build_dir, r'hal_build.log')
-        self.cp_build_log = os.path.join(cur_dir, 'build', build_dir, r'cp_build.log')
-        self.link_log = os.path.join(cur_dir, 'build', build_dir, r'fp_link_build.log')
-        self.release_log = os.path.join(cur_dir, 'build', build_dir, r'arelease.log')
+        self.build_dirname = os.path.dirname(self.release_zip_file)
+        self.gui_build_log = os.path.join(cur_dir, self.build_dirname, r'gui_build.log')
+        self.hal_build_log = os.path.join(cur_dir, self.build_dirname, r'hal_build.log')
+        self.cp_build_log = os.path.join(cur_dir, self.build_dirname, r'cp_build.log')
+        self.link_log = os.path.join(cur_dir, self.build_dirname, r'fp_link_build.log')
+        self.release_log = os.path.join(cur_dir, self.build_dirname, r'arelease.log')
         self.log.info("%s build start..." % cur_dir)
         # cmd = "autobuild.bat %s> %s"%(build_dir,compile_log)
         if not cmd:
@@ -184,9 +186,12 @@ class BuildBase(object):
                 copy(_file, os.path.join(self.loacal_dist_dir, "version_info", os.path.basename(_file)))
 
         for board in self.board_list:
-            dsp_bin = None
+            dsp_bin = ""
             dsp_version_file = os.path.join(self.version_info_dir, board+"_dsp_version.txt")
             src_bin_l = self.board_info.get(board, {}).get("release_bin",[])
+            if not src_bin_l:
+                self.log.error("%s not define"%board)
+                continue
             for _file in src_bin_l:
                 if "dsp.bin" in _file:
                     dsp_bin = os.path.normpath(os.path.join(self.build_root_dir, _file))
@@ -203,7 +208,10 @@ class BuildBase(object):
         for _file in self.build_images:
             src = os.path.normpath(os.path.join(src_dir, _file))
             dist = os.path.normpath(os.path.join(dist_dir, os.path.basename(_file)))
-            copy(src, dist)
+            if os.path.exists(src):
+                copy(src, dist)
+            else:
+                self.log.error("%s not exists")
 
         _zip_file = self.board_info.get(board, {}).get("build_zip_file","")
         self.build_zip_file = os.path.normpath(os.path.join(self.build_root_dir, _zip_file))
@@ -240,7 +248,7 @@ class BuildBase(object):
                 copy(src_bin, dist_bin)
 
         #copy ReliableData.bin
-        src_rbd_bin = None
+        src_rbd_bin = ""
         for _bin in self.board_info.get(board, {}).get("release_bin",[]):
             if "ReliableData.bin" in _bin:
                 src_rbd_bin = os.path.normpath(os.path.join(src_dir, _bin))
@@ -447,10 +455,8 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in ["crane_evb", "crane_evb_dcxo", "visenk_phone","craneg_evb_a0_from_crane",\
-                         "cranem_evb_a0","cranem_dm_evb_a0","crane_evb_fwp","craneg_evb_z2",\
-                            '''"bird_phone", "crane_evb_128x160" ''',\
-                             '''"craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"'''] and self.build_res in "FAIL":
+            if self.build_res in "FAIL" and board in ["crane_evb", "craneg_evb_a0_from_crane", "cranec_evb",
+                                                                   "cranem_evb_a0", "cranem_dm_evb_a0","visenk_phone"]:
                 self.log.error(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
             elif self.build_res in "FAIL":
@@ -668,6 +674,53 @@ class CraneMDailyBuild(MyDailyBuildBase):
         self.git_clean()
         self.trigger_auto_test(self.release_dist, "cranem_evb", board="cranem_evb_a0")
 
+class CraneCDailyBuild(MyDailyBuildBase):
+    def __init__(self, _repo):
+        super(CraneCDailyBuild, self).__init__(_repo)
+        super(BuildBase, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "master"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cranec"]
+        self.board_list = self.config_d["boards"]
+
+    @property
+    def condition(self):
+        self.update()
+        info_d = self._repo.sync()
+        for storage, info in info_d.items():
+            if "Already up to date." in info:
+                continue
+
+            if storage == ".":
+                info_bak = info.replace("\n","##")
+                _match = re.findall("Fast-forward(.*?) file.*?changed,", info_bak)
+                if _match:
+                    info_bak = _match[0]
+                else:
+                    continue
+                # self.log.info(info_bak.split("##"))
+                for _info in info_bak.split("##")[:-1]:
+                    _info = _info.strip()
+                    if not _info:
+                        continue
+                    if _info.startswith("cus/evb/") or _info.startswith(".../") or \
+                                   _info.startswith("cus/evb_m/") or _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_g_a0/"):
+                        continue
+                    else:
+                        return True
+                continue
+            if "Already up to date." not in info:
+                return True
+        return False
+
+    def close_build(self):
+        self.trigger_auto_test(self.release_dist, "cranec_evb", "cranec_evb")
+        self.git_clean()
+
 
 class CraneMDMDailyBuild(MyDailyBuildBase):
     def __init__(self, _repo):
@@ -855,10 +908,8 @@ class CusR2RCSDK008Build(CusBuild):
         self.release_branch = "r2_rc"
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
-        self.config_d = json_str["crane"]
-        self.board_list = ["crane_evb","visenk_phone","crane_evb_128x160", "crane_evb_fwp","crane_evb_fwp_128x64"]
-        for board in self.board_list:
-            self.config_d["boards_info"][board]["images"].remove("uirespkg.bin") if "uirespkg.bin" in self.config_d["boards_info"][board]["images"] else None
+        self.config_d = json_str["crane_sdk008"]
+        self.board_list = self.config_d["boards"]
 
     def config(self):
         self.release_branch = "r2_rc"
@@ -885,10 +936,8 @@ class CusR2RCSDK009Build(CusBuild):
         self.release_branch = "r2_rc"
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
-        self.config_d = json_str["crane"]
-        self.board_list = ["crane_evb","crane_evb_dcxo", "visenk_phone","crane_evb_128x160", "crane_evb_fwp","crane_evb_fwp_128x64"]
-        for board in self.board_list:
-            self.config_d["boards_info"][board]["images"].remove("uirespkg.bin") if "uirespkg.bin" in self.config_d["boards_info"][board]["images"] else None
+        self.config_d = json_str["crane_sdk009"]
+        self.board_list = self.config_d["boards"]
 
     def config(self):
         self.release_branch = "r2_rc"
@@ -906,6 +955,28 @@ class CusR2RCSDK009Build(CusBuild):
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_dcxo_rc", "crane_evb_dcxo")
         self.trigger_auto_test(self.release_dist, "crane_evb_z2_fwp_rc", "crane_evb_fwp")
         self.git_clean()
+
+class CraneCR2RCBuild(CusBuild):
+    def __init__(self, _repo_cus):
+        super(CraneCR2RCBuild, self).__init__(_repo_cus)
+        self.log = MyLogger(self.__class__.__name__)
+
+    def get_config(self):
+        self.release_branch = "r2_rc"
+        json_file = os.path.join(self.root_dir,"json","build.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cranec_r2_rc"]
+        self.board_list = self.config_d["boards"]
+
+    def config(self):
+        self.release_branch = "r2_rc"
+        self.sdk_release_notes_file = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK\ReleaseNotes.xlsx"
+        self.sdk_release_notes_dir = r"\\sh2-filer02\Release\LTE\SDK\Crane\FeaturePhone\Mixture\ASR3601_MINIGUI_20200803_SDK"
+
+    def close_build(self):
+        self.trigger_auto_test(self.release_dist, "cranec_evb", "cranec_evb")
+        self.git_clean()
+
 
 class CusFTBuild(CusBuild):
     def __init__(self, _repo_cus):
@@ -962,11 +1033,8 @@ class CusR1RCBuild(CusBuild):
         self.release_branch = "r1_rc"
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
-        self.config_d = json_str["crane"]
-        self.board_list = ["crane_evb","crane_evb_128x160"]
-        # for board in self.board_list:
-            # self.config_d["boards_info"][board]["build_zip_file"] = os.path.join("build", "crane_evb", "ASR_CRANE_EVB_A0_16MB.zip")
-
+        self.config_d = json_str["crane_r1_rc"]
+        self.board_list = self.config_d["boards"]
 
     def config(self):
         self.release_branch = "r1_rc"
@@ -1099,16 +1167,11 @@ class ExternalBuild(CraneDailyBuild):
         json_file = os.path.join(self.root_dir,"json","build.json")
         json_str = load_json(json_file)
         self.config_d = json_str["external_build"]
-        # self.board_list = self.config_d["boards"]
-        # self.board_list = ["crane_evb_z2"]
-        self.board_list = ["craneg_evb_a0_from_crane"]
-
-    def config(self):
-        self.board_list = ["craneg_evb_a0_from_crane"]
+        self.board_list = self.config_d["boards"]
 
     def record_config(self):
         for _line in fileinput.input(self.trigger_config,inplace=1):
-            if "default" in _line:
+            if "build_version" in _line:
                 print _line.replace("default",os.path.basename(self.release_dist)).rstrip()
             elif "build_status" in _line:
                 print _line.replace("ongoing","done").rstrip()
@@ -1124,7 +1187,6 @@ class ExternalBuild(CraneDailyBuild):
 
         self.clean_sdk()
         self.copy_sdk()
-        self.config()
 
         self.ap_version = self.get_ap_version()
         self.record_ap_version(self.ap_version)
@@ -1190,7 +1252,12 @@ class ExternalBuild(CraneDailyBuild):
             json_config = load_json(_file)
             if "start" in json_config["build_status"]:
                 self.trigger_config = _file
+                self.board_list = []
                 self.external_config_dict = json_config
+                if self.external_config_dict["board_type"]:
+                    self.board_list = [board for board in self.external_config_dict["board_type"] if board in self.config_d["boards"]]
+                else:
+                    self.board_list = ["crane_evb", "craneg_evb"]
                 self.log.info(self.trigger_config)
                 return True
         return False
@@ -1269,7 +1336,7 @@ class ExternalBuild(CraneDailyBuild):
                     self.send_email(_root_dir, owner, self.release_dist, board)
                     break
 
-            kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
+            # kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
             if board in ["crane_evb", "crane_evb_dcxo", "visenk_phone","craneg_evb_a0_from_crane",\
                          "cranem_evb_a0","cranem_dm_evb_a0","crane_evb_fwp","craneg_evb_z2",\
