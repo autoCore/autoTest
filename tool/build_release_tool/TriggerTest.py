@@ -8,6 +8,7 @@ import shutil
 import argparse
 from datetime import datetime
 
+server_dir = r'\\10.1.164.217\testresource\craneversion'
 
 def upload_version(sdk_tool_abs_path, mdb_txt_file_abs_path, kid_project_name):
     '''
@@ -18,35 +19,35 @@ def upload_version(sdk_tool_abs_path, mdb_txt_file_abs_path, kid_project_name):
         return version路径
     '''
     if kid_project_name is None:
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'evb_dual_sim':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane-evb-dual-sim-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane-evb-dual-sim-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'evb_customer':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane-evb-customer-branch', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane-evb-customer-branch', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'evb_customer_r1':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane-evb-customer-r1', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane-evb-customer-r1', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'craneg_evb':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\craneg-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'craneg-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'crane_evb_z2_fwp':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane_evb_z2_fwp', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane_evb_z2_fwp', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'crane_evb_z2_fwp_rc':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane_evb_z2_fwp_rc', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane_evb_z2_fwp_rc', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'craneg_evb_release':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\craneg_evb_release', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'craneg_evb_release', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'crane_evb_z2_dcxo':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane_evb_z2_dcxo', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane_evb_z2_dcxo', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'crane_evb_z2_dcxo_rc':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane_evb_z2_dcxo_rc', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane_evb_z2_dcxo_rc', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'craneg_a0_evb':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\craneg_a0_evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'craneg_a0_evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'cranem_evb':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\cranem-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'cranem-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'crane_ft_d_visenk':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane_ft_d_visenk_phone', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane_ft_d_visenk_phone', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'crane_ft_d_xinxiang':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\crane_ft_d_xinxiang_phone', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'crane_ft_d_xinxiang_phone', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     elif kid_project_name == 'cranec_evb':
-        version_dir = os.path.join(r'\\10.1.166.208\craneversion\cranec-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
+        version_dir = os.path.join(server_dir, 'cranec-evb-ver', os.path.split(sdk_tool_abs_path)[1].rstrip('.zip'))
     os.mkdir(version_dir)
     shutil.copyfile(sdk_tool_abs_path, os.path.join(version_dir, os.path.split(sdk_tool_abs_path)[1]))
     shutil.copyfile(mdb_txt_file_abs_path, os.path.join(version_dir, os.path.split(mdb_txt_file_abs_path)[1]))

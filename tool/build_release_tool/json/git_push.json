@@ -2,7 +2,7 @@
     "crane_dsp":
     {
         "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
-        "release_target": "crane_lzma_a0.bin",
+        "release_target": "CAT1_L1/CRANE/CAT1GSM/crane_lzma_a0.bin",
         "target_dir": "E:/daily_auto_push/crane-dev/cus/evb/images",
         "local_dir": "./dsp_rf_rbd_bin",
         "git_push_root_dir": "E:/daily_auto_push/crane-dev",
@@ -13,8 +13,8 @@
     "crane_dsp_dcxo":
     {
         "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CRANE/CAT1",
-        "release_target": "crane_compress_a0_dcxo.bin",
-        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb/images",
+        "release_target": "CAT1_L1/CRANE/CAT1GSM/crane_compress_a0_dcxo.bin",
+        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_dcxo/images",
         "local_dir": "./dsp_rf_rbd_bin",
         "git_push_root_dir": "E:/daily_auto_push/crane-dev",
         "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_dcxo/images/dsp.bin",
@@ -24,19 +24,18 @@
     "craneg_dsp":
     {
         "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
-        "release_target": "CraneG_lzma_dsp.bin",
-        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_g/images",
-        "a0_rf_dir": "E:/daily_auto_push/crane-dev/cus/evb_g_a0/images",
+        "release_target": "CAT1_L1/CRANEG/CAT1WCDMAGSM/CraneG_lzma_dsp.bin",
+        "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_g_a0/images",
         "local_dir": "./dsp_rf_rbd_bin",
         "git_push_root_dir": "E:/daily_auto_push/crane-dev",
-        "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_g/images/dsp.bin",
+        "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_g_a0/images/dsp.bin",
         "version_pattern": "(CRANEG_.*?,.*?[0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
         "git_push_cmd": ["ssh://binwu@source.asrmicro.com:29418/crane/crane-dev", "HEAD:refs/heads/master"]
     },
     "cranec_dsp":
     {
         "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
-        "release_target": "CraneG_lzma_dsp.bin",
+        "release_target": "CAT1_L1/CRANEG/CAT1GSM/CraneG_lzma_dsp.bin",
         "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_c/images",
         "local_dir": "./dsp_rf_rbd_bin",
         "git_push_root_dir": "E:/daily_auto_push/crane-dev",
@@ -47,9 +46,8 @@
     "cranem_dsp":
     {
         "release_dir": "//sh2-filer02/Release/LTE/dailybuild/CAT1",
-        "release_target": "craneM_lzma_a0.bin",
+        "release_target": "CAT1_L1/CRANEM/CAT1GSM/craneM_lzma_a0.bin",
         "target_dir": "E:/daily_auto_push/crane-dev/cus/evb_m/images",
-        "a0_rf_dir": "E:/daily_auto_push/crane-dev/cus/evb_m/images",
         "local_dir": "./dsp_rf_rbd_bin",
         "git_push_root_dir": "E:/daily_auto_push/crane-dev",
         "verson_file": "E:/daily_auto_push/crane-dev/cus/evb_m/images/dsp.bin",

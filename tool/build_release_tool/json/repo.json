@@ -142,7 +142,7 @@
             {
                 "release_dist_dir": "//sh2-filer02/Data/FP_RLS/craneG_dailybuild",
                 "version_file":"./version_file_dir/craneG_version.log",
-                "dsp_version_file": "./cus/evb_g/images/dsp.bin",
+                "dsp_version_file": "./cus/evb_g_a0/images/dsp.bin",
                 "sdk_version_file": "./cp/tavor/env/inc/sys_version.h",
                 "git": "E:/craneG_DB/crane",
                 "build": "E:/craneG_DB/crane"
