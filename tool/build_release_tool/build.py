@@ -309,6 +309,8 @@ class BuildBase(object):
             self.log.info("sdk_tool:", sdk_tool_abs_path)
             self.log.info("mdb path:", mdb_txt_file_abs_path)
             self.log.info("test type: ", test_type)
+            assert sdk_tool_abs_path, "sdk donwload tool is None"
+            assert mdb_txt_file_abs_path, "mdb file is None"
             trigger_test(sdk_tool_abs_path, mdb_txt_file_abs_path, test_type)
         except Exception, e:
             self.log.info(e)
@@ -387,6 +389,9 @@ class MyDailyBuildBase(BuildBase, BuildController):
         self.ap_version = self.get_ap_version()
         self.record_ap_version(self.ap_version)
 
+        self.old_cp_version = self.get_old_cp_version()
+        self.cp_version = self.update_cp_version()
+
         date = time.strftime("%Y%m%d_%H%M%S")
         file_name = "%s_%s" % (self.ap_version, date)
 
@@ -405,8 +410,6 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
     def start(self):
         self.prepare_build()
-        self.old_cp_version = self.get_old_cp_version()
-        self.cp_version = self.update_cp_version()
         self.get_dsp_version(self.dsp_bin)
 
         owner, date = self.get_revion_owner()
@@ -474,10 +477,10 @@ class MyDailyBuildBase(BuildBase, BuildController):
             except Exception,e:
                 self.log.error(e)
 
-            if board in ["mHAL"]:
-                # create cp framework
-                hallib_dir = os.path.join(self.build_root_dir, self.release_zip_file)
-                create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
+            # create cp framework
+            # if board in ["mHAL"]:
+                # hallib_dir = os.path.join(self.build_root_dir, self.release_zip_file)
+                # create_cp_framework(self.build_root_dir, hallib_dir, os.path.join(self.loacal_dist_dir, board))
 
             if self.build_res == "SUCCESS":
                 _root_dir = self.download_tool_images_dir_d[board]
@@ -811,9 +814,13 @@ class CusBuild(MyDailyBuildBase):
         self.ap_version = self.get_ap_version()
         self.record_ap_version(self.ap_version)
 
-        date = time.strftime("%Y%m%d_%H%M%S")
-        file_name = "%s_%s" % (self.ap_version, date)
+        self.old_cp_version = self.get_old_cp_version()
+        self.cp_version = self.update_cp_version()
 
+        date = time.strftime("%Y%m%d_%H%M%S")
+        _match = re.findall("\[(SDK_[0-9]\.[0-9][0-9][0-9]\.[0-9][0-9][0-9])\]", self.cp_version)
+        sdk_version = _match[0] if _match else ""
+        file_name = "%s_%s_%s" % (self.ap_version, sdk_version, date)
         self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
         self.release_dist = os.path.join(self.release_dist_dir, file_name)
 
@@ -1093,8 +1100,6 @@ class CusR1RCBuild(CusBuild):
 
     def start(self):
         self.prepare_build()
-        self.old_cp_version = self.get_old_cp_version()
-        self.cp_version = self.update_cp_version()
         self.get_dsp_version(self.dsp_bin)
 
         owner, date = self.get_revion_owner()
@@ -1190,8 +1195,14 @@ class ExternalBuild(CraneDailyBuild):
 
         self.ap_version = self.get_ap_version()
         self.record_ap_version(self.ap_version)
+
+        self.old_cp_version = self.get_old_cp_version()
+        self.cp_version = self.update_cp_version()
+
         date = time.strftime("%Y%m%d_%H%M%S")
-        file_name = "%s_%s" % (self.ap_version, date)
+        _match = re.findall("\[(SDK_[0-9]\.[0-9][0-9][0-9]\.[0-9][0-9][0-9])\]", self.cp_version)
+        sdk_version = _match[0] if _match else ""
+        file_name = "%s_%s_%s" % (self.ap_version, sdk_version, date)
 
         self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
         self.release_dist = os.path.join(self.release_dist_dir, file_name)
@@ -1286,8 +1297,6 @@ class ExternalBuild(CraneDailyBuild):
 
     def start(self):
         self.prepare_build()
-        self.old_cp_version = self.get_old_cp_version()
-        self.cp_version = self.update_cp_version()
         self.get_dsp_version(self.dsp_bin)
 
         owner, date = self.get_revion_owner()
