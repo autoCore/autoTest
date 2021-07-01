@@ -340,7 +340,7 @@ class RepoBase(myRepo, ManagerVersionBase):
 
         self.build_root_dir = os.path.normpath(self.config_d["branch_info"][self.branch_name]["build"])
         self.git_root_dir = os.path.normpath(self.config_d["branch_info"][self.branch_name]["git"])
-
+        self.local_storage_dir = os.path.normpath(self.config_d["branch_info"][self.branch_name]["storage_dir"])
 
 
         self.ap_version_log = os.path.normpath(os.path.join(self.root_dir, self.config_d["version_info_log"]["ap_version_log"]))

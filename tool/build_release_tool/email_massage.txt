@@ -17,8 +17,8 @@ CRANEG FP DAILY:
     DSP VERSION: {6}
 
     EVB A0 VERSION:
-    binary + debug object: {7}\craneg_evb_a0_from_crane
-    download tool: {7}\craneg_evb_a0_from_crane\download_tool
+    binary + debug object: {7}\craneg_evb_a0
+    download tool: {7}\craneg_evb_a0\download_tool
 
     XINXIANG PHONE VERSION:
     binary + debug object: {7}\xinxiang_phone

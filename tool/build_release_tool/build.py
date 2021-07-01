@@ -106,7 +106,8 @@ class BuildController(object):
             else:
                 subject = r"%s %s build result: pass" % (self.__class__.__name__, board)
             msg = r"Hi %s, your patch build pass! Binary dir: %s" % (owner.split("@")[0], external_dir)
-            to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
+            to_address = ",".join([owner])
+            # to_address = ",".join([owner, 'yuanzhizheng@asrmicro.com'])
         self.log.info(att_file)
         send_email_tool(to_address, subject, msg, att_file)
         self.log.info("send email done")
@@ -150,6 +151,7 @@ class BuildBase(object):
 
         self.build_root_dir = self._repo.build_root_dir
         self.git_root_dir = self._repo.git_root_dir
+        self.local_storage_dir = self._repo.local_storage_dir
         self.release_dist_dir = self._repo.release_dist_dir
         self.manisest_xml_dir = self._repo.manisest_xml_dir
 
@@ -397,7 +399,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
         self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
         self.release_dist = os.path.join(self.release_dist_dir, file_name)
-
+        self.loacal_dist_dir = os.path.join(self.local_storage_dir,file_name)
         self.prepare_release_dir(self.loacal_dist_dir)
 
         self.xml_file = self.ap_version + ".xml"
@@ -458,7 +460,7 @@ class MyDailyBuildBase(BuildBase, BuildController):
 
             kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if self.build_res in "FAIL" and board in ["crane_evb", "craneg_evb_a0_from_crane", "cranec_evb",
+            if self.build_res in "FAIL" and board in ["crane_evb", "craneg_evb_a0", "cranec_evb",
                                                                    "cranem_evb_a0", "cranem_dm_evb_a0","visenk_phone"]:
                 self.log.error(self.loacal_dist_dir, "build fail")
                 return self.loacal_dist_dir
@@ -549,7 +551,7 @@ class CraneDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_m/") or _info.startswith("cus/evb_g_a0/") or _info.startswith(".../"):
+                    if _info.startswith("cus/evb") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -596,7 +598,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
         if self.cp_version not in self.old_cp_version:
             self.sdk_update_flag.set()
         self.git_clean()
-        self.trigger_auto_test(self.release_dist, "craneg_a0_evb", board="craneg_evb_a0_from_crane")
+        self.trigger_auto_test(self.release_dist, "craneg_a0_evb", board="craneg_evb_a0")
 
     @property
     def condition(self):
@@ -619,7 +621,7 @@ class CraneGDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb/") or _info.startswith(".../") or _info.startswith("cus/evb_m/"):
+                    if _info.startswith("cus/evb") or _info.startswith(".../"):
                         continue
                     else:
                         self.log.info(_info)
@@ -662,7 +664,7 @@ class CraneMDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb/") or _info.startswith(".../") or _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_g_a0/"):
+                    if _info.startswith("cus/evb") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -710,8 +712,7 @@ class CraneCDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb/") or _info.startswith(".../") or \
-                                   _info.startswith("cus/evb_m/") or _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_g_a0/"):
+                    if _info.startswith("cus/evb") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -768,7 +769,7 @@ class CraneMDMDailyBuild(MyDailyBuildBase):
                     _info = _info.strip()
                     if not _info:
                         continue
-                    if _info.startswith("cus/evb/") or _info.startswith("cus/evb_m/") or _info.startswith(".../") or _info.startswith("cus/evb_g/") or _info.startswith("cus/evb_g_a0/"):
+                    if _info.startswith("cus/evb") or _info.startswith(".../"):
                         continue
                     else:
                         return True
@@ -823,7 +824,7 @@ class CusBuild(MyDailyBuildBase):
         file_name = "%s_%s_%s" % (self.ap_version, sdk_version, date)
         self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
         self.release_dist = os.path.join(self.release_dist_dir, file_name)
-
+        self.loacal_dist_dir = os.path.join(self.local_storage_dir,file_name)
         self.prepare_release_dir(self.loacal_dist_dir)
 
         self.log.info("release_branch", self.release_branch)
@@ -1027,7 +1028,7 @@ class CusCraneGBuild(CusBuild):
             subject = "%s RELEASE" % self.cp_version
             msg = r"Hi %s, %s build done! Binary dir: %s" % (to_address.split("@")[0], self.cp_version, self.release_dist)
             send_email_tool(to_address, subject.upper(), msg)
-        self.trigger_auto_test(self.release_dist, "craneg_a0_evb", board="craneg_evb_a0_from_crane")
+        self.trigger_auto_test(self.release_dist, "craneg_a0_evb", board="craneg_evb_a0")
         self.git_clean()
 
 
@@ -1206,7 +1207,7 @@ class ExternalBuild(CraneDailyBuild):
 
         self.loacal_dist_dir = os.path.join(os.path.dirname(self.git_root_dir), file_name)
         self.release_dist = os.path.join(self.release_dist_dir, file_name)
-
+        self.loacal_dist_dir = os.path.join(self.local_storage_dir,file_name)
         self.prepare_release_dir(self.loacal_dist_dir)
         try:
             self.xml_file = self.ap_version + ".xml"
@@ -1295,6 +1296,26 @@ class ExternalBuild(CraneDailyBuild):
         # self.trigger_auto_test(self.release_dist, "crane_evb_dcxo", "crane_evb_dcxo")
         self.git_clean()
 
+    def send_email(self, cur_dir, owner, external_dir, board="crane_evb", subject_str = None):
+        os.chdir(cur_dir)
+        owner = self.external_config_dict["owner"]
+        if self.build_res in "FAIL":
+            att_file_list = [self.hal_build_log, self.gui_build_log, self.cp_build_log, self.link_log,self.release_log]
+            att_file_list = [os.path.join(cur_dir,_file) for _file in att_file_list]
+            # att_file_list.append(self.compile_log)
+            att_file = '@'.join(att_file_list)
+            if subject_str:
+                subject = subject_str
+            else:
+                subject = r"%s %s build result: fail" % (self.__class__.__name__, board)
+            msg = r"Hi %s, your patch build fail! Pls check attachment log" % (owner.split("@")[0])
+            to_address = owner
+
+        self.log.info(att_file)
+        send_email_tool(to_address, subject, msg, att_file)
+        self.log.info("send email done")
+
+
     def start(self):
         self.prepare_build()
         self.get_dsp_version(self.dsp_bin)
@@ -1347,7 +1368,7 @@ class ExternalBuild(CraneDailyBuild):
 
             # kill_win_process("mingw32-make.exe", 'cmake.exe', "make.exe", 'armcc.exe', 'wtee.exe')
 
-            if board in ["crane_evb", "crane_evb_dcxo", "visenk_phone","craneg_evb_a0_from_crane",\
+            if board in ["crane_evb", "crane_evb_dcxo", "visenk_phone","craneg_evb_a0",\
                          "cranem_evb_a0","cranem_dm_evb_a0","crane_evb_fwp","craneg_evb_z2",\
                             '''"bird_phone", "crane_evb_128x160" ''',\
                              '''"craneg_evb_z2_dcxo","craneg_evb_a0","xinxiang_phone"'''] and self.build_res in "FAIL":

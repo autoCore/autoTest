@@ -153,17 +153,9 @@ class autoRelease(ThreadBase):
                 # trigger dailybuild test
                 self.trigger_auto_test(version_file)
 
-                # self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2")
-                self.trigger_auto_test(craneg_version_file, project_name="craneg_evb", board="craneg_evb_z2_from_crane")
-
-                # self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0")
-                self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0_from_crane")
-
+                self.trigger_auto_test(craneg_version_file, project_name="craneg_a0_evb", board="craneg_evb_a0")
                 self.trigger_auto_test(version_file, project_name="crane_evb_z2_fwp",  board="crane_evb_z2_fwp")
-
                 self.trigger_auto_test(version_file, project_name="crane_evb_z2_dcxo",  board="crane_evb_z2_dcxo")
-
-                # self.trigger_auto_test(cus_version_file, project_name="crane_evb_z2_fwp_rc",  board="crane_evb_z2_fwp")
 
                 # self.ftp_upload(version_file)
                 self.today_release_flag.set()
@@ -172,6 +164,8 @@ class autoRelease(ThreadBase):
                 break
             except Exception,e:
                 self.log.error(e)
+                time.sleep(60)
+                self.release_event.set()
 
 
 class autoPush(ThreadBase):
@@ -387,6 +381,12 @@ if __name__ == "__main__":
     auto_clean_overdue_dir_task.add_repo(ft_repo)
     '''
 
+    # craneg r2_rc
+    cus_craneg_repo = cusCraneGRepo()
+    auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
+    auto_build_task.add_build(auto_cus_craneg_build_cls)
+    auto_clean_overdue_dir_task.add_repo(cus_craneg_repo)
+
     # crane r2_rc_sdk008
     r2_rc_sdk008_repo = cusR2RCSDK008Repo()
     auto_r2_rc_sdk008_cls = CusR2RCSDK008Build(r2_rc_sdk008_repo)
@@ -406,29 +406,23 @@ if __name__ == "__main__":
     auto_clean_overdue_dir_task.add_repo(cus_cranec_repo)
 
 
-    # craneg r2_rc
-    cus_craneg_repo = cusCraneGRepo()
-    auto_cus_craneg_build_cls = CusCraneGBuild(cus_craneg_repo)
-    auto_build_task.add_build(auto_cus_craneg_build_cls)
-    auto_clean_overdue_dir_task.add_repo(cus_craneg_repo)
-
     # crane r2_rc
     r2_rc_repo = cusR2RCRepo()
     auto_r2_rc_cls = CusR2RCSDKBuild(r2_rc_repo)
     auto_build_task.add_build(auto_r2_rc_cls)
     auto_clean_overdue_dir_task.add_repo(r2_rc_repo)
 
-    # crane AliOS dailay
-    alios_repo = CraneAliOSRepo()
-    auto_alios_daily_build_cls = CraneAliOSDailyBuild(alios_repo)
-    auto_build_task.add_build(auto_alios_daily_build_cls)
-    auto_clean_overdue_dir_task.add_repo(alios_repo)
-
     # craneg dailay
     craneg_repo = craneGRepo()
     craneg_build_cls = CraneGDailyBuild(craneg_repo)
     auto_build_task.add_build(craneg_build_cls)
     auto_clean_overdue_dir_task.add_repo(craneg_repo)
+
+    # crane AliOS dailay
+    alios_repo = CraneAliOSRepo()
+    auto_alios_daily_build_cls = CraneAliOSDailyBuild(alios_repo)
+    auto_build_task.add_build(auto_alios_daily_build_cls)
+    auto_clean_overdue_dir_task.add_repo(alios_repo)
 
     # cranem dailay
     cranem_repo = craneMRepo()
