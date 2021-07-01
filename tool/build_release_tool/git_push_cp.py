@@ -495,6 +495,17 @@ class gitPushR2RCSDK(gitPushSDKBase):
                 self.log.info(self.git_push_dsp_rf_list)
                 break
 
+class gitPushCraneFTR2RCSDK(gitPushR2RCSDK):
+    def __init__(self):
+        super(gitPushCraneFTR2RCSDK, self).__init__()
+        self.log = MyLogger(self.__class__.__name__)
+        self.branch_name = "crane_ft"
+
+    def get_config(self):
+        json_file = os.path.join(self.root_dir,"json","git_push.json")
+        json_str = load_json(json_file)
+        self.config_d = json_str["cus_crane_ft_sdk"]
+
 
 class GitPushDspBase(GitPushBase):
     def __init__(self):

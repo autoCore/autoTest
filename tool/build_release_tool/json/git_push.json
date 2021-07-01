@@ -129,7 +129,7 @@
         "release_dir": "//sh2-filer02/Release/LTE/SDK/Crane/FeaturePhone/Mixture/ASR3601_MINIGUI_20201127_SDK",
         "release_target": "ASR3601_MINIGUI_",
         "target_dir": "E:/cus_auto_push/cus_crane_ft/crane-phone-rls/evb/src/cp",
-        "local_dir": "./cp_sdk_dir",
+        "local_dir": "./cp_sdk_dir/crane_ft",
         "git_push_root_dir": "E:/cus_auto_push/cus_crane_ft/crane-phone-rls",
         "verson_file": "E:/cus_auto_push/cus_crane_ft/crane-phone-rls/evb/src/cp/tavor/env/inc/sys_version.h",
         "git_push_cmd": ["origin","crane_ft"]
